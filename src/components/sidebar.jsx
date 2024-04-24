@@ -4,16 +4,16 @@ const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 900); 
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     setIsMobile(window.innerWidth < 900); 
+  //   };
+  //   window.addEventListener('resize', handleResize);
+  //   handleResize();
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize);
+  //   };
+  // }, []);
 
   const Menus = [
     {
@@ -38,7 +38,7 @@ const Sidebar = () => {
       <div
         className={`${
           open ? "w-28" : "w-20"
-        } bg-dark-purple h-screen w-80  p-5  bg-gray-800 shadow relative duration-300`}
+        } bg-dark-purple h-screen w-80  p-5  bg-sky-600 shadow relative duration-300`}
       >
         <div className="flex flex-col items-center m-1 p-6">
           <div className='mt-10'>
@@ -67,9 +67,9 @@ const Sidebar = () => {
               </a>
             </li>
           ))}
-          <div className="text-gray-500 flex text-center py-2 mb-3">
+          {/* <div className="text-gray-500 flex text-center py-2 mb-3">
             Alpha version 0.0.1
-          </div>
+          </div> */}
         </ul>
       </div>
     </div>

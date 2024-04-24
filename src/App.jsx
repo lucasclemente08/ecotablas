@@ -3,11 +3,14 @@ import './App.css'
 import Sidebar from './components/sidebar';
 import Login from './pages/login/Login';
 import Register from './pages/login/Register';
+
+import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-router-dom';
 function App() {
 
   return (
     <>
-    <div>
+    <div className="bg-slate-900">
+
     <Sidebar />
 
     </div>
@@ -16,6 +19,19 @@ function App() {
 
 
 
+<Router>  
+     
+     <div className=" flex">
+
+  <Routes>
+    <Route path="/"  />
+
+    <Route path="/login" exact element={<Login />} />
+    <Route path="/register" exact element={<Register />} />
+  
+  </Routes>
+  </div> 
+</Router>
 
     </>
   )
