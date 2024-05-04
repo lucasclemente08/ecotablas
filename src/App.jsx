@@ -1,17 +1,22 @@
 
 import './App.css'
 import Sidebar from './components/sidebar';
+import Empleados from './pages/empleados/Empleados';
 import Login from './pages/login/Login';
 import Register from './pages/login/Register';
+import RegisterProductForm from './components/regisP';
+
 
 import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-router-dom';
 function App() {
 
   return (
     <>
-    <div className="bg-slate-900">
-
+    <div className="bg-slate-900 flex">
+{/* 
     <Sidebar />
+    <Empleados /> */}
+    {/* <RegisterProductForm /> */}
 
     </div>
    {/* <Login /> */}
@@ -20,8 +25,8 @@ function App() {
 
 
 <Router>  
-     
-     <div className=" flex">
+{/*      
+     <div className=" flex"> */}
 
   <Routes>
     <Route path="/"  />
@@ -30,7 +35,7 @@ function App() {
     <Route path="/register" exact element={<Register />} />
   
   </Routes>
-  </div> 
+  {/* </div>  */}
 </Router>
 
     </>
