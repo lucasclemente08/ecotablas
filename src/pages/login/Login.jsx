@@ -17,8 +17,8 @@ const Login = () => {
     };
 
     return (
-        <div className='relative flex h-full  w-full md:p-5 font-aeonik '>
-            <div className='p-10 h-3/4  w-full md:w-1/2 xl:w-1/3 mx-auto  rounded-xl bg-light-gray '>
+        <div className='relative bg-slate-900 flex h-full  w-full md:p-5 font-aeonik '>
+            <div className='p-10 h-3/4 text-white w-full md:w-1/2 xl:w-1/3 mx-auto  rounded-xl bg-light-gray '>
                 <figure className='text-center font-bold text-3xl'>
                     <img
                         src=""
@@ -49,7 +49,7 @@ const Login = () => {
                     <div>
                         <label
                             htmlFor='password'
-                            className='block mb-2 text-sm font-medium text-slate-800'
+                            className='block mb-2 text-sm font-medium text-white'
                         >
                             Contraseña
                         </label>
@@ -90,7 +90,7 @@ const Login = () => {
                     <div className='flex flex-col gap-2'>
                         <button
                             type='submit'
-                            className='w-full text-black bg-teal hover:-translate-y-1 transition-transform border-2   font-bold rounded-full px-5 py-3 text-center text-lg'
+                            className='w-full text-white bg-teal hover:-translate-y-1 transition-transform border-2   font-bold rounded-full px-5 py-3 text-center text-lg'
                         >
                             Acceder
                         </button>
