@@ -4,39 +4,88 @@ import React, { useState } from 'react';
 const Register = () => {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [formData, setFormData] = useState({
+    nombre: '',
+    correo: '',
+    contrasena: '',
+  });
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Aquí deberías agregar la lógica para manejar el envío del formulario y registrar al usuario
-    // Esto puede implicar enviar una solicitud HTTP a tu backend
 
     setLoading(true);
     setLoading(false);
   };
 
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+
+
   return (
-    <div className='relative flex h-full  w-full md:p-5 font-aeonik '>
-      {/* Aquí puedes insertar tu imagen de fondo */}
-      <div className='absolute inset-x-0 inset-y-0 -z-10 '>
-        {/* <img src={bgImageLogin} alt='Imagen de fondo' className='w-full h-full object-cover' /> */}
-      </div>
-      <div className=' p-10 h-3/4  w-full md:w-1/2 xl:w-1/3 mx-auto  rounded-xl bg-light-gray'>
+    <div className="  h-full min-h-screen flex justify-center items-center  w-full md:p-5 font-aeonik bg-slate-900  ">
+    
+     
+      <div className=" p-10 h-3/4  w-full md:w-1/2 xl:w-1/3 mx-auto  rounded-xl ">
         <figure className='text-center font-bold text-3xl'>
-          {/* Aquí puedes insertar tu logo */}
+        
           {/* <img src={logoNoText} alt='Logo de Aventura Compartida' width={150} priority={true} className='m-auto' /> */}
-          <figcaption>Crea tu cuenta</figcaption>
+          <figcaption className="text-white">Crea tu cuenta</figcaption>
         </figure>
-        <form className='space-y-4 max-w-lg mx-auto my-5' onSubmit={handleSubmit}>
-          {/* Aquí puedes incluir los campos de tu formulario */}
-          <button className='w-full text-black bg-teal hover:-translate-y-1 transition-transform border-2   font-bold rounded-full px-5 py-3 text-center text-lg'>
-            Crear cuenta
-          </button>
+        <form onSubmit={handleSubmit}>
+        <div className='mb-4 text-white'>
+          <label htmlFor='nombre' className=' text-white block '>Nombre</label>
+          <input
+            type='text'
+            id='nombre'
+            name='nombre'
+            value={formData.nombre}
+            onChange={handleChange}
+            className='w-full border-2 p-2 rounded-lg'
+            required
+          />
+        </div>
+        <div className='mb-4'>
+          <label htmlFor='correo' className='block text-white'>Correo electrónico</label>
+          <input
+            type='email'
+            id='correo'
+            name='correo'
+            value={formData.correo}
+            onChange={handleChange}
+            className='w-full border-2 p-2 rounded-lg'
+            required
+          />
+        </div>
+        <div className='mb-4'>
+          <label htmlFor='contrasena' className='block text-white'>Contraseña</label>
+          <input
+            type='password'
+            id='contrasena'
+            name='contrasena'
+            value={formData.contrasena}
+            onChange={handleChange}
+            className='w-full border-2 p-2 rounded-lg'
+            required
+          />
+        </div>
+        <button
+          type='submit'
+          className='w-full text-white bg-teal-500 hover:bg-teal-600 font-bold rounded-full px-5 py-3 transition-colors'
+        >
+          Crear cuenta
+        </button>
           
-          <div className='text-sm text-center font-normal text-black  '>
+          <div className='text-xl text-center font-normal text-white mt-4 '>
             Ya tienes cuenta?
-            {/* Aquí necesitas manejar el enrutamiento */}
-            <a href='/login' className='text-semibold underline  mx-2'>
+       
+            <a href='/login' className='text-semibold underline text-white  mx-2'>
               Inicia sesión
             </a>
           </div>
