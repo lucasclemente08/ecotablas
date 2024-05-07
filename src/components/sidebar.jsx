@@ -51,7 +51,7 @@ const Sidebar = () => {
             </h1>
           </div>
         </div>
-        <ul className={`${!open ? 'pb-6' : 'pt-6'}`}>
+        <ul className={`   ${!open ? 'pb-6' : 'pt-6'}`}>
           {Menus.map((Menu, index) => (
             <li
               key={index}
