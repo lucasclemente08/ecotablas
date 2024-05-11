@@ -1,51 +1,40 @@
-
-import './App.css'
-import Sidebar from './components/sidebar';
-import Empleados from './pages/empleados/Empleados';
-import Login from './pages/login/Login';
-import Register from './pages/login/Register';
-// import RegisterProductForm from './components/regisP';
-
-
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Profile from './pages/profile/Profile';
+import Navbar from './components/Navbar';
+import Sidebar from './components/sidebar';
 import Home from './pages/home/Home';
-
+import Login from './pages/login/Login';
+import Empleados from './pages/empleados/Empleados';
+import Register from './pages/login/Register';
+import Material from './pages/materiales/Materiales';
 
 function App() {
-
   return (
-    <>
-    <div className="bg-slate-900 flex">
+    <Router>
+      <div className="bg-slate-900 flex flex-col min-h-screen">
 
-     <Sidebar />
-    <Empleados /> 
-    {/* <RegisterProductForm /> */}
- 
+        {/* <div className="block md:hidden">
+          <Navbar />
+        </div>
 
+        <div className="hidden md:flex flex-1 flex-row">
+          <Sidebar className="w-1/4" />
+          <div className="flex-1 p-4">
+       
+          </div>
+        </div> */}
 
-    </div>
+        <Routes>
+          <Route path="/" exact element={<Home />} />
+          <Route path="/login" exact element={<Login />} />
+          <Route path="/material" exact element={<Material />} />
 
+          <Route path="/register" exact element={<Register />} />
 
-    
-<Router>  
-
-
-  <Routes>
-    <Route path="/"exact element={<Home />}  />
-
-    <Route path="/login" exact element={<Login />} />
-    <Route path="/profile" exact element={<Profile />} />
-
-    <Route path="/register" exact element={<Register />} />
-  
-  </Routes>
-
- 
-</Router>
-
-    </>
-  )
+          <Route path="/empleados" exact element={<Empleados />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;

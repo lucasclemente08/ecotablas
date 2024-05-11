@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { useStates } from 'react';
+import { useState } from 'react';
+import Home from '../home/Home';
 
 const empleadosData = [
   { id: 1, nombre: 'Juan Pérez', edad: 30, puesto: 'Ingeniero de Software', dni: '12345678' },
@@ -19,6 +20,13 @@ const Empleados=()=>{
 
 return(
 <>
+
+<Home />
+<div className='  bg-slate-900'>
+
+
+
+
 <div className="overflow-x-auto m-5">
   <div className="m-3">
   <h2  className="text-white text-3xl b-4">
@@ -103,6 +111,12 @@ return(
       </table>
     </div>
     </div>
+</div>
+
+
+    
+     
+    
 </>
 )
 }

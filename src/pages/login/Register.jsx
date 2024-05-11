@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-
+import { useNavigate} from 'react-router-dom';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {auth,provider  } from '../../firebase/firebase'
+import { GoogleAuthProvider ,signInWithPopup} from "firebase/auth";
 
 const Register = () => {
   const [errors, setErrors] = useState([]);
@@ -9,13 +12,31 @@ const Register = () => {
     correo: '',
     contrasena: '',
   });
+  const [contrasena,setContrasena] = useState("")
+  const [correo,setCorreo] = useState("")
+
+
+  const navigate = useNavigate()
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
+     
+  createUserWithEmailAndPassword(auth, correo, contrasena)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      navigate('/')
+    })
+    .catch((error) => { 
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
     setLoading(true);
     setLoading(false);
   };
+
+
 
 
   const handleChange = (e) => {
@@ -24,9 +45,35 @@ const Register = () => {
       ...prev,
       [name]: value,
     }));
+    console.log(formData)
+    setContrasena(formData.contrasena);
+    setCorreo(formData.correo);
+   
   };
 
-
+  const handleClick = () => {
+    signInWithPopup(auth, provider)
+    .then((result) => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      // The signed-in user info.
+      const user = result.user;
+   
+      navigate('/')
+      // console.log(JSON.stringify(user))
+    }).catch((error) => {
+    
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      const email = error.customData.email;
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      
+    });
+ 
+    
+  }
+ 
 
   return (
     <div className="  h-full min-h-screen flex justify-center items-center  w-full md:p-5 font-aeonik bg-slate-900  ">
@@ -39,19 +86,8 @@ const Register = () => {
           <figcaption className="text-white">Crea tu cuenta</figcaption>
         </figure>
         <form onSubmit={handleSubmit}>
-        <div className='mb-4 text-white'>
-          <label htmlFor='nombre' className=' text-white block '>Nombre</label>
-          <input
-            type='text'
-            id='nombre'
-            name='nombre'
-            value={formData.nombre}
-            onChange={handleChange}
-            className='w-full border-2 p-2 rounded-lg'
-            required
-          />
-        </div>
-        <div className='mb-4'>
+        
+        <div className='mb-4 mt-6'>
           <label htmlFor='correo' className='block text-white'>Correo electrónico</label>
           <input
             type='email'
@@ -59,7 +95,7 @@ const Register = () => {
             name='correo'
             value={formData.correo}
             onChange={handleChange}
-            className='w-full border-2 p-2 rounded-lg'
+            className='w-full border-2 text-black p-2 rounded-lg'
             required
           />
         </div>
@@ -81,7 +117,17 @@ const Register = () => {
         >
           Crear cuenta
         </button>
-          
+              <div className='flex flex-col mt-5 '>
+                        <button  onClick={handleClick}
+                            type='submit'
+                            className=' text-white flex justify-center  bg-teal hover:-translate-y-1 transition-transform border-2   font-bold rounded-full px-5 py-3 text-center '
+                        >
+                            <img width="25" height="30"  className="mr-5"src="https://img.icons8.com/fluency/48/google-logo.png" alt="google-logo"/>
+                            Acceder con Google
+                        </button>
+                      
+         
+                    </div>
           <div className='text-xl text-center font-normal text-white mt-4 '>
             Ya tienes cuenta?
        
