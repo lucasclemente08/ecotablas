@@ -1,7 +1,8 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar'
 import Navbar from '../../components/Navbar'
-
+import ButtonDelete from '../../components/buttonDelete'
+import ButtonEdit from '../../components/buttonEdit'
 const Home = () => {
   return (
     <>
@@ -15,7 +16,7 @@ const Home = () => {
   <Sidebar className="w-1/4" />
 
 </div>
-
+<ButtonEdit />
 </div>
 
     </>

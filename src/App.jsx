@@ -6,6 +6,9 @@ import Login from './pages/login/Login';
 import Empleados from './pages/empleados/Empleados';
 import Register from './pages/login/Register';
 import Material from './pages/materiales/Materiales';
+import ButtonDelete from './components/buttonDelete'; 
+
+
 
 function App() {
   return (
