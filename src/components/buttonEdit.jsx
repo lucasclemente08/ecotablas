@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-const ButtonEdit = ({ pageName }) => {
+const ButtonEdit = ({ empleados }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [editedEmpleado, setEditedEmpleado] = useState(empleados);
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -10,6 +10,15 @@ const ButtonEdit = ({ pageName }) => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+
+
+  const handleChange = (e, field) => {
+    setEditedEmpleado({ ...editedEmpleado, [field]: e.target.value });
+  };
+
+
+
 
   return (
     <>
@@ -59,21 +68,21 @@ const ButtonEdit = ({ pageName }) => {
             </div>
             <div className="text-center">
               <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                Formulario de Edición para {pageName}
+                Formulario de Edición
               </h3>
-              {/* Aquí puedes agregar tus campos de edición */}
-              <form>
-                <div className="mb-4">
-                  <label htmlFor="editName" className="block text-gray-700 dark:text-gray-300 mb-2">
-                    Nombre:
-                  </label>
-                  <input type="text" id="editName" name="editName" className="border border-gray-300 px-3 py-2 rounded-lg w-full" />
+              <div>
+              {Object.keys(editedEmpleado).map((key) => (
+                <div key={key}>
+                  <label>{key.charAt(0).toUpperCase() + key.slice(1)}:</label>
+                  <input
+                    type="text"
+                    value={editedEmpleado[key]}
+                    onChange={(e) => handleChange(e, key)}
+                  />
                 </div>
-                {/* Agrega más campos de edición según sea necesario */}
-                <button className="text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                  Guardar
-                </button>
-              </form>
+              ))}
+              </div>
+              {/* Agrega más campos según sea necesario */}
             </div>
           </div>
         </div>

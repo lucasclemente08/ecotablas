@@ -87,7 +87,8 @@ return(
                   <td className="py-2 px-2 border">{empleado.dni}</td>
                   <td className="border flex">
          <ButtonDelete />
-                   <ButtonEdit />
+                  <ButtonEdit empleados={empleadosData} />
+
                   </td>
                 </tr>
               ))}
