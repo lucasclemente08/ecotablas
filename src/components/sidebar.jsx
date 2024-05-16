@@ -4,20 +4,11 @@ const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setIsMobile(window.innerWidth < 900); 
-  //   };
-  //   window.addEventListener('resize', handleResize);
-  //   handleResize();
-  //   return () => {
-  //     window.removeEventListener('resize', handleResize);
-  //   };
-  // }, []);
+
   const Menus = [
     {
       title: "Inicio",
-      link: "/", // Puedes poner la ruta o el URL deseado
+      link: "/", 
     },
     {
       title: "Empleados",
@@ -39,11 +30,11 @@ const Sidebar = () => {
   
 
   return (
-    <div className="">
+    <div className="   h-dvh">
       <div
         className={`${
           open ? "w-28" : "w-20"
-        } bg-dark-purple h-full w-60  pt-1 bg-sky-600 shadow relative duration-300`}
+        } bg-dark-purple  w-60 min-h-screen  pt-1 bg-sky-600 shadow relative duration-300`}
       >
         <div className="flex flex-col items-center m-1 p-4">
           <div className='mt-10'>

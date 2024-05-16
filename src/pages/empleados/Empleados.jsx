@@ -25,10 +25,10 @@ const Empleados=()=>{
 return(
 <>
 
+
+<div className=' flex  bg-slate-900'>
+
 <Home />
-<div className='  bg-slate-900'>
-
-
 
 
 <div className="overflow-x-auto m-5">

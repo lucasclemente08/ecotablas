@@ -1,59 +1,49 @@
 import React, { useState } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
+import { auth, provider } from '../../firebase/firebase';
+import { GoogleAuthProvider ,signInWithPopup} from "firebase/auth";
 
 
-import {auth,provider  } from '../../firebase/firebase'
 
 const Login = () => {
     const [errors, setErrors] = useState([]);
-    // const [email, setEmail] = useState('test@test.com');
-    // const [password, setPassword] = useState('123123');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrors([]);
         setLoading(true);
         
-        // Aquí puedes agregar la lógica de autenticación, como enviar una solicitud al servidor
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            navigate('/');
+        } catch (error) {
+            setErrors([error.message]);
+        }
         
         setLoading(false);
     };
 
-
-    
-    const handleClick = () => {
-        signInWithPopup(auth, provider)
-        .then((result) => {
-          // This gives you a Google Access Token. You can use it to access the Google API.
-          const credential = GoogleAuthProvider.credentialFromResult(result);
-          const token = credential.accessToken;
-          // The signed-in user info.
-          const user = result.user;
-       
-          navigate('/')
-          // console.log(JSON.stringify(user))
-        }).catch((error) => {
-        
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          const email = error.customData.email;
-          const credential = GoogleAuthProvider.credentialFromError(error);
-          
-        });
-    }
-
-
-
-
+    // const handleClick = () => {
+    //     signInWithPopup(provider)
+    //         .then((result) => {
+    //             navigate('/');
+    //         })
+    //         .catch((error) => {
+    //             // Manejo de errores si es necesario
+    //         });
+    // };
+ 
     return (
         <div className='relative bg-slate-900 flex h-full  w-full md:p-5 font-aeonik '>
             <div className='p-10 h-3/4 text-white w-full md:w-1/2 xl:w-1/3 mx-auto  rounded-xl bg-light-gray '>
                 <figure className='text-center font-bold text-3xl'>
-                    
-                    
-                <img width="60" height="60" className='m-auto' src="https://img.icons8.com/external-soft-fill-juicy-fish/60/external-eco-packaging-symbols-soft-fill-soft-fill-juicy-fish.png" alt="external-eco-packaging-symbols-soft-fill-soft-fill-juicy-fish"/>
-               
+                    <img width="60" height="60" className='m-auto' src="https://img.icons8.com/external-soft-fill-juicy-fish/60/external-eco-packaging-symbols-soft-fill-soft-fill-juicy-fish.png" alt="external-eco-packaging-symbols-soft-fill-soft-fill-juicy-fish"/>
                     <figcaption>Accede a tu cuenta</figcaption>
                 </figure>
                 <form className='space-y-4 max-w-lg my-5 mx-auto' onSubmit={handleSubmit}>
@@ -99,25 +89,35 @@ const Login = () => {
                             Olvidé mi contraseña
                         </a>
                     </div>
-                    {errors.length > 0 && (
-                        <div className='text-[#B33A3A]'>
-                            <ul className='mb-0'>
-                                {errors.map((error) => (
-                                    <li key={error}>{error}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    {loading && (
-                        <div className='flex justify-center'>
-                            <span className='text-dark'>
-                                Espera un momento, estamos cargando tu información...
-                            </span>
-                        </div>
-                    )}
                     <div className='flex flex-col gap-2'>
-                        <button onClick={handleClick}
+                        <button
                             type='submit'
+                            className='w-full text-white flex justify-center  bg-teal hover:-translate-y-1 transition-transform border-2   font-bold rounded-full px-5 py-3 text-center text-lg'
+                        >
+                            Acceder 
+                        </button>
+                        {errors.length > 0 && (
+                            <div className='text-[#B33A3A]'>
+                                <ul className='mb-0'>
+                                    {errors.map((error) => (
+                                        <li key={error}>{error}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                        {loading && (
+                            <div className='flex justify-center'>
+                                <span className='text-dark'>
+                                    Espera un momento, estamos cargando tu información...
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                    </form> 
+                    <div className='flex flex-col gap-2'>
+                        <button
+                            // onClick={handleClick}
+                            type='button'
                             className='w-full text-white flex justify-center  bg-teal hover:-translate-y-1 transition-transform border-2   font-bold rounded-full px-5 py-3 text-center text-lg'
                         >
                             <img width="30" height="30"  className="mr-5"src="https://img.icons8.com/fluency/48/google-logo.png" alt="google-logo"/>
@@ -126,7 +126,6 @@ const Login = () => {
                         <div className='flex justify-center divide-y-2'>
                             <span className='text-dark'>o</span>
                         </div>
-         
                     </div>
                     <div className='text-sm text-center font-normal text-dark '>
                         ¿No tienes cuenta?
@@ -134,7 +133,7 @@ const Login = () => {
                             Registrarme
                         </a>
                     </div>
-                </form>
+            
             </div>
         </div>
     );

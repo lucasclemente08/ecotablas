@@ -13,12 +13,12 @@ const Home = () => {
 </div>
 
 <div className="hidden md:flex flex-1 flex-row">
-  <Sidebar className="w-1/4" />
+  <Sidebar className="" />
 
 </div>
-<ButtonEdit />
-</div>
 
+</div>
+  
     </>
   )
 }
