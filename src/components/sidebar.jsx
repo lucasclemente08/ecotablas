@@ -20,7 +20,7 @@ const Sidebar = () => {
     },
     {
       title: "Plasticos",
-      link: "/plasticos",
+      link: "/material",
     },
     {
       title: "Ajustes",

@@ -9,12 +9,13 @@ import Register from './pages/login/Register';
 import Material from './pages/materiales/Materiales';
 import { AuthProvider, useAuth } from '../src/context/AuthContext';
 
-// Define la función ProtectedRoute fuera del cuerpo del componente App
-function ProtectedRoute({ component: Component, ...props }) {
+
+function ProtectedRoute({ children }) {
   const { user } = useAuth();
-  
+
+
   return (
-    user ? <Component {...props} /> : <Navigate to="/login" replace />
+    user ? children : <Navigate to="/login" replace />
   );
 }
 
@@ -24,11 +25,23 @@ function App() {
       <Router>
         <div className="bg-slate-900 flex flex-col min-h-screen">
           <Routes>
-            <Route path="/" element={<ProtectedRoute component={<Home />} />} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            } />
             <Route path="/login" element={<Login />} />
-            <Route path="/material" element={<ProtectedRoute component={Material} />} />
+            <Route path="/material" element={
+              <ProtectedRoute>
+                <Material />
+              </ProtectedRoute>
+            } />
             <Route path="/register" element={<Register />} />
-            <Route path="/empleados" element={<ProtectedRoute component={Empleados} />} />
+            <Route path="/empleados" element={
+       <ProtectedRoute>
+                <Empleados />
+                </ProtectedRoute>
+            } />
           </Routes>
         </div>
       </Router>

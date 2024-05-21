@@ -9,16 +9,15 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const auth = getAuth();
 
-  // Verificar el estado de autenticación cuando el componente se monta
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
-      console.log(user)
+   
     });
 
-    // Limpiar el efecto
     return () => unsubscribe();
-  }, []);
+  }, [auth]);
+
 
   return (
     <AuthContext.Provider value={{ user }}>
