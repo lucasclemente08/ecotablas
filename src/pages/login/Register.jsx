@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate} from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import {auth,provider  } from '../../firebase/firebase'
@@ -45,12 +45,14 @@ const Register = () => {
       ...prev,
       [name]: value,
     }));
-    console.log(formData)
+  };
+  
+  useEffect(() => {
+    console.log(formData);
     setContrasena(formData.contrasena);
     setCorreo(formData.correo);
-   
-  };
-
+  }, [formData]); // Run this effect whenever formData changes
+  
   const handleClick = () => {
     signInWithPopup(auth, provider)
     .then((result) => {

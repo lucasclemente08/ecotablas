@@ -20,7 +20,16 @@ const Login = () => {
         setLoading(true);
         
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              // Signed in 
+              const user = userCredential.user;
+              
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+            });
             navigate('/');
         } catch (error) {
             setErrors([error.message]);
@@ -29,15 +38,29 @@ const Login = () => {
         setLoading(false);
     };
 
-    // const handleClick = () => {
-    //     signInWithPopup(provider)
-    //         .then((result) => {
-    //             navigate('/');
-    //         })
-    //         .catch((error) => {
-    //             // Manejo de errores si es necesario
-    //         });
-    // };
+    const handleClick = () => {
+    
+        signInWithPopup(auth, provider)
+        .then((result) => {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          // The signed-in user info.
+          const user = result.user;
+          // IdP data available using getAdditionalUserInfo(result)
+          // ...
+          navigate('/');
+        }).catch((error) => {
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // The email of the user's account used.
+          const email = error.customData.email;
+          // The AuthCredential type that was used.
+          const credential = GoogleAuthProvider.credentialFromError(error);
+          // ...
+        });
+    };
  
     return (
         <div className='relative bg-slate-900 flex h-full  w-full md:p-5 font-aeonik '>
@@ -113,10 +136,10 @@ const Login = () => {
                             </div>
                         )}
                     </div>
-                    </form> 
+                 
                     <div className='flex flex-col gap-2'>
                         <button
-                            // onClick={handleClick}
+                            onClick={handleClick}
                             type='button'
                             className='w-full text-white flex justify-center  bg-teal hover:-translate-y-1 transition-transform border-2   font-bold rounded-full px-5 py-3 text-center text-lg'
                         >
@@ -127,6 +150,7 @@ const Login = () => {
                             <span className='text-dark'>o</span>
                         </div>
                     </div>
+                    </form> 
                     <div className='text-sm text-center font-normal text-dark '>
                         ¿No tienes cuenta?
                         <a href='/register' className=' text-semibold underline  mx-2'>
