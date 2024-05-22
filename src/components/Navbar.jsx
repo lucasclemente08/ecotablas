@@ -3,13 +3,14 @@ import { HiMenu } from 'react-icons/hi';
 import HamburgerModal from './HamburguerModal';
 import { getAuth, signOut } from "firebase/auth";
 import { auth} from '../firebase/firebase'
+import { useAuth } from '../context/AuthContext';
 
 
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-
+  const { user } = useAuth();
+  
 
   return (
     <div className="  ">
@@ -27,15 +28,15 @@ const Navbar = () => {
       </div>
       
 
-      <div className="flex gap-5 items-center">
+      {/* <div className="flex gap-5 items-center">
         <a
           to="/"
           className="bg-light-green text-white font-medium rounded-full py-3 px-5 hover:bg-white hover:text-light-green hover:border-light-green border hidden md:block"
         >
           Configuracion
-        </a>
+        </a> */}
         {/* <Avatar /> */}
-      </div>
+      {/* </div> */}
 
       <button
         className="md:hidden text-light-green"

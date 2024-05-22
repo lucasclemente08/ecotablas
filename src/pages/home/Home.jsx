@@ -8,7 +8,7 @@ const Home = () => {
     <>
 
 <div className="bg-slate-900  ">
-<div className="block md:hidden">
+<div className="block   md:hidden">
   <Navbar />
 </div>
 

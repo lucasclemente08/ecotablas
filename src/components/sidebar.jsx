@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+import { getAuth, signOut } from "firebase/auth";
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -27,7 +27,17 @@ const Sidebar = () => {
       link: "/ajustes",
     },
   ];
-  
+  const handleSignOut = () => {
+    if (window.confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+        signOut(auth)
+            .then(() => {
+                navigate('/login');
+            })
+            .catch((error) => {
+                console.error("Error al cerrar sesión: ", error);
+            });
+    }
+};
 
   return (
     <div className="   h-dvh">
@@ -62,7 +72,18 @@ const Sidebar = () => {
       </span>
     </a>
   </li>
+  
 ))}
+<li> 
+               <div className="mt-10 text-center justify-center mb-5 flex w-full">
+                <button
+                    onClick={handleSignOut}
+                    className="font-semibold text-white hover:text-red-600">
+                    Cerrar sesión
+                </button>
+            </div>
+        </li>
+ 
 
           {/* <div className="text-gray-500 flex text-center py-2 mb-3">
             Alpha version 0.0.1

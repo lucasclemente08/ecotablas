@@ -9,8 +9,7 @@ const materials = [
   
 function Material() {
   return (
-    <div>
-
+    <div className=' flex  bg-slate-900'>
     <Home />
     <div className="p-4">
       <h2 className="text-2xl font-bold text-white mb-4">Lista de Materiales</h2>
