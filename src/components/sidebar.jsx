@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { getAuth, signOut } from "firebase/auth";
+import { auth} from '../firebase/firebase'
+import { useNavigate } from 'react-router-dom';
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-
+  
+  
+  const navigate = useNavigate()
 
   const Menus = [
     {
@@ -27,8 +31,9 @@ const Sidebar = () => {
       link: "/ajustes",
     },
   ];
+
   const handleSignOut = () => {
-    if (window.confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+   
         signOut(auth)
             .then(() => {
                 navigate('/login');
@@ -37,7 +42,7 @@ const Sidebar = () => {
                 console.error("Error al cerrar sesión: ", error);
             });
     }
-};
+
 
   return (
     <div className="   h-dvh">

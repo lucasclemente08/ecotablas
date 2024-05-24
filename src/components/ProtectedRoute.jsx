@@ -5,11 +5,10 @@ import { useAuth } from '../context/AuthContext';
 
 const ProtectedRoute = ({ children }) => {
     const { user } = useAuth();
-    return user ? children : <Navigate to="/login" replace />;
+    console.log(user)
+    return user ? children : <Navigate to="/login"   replace/>;
 };
 
-ProtectedRoute.propTypes = {
-    children: PropTypes.node.isRequired,
-};
+
 
 export default ProtectedRoute;

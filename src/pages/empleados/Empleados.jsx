@@ -20,13 +20,25 @@ const Empleados=()=>{
   const handleSearch = () => {
     const filtered = empleadosData.filter(empleado => empleado.dni.includes(searchDNI));
     setFilteredEmpleados(filtered);
+    setSearchDNI('');
   };
+
+
+  const handleMostrarTodos = () => {
+
+    
+    setFilteredEmpleados(empleadosData);
+    setSearchDNI('');
+  };
+
+
+
 
 return(
 <>
 
 
-<div className=' flex  bg-slate-900'>
+<div className=' md:flex flex-row  bg-slate-900'>
 
 <Home />
 
@@ -54,6 +66,10 @@ return(
                 onClick={handleSearch}
               >
                 Buscar por DNI
+              </button>
+              <button onClick={handleMostrarTodos}
+               className=" text-white p-2 rounded-md  transition duration-200">
+              Mostrar todos
               </button>
             </div>
     

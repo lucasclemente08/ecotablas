@@ -10,17 +10,28 @@ const HamburgerModal = ({open, close}) => {
 
     const navigate = useNavigate()
 
+
+    const links = [
+        { text: 'Inicio', href: '/', key: 'inicio' },
+        { text: 'Empleados', href: '/empleados', key: 'empleados' },
+        { text: 'Materiales', href: '/material', key: 'materiales' },
+        { text: 'Tablas', href: '/tablas', key: 'tablas' },
+        { text: 'Perfil', href: '/perfil', key: 'perfil' },
+        { text: 'Ajustes', href: '/ajustes', key: 'ajustes' }
+      ];
+
+
+
     const handleOutsideClick = (e) => {
-        if (modalRef.current && !modalRef.current.contains(e.target)) {
-            close(e);
-        }
-        signOut(auth)
-            .then(() => {
-                navigate('/login')
-            })
-            .catch((error) => {
-                // An error happened.
-            });
+     
+        // signOut(auth)
+        //     .then(() => {
+        //         console.log("Sign out")
+        //         navigate('/login')
+        //     })
+        //     .catch((error) => {
+        //         // An error happened.
+        //     });
 
     };
 
@@ -63,39 +74,16 @@ const HamburgerModal = ({open, close}) => {
                 }
             </figure>
 
-            <ul className="flex flex-col divide-y-2 font-semibold items-center text-black">
-                <li className="inline-flex items-center hover:text-slate-700 py-3">
-                    <Link href="/" onClick={close}>
-                        Inicio
-                    </Link>
-                </li>
-                <li className="inline-flex items-center hover:text-slate-700  py-3">
-                    <Link href="/empleados" onClick={close}>
-                        Empleados
-                    </Link>
-                </li>
-                <li className="inline-flex items-center hover:text-slate-700  py-3">
-                    <Link href="/material" onClick={close}>
-                        Materiales
-                    </Link>
-                </li>
-                <li className="inline-flex items-center hover:text-slate-700  py-3">
-                    <Link href="/tablas" onClick={close}>
-                        Tablas
-                    </Link>
-                </li>
-                <li className="inline-flex items-center hover:text-slate-700  py-3">
-                    <Link href="/perfil" onClick={close}>
-                        Perfil
-                    </Link>
-                </li>
-                <li className="inline-flex items-center hover:text-slate-700 py-3">
-                    <Link href="/perfil" onClick={close}>
-                        Ajustes
-                    </Link>
-                </li>
-            </ul>
-
+          
+<ul className="flex flex-col divide-y-2 font-semibold items-center text-black">
+  {links.map(link => (
+    <li key={link.key} className="inline-flex items-center hover:text-slate-700 py-3">
+      <a href={link.href} onClick={close}>
+        {link.text}
+      </a>
+    </li>
+  ))}
+</ul>
             <div className="mt-20">
                 <div className="mt-auto mb-5 flex flex-col justify-end w-full items-end">
 
