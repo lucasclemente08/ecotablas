@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Home from '../home/Home';
 import ButtonDelete from '../../components/buttonDelete';
 import ButtonEdit from '../../components/buttonEdit';
+import axios from 'axios';
 
 const empleadosData = [
   { id: 1, nombre: 'Juan Pérez', edad: 30, puesto: 'Ingeniero de Software', dni: '12345678' },
@@ -12,7 +13,18 @@ const empleadosData = [
   { id: 4, nombre: 'María García', edad: 28, puesto: 'Diseñadora UX/UI', dni: '45678901' },
 ];
 
+
+
 const Empleados=()=>{
+
+
+  axios.get(`http://localhost:61274/api/Empleados/ListarTodo`)
+  .then((response) => console.log(response.data)) // Acceder directamente a los datos de la respuesta
+  .catch((error) => console.error('Error al obtener los datos:', error)); // Manejar errores
+
+
+
+
 
   const [searchDNI, setSearchDNI] = useState('');
   const [filteredEmpleados, setFilteredEmpleados] = useState(empleadosData);
