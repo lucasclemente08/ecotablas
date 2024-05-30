@@ -133,7 +133,7 @@ const Register = () => {
           <div className='text-xl text-center font-normal text-white mt-4 '>
             Ya tienes cuenta?
        
-            <Link href='/login' className='text-semibold underline text-white  mx-2'>
+            <Link to='/login' className='text-semibold underline text-white  mx-2'>
               Inicia sesión
             </Link>
           </div>
