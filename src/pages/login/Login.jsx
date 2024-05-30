@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { auth, provider } from '../../firebase/firebase';
 import { GoogleAuthProvider ,signInWithPopup} from "firebase/auth";
 
@@ -153,9 +153,9 @@ const Login = () => {
                     </form> 
                     <div className='text-sm text-center font-normal text-dark '>
                         ¿No tienes cuenta?
-                        <a href='/register' className=' text-semibold underline  mx-2'>
+                        <Link href='/register' className=' text-semibold underline  mx-2'>
                             Registrarme
-                        </a>
+                        </Link>
                     </div>
             
             </div>
