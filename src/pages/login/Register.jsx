@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate,Link} from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import {auth,provider  } from '../../firebase/firebase'
 import { GoogleAuthProvider ,signInWithPopup} from "firebase/auth";
@@ -48,7 +48,7 @@ const Register = () => {
   };
   
   useEffect(() => {
-    console.log(formData);
+  
     setContrasena(formData.contrasena);
     setCorreo(formData.correo);
   }, [formData]); // Run this effect whenever formData changes
