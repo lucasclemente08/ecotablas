@@ -5,9 +5,6 @@ import Home from '../home/Home';
 import ButtonDelete from '../../components/buttonDelete';
 import ButtonEdit from '../../components/buttonEdit';
 import axios from 'axios';
-
-
-
 const Empleados=()=>{
 
   
@@ -15,15 +12,34 @@ const Empleados=()=>{
   const [empleadosData, setEmpleadosData] = useState([]);
   const [searchDNI, setSearchDNI] = useState("");
   const [filteredEmpleados, setFilteredEmpleados] = useState([]);
-  
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [nuevoEmpleado, setNuevoEmpleado] = useState({
+    Nombre: '',
+    Apellido: '',
+    DNI: '',
+    Calle: '',
+    Numero: '',
+    Piso: '',
+    Dpto: '',
+    CodPostal: '',
+    IdLocalidad: '1',
+    FechaIngreso: '',
+    Telefono: '',
+    Mail: '',
+    IdArea: '1'
+  });
+
+
+  //get all
   useEffect(() => {
-    axios.get(`http://localhost:61274/api/Empleados/ListarTodo`)
+    axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
       .then((response) => {
         setEmpleadosData(response.data);
-        setFilteredEmpleados(response.data); // Inicialmente, mostrar todos los empleados
+        setFilteredEmpleados(response.data); 
       })
       .catch((error) => console.error('Error al obtener los datos:', error)); // Manejar errores
   }, []);
+
   
   const handleSearch = () => {
     const filtered = empleadosData.filter(empleado => empleado.DNI.includes(searchDNI));
@@ -40,8 +56,87 @@ const Empleados=()=>{
     setSearchDNI('');
   };
 
+ 
+
+  const abrirModal = () => {
+    setModalAbierto(true);
+  };
+
+  const cerrarModal = () => {
+    setModalAbierto(false);
+  };
 
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNuevoEmpleado(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+   
+  };
+  
+
+
+  const handleSubmit = () => {
+
+    axios.post(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Insertar`, nuevoEmpleado)
+      .then((response) => {
+      
+        setModalAbierto(false);
+        axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
+          .then((response) => {
+            setEmpleadosData(response.data);
+            setFilteredEmpleados(response.data);
+          })
+          .catch((error) => console.error('Error al obtener los datos:', error));
+      })
+      .catch((error) => console.error('Error al agregar el empleado:', error));
+  };
+
+
+
+
+
+
+
+
+
+const handleEliminarEmpleado = (idEmpleado) => {
+  axios.delete(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Borrar/${idEmpleado}`)
+    .then((response) => {
+
+      console.log('Empleado eliminado correctamente:', response.data);
+
+      axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
+        .then((response) => {
+          setEmpleadosData(response.data);
+          setFilteredEmpleados(response.data); 
+        })
+        .catch((error) => console.error('Error al obtener los datos:', error)); 
+    })
+    .catch((error) => console.error('Error al eliminar el empleado:', error));
+};
+
+
+
+const handleSubmitModificar = () => {
+  if (!empleadoSeleccionado) return;
+
+  axios.put(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Modificar/${empleadoSeleccionado.IdEmpleado}`, empleadoSeleccionado)
+    .then((response) => {
+      console.log('Empleado modificado:', response.data);
+      // Actualizar lista de empleados
+      axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
+        .then((response) => {
+          setEmpleadosData(response.data);
+          setFilteredEmpleados(response.data);
+          cerrarModal(); // Cerrar el modal después de modificar
+        })
+        .catch((error) => console.error('Error al obtener los datos:', error));
+    })
+    .catch((error) => console.error('Error al modificar el empleado:', error));
+};
 
 return(
 <>
@@ -57,10 +152,106 @@ return(
   <h2  className="text-white text-3xl b-4">
   Empleados
 </h2>
-<button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 px-4 rounded">
-      Agregar empleado
-    </button>
-  </div>
+<div>
+      <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 px-4 rounded">
+        Agregar empleado
+      </button>
+      {modalAbierto && (
+                <div className="fixed inset-0 overflow-y-auto">
+                  <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                    <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+                      <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                    </div>
+                    <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                    <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                      <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div className="sm:flex sm:items-start">
+                          <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Agregar nuevo empleado</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                       
+  <input type="text" name="Nombre" value={nuevoEmpleado.Nombre}   onChange={handleChange} placeholder="Nombre" className="p-2 border border-gray-400 rounded-md w-full" />
+  <input type="text" name="Apellido" value={nuevoEmpleado.Apellido}   onChange={handleChange} placeholder="Apellido" className="p-2 border border-gray-400 rounded-md w-full" />
+  <input type="text" name="DNI" value={nuevoEmpleado.DNI}   onChange={handleChange}  placeholder="DNI" className="p-2 border border-gray-400 rounded-md w-full" />
+  <input type="text" name="Calle" value={nuevoEmpleado.Calle}   onChange={handleChange} placeholder="Calle" className="p-2 border border-gray-400 rounded-md w-full" />
+  <input type="text" name="Numero" value={nuevoEmpleado.Numero}   onChange={handleChange} placeholder="Número" className="p-2 border border-gray-400 rounded-md w-full" />
+  <input type="text" name="Piso" value={nuevoEmpleado.Piso}    onChange={handleChange} placeholder="Piso" className="p-2 border border-gray-400 rounded-md w-full" />
+  <input type="text" name="Dpto" value={nuevoEmpleado.Dpto}     onChange={handleChange} placeholder="Departamento" className="p-2 border border-gray-400 rounded-md w-full" />
+  <input type="text" name="CodPostal" value={nuevoEmpleado.CodPostal}    onChange={handleChange} placeholder="Código Postal" className="p-2 border border-gray-400 rounded-md w-full" />
+  
+  <select name="IdLocalidad" value={nuevoEmpleado.IdLocalidad} onChange={handleChange} className="p-2 border border-gray-400 rounded-md w-full">
+  <option value="">Selecciona una Localidad</option>
+  <option value="1">Localidad 1</option>
+  {/* <option value="2">Localidad 2</option> */}
+</select>
+  <input type="text" name="FechaIngreso" value={nuevoEmpleado.FechaIngreso}   onChange={handleChange} placeholder="Fecha de Ingreso" className="p-2 border border-gray-400 rounded-md w-full" />
+  <input type="text" name="Telefono" value={nuevoEmpleado.Telefono}  onChange={handleChange} placeholder="Teléfono" className="p-2 border border-gray-400 rounded-md w-full" />
+  <input type="text" name="Mail" value={nuevoEmpleado.Mail}   onChange={handleChange} placeholder="Correo Electrónico" className="p-2 border border-gray-400 rounded-md w-full" />
+  <select name="IdArea" value={nuevoEmpleado.IdArea} onChange={handleChange} className="p-2 border border-gray-400 rounded-md w-full">
+  <option value="">Selecciona un Área</option>
+  <option value="1">Área 1</option>
+  {/* <option value="2">Área 2</option> */}
+
+</select>
+
+</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button onClick={handleSubmit} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                          Agregar
+                        </button>
+                        <button onClick={cerrarModal} type="button" className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+{modalAbierto && empleadoSeleccionado && (
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Modificar empleado</h3>
+                    {/* Aquí van los campos de entrada para modificar el empleado */}
+                    <input
+                      type="text"
+                      name="Nombre"
+                      value={empleadoSeleccionado.Nombre}
+                      onChange={handleChangeEmpleado}
+                      placeholder="Nombre"
+                      className="p-2 border border-gray-400 rounded-md w-full"
+                    />
+                    {/* Agrega los demás campos de entrada similares para los demás atributos del empleado */}
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button onClick={handleSubmitModificar} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                  Modificar
+                </button>
+                <button onClick={cerrarModal} type="button" className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+              
+    </div>
+    </div>
+
 
 <div className="bg-gray-800 p-4 rounded-md">
     
@@ -125,9 +316,17 @@ return(
                    <td className="py-2 px-2 border">{empleado.Telefono}</td>
           
                     <td className="border flex">
-         <ButtonDelete />
-                  <ButtonEdit empleados={empleadosData} />
-
+                    <button onClick={() => handleEliminarEmpleado(empleado.IdEmpleado)}><svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="text-red-600"
+      width={30}
+      height={30}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+    >
+      <path d="M7 4V2H17V4H22V6H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V6H2V4H7ZM6 6V20H18V6H6ZM9 9H11V17H9V9ZM13 9H15V17H13V9Z" />
+    </svg></button>
+    <ButtonEdit empleados={empleadosData} handleModify={() => handleSubmitModificar(empleado.IdEmpleado)} />
                   </td>
                 </tr>
               ))}
