@@ -13,8 +13,26 @@ const Empleados=()=>{
   const [searchDNI, setSearchDNI] = useState("");
   const [filteredEmpleados, setFilteredEmpleados] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [modalAbiertoMod, setModalAbiertoMod] = useState(false);
 
-  const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
+  const [empleadoSeleccionadoId, setEmpleadoSeleccionadoId]=useState("")
+  const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(
+    {
+      Nombre: '',
+    Apellido: '',
+    DNI: '',
+    Calle: '',
+    Numero: '',
+    Piso: '',
+    Dpto: '',
+    CodPostal: '',
+    IdLocalidad: '1',
+    FechaIngreso: '',
+    Telefono: '',
+    Mail: '',
+    IdArea: '1'
+    }
+  );
 
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     Nombre: '',
@@ -63,7 +81,11 @@ const Empleados=()=>{
   const abrirModal = () => {
     setModalAbierto(true);
   };
-
+  const abrirModalModicar = (idEmpleado) => {
+    setModalAbiertoMod(true);
+    setEmpleadoSeleccionadoId(idEmpleado);
+  };
+  
   const cerrarModal = () => {
     setModalAbierto(false);
   };
@@ -161,7 +183,7 @@ return(
       <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 px-4 rounded">
         Agregar empleado
       </button>
-      {modalAbierto && (
+      {modalAbiertoMod && (
                 <div className="fixed inset-0 overflow-y-auto">
                   <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                     <div className="fixed inset-0 transition-opacity" aria-hidden="true">
@@ -233,7 +255,7 @@ return(
                       type="text"
                       name="Nombre"
                       value={empleadoSeleccionado.Nombre}
-                      onChange={handleChangeEmpleado}
+                      // onChange={handleChangeEmpleado}
                       placeholder="Nombre"
                       className="p-2 border border-gray-400 rounded-md w-full"
                     />
@@ -331,7 +353,7 @@ return(
     >
       <path d="M7 4V2H17V4H22V6H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V6H2V4H7ZM6 6V20H18V6H6ZM9 9H11V17H9V9ZM13 9H15V17H13V9Z" />
     </svg></button>
-    <button  onClick={modalAbierto} onChange > 
+    <button onClick={() => abrirModalModicar(empleado.IdEmpleado)}>
     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className='text-green-600'
