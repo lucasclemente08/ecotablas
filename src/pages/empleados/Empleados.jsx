@@ -13,6 +13,9 @@ const Empleados=()=>{
   const [searchDNI, setSearchDNI] = useState("");
   const [filteredEmpleados, setFilteredEmpleados] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
+
+  const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
+
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     Nombre: '',
     Apellido: '',
@@ -37,18 +40,17 @@ const Empleados=()=>{
         setEmpleadosData(response.data);
         setFilteredEmpleados(response.data); 
       })
-      .catch((error) => console.error('Error al obtener los datos:', error)); // Manejar errores
+      .catch((error) => console.error('Error al obtener los datos:', error)); 
   }, []);
 
   
   const handleSearch = () => {
     const filtered = empleadosData.filter(empleado => empleado.DNI.includes(searchDNI));
-    setFilteredEmpleados(filtered); // Actualizar el estado con el array filtrado
-    setSearchDNI(''); // Limpiar el campo de búsqueda después de la búsqueda
+    setFilteredEmpleados(filtered);
+    setSearchDNI(''); 
   };
   
-  // Resto de tu componente...
-  
+
   const handleMostrarTodos = () => {
 
     
@@ -120,10 +122,13 @@ const handleEliminarEmpleado = (idEmpleado) => {
 
 
 
-const handleSubmitModificar = () => {
-  if (!empleadoSeleccionado) return;
+const handleSubmitModificar = (idEmpleado) => 
+  {
+  // if (!empleadoSeleccionado) return;
+  
 
-  axios.put(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Modificar/${empleadoSeleccionado.IdEmpleado}`, empleadoSeleccionado)
+
+  axios.put(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Modificar/${idEmpleado}`, empleadoSeleccionado)
     .then((response) => {
       console.log('Empleado modificado:', response.data);
       // Actualizar lista de empleados
@@ -211,7 +216,7 @@ return(
                 </div>
               )}
 
-{modalAbierto && empleadoSeleccionado && (
+{modalAbierto &&  (
         <div className="fixed inset-0 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
@@ -326,7 +331,21 @@ return(
     >
       <path d="M7 4V2H17V4H22V6H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V6H2V4H7ZM6 6V20H18V6H6ZM9 9H11V17H9V9ZM13 9H15V17H13V9Z" />
     </svg></button>
-    <ButtonEdit empleados={empleadosData} handleModify={() => handleSubmitModificar(empleado.IdEmpleado)} />
+    <button  onClick={modalAbierto} onChange > 
+    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className='text-green-600'
+                        width={30}
+                        height={30}
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M7.24264 17.9967H3V13.754L14.435 2.319C14.8256 1.92848 15.4587 1.92848 15.8492 2.319L18.6777 5.14743C19.0682 5.53795 19.0682 6.17112 18.6777 6.56164L7.24264 17.9967ZM3 19.9967H21V21.9967H3V19.9967Z"
+                        />
+                      </svg>
+    
+    </button>
                   </td>
                 </tr>
               ))}
