@@ -53,7 +53,7 @@ const Empleados=()=>{
 
   //get all
   useEffect(() => {
-    axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
+    axios.get(`https://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
       .then((response) => {
         setEmpleadosData(response.data);
         setFilteredEmpleados(response.data); 
