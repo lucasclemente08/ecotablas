@@ -25,7 +25,10 @@ const Sidebar = () => {
       title: "Plasticos",
       link: "/material",
     },
-    {
+       {
+      title: "Documentacion",
+      link: "https://docs.google.com/document/d/11nAsUlODb0XNa5tlPNpkSU9uyVfL5pnMkDBCgqjbaOg/edit",
+    }, {
       title: "Ajustes",
       link: "/ajustes",
     },

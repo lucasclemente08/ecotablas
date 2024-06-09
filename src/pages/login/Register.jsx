@@ -3,6 +3,7 @@ import { useNavigate} from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import {auth,provider  } from '../../firebase/firebase'
 import { GoogleAuthProvider ,signInWithPopup} from "firebase/auth";
+import {Link} from "react-router-dom";  
 
 const Register = () => {
   const [errors, setErrors] = useState([]);
@@ -133,7 +134,7 @@ const Register = () => {
           <div className='text-xl text-center font-normal text-white mt-4 '>
             Ya tienes cuenta?
        
-            <Link href='/login' className='text-semibold underline text-white  mx-2'>
+            <Link to='/login' className='text-semibold underline text-white  mx-2'>
               Inicia sesión
             </Link>
           </div>

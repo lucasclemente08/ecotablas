@@ -153,7 +153,7 @@ const Login = () => {
                     </form> 
                     <div className='text-sm text-center font-normal text-dark '>
                         ¿No tienes cuenta?
-                        <Link href='/register' className=' text-semibold underline  mx-2'>
+                        <Link to='/register' className=' text-semibold underline  mx-2'>
                             Registrarme
                         </Link>
                     </div>

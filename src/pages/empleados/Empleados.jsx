@@ -53,7 +53,7 @@ const Empleados=()=>{
 
   //get all
   useEffect(() => {
-    axios.get(`https://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
+    axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
       .then((response) => {
         setEmpleadosData(response.data);
         setFilteredEmpleados(response.data); 
@@ -103,7 +103,15 @@ const Empleados=()=>{
    
   };
   
+const handleChangeEmpleado = (e) => {
 
+  const { name, value } = e.target;
+  setEmpleadoSeleccionado(prevState => ({
+    ...prevState,
+    [name]: value
+  }));
+
+}
 
   const handleSubmit = () => {
 
@@ -151,7 +159,7 @@ const handleSubmitModificar = (idEmpleado) =>
   {
   // if (!empleadoSeleccionado) return;
   
-
+console.log(idEmpleado);
 
   axios.put(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Modificar/${idEmpleado}`, empleadoSeleccionado)
     .then((response) => {
@@ -253,16 +261,130 @@ return(
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                     <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Modificar empleado</h3>
-                    {/* Aquí van los campos de entrada para modificar el empleado */}
+                   
                     <input
-                      type="text"
-                      name="Nombre"
-                      value={empleadoSeleccionado.Nombre}
-                      // onChange={handleChangeEmpleado}
-                      placeholder="Nombre"
-                      className="p-2 border border-gray-400 rounded-md w-full"
-                    />
-                    {/* Agrega los demás campos de entrada similares para los demás atributos del empleado */}
+        type="text"
+        name="Nombre"
+        value={empleadoSeleccionado.Nombre}
+        onChange={handleChangeEmpleado}
+        placeholder="Nombre"
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      />
+      
+      <input
+        type="text"
+        name="Apellido"
+        value={empleadoSeleccionado.Apellido}
+        onChange={handleChangeEmpleado}
+        placeholder="Apellido"
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      />
+      
+      <input
+        type="text"
+        name="DNI"
+        value={empleadoSeleccionado.DNI}
+        onChange={handleChangeEmpleado}
+        placeholder="DNI"
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      />
+      
+      <input
+        type="text"
+        name="Calle"
+        value={empleadoSeleccionado.Calle}
+        onChange={handleChangeEmpleado}
+        placeholder="Calle"
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      />
+      
+      <input
+        type="text"
+        name="Numero"
+        value={empleadoSeleccionado.Numero}
+        onChange={handleChangeEmpleado}
+        placeholder="Número"
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      />
+      
+      <input
+        type="text"
+        name="Piso"
+        value={empleadoSeleccionado.Piso}
+        onChange={handleChangeEmpleado}
+        placeholder="Piso"
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      />
+      
+      <input
+        type="text"
+        name="Dpto"
+        value={empleadoSeleccionado.Dpto}
+        onChange={handleChangeEmpleado}
+        placeholder="Departamento"
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      />
+      
+      <input
+        type="text"
+        name="CodPostal"
+        value={empleadoSeleccionado.CodPostal}
+        onChange={handleChangeEmpleado}
+        placeholder="Código Postal"
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      />
+
+      <select
+        name="IdLocalidad"
+        value={empleadoSeleccionado.IdLocalidad}
+        onChange={handleChangeEmpleado}
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      >
+        <option value="">Selecciona una Localidad</option>
+        <option value="1">Localidad 1</option>
+        <option value="2">Localidad 2</option>
+        {/* Agrega más opciones según sea necesario */}
+      </select>
+      
+      <input
+        type="text"
+        name="FechaIngreso"
+        value={empleadoSeleccionado.FechaIngreso}
+        onChange={handleChangeEmpleado}
+        placeholder="Fecha de Ingreso"
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      />
+      
+      <input
+        type="text"
+        name="Telefono"
+        value={empleadoSeleccionado.Telefono}
+        onChange={handleChangeEmpleado}
+        placeholder="Teléfono"
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      />
+      
+      <input
+        type="text"
+        name="Mail"
+        value={empleadoSeleccionado.Mail}
+        onChange={handleChangeEmpleado}
+        placeholder="Correo Electrónico"
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      />
+
+      <select
+        name="IdArea"
+        value={empleadoSeleccionado.IdArea}
+        onChange={handleChangeEmpleado}
+        className="p-2 border border-gray-400 rounded-md w-full mb-2"
+      >
+        <option value="">Selecciona un Área</option>
+        <option value="1">Área 1</option>
+        <option value="2">Área 2</option>
+        {/* Agrega más opciones según sea necesario */}
+      </select>
+
                   </div>
                 </div>
               </div>
