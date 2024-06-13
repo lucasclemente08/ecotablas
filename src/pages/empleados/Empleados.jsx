@@ -50,41 +50,45 @@ const Empleados=()=>{
     IdArea: '1'
   });
 
+  const [mensaje, setMensaje] = useState(""); // Mensaje para mostrar acciones exitosas o errores
 
-  //get all
+  // Obtener todos los empleados
   useEffect(() => {
     axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
       .then((response) => {
         setEmpleadosData(response.data);
-        setFilteredEmpleados(response.data); 
+        setFilteredEmpleados(response.data);
       })
-      .catch((error) => console.error('Error al obtener los datos:', error)); 
+      .catch((error) => console.error('Error al obtener los datos:', error));
   }, []);
 
-  
+  // Manejar búsqueda por DNI
   const handleSearch = () => {
     const filtered = empleadosData.filter(empleado => empleado.DNI.includes(searchDNI));
     setFilteredEmpleados(filtered);
-    setSearchDNI(''); 
+    setSearchDNI('');
+    if (filtered.length === 0) {
+      setMensaje("La consulta no arrojó datos");
+    } else {
+      setMensaje("");
+    }
   };
-  
 
   const handleMostrarTodos = () => {
-
-    
     setFilteredEmpleados(empleadosData);
     setSearchDNI('');
+    setMensaje("");
   };
-
- 
 
   const abrirModal = () => {
     setModalAbierto(true);
   };
-  const abrirModalModicar = (idEmpleado) => {
+  
+  const abrirModalModificar = (idEmpleado) => {
     setModalAbiertoMod(true);
     setEmpleadoSeleccionadoId(idEmpleado);
   };
+
   
   const cerrarModal = () => {
     setModalAbierto(false);
@@ -100,25 +104,37 @@ const Empleados=()=>{
       ...prevState,
       [name]: value
     }));
-   
   };
-  
-const handleChangeEmpleado = (e) => {
 
-  const { name, value } = e.target;
-  setEmpleadoSeleccionado(prevState => ({
-    ...prevState,
-    [name]: value
-  }));
-
-}
+  const handleChangeEmpleado = (e) => {
+    const { name, value } = e.target;
+    setEmpleadoSeleccionado(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = () => {
+    // Validar campos requeridos
+    if (!nuevoEmpleado.Nombre || !nuevoEmpleado.Apellido || !nuevoEmpleado.DNI || !nuevoEmpleado.Calle || !nuevoEmpleado.Numero || !nuevoEmpleado.CodPostal || !nuevoEmpleado.FechaIngreso || !nuevoEmpleado.Telefono || !nuevoEmpleado.Mail || !nuevoEmpleado.IdArea) {
+      setMensaje("Todos los campos requeridos deben ser completados");
+      return;
+    }
+    // Validar longitud de DNI
+    if (nuevoEmpleado.DNI.length > 8) {
+      setMensaje("El DNI no puede tener más de 8 dígitos");
+      return;
+    }
+    // Validar formato de fecha
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(nuevoEmpleado.FechaIngreso)) {
+      setMensaje("La fecha debe tener el formato dd/mm/aaaa");
+      return;
+    }
 
     axios.post(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Insertar`, nuevoEmpleado)
       .then((response) => {
-      
         setModalAbierto(false);
+        setMensaje("Inserción exitosa");
         axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
           .then((response) => {
             setEmpleadosData(response.data);
@@ -129,384 +145,195 @@ const handleChangeEmpleado = (e) => {
       .catch((error) => console.error('Error al agregar el empleado:', error));
   };
 
-
-
-
-
-
-
-
-
-const handleEliminarEmpleado = (idEmpleado) => {
-  axios.delete(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Borrar/${idEmpleado}`)
-    .then((response) => {
-
-      console.log('Empleado eliminado correctamente:', response.data);
-
-      axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
+  const handleEliminarEmpleado = (idEmpleado) => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
+      axios.delete(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Borrar/${idEmpleado}`)
         .then((response) => {
-          setEmpleadosData(response.data);
-          setFilteredEmpleados(response.data); 
+          setMensaje("Eliminación exitosa");
+          axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
+            .then((response) => {
+              setEmpleadosData(response.data);
+              setFilteredEmpleados(response.data);
+            })
+            .catch((error) => console.error('Error al obtener los datos:', error));
         })
-        .catch((error) => console.error('Error al obtener los datos:', error)); 
-    })
-    .catch((error) => console.error('Error al eliminar el empleado:', error));
-};
+        .catch((error) => {
+          if (error.response && error.response.status === 409) {
+            setMensaje("No es posible eliminar el registro, posee relación con otras tablas");
+          } else {
+            console.error('Error al eliminar el empleado:', error);
+          }
+        });
+    }
+  };
 
+  const handleSubmitModificar = () => {
+    if (!empleadoSeleccionado.Nombre || !empleadoSeleccionado.Apellido || !empleadoSeleccionado.DNI || !empleadoSeleccionado.Calle || !empleadoSeleccionado.Numero || !empleadoSeleccionado.CodPostal || !empleadoSeleccionado.FechaIngreso || !empleadoSeleccionado.Telefono || !empleadoSeleccionado.Mail || !empleadoSeleccionado.IdArea) {
+      setMensaje("Todos los campos requeridos deben ser completados");
+      return;
+    }
+    if (empleadoSeleccionado.DNI.length > 8) {
+      setMensaje("El DNI no puede tener más de 8 dígitos");
+      return;
+    }
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(empleadoSeleccionado.FechaIngreso)) {
+      setMensaje("La fecha debe tener el formato dd/mm/aaaa");
+      return;
+    }
 
+    axios.put(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Modificar/${empleadoSeleccionadoId}`, empleadoSeleccionado)
+      .then((response) => {
+        setModalAbiertoMod(false);
+        setMensaje("Modificación exitosa");
+        axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
+          .then((response) => {
+            setEmpleadosData(response.data);
+            setFilteredEmpleados(response.data);
+          })
+          .catch((error) => console.error('Error al obtener los datos:', error));
+      })
+      .catch((error) => console.error('Error al modificar el empleado:', error));
+  };
 
-const handleSubmitModificar = (idEmpleado) => 
-  {
-  // if (!empleadoSeleccionado) return;
-  
-console.log(idEmpleado);
-
-  axios.put(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Modificar/${idEmpleado}`, empleadoSeleccionado)
-    .then((response) => {
-      console.log('Empleado modificado:', response.data);
-      // Actualizar lista de empleados
-      axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
-        .then((response) => {
-          setEmpleadosData(response.data);
-          setFilteredEmpleados(response.data);
-          cerrarModal(); // Cerrar el modal después de modificar
-        })
-        .catch((error) => console.error('Error al obtener los datos:', error));
-    })
-    .catch((error) => console.error('Error al modificar el empleado:', error));
-};
 
 return(
-<>
-
-
-<div className=' md:flex flex-row  bg-slate-900'>
-
-<Home />
-
-
-<div className="overflow-x-auto m-5">
-  <div className="m-3">
-  <h2  className="text-white text-3xl b-4">
-  Empleados
-</h2>
-<div>
-      <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 px-4 rounded">
-        Agregar empleado
-      </button>
-      {modalAbierto && (
-                <div className="fixed inset-0 overflow-y-auto">
-                  <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                    <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                      <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                    </div>
-                    <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                    <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                      <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div className="sm:flex sm:items-start">
-                          <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                            <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Agregar nuevo empleado</h3>
-                            <div className="grid grid-cols-2 gap-4">
-                       
-  <input type="text" name="Nombre" value={nuevoEmpleado.Nombre}   onChange={handleChange} placeholder="Nombre" className="p-2 border border-gray-400 rounded-md w-full" />
-  <input type="text" name="Apellido" value={nuevoEmpleado.Apellido}   onChange={handleChange} placeholder="Apellido" className="p-2 border border-gray-400 rounded-md w-full" />
-  <input type="text" name="DNI" value={nuevoEmpleado.DNI}   onChange={handleChange}  placeholder="DNI" className="p-2 border border-gray-400 rounded-md w-full" />
-  <input type="text" name="Calle" value={nuevoEmpleado.Calle}   onChange={handleChange} placeholder="Calle" className="p-2 border border-gray-400 rounded-md w-full" />
-  <input type="text" name="Numero" value={nuevoEmpleado.Numero}   onChange={handleChange} placeholder="Número" className="p-2 border border-gray-400 rounded-md w-full" />
-  <input type="text" name="Piso" value={nuevoEmpleado.Piso}    onChange={handleChange} placeholder="Piso" className="p-2 border border-gray-400 rounded-md w-full" />
-  <input type="text" name="Dpto" value={nuevoEmpleado.Dpto}     onChange={handleChange} placeholder="Departamento" className="p-2 border border-gray-400 rounded-md w-full" />
-  <input type="text" name="CodPostal" value={nuevoEmpleado.CodPostal}    onChange={handleChange} placeholder="Código Postal" className="p-2 border border-gray-400 rounded-md w-full" />
-  
-  <select name="IdLocalidad" value={nuevoEmpleado.IdLocalidad} onChange={handleChange} className="p-2 border border-gray-400 rounded-md w-full">
-  <option value="">Selecciona una Localidad</option>
-  <option value="1">Localidad 1</option>
-  {/* <option value="2">Localidad 2</option> */}
-</select>
-  <input type="text" name="FechaIngreso" value={nuevoEmpleado.FechaIngreso}   onChange={handleChange} placeholder="Fecha de Ingreso" className="p-2 border border-gray-400 rounded-md w-full" />
-  <input type="text" name="Telefono" value={nuevoEmpleado.Telefono}  onChange={handleChange} placeholder="Teléfono" className="p-2 border border-gray-400 rounded-md w-full" />
-  <input type="text" name="Mail" value={nuevoEmpleado.Mail}   onChange={handleChange} placeholder="Correo Electrónico" className="p-2 border border-gray-400 rounded-md w-full" />
-  <select name="IdArea" value={nuevoEmpleado.IdArea} onChange={handleChange} className="p-2 border border-gray-400 rounded-md w-full">
-  <option value="">Selecciona un Área</option>
-  <option value="1">Área 1</option>
-  {/* <option value="2">Área 2</option> */}
-
-</select>
-
-</div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button onClick={handleSubmit} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                          Agregar
-                        </button>
-                        <button onClick={cerrarModal} type="button" className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                          Cancelar
-                        </button>
+  <>
+  <div className='md:flex flex-row bg-slate-900'>
+    <Home />
+    <div className="overflow-x-auto m-5">
+      <div className="m-3">
+        <h2 className="text-white text-3xl b-4">Empleados</h2>
+        <div>
+          <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 px-4 rounded">
+            Agregar empleado
+          </button>
+          {mensaje && <div className="text-white">{mensaje}</div>}
+          {modalAbierto && (
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+                  <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                </div>
+                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                  <div>
+                    <div className="mt-3 text-center sm:mt-5">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">Agregar Empleado</h3>
+                      <div className="mt-2">
+                        <input type="text" name="Nombre" placeholder="Nombre *" value={nuevoEmpleado.Nombre} onChange={handleChange} className="border p-2 w-full" />
+                        <input type="text" name="Apellido" placeholder="Apellido *" value={nuevoEmpleado.Apellido} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="text" name="DNI" placeholder="DNI *" value={nuevoEmpleado.DNI} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="text" name="Calle" placeholder="Calle *" value={nuevoEmpleado.Calle} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="text" name="Numero" placeholder="Número *" value={nuevoEmpleado.Numero} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="text" name="Piso" placeholder="Piso" value={nuevoEmpleado.Piso} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="text" name="Dpto" placeholder="Dpto" value={nuevoEmpleado.Dpto} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="text" name="CodPostal" placeholder="Código Postal *" value={nuevoEmpleado.CodPostal} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="text" name="IdLocalidad" placeholder="IdLocalidad" value={nuevoEmpleado.IdLocalidad} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="text" name="FechaIngreso" placeholder="Fecha de Ingreso (dd/mm/aaaa) *" value={nuevoEmpleado.FechaIngreso} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="text" name="Telefono" placeholder="Teléfono *" value={nuevoEmpleado.Telefono} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="text" name="Mail" placeholder="Mail *" value={nuevoEmpleado.Mail} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="text" name="IdArea" placeholder="IdArea *" value={nuevoEmpleado.IdArea} onChange={handleChange} className="border p-2 w-full mt-2" />
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
-
-{modalAbiertoMod &&  (
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                    <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Modificar empleado</h3>
-                   
-                    <input
-        type="text"
-        name="Nombre"
-        value={empleadoSeleccionado.Nombre}
-        onChange={handleChangeEmpleado}
-        placeholder="Nombre"
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      />
-      
-      <input
-        type="text"
-        name="Apellido"
-        value={empleadoSeleccionado.Apellido}
-        onChange={handleChangeEmpleado}
-        placeholder="Apellido"
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      />
-      
-      <input
-        type="text"
-        name="DNI"
-        value={empleadoSeleccionado.DNI}
-        onChange={handleChangeEmpleado}
-        placeholder="DNI"
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      />
-      
-      <input
-        type="text"
-        name="Calle"
-        value={empleadoSeleccionado.Calle}
-        onChange={handleChangeEmpleado}
-        placeholder="Calle"
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      />
-      
-      <input
-        type="text"
-        name="Numero"
-        value={empleadoSeleccionado.Numero}
-        onChange={handleChangeEmpleado}
-        placeholder="Número"
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      />
-      
-      <input
-        type="text"
-        name="Piso"
-        value={empleadoSeleccionado.Piso}
-        onChange={handleChangeEmpleado}
-        placeholder="Piso"
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      />
-      
-      <input
-        type="text"
-        name="Dpto"
-        value={empleadoSeleccionado.Dpto}
-        onChange={handleChangeEmpleado}
-        placeholder="Departamento"
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      />
-      
-      <input
-        type="text"
-        name="CodPostal"
-        value={empleadoSeleccionado.CodPostal}
-        onChange={handleChangeEmpleado}
-        placeholder="Código Postal"
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      />
-
-      <select
-        name="IdLocalidad"
-        value={empleadoSeleccionado.IdLocalidad}
-        onChange={handleChangeEmpleado}
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      >
-        <option value="">Selecciona una Localidad</option>
-        <option value="1">Localidad 1</option>
-        <option value="2">Localidad 2</option>
-        {/* Agrega más opciones según sea necesario */}
-      </select>
-      
-      <input
-        type="text"
-        name="FechaIngreso"
-        value={empleadoSeleccionado.FechaIngreso}
-        onChange={handleChangeEmpleado}
-        placeholder="Fecha de Ingreso"
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      />
-      
-      <input
-        type="text"
-        name="Telefono"
-        value={empleadoSeleccionado.Telefono}
-        onChange={handleChangeEmpleado}
-        placeholder="Teléfono"
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      />
-      
-      <input
-        type="text"
-        name="Mail"
-        value={empleadoSeleccionado.Mail}
-        onChange={handleChangeEmpleado}
-        placeholder="Correo Electrónico"
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      />
-
-      <select
-        name="IdArea"
-        value={empleadoSeleccionado.IdArea}
-        onChange={handleChangeEmpleado}
-        className="p-2 border border-gray-400 rounded-md w-full mb-2"
-      >
-        <option value="">Selecciona un Área</option>
-        <option value="1">Área 1</option>
-        <option value="2">Área 2</option>
-        {/* Agrega más opciones según sea necesario */}
-      </select>
-
+                  <div className="mt-5 sm:mt-6">
+                    <button onClick={handleSubmit} className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm">
+                      Guardar
+                    </button>
+                    <button onClick={cerrarModal} className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm">
+                      Cancelar
+                    </button>
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button onClick={handleSubmitModificar} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                  Modificar
-                </button>
-                <button onClick={cerrarModalMod} type="button" className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                  Cancelar
-                </button>
+            </div>
+          )}
+          <div>
+            <input type="text" placeholder="Buscar por DNI" value={searchDNI} onChange={(e) => setSearchDNI(e.target.value)} className="border p-2 w-full mt-2" />
+            <button onClick={handleSearch} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-2 rounded">
+              Buscar
+            </button>
+            <button onClick={handleMostrarTodos} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-2 ml-2 rounded">
+              Mostrar Todos
+            </button>
+          </div>
+        </div>
+        <table className="min-w-full bg-white mt-4">
+          <thead className="bg-gray-800 text-white">
+            <tr>
+              <th className="w-1/4 py-2">Nombre</th>
+              <th className="w-1/4 py-2">Apellido</th>
+              <th className="w-1/4 py-2">DNI</th>
+              <th className="w-1/4 py-2">Acciones</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-700">
+            {filteredEmpleados.map((empleado) => (
+              <tr key={empleado.IdEmpleado}>
+                <td className="text-center py-2">{empleado.Nombre}</td>
+                <td className="text-center py-2">{empleado.Apellido}</td>
+                <td className="text-center py-2">{empleado.DNI}</td>
+                <td className="text-center py-2 flex p-2">
+                  <button onClick={() => abrirModalModificar(empleado.IdEmpleado)} className=" bg-gray-900 text-white font-bold py-1 px-2 rounded mr-2">
+                    Modificar
+                  </button>
+                  <button onClick={() => handleEliminarEmpleado(empleado.IdEmpleado)} className="bg-red-700 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {mensaje && <div className="text-white mt-4">{mensaje}</div>}
+      </div>
+    </div>
+  </div>
+
+  {modalAbiertoMod && (
+    <div className="fixed inset-0 overflow-y-auto">
+      <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+          <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+          <div>
+            <div className="mt-3 text-center sm:mt-5">
+              <h3 className="text-lg leading-6 font-medium text-gray-900">Modificar Empleado</h3>
+              <div className="mt-2">
+                <input type="text" name="Nombre" placeholder="Nombre *" value={empleadoSeleccionado.Nombre} onChange={handleChangeEmpleado} className="border p-2 w-full" />
+                <input type="text" name="Apellido" placeholder="Apellido *" value={empleadoSeleccionado.Apellido} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="text" name="DNI" placeholder="DNI *" value={empleadoSeleccionado.DNI} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="text" name="Calle" placeholder="Calle *" value={empleadoSeleccionado.Calle} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="text" name="Numero" placeholder="Número *" value={empleadoSeleccionado.Numero} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="text" name="Piso" placeholder="Piso" value={empleadoSeleccionado.Piso} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="text" name="Dpto" placeholder="Dpto" value={empleadoSeleccionado.Dpto} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="text" name="CodPostal" placeholder="Código Postal *" value={empleadoSeleccionado.CodPostal} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="text" name="IdLocalidad" placeholder="IdLocalidad" value={empleadoSeleccionado.IdLocalidad} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="text" name="FechaIngreso" placeholder="Fecha de Ingreso (dd/mm/aaaa) *" value={empleadoSeleccionado.FechaIngreso} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="text" name="Telefono" placeholder="Teléfono *" value={empleadoSeleccionado.Telefono} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="text" name="Mail" placeholder="Mail *" value={empleadoSeleccionado.Mail} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="text" name="IdArea" placeholder="IdArea *" value={empleadoSeleccionado.IdArea} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
               </div>
             </div>
           </div>
+          <div className="mt-5 sm:mt-6">
+            <button onClick={handleSubmitModificar} className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm">
+              Guardar Cambios
+            </button>
+            <button onClick={cerrarModalMod} className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm">
+              Cancelar
+            </button>
+          </div>
         </div>
-      )}
-              
+      </div>
     </div>
-    </div>
-
-
-<div className="bg-gray-800 p-4 rounded-md">
-    
-<div className="flex items-center space-x-2 p-4">
-              <label className="text-white text-lg mb-4">Buscar empleados</label>
-              <input
-                type="text"
-                placeholder="Ingrese DNI"
-                className="p-2 border border-gray-400 rounded-md w-full"
-                value={searchDNI}
-                onChange={(e) => setSearchDNI(e.target.value)}
-              />
-              <button
-                className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition duration-200"
-                onClick={handleSearch}
-              >
-                Buscar por DNI
-              </button>
-              <button onClick={handleMostrarTodos}
-               className=" text-white p-2 rounded-md  transition duration-200">
-              Mostrar todos
-              </button>
-            </div>
-    
-
-
-
-      <table className="min-w-full border bg-white border-gray-200">
-
-      <thead>
-    <tr className="bg-gray-200">
-      <th className="py-2 px-4 text-left border">DNI</th>
-      <th className="py-2 px-4 text-left border">Nombre</th>
-      {/* <th className="py-2 px-4 text-left border">Calle</th>
-      <th className="py-2 px-4 text-left border">Número</th>
-      <th className="py-2 px-4 text-left border">Piso</th>
-      <th className="py-2 px-4 text-left border">Dpto</th> */}
-      <th className="py-2 px-4 text-left border">Código Postal</th>
-      <th className="py-2 px-4 text-left border">Fecha de Ingreso</th>
-      <th className="py-2 px-4 text-left border">Área</th>
-      <th className="py-2 px-4 text-left border">Mail</th>
-      <th className="py-2 px-4 text-left border">Teléfono</th>
-      <th className="py-2 px-4 text-left border">Acciones</th>
-
-
-
-    </tr>
-  </thead>
-          <tbody>
-                {filteredEmpleados.map((empleado, index) => (
-                   <tr className="bg-white" key={index}>
-                   <td className="py-2 px-2 border">{empleado.DNI}</td>
-                   <td className="py-2 px-2 border">{empleado.Nombre}</td>
-                   {/* <td className="py-2 px-2 border">{empleado.Calle}</td> */}
-                   {/* <td className="py-2 px-2 border">{empleado.Numero}</td>
-                   <td className="py-2 px-2 border">{empleado.Piso}</td>
-                   <td className="py-2 px-2 border">{empleado.Dpto}</td> */}
-                   <td className="py-2 px-2 border">{empleado.CodPostal}</td>
-                   <td className="py-2 px-2 border">{empleado.FechaIngreso}</td>
-                   <td className="py-2 px-2 border">{empleado.IdArea}</td>
-                   <td className="py-2 px-2 border">{empleado.Mail}</td>
-                   <td className="py-2 px-2 border">{empleado.Telefono}</td>
-          
-                    <td className="border flex">
-                    <button onClick={() => handleEliminarEmpleado(empleado.IdEmpleado)}><svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="text-red-600"
-      width={30}
-      height={30}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-    >
-      <path d="M7 4V2H17V4H22V6H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V6H2V4H7ZM6 6V20H18V6H6ZM9 9H11V17H9V9ZM13 9H15V17H13V9Z" />
-    </svg></button>
-    <button onClick={() => abrirModalModicar(empleado.IdEmpleado)}>
-    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className='text-green-600'
-                        width={30}
-                        height={30}
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <path
-                          d="M7.24264 17.9967H3V13.754L14.435 2.319C14.8256 1.92848 15.4587 1.92848 15.8492 2.319L18.6777 5.14743C19.0682 5.53795 19.0682 6.17112 18.6777 6.56164L7.24264 17.9967ZM3 19.9967H21V21.9967H3V19.9967Z"
-                        />
-                      </svg>
-    
-    </button>
-                  </td>
-                </tr>
-              ))}
-        </tbody>
-      </table>
-    </div>
-    </div>
-</div>
-
-
-    
-     
-    
+  )}
 </>
-)
-}
+);
+};
+
+
+
 export default Empleados;
