@@ -1,7 +1,7 @@
 import React from 'react'
 import {  Chart } from "react-charts";
 import { useState,useMemo } from 'react';
-
+import Home from '../home/Home';
 
 const Tablas = () => {
     const myData = [
@@ -50,7 +50,17 @@ const Tablas = () => {
 
 
     return (
-    <>
+    <> 
+     <div className='md:flex flex-row bg-slate-900'>
+     <Home />
+    <div className="overflow-x-auto m-5">
+   
+    <div className="m-3">
+      <h2 className="text-white text-3xl b-4">Tablas</h2>
+    
+
+      </div>
+      
     <div className="bg-white p-20 m-3 flex flex-col items-center rounded-md text-center">
       {/* <button 
         onClick={() => setData(myData)} 
@@ -67,6 +77,7 @@ const Tablas = () => {
         />
       </div>
     </div>
+    </div></div>
     </>
      )
 }
