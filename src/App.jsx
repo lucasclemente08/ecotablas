@@ -10,6 +10,7 @@ import Empleados from './pages/empleados/Empleados';
 import Register from './pages/login/Register';
 import Material from './pages/materiales/Materiales';
 import { AuthProvider } from '../src/context/AuthContext';
+import Tablas from './pages/tablas/Tablas';
 
 
 function App() {
@@ -33,6 +34,11 @@ function App() {
             <Route path="/empleados" element={
        <ProtectedRoute>
                 <Empleados />
+                </ProtectedRoute>
+            } />
+             <Route path="/tablas" element={
+       <ProtectedRoute>
+                <Tablas />
                 </ProtectedRoute>
             } />
           </Routes>
