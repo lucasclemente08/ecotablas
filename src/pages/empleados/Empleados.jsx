@@ -133,6 +133,7 @@ const Empleados=()=>{
 
     axios.post(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Insertar`, nuevoEmpleado)
       .then((response) => {
+        
         setModalAbierto(false);
         setMensaje("Inserción exitosa");
         axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
@@ -264,6 +265,10 @@ return(
               <th className="w-1/4 py-2">Nombre</th>
               <th className="w-1/4 py-2">Apellido</th>
               <th className="w-1/4 py-2">DNI</th>
+              <th className="w-1/4 py-2">Fecha de ingreso</th>
+              <th className="w-1/4 py-2">Piso</th>
+              <th className="w-1/4 py-2">Mail</th>
+      
               <th className="w-1/4 py-2">Acciones</th>
             </tr>
           </thead>
@@ -273,6 +278,15 @@ return(
                 <td className="text-center py-2">{empleado.Nombre}</td>
                 <td className="text-center py-2">{empleado.Apellido}</td>
                 <td className="text-center py-2">{empleado.DNI}</td>
+                <td className="text-center py-2">{empleado.FechaIngreso}</td>
+                <td className="text-center py-2">{empleado.Dpto}</td>
+                <td className="text-center py-2">{empleado.Mail}</td>
+  
+
+
+
+
+
                 <td className="text-center py-2 flex p-2">
                   <button onClick={() => abrirModalModificar(empleado.IdEmpleado)} className=" bg-gray-900 text-white font-bold py-1 px-2 rounded mr-2">
                     Modificar

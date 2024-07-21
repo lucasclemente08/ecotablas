@@ -22,6 +22,13 @@ const Sidebar = () => {
       link: "/tablas",
     },
     {
+      title: "Material Triturado",
+      link: "/materialTri",
+    },{
+      title: "Material Procesado",
+      link: "/materialProc",
+    },
+    {
       title: "Plasticos",
       link: "/material",
     },

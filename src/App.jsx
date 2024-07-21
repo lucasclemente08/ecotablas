@@ -7,6 +7,10 @@ import Sidebar from './components/sidebar';
 import Home from './pages/home/Home';
 import Login from './pages/login/Login';
 import Empleados from './pages/empleados/Empleados';
+import materialTrit from './pages/materialTrit/materialTrit';
+import MaterialProc from './pages/materialProc/MaterialProc';
+
+
 import Register from './pages/login/Register';
 import Material from './pages/materiales/Materiales';
 import { AuthProvider } from '../src/context/AuthContext';
@@ -40,7 +44,16 @@ function App() {
        <ProtectedRoute>
                 <Tablas />
                 </ProtectedRoute>
-            } />
+            } /> <Route path="/materialTri" element={
+              <ProtectedRoute>
+                       <materialTrit />
+                       </ProtectedRoute>
+                   } />
+                   <Route path="/materialProc" element={
+              <ProtectedRoute>
+                       <MaterialProc />
+                       </ProtectedRoute>
+                   } />
           </Routes>
         </div>
       </Router>
