@@ -7,7 +7,7 @@ import Sidebar from './components/sidebar';
 import Home from './pages/home/Home';
 import Login from './pages/login/Login';
 import Empleados from './pages/empleados/Empleados';
-import materialTrit from './pages/materialTrit/materialTrit';
+import MaterialTrit from './pages/materialTrit/MaterialTrit';
 import MaterialProc from './pages/materialProc/MaterialProc';
 
 
@@ -46,7 +46,7 @@ function App() {
                 </ProtectedRoute>
             } /> <Route path="/materialTri" element={
               <ProtectedRoute>
-                       <materialTrit />
+                       <MaterialTrit />
                        </ProtectedRoute>
                    } />
                    <Route path="/materialProc" element={

@@ -1,13 +1,18 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 
 import Home from '../home/Home';
 import axios from 'axios';
-const materialTrit = () => {
+const MaterialTrit = () => {
+  const [materials, setMaterials] = useState([]);
 
-
-useEffect(({
-axios.get()
-}),[])
+// useEffect(()=>{
+//   const material= async(()=>{
+//     axios.get("http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/ListarTodo").then((response)=>{
+//    setMaterials(response)
+//    console.log(response)
+//     })
+//   })
+// },[])
 
 
 
@@ -30,4 +35,4 @@ axios.get()
   )
 }
 
-export default materialTrit
+export default MaterialTrit
