@@ -5,14 +5,19 @@ import axios from 'axios';
 const MaterialTrit = () => {
   const [materials, setMaterials] = useState([]);
 
-// useEffect(()=>{
-//   const material= async(()=>{
-//     axios.get("http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/ListarTodo").then((response)=>{
-//    setMaterials(response)
-//    console.log(response)
-//     })
-//   })
-// },[])
+useEffect(()=>{
+  const fetchMaterials = async () => {
+    try {
+      const response = await axios.get("http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/ListarTodo");
+      setMaterials(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching materials:", error);
+    }
+  };
+
+  fetchMaterials();
+},[])
 
 
 

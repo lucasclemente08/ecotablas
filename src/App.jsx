@@ -7,8 +7,8 @@ import Sidebar from './components/sidebar';
 import Home from './pages/home/Home';
 import Login from './pages/login/Login';
 import Empleados from './pages/empleados/Empleados';
-import MaterialTrit from './pages/materialTrit/MaterialTrit';
-import MaterialProc from './pages/materialProc/MaterialProc';
+import MaterialTrit from './pages/materialTrit/materialTrit';
+import MaterialProc from './pages/materialProc/materialProc';
 
 
 import Register from './pages/login/Register';
