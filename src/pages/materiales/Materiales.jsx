@@ -1,6 +1,6 @@
 import React from 'react';
 import Home from '../home/Home';
-
+import Tablas from '../tablas/Tablas';
 const materials = [
     { id: 1, name: 'PVC', volume: '100 kg', date: '2024-01-01', categoria: 'Plásticos' },
     { id: 2, name: 'Plástico Botella', volume: '50 kg', date: '2024-01-02', categoria: 'Plásticos' },
@@ -60,6 +60,7 @@ const materials = [
                 ))}
               </tbody>
             </table>
+            <Tablas />
           </div>
         </div>
       </div>
