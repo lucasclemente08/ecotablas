@@ -9,7 +9,7 @@ import Login from './pages/login/Login';
 import Empleados from './pages/empleados/Empleados';
 import MaterialTrit from './pages/materialTrit/materialTrit';
 import MaterialProc from './pages/materialProc/materialProc';
-
+import Profile from './pages/profile/Profile';
 
 import Register from './pages/login/Register';
 import Material from './pages/materiales/Materiales';
@@ -52,6 +52,11 @@ function App() {
                    <Route path="/materialProc" element={
               <ProtectedRoute>
                        <MaterialProc />
+                       </ProtectedRoute>
+                   } />
+                   <Route path="/profile" element={
+              <ProtectedRoute>
+                       <Profile />
                        </ProtectedRoute>
                    } />
           </Routes>
