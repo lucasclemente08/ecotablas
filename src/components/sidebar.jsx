@@ -17,10 +17,10 @@ const Sidebar = () => {
       title: "Empleados",
       link: "/empleados",
     },
-    {
-      title: "Tablas",
-      link: "/tablas",
-    },
+    // {
+    //   title: "Tablas",
+    //   link: "/tablas",
+    // },
     {
       title: "Material Triturado",
       link: "/materialTri",
