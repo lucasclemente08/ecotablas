@@ -1,15 +1,15 @@
 import Sidebar from "../../components/sidebar";
-
+import profile from "../../assets/profile.jpeg"
 const Profile=()=>{
 
     const userProfile = {
         nombre: 'Juan Pérez',
         correo: 'juan.perez@example.com',
         telefono: '+123456789',
-        ubicacion: 'Ciudad de México, México',
-        fotoUrl: 'https://via.placeholder.com/150', // Ejemplo de foto de perfil
-        descripcion: 'Desarrollador apasionado por la tecnología y el software.',
-        rol: 'Desarrollador Senior',
+        ubicacion: 'Córdoba,Córdoba Argentina',
+        fotoUrl: profile, // Ejemplo de foto de perfil
+        
+        rol: 'Recolector Senior',
         dni: '12345678',
         fechaNacimiento: '15 de julio de 1990',
       };
@@ -32,7 +32,7 @@ return(
             <span className="text-white">?</span>
           </div>
         )}
-      ¿<div className="ml-4">
+      <div className="ml-4">
           <h2 className="text-xl text-white font-bold">{userProfile.nombre}</h2>
           <p className="text-white">{userProfile.correo}</p>
         </div>
@@ -48,10 +48,10 @@ return(
         <p className="text-white">{userProfile.ubicacion}</p>
       </div>
 
-      <div>
+      {/* <div>
         <p className="font-semibold v text-white">Descripción:</p>
         <p className="text-white">{userProfile.descripcion}</p>
-      </div>
+      </div> */}
 
       <div>
         <p className="font-semibold font-md text-white">Rol:</p>

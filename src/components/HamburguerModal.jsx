@@ -12,8 +12,9 @@ const HamburgerModal = ({ open, close }) => {
         { text: 'Inicio', href: '/', key: 'inicio' },
         { text: 'Empleados', href: '/empleados', key: 'empleados' },
         { text: 'Materiales', href: '/material', key: 'materiales' },
-        { text: 'Tablas', href: '/tablas', key: 'tablas' },
-        { text: 'Perfil', href: '/perfil', key: 'perfil' },
+        { text: 'Materiales Procesado', href: '/materialProc', key: 'tablas' },
+        { text: 'Materiales triturado', href: '/materialTrit', key: 'tablas' },
+        { text: 'Perfil', href: '/profile', key: 'perfil' },
         { text: 'Ajustes', href: '/ajustes', key: 'ajustes' }
     ];
 
