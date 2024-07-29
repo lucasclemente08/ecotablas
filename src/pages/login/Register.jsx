@@ -3,7 +3,13 @@ import { useNavigate} from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import {auth,provider  } from '../../firebase/firebase'
 import { GoogleAuthProvider ,signInWithPopup} from "firebase/auth";
+
+import { db } from '../../firebase/firebase';
+import { doc, Firestore, getDocs, setDoc } from "firebase/firestore";
+
+
 import {Link} from "react-router-dom";  
+import { info } from 'autoprefixer';
 
 const Register = () => {
   const [errors, setErrors] = useState([]);
@@ -22,20 +28,28 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-     
-  createUserWithEmailAndPassword(auth, correo, contrasena,role)
-    .then((userCredential) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, correo, contrasena);
       const user = userCredential.user;
+      const infoUser = user.uid;
 
+      console.log(infoUser);
+
+      const docuRef = doc(db, `usuarios/${infoUser}`);
+      console.log(docuRef);
+
+      await setDoc(docuRef, { correo: correo, role: "empleado" });
+      console.log("Document successfully written!");
       // navigate('/')
-    })
-    .catch((error) => { 
+    } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
-    });
-    setLoading(true);
-    setLoading(false);
+      setErrors((prevErrors) => [...prevErrors, { errorCode, errorMessage }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
 
@@ -50,7 +64,6 @@ const Register = () => {
   };
   
   useEffect(() => {
-    console.log(formData);
     setContrasena(formData.contrasena);
     setCorreo(formData.correo);
   }, [formData]); // Run this effect whenever formData changes
