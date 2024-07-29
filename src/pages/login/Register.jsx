@@ -24,10 +24,11 @@ const Register = () => {
     e.preventDefault();
 
      
-  createUserWithEmailAndPassword(auth, correo, contrasena)
+  createUserWithEmailAndPassword(auth, correo, contrasena,role)
     .then((userCredential) => {
       const user = userCredential.user;
-      navigate('/')
+
+      // navigate('/')
     })
     .catch((error) => { 
       const errorCode = error.code;
