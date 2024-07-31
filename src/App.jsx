@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import 'mapbox-gl/dist/mapbox-gl.css';
 import Sidebar from './components/sidebar';
 import Home from './pages/home/Home';
 import Login from './pages/login/Login';
