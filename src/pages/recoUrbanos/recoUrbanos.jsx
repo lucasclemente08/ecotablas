@@ -1,8 +1,33 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import Home from '../home/Home'
-import Map from 'react-map-gl/maplibre';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import L from 'leaflet';
+
 const recoUrbanos = () => {
+
+
+  useEffect(() => {
+    const map = L.map('map').setView([51.505, -0.09], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(map);
+
+    L.marker([51.505, -0.09]).addTo(map)
+      .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+      .openPopup();
+
+    return () => {
+      map.remove();
+    };
+  }, []);
+
+
+
+
+
+
+
+
+
   return (
     <>
     
@@ -12,17 +37,7 @@ const recoUrbanos = () => {
           <h2 className="text-2xl font-bold text-white mb-4">Recoleción de urbanos</h2>
           <div className="overflow-x-auto">
             <div>
-
-            <Map
-      initialViewState={{
-        longitude: -122.4,
-        latitude: 37.8,
-        zoom: 14
-      }}
-      style={{width: 600, height: 400}}
-   mapStyle="mapbox://styles/mapbox/streets-v9add
-    />
-
+            <div id="map" style={{ height: '800px', width: '800px' }}></div>
       </div>
             </div>
             </div>
