@@ -36,6 +36,13 @@ const Register = () => {
       const infoUser = user.uid;
 
       console.log(infoUser);
+   
+      const querySnapshot = await db.collection("usuarios").get();
+      const usersData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log("Users data:", usersData);
+
+      
+      console.log(db.collection("usuarios").get())
 
       const docuRef = doc(db, `usuarios/${infoUser}`);
       console.log(docuRef);
