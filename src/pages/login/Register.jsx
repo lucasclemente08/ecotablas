@@ -8,7 +8,7 @@ import { db } from '../../firebase/firebase';
 import { doc, Firestore, getDocs, setDoc } from "firebase/firestore";
 
 
-import {Link} from "react-router-dom";  
+
 import { info } from 'autoprefixer';
 
 const Register = () => {
