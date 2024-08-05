@@ -1,27 +1,33 @@
-import React,{useEffect} from 'react'
+import React,{useEffect,useState} from 'react'
 import Home from '../home/Home'
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { MapContainer, TileLayer, useMap,Marker,Popup } from 'react-leaflet'
+
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
+
+const DefaultIcon = L.icon({
+  iconUrl: icon,
+  iconRetinaUrl: iconRetina,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
 
 const recoUrbanos = () => {
-
-
-useEffect(() => {
-  const map = L.map('map').setView([51.505, -0.09], 13);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
-
-  L.marker([51.5, -0.09]).addTo(map)
-    .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-    .openPopup();
-
-  return () => {
-    map.remove();
-  };
-}, []);
+  L.Marker.prototype.options.icon = DefaultIcon;
 
 
 
+
+  
+
+
+const position = [51.505, -0.09]
 
 
 
@@ -37,7 +43,19 @@ useEffect(() => {
           <h2 className="text-2xl font-bold text-white mb-4">Recoleción de urbanos</h2>
           <div className="overflow-x-auto">
             <div className="">
-            <div id="map" className=" w-full sm:w-1/2 md:w-3/4 lg:w-full" ></div>
+        
+            <MapContainer  id='map' center={position} zoom={13} scrollWheelZoom={false}>
+    <TileLayer
+      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    />
+    <Marker position={position}>
+      <Popup>
+        A pretty CSS3 popup. <br /> Easily customizable.
+      </Popup>
+    </Marker>
+  </MapContainer>
+
       </div>
             </div>
             </div>
