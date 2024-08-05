@@ -1,14 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+
 import ProtectedRoute from './components/ProtectedRoute';
 
-import Sidebar from './components/sidebar';
 import Home from './pages/home/Home';
 import Login from './pages/login/Login';
 import Empleados from './pages/empleados/Empleados';
 import MaterialTrit from './pages/materialTrit/materialTrit';
 import MaterialProc from './pages/materialProc/materialProc';
+import RecoUrbanos from './pages/recoUrbanos/recoUrbanos';
+
 import Profile from './pages/profile/Profile';
 
 import Register from './pages/login/Register';
@@ -57,6 +58,11 @@ function App() {
                    <Route path="/profile" element={
               <ProtectedRoute>
                        <Profile />
+                       </ProtectedRoute>
+                   } />
+                    <Route path="/recoleccion" element={
+              <ProtectedRoute>
+                       <RecoUrbanos />
                        </ProtectedRoute>
                    } />
           </Routes>

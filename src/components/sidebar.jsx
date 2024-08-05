@@ -28,6 +28,10 @@ const Sidebar = () => {
       title: "Material Procesado",
       link: "/materialProc",
     },
+    ,{
+      title: "Recolección Urbanos",
+      link: "/recoleccion",
+    },
     {
       title: "Plasticos",
       link: "/material",
