@@ -1,3 +1,7 @@
+
+<p align="center">
+  <img src="https://img.icons8.com/external-soft-fill-juicy-fish/60/external-eco-packaging-symbols-soft-fill-soft-fill-juicy-fish.png" alt="Eco Icon">
+</p>
 # Proyecto de Sistema
 
 ## Introducción
@@ -21,5 +25,3 @@ Brindar al área de Producción la información necesaria para optimizar sus pro
 ## Alumnos:
 Clemente Lucas - Vélez Tomás
 
-
-![Eco Icon](https://img.icons8.com/external-soft-fill-juicy-fish/60/external-eco-packaging-symbols-soft-fill-soft-fill-juicy-fish.png)
