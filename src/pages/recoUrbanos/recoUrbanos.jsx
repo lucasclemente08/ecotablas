@@ -40,8 +40,8 @@ const RecoUrbanos = () => {
       <div className="p-4 w-full">
         <h2 className="text-2xl font-bold text-white mb-4">Recolección de urbanos</h2>
         <div className="overflow-x-auto">
-          <div className="">
-            <MapContainer id='map' center={centerPosition} zoom={13} scrollWheelZoom={false}>
+          <div className=" flex  ">
+            <MapContainer id='map' center={centerPosition} zoom={10} scrollWheelZoom={false}>
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

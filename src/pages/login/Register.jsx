@@ -7,7 +7,7 @@ import { GoogleAuthProvider ,signInWithPopup} from "firebase/auth";
 import { db } from '../../firebase/firebase';
 import { doc, Firestore, getDocs, setDoc } from "firebase/firestore";
 
-
+import { collection} from "firebase/firestore"; 
 
 import { info } from 'autoprefixer';
 
@@ -26,6 +26,11 @@ const Register = () => {
   const navigate = useNavigate()
 
 
+
+
+
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -35,20 +40,36 @@ const Register = () => {
       const user = userCredential.user;
       const infoUser = user.uid;
 
-      console.log(infoUser);
-   
-      const querySnapshot = await db.collection("usuarios").get();
-      const usersData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      console.log("Users data:", usersData);
 
-      
-      console.log(db.collection("usuarios").get())
 
       const docuRef = doc(db, `usuarios/${infoUser}`);
-      console.log(docuRef);
+      
 
       await setDoc(docuRef, { correo: correo, role: "empleado" });
       console.log("Document successfully written!");
+
+
+
+      async function fetchUsuarios() {
+        try {
+          
+          const usuariosCollection = collection(db, "usuarios");
+          const usuariosSnapshot = await getDocs(usuariosCollection);
+          const usuariosList = usuariosSnapshot.docs.map(doc => doc.data());
+          console.log(usuariosList);
+        } catch (error) {
+          console.error("Error fetching usuarios:", error);
+        }
+      }
+      
+      fetchUsuarios();
+
+
+
+
+
+
+
       // navigate('/')
     } catch (error) {
       const errorCode = error.code;
