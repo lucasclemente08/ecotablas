@@ -43,23 +43,22 @@ const Register = () => {
       
 
       await setDoc(docuRef, { correo: correo, role: "empleado" });
-      console.log("Document successfully written!");
+  
 
 
-
-      async function fetchUsuarios() {
-        try {
+      // async function fetchUsuarios() {
+      //   try {
           
-          const usuariosCollection = collection(db, "usuarios");
-          const usuariosSnapshot = await getDocs(usuariosCollection);
-          const usuariosList = usuariosSnapshot.docs.map(doc => doc.data());
-          console.log(usuariosList);
-        } catch (error) {
-          console.error("Error fetching usuarios:", error);
-        }
-      }
+      //     const usuariosCollection = collection(db, "usuarios");
+      //     const usuariosSnapshot = await getDocs(usuariosCollection);
+      //     const usuariosList = usuariosSnapshot.docs.map(doc => doc.data());
+      //     console.log(usuariosList);
+      //   } catch (error) {
+      //     console.error("Error fetching usuarios:", error);
+      //   }
+      // }
       
-      fetchUsuarios();
+      // fetchUsuarios();
 
 
 
@@ -67,7 +66,7 @@ const Register = () => {
 
 
 
-      // navigate('/')
+      navigate('/')
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
