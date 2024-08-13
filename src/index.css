@@ -21,8 +21,9 @@ nav{
     z-index: 0;
   } */
   #map{
-    width:500px;
-    height:500px;
+    margin-left:5rem;
+    width:800px;
+    height:800px;
   }
 
   .leaflet-container {

@@ -5,6 +5,10 @@ import Home from '../home/Home';
 import ButtonDelete from '../../components/buttonDelete';
 import ButtonEdit from '../../components/buttonEdit';
 import axios from 'axios';
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+
+import ReactToPrint from 'react-to-print';
 const Empleados=()=>{
 
   
@@ -51,6 +55,13 @@ const Empleados=()=>{
   });
 
   const [mensaje, setMensaje] = useState(""); // Mensaje para mostrar acciones exitosas o errores
+
+
+  // imprimir listado 
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({ 
+    content: () => componentRef.current,
+  });
 
   // Obtener todos los empleados
   useEffect(() => {
@@ -204,21 +215,32 @@ return(
     <div className="overflow-x-auto m-5">
       <div className="m-3">
         <h2 className="text-white text-3xl b-4">Empleados</h2>
-        <div>
+        <div className="">
           <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 px-4 rounded">
             Agregar empleado
           </button>
+          <button
+  onClick={handlePrint}
+  className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-2 px-4 rounded"
+>
+  Imprimir listado
+</button>
+
           {mensaje && <div className="text-white">{mensaje}</div>}
           {modalAbierto && (
             <div className="fixed inset-0 overflow-y-auto">
               <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                  <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                  <div className="absolute inset-0 bg-gray-500 opacity-75">
+             
+                  </div>
                 </div>
+                
                 <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
                 <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                   <div>
-                    <div className="mt-3 text-center sm:mt-5">
+                    <div></div>
+                    <div className="mt-3 text-center sm:mt-5" >
                       <h3 className="text-lg leading-6 font-medium text-gray-900">Agregar Empleado</h3>
                       <div className="mt-2">
                         <input type="text" name="Nombre" placeholder="Nombre *" value={nuevoEmpleado.Nombre} onChange={handleChange} className="border p-2 w-full" />
@@ -259,7 +281,7 @@ return(
             </button>
           </div>
         </div>
-        <table className="min-w-full bg-white mt-4">
+        <table className="min-w-full bg-white mt-4"  ref={componentRef}>
           <thead className="bg-gray-800 text-white">
             <tr>
               <th className="w-1/4 py-2">Nombre</th>
