@@ -1,23 +1,40 @@
-import React from 'react';
+import React, { useEffect,useState } from 'react'
+
 import Home from '../home/Home';
-import Tablas from '../tablas/Tablas';
-const materials = [
-    { id: 1, name: 'PVC', volume: '100 kg', date: '2024-01-01', categoria: 'Plásticos' },
-    { id: 2, name: 'Plástico Botella', volume: '50 kg', date: '2024-01-02', categoria: 'Plásticos' },
-    { id: 3, name: 'Plástico Caños y Tuberías', volume: '200 kg', date: '2024-01-03', categoria: 'Plásticos' },
-  ];
-  
-  function Material() {
-    return (
-      <div className="md:flex flex-row bg-slate-900 min-h-screen">
+import axios from 'axios';
+const MaterialTrit = () => {
+  const [materials, setMaterials] = useState([]);
+
+useEffect(()=>{
+  const fetchMaterials = async () => {
+    try {
+      const response = await axios.get("http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/ListarTodo");
+      setMaterials(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching materials:", error);
+    }
+  };
+
+  fetchMaterials();
+},[])
+
+
+
+
+
+
+  return (
+    <>
+     <div className="md:flex flex-row bg-slate-900 min-h-screen">
         <Home />
         <div className="p-4 w-full">
-          <h2 className="text-2xl font-bold text-white mb-4">Lista de Materiales</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">Materiales Triturado</h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white rounded-lg shadow-md">
+          <table className="min-w-full bg-white rounded-lg shadow-md">
               <thead>
                 <tr>
-                  <th className="border-b-2 py-3 px-4 text-left text-gray-600">Nombre</th>
+                  <th className="border-b-2 py-3 px-4 text-left text-gray-600">Id Material</th>
                   <th className="border-b-2 py-3 px-4 text-left text-gray-600">Volumen</th>
                   <th className="border-b-2 py-3 px-4 text-left text-gray-600">Fecha</th>
                   {/* <th className="py-3 px-4 text-left border">Acciones</th> */}
@@ -26,9 +43,9 @@ const materials = [
               <tbody>
                 {materials.map((material) => (
                   <tr key={material.id} className="hover:bg-gray-100">
-                    <td className="border-b py-3 px-4">{material.name}</td>
-                    <td className="border-b py-3 px-4">Volumen: {material.volume}</td>
-                    <td className="border-b py-3 px-4">{material.date}</td>
+                    <td className="border-b py-3 px-4">{material.IdMaterialTriturado}</td>
+                    <td className="border-b py-3 px-4">Volumen: {material.VolumenT} kgs</td>
+                    <td className="border-b py-3 px-4">{material.Fecha}</td>
                     {/* <td className="border flex justify-center py-3 px-4">
                       <button>
                         <svg
@@ -60,11 +77,12 @@ const materials = [
                 ))}
               </tbody>
             </table>
-            <Tablas />
           </div>
         </div>
       </div>
-    );
-  }
+    
+    </>
+  )
+}
 
-export default Material;
+export default MaterialTrit

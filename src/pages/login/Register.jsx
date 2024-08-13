@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { Link } from "react-router-dom";
-import { db, auth, provider } from '../../firebase/firebase';
+import React, { useState,useEffect } from 'react';
+import { useNavigate,Link} from 'react-router-dom';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {auth,provider  } from '../../firebase/firebase'
+import { GoogleAuthProvider ,signInWithPopup} from "firebase/auth";
+
+import { db } from '../../firebase/firebase';
+import { doc, Firestore, getDocs, setDoc } from "firebase/firestore";
+
+import { collection} from "firebase/firestore"; 
+
+import { info } from 'autoprefixer';
 
 const Register = () => {
   const [errors, setErrors] = useState([]);
@@ -18,29 +23,56 @@ const Register = () => {
   const [correo, setCorreo] = useState("");
   const navigate = useNavigate();
 
+
+
+
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Crear el usuario en Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, correo, contrasena);
       const user = userCredential.user;
+      const infoUser = user.uid;
 
-      // Guardar el rol del usuario en Firestore
-      await addDoc(collection(db, "usuarios"), {
-        uid: user.uid,
-        nombre: formData.nombre,
-        correo: formData.correo,
-        rol: 'empleado'  // Asigna el rol aquí (puedes cambiarlo según tus necesidades)
-      });
 
-      console.log("User created with ID:", user.uid);
-      setLoading(false);
-      navigate('/'); 
+
+      const docuRef = doc(db, `usuarios/${infoUser}`);
+      
+
+      await setDoc(docuRef, { correo: correo, role: "empleado" });
+      console.log("Document successfully written!");
+
+
+
+      async function fetchUsuarios() {
+        try {
+          
+          const usuariosCollection = collection(db, "usuarios");
+          const usuariosSnapshot = await getDocs(usuariosCollection);
+          const usuariosList = usuariosSnapshot.docs.map(doc => doc.data());
+          console.log(usuariosList);
+        } catch (error) {
+          console.error("Error fetching usuarios:", error);
+        }
+      }
+      
+      fetchUsuarios();
+
+
+
+
+
+
+
+      // navigate('/')
     } catch (error) {
-      console.error("Error creating user:", error);
-      setErrors([error.message]);
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      setErrors((prevErrors) => [...prevErrors, { errorCode, errorMessage }]);
+    } finally {
       setLoading(false);
     }
   };
@@ -54,6 +86,7 @@ const Register = () => {
   };
 
   useEffect(() => {
+  
     setContrasena(formData.contrasena);
     setCorreo(formData.correo);
   }, [formData]);
