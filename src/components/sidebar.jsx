@@ -17,18 +17,37 @@ const Sidebar = () => {
       title: "Empleados",
       link: "/empleados",
     },
+    // {
+    //   title: "Tablas",
+    //   link: "/tablas",
+    // },
     {
-      title: "Tablas",
-      link: "/tablas",
+      title: "Material Triturado",
+      link: "/materialTri",
+    },{
+      title: "Material Procesado",
+      link: "/materialProc",
+    },
+    ,{
+      title: "Recolección Urbanos",
+      link: "/recoleccion",
     },
     {
       title: "Plasticos",
       link: "/material",
     },
     {
-      title: "Ajustes",
-      link: "/ajustes",
+      title: "Perfil",
+      link: "/profile",
     },
+       {
+      title: "Documentacion",
+      link: "https://docs.google.com/document/d/11nAsUlODb0XNa5tlPNpkSU9uyVfL5pnMkDBCgqjbaOg/edit",
+     }, 
+    // {
+    //   title: "Ajustes",
+    //   link: "/ajustes",
+    // },
   ];
 
   const handleSignOut = () => {
