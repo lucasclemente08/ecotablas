@@ -16,6 +16,7 @@ import Register from './pages/login/Register';
 import Material from './pages/materiales/Materiales';
 import { AuthProvider } from '../src/context/AuthContext';
 import Tablas from './pages/tablas/Tablas';
+import Vehiculos from './pages/vehiculos/Vehiculos';
 
 
 function App() {
@@ -63,6 +64,11 @@ function App() {
                     <Route path="/recoleccion" element={
               <ProtectedRoute>
                        <RecoUrbanos />
+                       </ProtectedRoute>
+                   } />
+                     <Route path="/vehiculos" element={
+              <ProtectedRoute>
+                       <Vehiculos />
                        </ProtectedRoute>
                    } />
           </Routes>

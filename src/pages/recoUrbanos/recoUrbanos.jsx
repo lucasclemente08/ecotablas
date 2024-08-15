@@ -6,7 +6,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
-
+import convertirRuta from "../../components/convertirRuta"
 
 const DefaultIcon = L.icon({
   iconUrl: icon,
@@ -55,6 +55,7 @@ const RecoUrbanos = () => {
               ))}
             </MapContainer>
           </div>
+          <convertirRuta />
         </div>
       </div>
     </div>
