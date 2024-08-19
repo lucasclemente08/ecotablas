@@ -6,7 +6,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
-import convertirRuta from "../../components/convertirRuta"
+// import convertirRuta from "../../components/convertirRuta"
 
 const DefaultIcon = L.icon({
   iconUrl: icon,
@@ -41,7 +41,7 @@ const RecoUrbanos = () => {
         <h2 className="text-2xl font-bold text-white mb-4">Recolección de urbanos</h2>
         <div className="overflow-x-auto">
           <div className=" flex  ">
-            <MapContainer id='map' center={centerPosition} zoom={10} scrollWheelZoom={false}>
+            <MapContainer id='map' className='overflow-y-auto' center={centerPosition} zoom={10} scrollWheelZoom={false}>
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -55,7 +55,7 @@ const RecoUrbanos = () => {
               ))}
             </MapContainer>
           </div>
-          <convertirRuta />
+          {/* <convertirRuta />  */}
         </div>
       </div>
     </div>
