@@ -26,6 +26,9 @@ const Sidebar = () => {
     {
       title: "Vehicúlos",
       link: "/vehiculos",
+    },  {
+      title: "Volúmen",
+      link: "/volumen",
     },
     {
       title: "Perfil",

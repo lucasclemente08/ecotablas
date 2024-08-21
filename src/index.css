@@ -23,8 +23,8 @@ nav{
   #map{
     margin-left:5rem;
     width:480px;
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-x: none;
+    overflow-y: none;
     border-radius:.8rem ;
     height:450px;
     -webkit-border-radius:.8rem ;
