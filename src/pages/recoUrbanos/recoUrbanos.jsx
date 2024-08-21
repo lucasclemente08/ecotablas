@@ -6,6 +6,10 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+
+
 // import convertirRuta from "../../components/convertirRuta"
 
 const DefaultIcon = L.icon({
@@ -33,6 +37,15 @@ const RecoUrbanos = () => {
   ]);
   // Usar la primera ubicación para centrar el mapa (ajusta si es necesario)
   const centerPosition = [locations[0].lat, locations[0].long];
+  // imprimir listado 
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({ 
+    content: () => componentRef.current,
+  });
+  const abrirModal = () => {
+    setModalAbierto(true);
+  };
+  
 
   return (
     <div className="md:flex flex-row bg-slate-900 min-h-screen">
@@ -40,8 +53,18 @@ const RecoUrbanos = () => {
       <div className="p-4 w-full">
         <h2 className="text-2xl font-bold text-white mb-4">Recolección de urbanos</h2>
         <div className="overflow-x-auto">
+          <div>
+          <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 px-4 rounded">
+            Agregar  ubicación
+          </button>
+      <button
+    onClick={handlePrint}
+    className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-2 px-4 rounded">
+    Imprimir listado
+    </button>
+          </div>
           <div className=" flex  ">
-            <MapContainer id='map' className='overflow-y-auto' center={centerPosition} zoom={10} scrollWheelZoom={false}>
+            <MapContainer id='map' ref={componentRef} className='overflow-y-auto' center={centerPosition} zoom={10} scrollWheelZoom={false}>
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
