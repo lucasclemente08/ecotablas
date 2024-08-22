@@ -18,6 +18,7 @@ import { AuthProvider } from '../src/context/AuthContext';
 import Tablas from './pages/tablas/Tablas';
 import Vehiculos from './pages/vehiculos/Vehiculos';
 import Volumen from './pages/volumen/Volumen';
+import Areas from './pages/areas/Areas';
 
 
 function App() {
@@ -75,6 +76,11 @@ function App() {
   <Route path="/volumen" element={
               <ProtectedRoute>
                        <Volumen />
+                       </ProtectedRoute>
+                   } />
+                    <Route path="/areas" element={
+              <ProtectedRoute>
+                       <Areas />
                        </ProtectedRoute>
                    } />
           </Routes>

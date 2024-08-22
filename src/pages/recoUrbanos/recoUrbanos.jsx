@@ -23,6 +23,11 @@ const DefaultIcon = L.icon({
 });
 
 const RecoUrbanos = () => {
+
+  const [modalAbierto, setModalAbierto] = useState(false);
+
+
+
   L.Marker.prototype.options.icon = DefaultIcon;
   const [locations, setLocations] = useState([
     { lat: -31.41840141484594, long: -64.17054389706696 },
@@ -42,6 +47,9 @@ const RecoUrbanos = () => {
   const handlePrint = useReactToPrint({ 
     content: () => componentRef.current,
   });
+
+
+
   const abrirModal = () => {
     setModalAbierto(true);
   };

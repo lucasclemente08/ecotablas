@@ -31,6 +31,10 @@ const Sidebar = () => {
       link: "/volumen",
     },
     {
+      title: "Áreas y turnos de trabajos ",
+      link: "/areas",
+    },
+    {
       title: "Perfil",
       link: "/profile",
     },
