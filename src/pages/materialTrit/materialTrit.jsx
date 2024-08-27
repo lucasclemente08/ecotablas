@@ -22,7 +22,12 @@ const MaterialTrit = () => {
     setModalAbierto(false)
   }
 
-
+  const abrirModalMaterial = (id) => {
+   
+  };
+  const cerrarModalMaterial = () => {
+    setModalAbierto(false)
+  }
 useEffect(()=>{
   const fetchMaterials = async () => {
     try {
@@ -43,11 +48,7 @@ const handleSubmit=()=>{
     
     setModalAbierto(false);
     setMensaje("Inserción exitosa");
-    axios.get(`http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/ListarTodo`)
-      .then((response) => {
-    
-      })
-      .catch((error) => console.error('Error al obtener los datos:', error));
+   
   })
   .catch((error) => console.error('Error al agregar el material:', error));
 }
@@ -123,38 +124,18 @@ const handleChange = (e) => {
               </thead>
               <tbody>
                 {materials.map((material) => (
-                  <tr key={material.id} className="hover:bg-gray-100">
+                
+     
+                  <tr key={material.id} onClick={abrirModalMaterial(material.IdMaterialTriturado)} className="hover:bg-gray-100">
+
                     <td className="border-b py-3 px-4">{material.IdMaterialTriturado}</td>
                     <td className="border-b py-3 px-4">Volumen: {material.VolumenT} kgs</td>
                     <td className="border-b py-3 px-4">{material.Fecha}</td>
-                    {/* <td className="border flex justify-center py-3 px-4">
-                      <button>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="text-red-600"
-                          width={30}
-                          height={30}
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <path d="M7 4V2H17V4H22V6H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V6H2V4H7ZM6 6V20H18V6H6ZM9 9H11V17H9V9ZM13 9H15V17H13V9Z" />
-                        </svg>
-                      </button>
-                      <button className="m-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width={30}
-                          height={30}
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <path
-                            d="M7.24264 17.9967H3V13.754L14.435 2.319C14.8256 1.92848 15.4587 1.92848 15.8492 2.319L18.6777 5.14743C19.0682 5.53795 19.0682 6.17112 18.6777 6.56164L7.24264 17.9967ZM3 19.9967H21V21.9967H3V19.9967Z"
-                          />
-                        </svg>
-                      </button>
-                    </td> */}
+                   
+                   
                   </tr>
+                                 
+                
                 ))}
               </tbody>
             </table>
