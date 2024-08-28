@@ -69,10 +69,10 @@ useEffect(()=>{
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
         <Home />
         <div className="p-4 w-full">
-          <h2 className="text-2xl font-bold text-white mb-4">Materiales Procesados</h2><button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded">
+          <h2 className="text-2xl font-bold text-white mb-4">Materiales Procesados</h2>
+          <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded">
             Agregar material Procesado
           </button>
-
 {modalAbierto && (
             <div className="fixed inset-0 overflow-y-auto">
             <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -126,7 +126,7 @@ useEffect(()=>{
                   <tr key={material.id} className="hover:bg-gray-100">
                     <td className="border-b py-3 px-4">{material.IdMaterialProcesado}</td>
                     <td className="border-b py-3 px-4">Volumen: {material.VolumenP} kgs</td>
-                    <td className="border-b py-3 px-4">{material.FechaIngresoP}</td>
+                    <td className="border-b py-3 px-4">{material.FechaIngresoP.slice(0,10)}</td>
                     {/* <td className="border flex justify-center py-3 px-4">
                       <button>
                         <svg
