@@ -7,6 +7,8 @@ const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
+  const [materialOpen, setMaterialOpen] = useState(false);
+
 
   const Menus = [
     {
@@ -17,37 +19,44 @@ const Sidebar = () => {
       title: "Empleados",
       link: "/empleados",
     },
-    // {
-    //   title: "Tablas",
-    //   link: "/tablas",
-    // },
     {
-      title: "Material Triturado",
-      link: "/materialTri",
-    },{
-      title: "Material Procesado",
-      link: "/materialProc",
-    },
-    ,{
       title: "Recolección Urbanos",
       link: "/recoleccion",
     },
     {
-      title: "Plasticos",
-      link: "/material",
+      title: "Vehicúlos",
+      link: "/vehiculos",
+    },  {
+      title: "Volúmen",
+      link: "/volumen",
+    },
+    {
+      title: "Áreas y turnos de trabajos ",
+      link: "/areas",
     },
     {
       title: "Perfil",
       link: "/profile",
     },
-       {
+    {
       title: "Documentacion",
       link: "https://docs.google.com/document/d/11nAsUlODb0XNa5tlPNpkSU9uyVfL5pnMkDBCgqjbaOg/edit",
-     }, 
-    // {
-    //   title: "Ajustes",
-    //   link: "/ajustes",
-    // },
+    },
+  ];
+
+  const materialMenus = [
+    {
+      title: "Material Triturado",
+      link: "/materialTri",
+    },
+    {
+      title: "Material Procesado",
+      link: "/materialProc",
+    },
+    {
+      title: "Plasticos",
+      link: "/material",
+    }
   ];
 
   const handleSignOut = () => {
@@ -59,7 +68,9 @@ const Sidebar = () => {
         console.error("Error al cerrar sesión: ", error);
       });
   }
-
+  const toggleMaterialMenu = () => {
+    setMaterialOpen(!materialOpen); // Cambia el estado de la sección de Materiales
+  };
   return (
     <div className="h-dvh">
       <div
@@ -79,12 +90,38 @@ const Sidebar = () => {
           </div>
         </div>
         <ul className={`   ${!open ? 'pb-6' : 'pt-6'}`}>
-          {Menus.map((Menu, index) => (
+        {Menus.map((Menu, index) => (
             <li
               key={index}
               className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center ${
                 Menu.gap ? "mt-9" : "mt-2"
               } ${index === 0 && "bg-light-white"}`}
+            >
+              <Link to={Menu.link} className="flex flex-col flex-nowrap justify-center items-center">
+                <span className={`${!open && "hidden"} origin-left duration-200`}>
+                  {Menu.title}
+                </span>
+              </Link>
+            </li>
+          ))}
+          
+       {/* Menú de Materiales */}
+       <li 
+            className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
+            onClick={toggleMaterialMenu}
+          >
+            <div className="flex flex-col flex-nowrap justify-center items-center">
+              <span className={`${!open && "hidden"} origin-left duration-200`}>
+                Materiales
+              </span>
+            </div>
+          </li>
+
+          {/* Submenús de Materiales - Se expanden al hacer clic en "Materiales" */}
+          {materialOpen && materialMenus.map((Menu, index) => (
+            <li
+              key={index}
+              className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
             >
               <Link to={Menu.link} className="flex flex-col flex-nowrap justify-center items-center">
                 <span className={`${!open && "hidden"} origin-left duration-200`}>

@@ -16,6 +16,9 @@ import Register from './pages/login/Register';
 import Material from './pages/materiales/Materiales';
 import { AuthProvider } from '../src/context/AuthContext';
 import Tablas from './pages/tablas/Tablas';
+import Vehiculos from './pages/vehiculos/Vehiculos';
+import Volumen from './pages/volumen/Volumen';
+import Areas from './pages/areas/Areas';
 
 
 function App() {
@@ -63,6 +66,21 @@ function App() {
                     <Route path="/recoleccion" element={
               <ProtectedRoute>
                        <RecoUrbanos />
+                       </ProtectedRoute>
+                   } />
+                     <Route path="/vehiculos" element={
+              <ProtectedRoute>
+                       <Vehiculos />
+                       </ProtectedRoute>
+                   } />
+  <Route path="/volumen" element={
+              <ProtectedRoute>
+                       <Volumen />
+                       </ProtectedRoute>
+                   } />
+                    <Route path="/areas" element={
+              <ProtectedRoute>
+                       <Areas />
                        </ProtectedRoute>
                    } />
           </Routes>

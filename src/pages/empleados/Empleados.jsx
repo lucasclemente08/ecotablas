@@ -215,7 +215,10 @@ return(
     <div className="overflow-x-auto m-5">
       <div className="m-3">
         <h2 className="text-white text-3xl b-4">Empleados</h2>
+</div>
+        <div className=" ">
         <div className="">
+
           <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 px-4 rounded">
             Agregar empleado
           </button>
@@ -324,7 +327,7 @@ return(
         {mensaje && <div className="text-white mt-4">{mensaje}</div>}
       </div>
     </div>
-  </div>
+  
 
   {modalAbiertoMod && (
     <div className="fixed inset-0 overflow-y-auto">
@@ -366,6 +369,9 @@ return(
       </div>
     </div>
   )}
+  
+
+        </div>
 </>
 );
 };

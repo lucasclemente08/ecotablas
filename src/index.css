@@ -22,9 +22,16 @@ nav{
   } */
   #map{
     margin-left:5rem;
-    width:800px;
-    height:800px;
-  }
+    width:600px;
+    overflow-x: none;
+    overflow-y: none;
+    border-radius:.8rem ;
+    height:450px;
+    -webkit-border-radius:.8rem ;
+    -moz-border-radius:.8rem ;
+    -ms-border-radius:.8rem ;
+    -o-border-radius:.8rem ;
+}
 
   .leaflet-container {
     width: 100%;
