@@ -5,11 +5,9 @@ import { useReactToPrint } from 'react-to-print';
 
 const Empleados = () => {
   const [empleadosData, setEmpleadosData] = useState([]);
-  const [searchFilters, setSearchFilters] = useState({
-    DNI: '',
-    Nombre: '',
-    Apellido: '',
-  });
+  const [searchFilters, setSearchFilters] = useState({ DNI: '', Nombre: '', Apellido: '' });
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  
   const [filteredEmpleados, setFilteredEmpleados] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalAbiertoMod, setModalAbiertoMod] = useState(false);
@@ -193,10 +191,10 @@ const Empleados = () => {
       setMensaje("El DNI no puede tener más de 8 dígitos");
       return;
     }
-    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(empleadoSeleccionado.FechaIngreso)) {
-      setMensaje("La fecha debe tener el formato dd/mm/aaaa");
-      return;
-    }
+    // if (!/^\d{2}\/\d{2}\/\d{4}$/.test(empleadoSeleccionado.FechaIngreso)) {
+    //   setMensaje("La fecha debe tener el formato dd/mm/aaaa");
+    //   return;
+    // }
 
     axios.put(`http://www.trazabilidadodsapi.somee.com/api/Empleados/Modificar/${empleadoSeleccionadoId}`, empleadoSeleccionado)
       .then((response) => {
@@ -290,7 +288,7 @@ const Empleados = () => {
                         <input type="text" name="Dpto" placeholder="Dpto" value={nuevoEmpleado.Dpto} onChange={handleChange} className="border p-2 w-full mt-2" />
                         <input type="text" name="CodPostal" placeholder="Código Postal *" value={nuevoEmpleado.CodPostal} onChange={handleChange} className="border p-2 w-full mt-2" />
                         <input type="text" name="IdLocalidad" placeholder="IdLocalidad" value={nuevoEmpleado.IdLocalidad} onChange={handleChange} className="border p-2 w-full mt-2" />
-                        <input type="text" name="FechaIngreso" placeholder="Fecha de Ingreso (dd/mm/aaaa) *" value={nuevoEmpleado.FechaIngreso} onChange={handleChange} className="border p-2 w-full mt-2" />
+                        <input type="date" name="FechaIngreso" placeholder="Fecha de Ingreso (dd/mm/aaaa) *" value={nuevoEmpleado.FechaIngreso} onChange={handleChange} className="border p-2 w-full mt-2" />
                         <input type="text" name="Telefono" placeholder="Teléfono *" value={nuevoEmpleado.Telefono} onChange={handleChange} className="border p-2 w-full mt-2" />
                         <input type="text" name="Mail" placeholder="Mail *" value={nuevoEmpleado.Mail} onChange={handleChange} className="border p-2 w-full mt-2" />
                         <input type="text" name="IdArea" placeholder="IdArea *" value={nuevoEmpleado.IdArea} onChange={handleChange} className="border p-2 w-full mt-2" />
@@ -318,6 +316,31 @@ const Empleados = () => {
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
           <div>
+          {mensaje && (
+    <div className="bg-red-700 text-white p-4 rounded-lg flex items-center space-x-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M18.364 5.636a9 9 0 11-12.728 0 9 9 0 0112.728 0z"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M12 9v2m0 4h.01"
+        />
+      </svg>
+      <span>{mensaje}</span>
+    </div>
+  )}
             <div className="mt-3 text-center sm:mt-5">
               <h3 className="text-lg leading-6 font-medium text-gray-900">Modificar Empleado</h3>
               <div className="mt-2">
@@ -330,7 +353,7 @@ const Empleados = () => {
                 <input type="text" name="Dpto" placeholder="Dpto" value={empleadoSeleccionado.Dpto} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
                 <input type="text" name="CodPostal" placeholder="Código Postal *" value={empleadoSeleccionado.CodPostal} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
                 <input type="text" name="IdLocalidad" placeholder="IdLocalidad" value={empleadoSeleccionado.IdLocalidad} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
-                <input type="text" name="FechaIngreso" placeholder="Fecha de Ingreso (dd/mm/aaaa) *" value={empleadoSeleccionado.FechaIngreso} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
+                <input type="date" name="FechaIngreso" placeholder="Fecha de Ingreso (dd/mm/aaaa) *" value={empleadoSeleccionado.FechaIngreso} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
                 <input type="text" name="Telefono" placeholder="Teléfono *" value={empleadoSeleccionado.Telefono} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
                 <input type="text" name="Mail" placeholder="Mail *" value={empleadoSeleccionado.Mail} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
                 <input type="text" name="IdArea" placeholder="IdArea *" value={empleadoSeleccionado.IdArea} onChange={handleChangeEmpleado} className="border p-2 w-full mt-2" />
@@ -352,40 +375,55 @@ const Empleados = () => {
   
 
             <div className="mt-4">
-              <input
-                type="text"
-                placeholder="Buscar por DNI"
-                value={searchFilters.DNI}
-                onChange={(e) => setSearchFilters({ ...searchFilters, DNI: e.target.value })}
-                className="border p-2 w-full mt-2"
-              />
-              <input
-                type="text"
-                placeholder="Buscar por Nombre"
-                value={searchFilters.Nombre}
-                onChange={(e) => setSearchFilters({ ...searchFilters, Nombre: e.target.value })}
-                className="border p-2 w-full mt-2"
-              />
-              <input
-                type="text"
-                placeholder="Buscar por Apellido"
-                value={searchFilters.Apellido}
-                onChange={(e) => setSearchFilters({ ...searchFilters, Apellido: e.target.value })}
-                className="border p-2 w-full mt-2"
-              />
-              <button
-                onClick={handleSearch}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-2 rounded"
-              >
-                Buscar
-              </button>
-              <button
-                onClick={handleMostrarTodos}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-2 ml-2 rounded"
-              >
-                Mostrar Todos
-              </button>
-            </div>
+            <input
+        type="text"
+        placeholder="Buscar por DNI"
+        value={searchFilters.DNI}
+        onChange={(e) => setSearchFilters({ ...searchFilters, DNI: e.target.value })}
+        className="border p-2 w-full mt-2"
+      />
+
+      {mostrarFiltros && (
+        <>
+          <input
+            type="text"
+            placeholder="Buscar por Nombre"
+            value={searchFilters.Nombre}
+            onChange={(e) => setSearchFilters({ ...searchFilters, Nombre: e.target.value })}
+            className="border p-2 w-full mt-2"
+          />
+          <input
+            type="text"
+            placeholder="Buscar por Apellido"
+            value={searchFilters.Apellido}
+            onChange={(e) => setSearchFilters({ ...searchFilters, Apellido: e.target.value })}
+            className="border p-2 w-full mt-2"
+          />
+        </>
+      )}
+
+      <div className="flex items-center mt-2">
+        <button
+          onClick={handleSearch}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Buscar
+        </button>
+        <button
+          onClick={handleMostrarTodos}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-2 rounded"
+        >
+          Mostrar Todos
+        </button>
+        <button
+          onClick={() => setMostrarFiltros(!mostrarFiltros)}
+          className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 ml-2 rounded"
+        >
+          {mostrarFiltros ? 'Ocultar Filtros' : 'Agregar Filtros'}
+        </button>
+      
+        </div>
+        </div>
           </div>
 
           <table className="min-w-full bg-white mt-4" ref={componentRef}>

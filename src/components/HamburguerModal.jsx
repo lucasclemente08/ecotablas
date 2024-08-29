@@ -3,6 +3,9 @@ import { RiCloseFill } from 'react-icons/ri';
 import { Link, useNavigate,  } from 'react-router-dom';
 import { auth } from '../firebase/firebase';
 import { signOut } from "firebase/auth";
+import { FaArrowDown } from "react-icons/fa";
+import { icon } from 'leaflet';
+
 
 const HamburgerModal = ({ open, close }) => {
     const modalRef = useRef(null);
@@ -11,7 +14,7 @@ const HamburgerModal = ({ open, close }) => {
     const links = [
         { text: 'Inicio', href: '/', key: 'inicio' },
         { text: 'Empleados', href: '/empleados', key: 'empleados' },
-        { text: 'Materiales', href: '/material', key: 'materiales' },
+        { text: 'Materiales', href: '/material', key: 'materiales'},
         { text: 'Materiales Procesado', href: '/materialProc', key: 'materialProc' },
         { text: 'Materiales triturado', href: '/materialTrit', key: 'materialTrit' },
         { text: 'Vehiculos', href: '/vehiculos', key: 'vehiculos' },
