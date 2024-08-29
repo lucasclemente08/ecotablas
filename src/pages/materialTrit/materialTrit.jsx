@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Home from '../home/Home';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import axios from 'axios';
 
 const MaterialTrit = () => {
@@ -20,13 +22,6 @@ const MaterialTrit = () => {
     setModalAbierto(false);
   };
 
-  const abrirModalMaterial = (id) => {
-    setModalOpcionesAbierto(true);
-    // Aquí puedes realizar alguna acción con el ID si lo necesitas
-  };
-  const cerrarModalMaterial = () => {
-    setModalOpcionesAbierto(false);
-  };
 
   useEffect(() => {
     const fetchMaterials = async () => {
@@ -60,6 +55,50 @@ const MaterialTrit = () => {
     }));
   };
 
+
+
+  const GenerarPDF = () => {
+    const doc = new jsPDF();
+  
+    // Configuración de las columnas para la tabla
+    const columns = [
+      { header: "Id Material", dataKey: "IdMaterialTriturado" },
+      { header: "Volumen (kgs)", dataKey: "VolumenT" },
+      { header: "Fecha", dataKey: "Fecha" }
+    ];
+  
+    // Preparación de los datos para la tabla
+    const rows = materials.map(material => ({
+      IdMaterialTriturado: material.IdMaterialTriturado,
+      VolumenT: `${material.VolumenT} kgs`,
+      Fecha: material.Fecha.slice(0, 10) // Formateo de la fecha
+    }));
+  
+    // Título del documento
+    doc.setFontSize(18);
+    doc.text("Listado de Materiales Triturados", 14, 22);
+  
+    // Agregar tabla al documento
+    doc.autoTable({
+      head: [columns.map(col => col.header)],
+      body: rows.map(row => columns.map(col => row[col.dataKey])),
+      startY: 30, // Espaciado desde el título
+      margin: { top: 20, left: 14, right: 14 },
+      theme: 'striped'
+    });
+  
+    // Guardar el PDF con un nombre específico
+    doc.save("Listado_Materiales_Triturados.pdf");
+  };
+
+
+
+
+
+
+
+
+
   return (
     <>
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
@@ -69,7 +108,12 @@ const MaterialTrit = () => {
           <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded">
             Agregar material triturado
           </button>
-
+          <button
+  onClick={GenerarPDF}
+  className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-4 px-4 rounded"
+>
+  Imprimir listado
+</button>
           {modalAbierto && (
             <div className="fixed inset-0 overflow-y-auto">
               <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -103,32 +147,6 @@ const MaterialTrit = () => {
             </div>
           )}
 
-          {modalOpcionesAbierto && (
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                  <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                </div>
-                
-                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                
-                <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-                  <div className="text-center">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Opciones</h3>
-                  </div>
-                  <div className="mt-4 flex items-center justify-center">
-                    <button onClick={() => console.log("Modificar material" + id)} className="bg-gray-900 text-white font-bold py-1 px-2 rounded mr-2">
-                      Modificar material
-                    </button>
-                    <button onClick={() => console.log("Eliminar material")} className="bg-red-700 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
-                      Eliminar
-                    </button>
-                  </div>
-                  <button ></button>
-                </div>
-              </div>
-            </div>
-          )}
 
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
