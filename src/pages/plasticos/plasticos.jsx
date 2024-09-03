@@ -1,34 +1,42 @@
 import React from 'react'
 import {  Chart } from "react-charts";
-import { useState,useMemo } from 'react';
+import { useState,useMemo,useEffect } from 'react';
 import Home from '../home/Home';
-
+import axios from 'axios';
 const Tablas = () => {
-    const myData = [
-        {
-          label: "Materiales ",
-          data: [
-            { primary: "Pvc", secondary: 500 },
-            // { primary: "Plasticos", secondary: 300 },
 
-          ]
-        },
-        {
-          label: "Materiales ",
-          data: [
-            { primary: "Plasticos", secondary: 500 },
-          ]
-        },
-        {
-          label: "Series 3",
-          data: [
-          { primary: "Caños y tuberias", secondary: 450 }
-         
-           
+  const [plasticos, setPlasticos] = useState([]);
+  const myData = [
+    {
+      label: "Polietileno",
+      data: [
+        { primary: "Materiales", secondary: 300 },
+
+      ]
+    },
+    {
+      label: "Polipropileno",
+      data: [
+        { primary: "Materiales", secondary: 250 },
+ 
+      ]
+    },
+    {
+      label: "PVC",
+      data: [
+        { primary: "Materiales", secondary: 500 },
+
+      ]
+    },
+    {
+      label: "Poliestireno",
+      data: [
+        { primary: "Materiales", secondary: 200 },
        
-          ]
-        }
-      ];
+      ]
+    }
+  ];
+  
       const [data, setData] = useState(myData);
 
       const primaryAxis = useMemo(
@@ -46,6 +54,22 @@ const Tablas = () => {
         ],
         []
       );      
+
+
+      const fetchMaterials = async () => {
+        try {
+          const response = await axios.get("http://www.trazabilidadodsapi.somee.com/api/TiposPlastico/ListarTodo");
+          setPlasticos(response.data);
+        } catch (error) {
+          console.error("Error fetching materials:", error);
+        }
+      };
+    
+      useEffect(() => {
+        fetchMaterials();
+      }, []);
+
+
 
 
     return (
