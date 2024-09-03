@@ -15,7 +15,7 @@ import Profile from './pages/profile/Profile';
 import Register from './pages/login/Register';
 import Material from './pages/materiales/Materiales';
 import { AuthProvider } from '../src/context/AuthContext';
-import Tablas from './pages/tablas/Tablas';
+import Tablas from './pages/plasticos/plasticos';
 import Vehiculos from './pages/vehiculos/Vehiculos';
 import Volumen from './pages/volumen/Volumen';
 import Areas from './pages/areas/Areas';
@@ -44,7 +44,7 @@ function App() {
                 <Empleados />
                 </ProtectedRoute>
             } />
-             <Route path="/tablas" element={
+             <Route path="/plasticos" element={
        <ProtectedRoute>
                 <Tablas />
                 </ProtectedRoute>
