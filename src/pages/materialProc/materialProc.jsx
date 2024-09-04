@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Home from '../home/Home';
 import axios from "axios";
-
+import { FaFilePdf } from "react-icons/fa6";
+import jsPDF from 'jspdf';
 const MaterialProc = () => {
   const [materials, setMaterials] = useState([]);
   const [newMaterial, setNewMaterial] = useState({
@@ -38,6 +39,15 @@ const MaterialProc = () => {
   }
 
   const handleEditSubmit = () => {
+    if (!newMaterial.VolumenP || !newMaterial.FechaIngresoP || !newMaterial.IdIngresoMaterial) {
+      setMensaje("Todos los campos son obligatorios.");
+      return;
+    }
+    
+
+
+
+
     axios.put(`http://www.trazabilidadodsapi.somee.com/api/MaterialPros/Modificar/${materialId}`, newMaterial)
       .then(() => {
         setModalEdit(false);
@@ -77,6 +87,59 @@ const MaterialProc = () => {
     fetchMaterials();
   }, []);
 
+
+
+  const GenerarPDF = () => {
+    const doc = new jsPDF();
+  
+    const columns = [
+      { header: "Volumen (kgs)", dataKey: "VolumenP" },
+      { header: "Fecha de ingreso", dataKey: "FechaIngresoP" }
+    ];
+  
+    const rows = materials.map(material => ({
+      VolumenP: `${material.VolumenP} kgs`,
+      FechaIngresoP: material.FechaIngresoP.slice(0, 10) // Asegúrate de que coincida con el dataKey
+    }));
+  
+    // Añadir logotipo (debes convertir la imagen a base64 o usar una URL)
+    const logoURL = 'https://img.icons8.com/external-soft-fill-juicy-fish/60/external-eco-packaging-symbols-soft-fill-soft-fill-juicy-fish.png';
+    
+    // Es posible que necesites convertir la imagen a base64 para añadirla a jsPDF
+    // doc.addImage(logoBase64, 'PNG', x, y, width, height);
+    doc.addImage(logoURL, 'PNG', 160, 10, 30, 30); // Posición y tamaño del logo
+  
+    // Añadir fecha actual
+    const fechaActual = new Date().toLocaleDateString();
+    doc.setFontSize(12);
+    doc.text(`Fecha: ${fechaActual}`, 14, 20); // Posición de la fecha
+  
+    // Añadir nombre de la empresa
+    doc.setFontSize(14);
+    doc.text("Gestión de Ecotablas", 14, 30); // Posición del nombre de la empresa
+  
+    // Título del documento
+    doc.setFontSize(18);
+    doc.text("Listado de Materiales Procesados", 14, 40); // Ajusta la posición del título según el logo
+  
+    // Crear la tabla
+    doc.autoTable({
+      head: [columns.map(col => col.header)],
+      body: rows.map(row => columns.map(col => row[col.dataKey])),
+      startY: 50, // Ajusta el startY para evitar superposición con el logo y el nombre de la empresa
+      margin: { top: 20, left: 14, right: 14 },
+      theme: 'striped'
+    });
+  
+    // Guardar el PDF
+    doc.save("Listado_Materiales_Procesados.pdf");
+  };
+  
+
+
+
+
+
   return (
     <>
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
@@ -86,7 +149,13 @@ const MaterialProc = () => {
           <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded">
             Agregar material Procesado
           </button>
-
+          <button
+  onClick={GenerarPDF}
+  className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-4 px-4 rounded inline-flex items-center"
+>
+  <span>Imprimir listado</span>
+  <FaFilePdf className="ml-2" />
+</button>
           {modalAbierto && (
             <div className="fixed inset-0 overflow-y-auto">
               <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -149,8 +218,7 @@ const MaterialProc = () => {
             <table className="min-w-full bg-white rounded-lg shadow-md">
               <thead>
                 <tr>
-                  <th className="border-b-2 py-3 px-4 text-left text-gray-600">Id Material</th>
-                  <th className="border-b-2 py-3 px-4 text-left text-gray-600">Volumen</th>
+                  <th className="border-b-2 py-3 px-4 text-left mr-9 text-gray-600">Volumen</th>
                   <th className="border-b-2 py-3 px-4 text-left text-gray-600">Fecha</th>
                   <th className="border-b-2 py-3 px-4 text-left text-gray-600">Acciones</th>
                 </tr>
@@ -158,7 +226,7 @@ const MaterialProc = () => {
               <tbody>
                 {materials.map((material) => (
                   <tr key={material.IdMaterialProcesado} className="hover:bg-gray-100">
-                    <td className="border-b py-3 px-4">{material.IdMaterialProcesado}</td>
+                 
                     <td className="border-b py-3 px-4">Volumen: {material.VolumenP} kgs</td>
                     <td className="border-b py-3 px-4">{material.FechaIngresoP.slice(0, 10)}</td>
                     <td className="border-b py-3 px-4 flex justify-center">
