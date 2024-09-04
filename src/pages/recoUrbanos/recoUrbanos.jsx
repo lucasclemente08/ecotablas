@@ -57,7 +57,7 @@ const RecoUrbanos = () => {
           .then((response) => setLocations(response.data))
           .catch((error) => console.error('Error al obtener los datos:', error));
       })
-      .catch((error) => console.error('Error al agregar el material:', error));
+      .catch((error) => console.error('error al obtener los datos:', error));
   };
 
   const handleChange = (e) => {
@@ -71,8 +71,8 @@ const RecoUrbanos = () => {
   const handleMapClick = (e) => {
     const { lat, lng } = e.latlng;
     setNewUbicacion({ Nombre: '', Lat: lat.toFixed(6), Long: lng.toFixed(6) });
-    setModalAbierto(true);
   };
+  
   const abrirModal = () => {
     setModalAbierto(true);
   };
@@ -100,15 +100,15 @@ const RecoUrbanos = () => {
                     <h3 className="text-lg leading-6 font-medium text-gray-900">Agregar Ubicacion</h3>
                     <div className="mt-2">
                       <input type="text" name="Nombre" placeholder="Nombre de la parada *" value={newUbicacion.Nombre} onChange={handleChange} className="border p-2 w-full" />
-                      <input type="text" name="Lat" placeholder="Latitud *" value={newUbicacion.Lat} onChange={handleChange} className="border p-2 w-full mt-2" disabled />
-                      <input type="text" name="Long" placeholder="Longitud *" value={newUbicacion.Long} onChange={handleChange} className="border p-2 w-full mt-2" disabled />
+                      <input type="text" name="Lat" placeholder="Latitud *" value={newUbicacion.Lat} onChange={handleChange} className="border p-2 w-full mt-2" />
+                      <input type="text" name="Long" placeholder="Longitud *" value={newUbicacion.Long} onChange={handleChange} className="border p-2 w-full mt-2" />
                     </div>
                   </div>
                   <div className="mt-5 sm:mt-6">
                     <button onClick={handleSubmit} className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm">
                       Guardar
                     </button>
-                    <button onClick={() => setModalAbierto(false)} className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm">
+                    <button onClick={cerrarModal} className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm">
                       Cancelar
                     </button>
                   </div>
@@ -118,6 +118,9 @@ const RecoUrbanos = () => {
           )}
 
           <div>
+          <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded">
+            Agregar ubicación
+          </button>
             <button onClick={handlePrint} className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-2 px-4 rounded">
               Imprimir listado
             </button>
@@ -125,16 +128,20 @@ const RecoUrbanos = () => {
 
           <div className="flex mt-5">
             {!modalAbierto && (
-              <MapContainer id='map' ref={componentRef} className="overflow-y-auto" center={centerPosition} zoom={10} scrollWheelZoom={false} 
-              whenReady={(map) => {
-                console.log(map);
-                map.target.on('click', function (e) {
-                  console.log(e.target.latlng)
-                  const { lat, lng } = e.latlng;
-                  L.marker([lat, lng], { icon }).addTo(map.target);
-                });
-              }}
-              onClick={handleMapClick}>
+              <MapContainer
+                id="map"
+                className="overflow-y-auto"
+                center={centerPosition}
+                zoom={10}
+                scrollWheelZoom={false}
+                whenReady={(map) => {
+                  map.target.on('click', function (e) {
+                    const { lat, lng } = e.latlng;
+                    setNewUbicacion({ Nombre: '', Lat: lat.toFixed(6), Long: lng.toFixed(6) });
+                    L.marker([lat, lng], { icon: DefaultIcon }).addTo(map.target);
+                  });
+                }}
+              >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -151,6 +158,6 @@ const RecoUrbanos = () => {
       </div>
     </div>
   );
-}
+};
 
 export default RecoUrbanos;
