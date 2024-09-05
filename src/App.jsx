@@ -19,6 +19,7 @@ import Tablas from './pages/plasticos/plasticos';
 import Vehiculos from './pages/vehiculos/Vehiculos';
 import Volumen from './pages/volumen/Volumen';
 import Areas from './pages/areas/Areas';
+import EmpresaDonante from './pages/empresaDonante/EmpresaDonante';
 
 
 function App() {
@@ -83,6 +84,13 @@ function App() {
                        <Areas />
                        </ProtectedRoute>
                    } />
+
+<Route path="/empresa" element={
+              <ProtectedRoute>
+                       <EmpresaDonante />
+                       </ProtectedRoute>
+                   } />
+
           </Routes>
         </div>
       </Router>
