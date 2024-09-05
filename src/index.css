@@ -21,12 +21,12 @@ nav{
     z-index: 0;
   } */
   #map{
-    margin-left:5rem;
-    width:600px;
+    margin-left:10rem;
+width: 1100px;
     overflow-x: none;
     overflow-y: none;
     border-radius:.8rem ;
-    height:450px;
+    height:700px;
     -webkit-border-radius:.8rem ;
     -moz-border-radius:.8rem ;
     -ms-border-radius:.8rem ;
