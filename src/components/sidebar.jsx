@@ -5,59 +5,41 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
+
+  const [employeeOpen, setEmployeeOpen] = useState(false);
+  const [urbanOpen, setUrbanOpen] = useState(false);
   const [materialOpen, setMaterialOpen] = useState(false);
 
+  const employeeMenus = [
+    { title: "Empleados", link: "/empleados" },
+    { title: "Áreas y turnos de trabajo", link: "/areas" },
+    { title: "Perfil", link: "/profile" }
+  ];
 
-  const Menus = [
-    {
-      title: "Inicio",
-      link: "/", 
-    },
-    {
-      title: "Empleados",
-      link: "/empleados",
-    },
-    {
-      title: "Recolección Urbanos",
-      link: "/recoleccion",
-    },
-    {
-      title: "Vehicúlos",
-      link: "/vehiculos",
-    },  {
-      title: "Volúmen",
-      link: "/volumen",
-    },
-    {
-      title: "Áreas y turnos de trabajos ",
-      link: "/areas",
-    },
-    {
-      title: "Perfil",
-      link: "/profile",
-    },
-    {
-      title: "Documentacion",
-      link: "https://docs.google.com/document/d/11nAsUlODb0XNa5tlPNpkSU9uyVfL5pnMkDBCgqjbaOg/edit",
-    },
+  const urbanMenus = [
+    { title: "Recolección Urbanos", link: "/recoleccion" },
+    { title: "Vehículos", link: "/vehiculos" },
+    { title: "Empresa Donante", link: "/empresa" }
   ];
 
   const materialMenus = [
-    {
-      title: "Material Triturado",
-      link: "/materialTri",
-    },
-    {
-      title: "Material Procesado",
-      link: "/materialProc",
-    },
-    {
-      title: "Plasticos",
-      link: "/material",
-    }
+    { title: "Material Triturado", link: "/materialTri" },
+    { title: "Material Procesado", link: "/materialProc" },
+    { title: "Plásticos", link: "/material" }
   ];
+
+  const toggleEmployeeMenu = () => {
+    setEmployeeOpen(!employeeOpen);
+  };
+
+  const toggleUrbanMenu = () => {
+    setUrbanOpen(!urbanOpen);
+  };
+
+  const toggleMaterialMenu = () => {
+    setMaterialOpen(!materialOpen);
+  };
 
   const handleSignOut = () => {
     signOut(auth)
@@ -67,10 +49,8 @@ const Sidebar = () => {
       .catch((error) => {
         console.error("Error al cerrar sesión: ", error);
       });
-  }
-  const toggleMaterialMenu = () => {
-    setMaterialOpen(!materialOpen); // Cambia el estado de la sección de Materiales
   };
+
   return (
     <div className="h-dvh">
       <div
@@ -79,7 +59,7 @@ const Sidebar = () => {
         } bg-dark-purple w-60 min-h-screen pt-1 bg-sky-600 shadow relative duration-300`}
       >
         <div className="flex flex-col items-center m-1 p-4">
-          <div className='mt-10'>
+          <div className="mt-10">
             <h1
               className={`text-white origin-left font-medium text-xl duration-200 ${
                 !open && "scale-0"
@@ -89,58 +69,109 @@ const Sidebar = () => {
             </h1>
           </div>
         </div>
-        <ul className={`   ${!open ? 'pb-6' : 'pt-6'}`}>
-        {Menus.map((Menu, index) => (
-            <li
-              key={index}
-              className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center ${
-                Menu.gap ? "mt-9" : "mt-2"
-              } ${index === 0 && "bg-light-white"}`}
-            >
-              <Link to={Menu.link} className="flex flex-col flex-nowrap justify-center items-center">
-                <span className={`${!open && "hidden"} origin-left duration-200`}>
-                  {Menu.title}
-                </span>
-              </Link>
-            </li>
-          ))}
-          
-       {/* Menú de Materiales */}
-       <li 
-            className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
-            onClick={toggleMaterialMenu}
-          >
-            <div className="flex flex-col flex-nowrap justify-center items-center">
-              <span className={`${!open && "hidden"} origin-left duration-200`}>
-                Materiales
-              </span>
-            </div>
-          </li>
 
-          {/* Submenús de Materiales - Se expanden al hacer clic en "Materiales" */}
-          {materialOpen && materialMenus.map((Menu, index) => (
+        {/* Sección de Empleados */}
+        <li
+          className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
+          onClick={toggleEmployeeMenu}
+        >
+          <div className="flex flex-col flex-nowrap justify-center items-center">
+            <span className={`${!open && "hidden"} origin-left duration-200`}>
+              Empleados
+            </span>
+          </div>
+        </li>
+
+        {/* Submenús de Empleados */}
+        {employeeOpen &&
+          employeeMenus.map((menu, index) => (
             <li
               key={index}
               className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
             >
-              <Link to={Menu.link} className="flex flex-col flex-nowrap justify-center items-center">
+              <Link
+                to={menu.link}
+                className="flex flex-col flex-nowrap justify-center items-center"
+              >
                 <span className={`${!open && "hidden"} origin-left duration-200`}>
-                  {Menu.title}
+                  {menu.title}
                 </span>
               </Link>
             </li>
           ))}
-          <li> 
-            <div className="mt-10 text-center justify-center mb-5 flex w-full">
-              <button
-                onClick={handleSignOut}
-                className="font-semibold text-white hover:text-red-600"
+
+        {/* Sección de Recolección Urbanos */}
+        <li
+          className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
+          onClick={toggleUrbanMenu}
+        >
+          <div className="flex flex-col flex-nowrap justify-center items-center">
+            <span className={`${!open && "hidden"} origin-left duration-200`}>
+              Recolección de Urbanos
+            </span>
+          </div>
+        </li>
+
+        {/* Submenús de Recolección Urbanos */}
+        {urbanOpen &&
+          urbanMenus.map((menu, index) => (
+            <li
+              key={index}
+              className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
+            >
+              <Link
+                to={menu.link}
+                className="flex flex-col flex-nowrap justify-center items-center"
               >
-                Cerrar sesión
-              </button>
-            </div>
-          </li>
-        </ul>
+                <span className={`${!open && "hidden"} origin-left duration-200`}>
+                  {menu.title}
+                </span>
+              </Link>
+            </li>
+          ))}
+
+        {/* Sección de Materiales */}
+        <li
+          className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
+          onClick={toggleMaterialMenu}
+        >
+          <div className="flex flex-col flex-nowrap justify-center items-center">
+            <span className={`${!open && "hidden"} origin-left duration-200`}>
+              Materiales
+            </span>
+          </div>
+        </li>
+
+        {/* Submenús de Materiales */}
+        {materialOpen &&
+          materialMenus.map((menu, index) => (
+            <li
+              key={index}
+              className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
+            >
+              <Link
+                to={menu.link}
+                className="flex flex-col flex-nowrap justify-center items-center"
+              >
+                <span className={`${!open && "hidden"} origin-left duration-200`}>
+                  {menu.title}
+                </span>
+              </Link>
+            </li>
+          ))}
+
+
+      
+  
+          <div className="mt-60 text-center justify-center mb-5 flex w-full">
+            <button
+              onClick={handleSignOut}
+              className="font-semibold text-white hover:text-red-600"
+            >
+              Cerrar sesión
+            </button>
+          </div>
+    
       </div>
     </div>
   );

@@ -52,6 +52,27 @@ const MaterialTrit = () => {
     fetchMaterials();
   }, []);
 
+  const handleEditSubmit = () => {
+    if (!newMaterial.VolumenP || !newMaterial.FechaIngresoP || !newMaterial.IdIngresoMaterial) {
+      setMensaje("Todos los campos son obligatorios.");
+      return;
+    }
+    
+
+
+
+
+    axios.put(`http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Modificar/${materialId}`, newMaterial)
+      .then(() => {
+        setModalEdit(false);
+        setMensaje("Modificación exitosa");
+        fetchMaterials();
+      })
+      .catch((error) => console.error('Error al modificar el material:', error));
+  }
+
+
+
   const handleSubmit = () => {
     if (selectedMaterial) {
       // Modificar material
@@ -61,22 +82,28 @@ const MaterialTrit = () => {
           setMensaje("Modificación exitosa");
           // Actualizar la lista de materiales después de modificar
           setMaterials(materials.map(material => 
-            material.IdMaterialTriturado === selectedMaterial.IdMaterialTriturado ? newMaterial : material
+            material.IdMaterialTriturado === selectedMaterial.IdMaterialTriturado ? response.data : material
           ));
         })
-        .catch((error) => console.error('Error al modificar el material:', error));
+        .catch((error) => {
+          setMensaje("Error al modificar el material.");
+          console.error('Error al modificar el material:', error);
+        });
     } else {
       // Agregar nuevo material
       axios.post(`http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Insertar`, newMaterial)
         .then((response) => {
           setModalAbierto(false);
           setMensaje("Inserción exitosa");
-          // Puedes actualizar la lista de materiales aquí si lo necesitas
           setMaterials([...materials, response.data]);
         })
-        .catch((error) => console.error('Error al agregar el material:', error));
+        .catch((error) => {
+          setMensaje("Error al agregar el material.");
+          console.error('Error al agregar el material:', error);
+        });
     }
   };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -105,30 +132,45 @@ const MaterialTrit = () => {
     const doc = new jsPDF();
   
     const columns = [
-      { header: "Id Material", dataKey: "IdMaterialTriturado" },
       { header: "Volumen (kgs)", dataKey: "VolumenT" },
       { header: "Fecha", dataKey: "Fecha" }
     ];
   
     const rows = materials.map(material => ({
-      IdMaterialTriturado: material.IdMaterialTriturado,
       VolumenT: `${material.VolumenT} kgs`,
       Fecha: material.Fecha.slice(0, 10)
     }));
   
-    doc.setFontSize(18);
-    doc.text("Listado de Materiales Triturados", 14, 22);
+    // Añadir logotipo
+    const logoURL = 'https://img.icons8.com/external-soft-fill-juicy-fish/60/external-eco-packaging-symbols-soft-fill-soft-fill-juicy-fish.png';
+    doc.addImage(logoURL, 'PNG', 160, 10, 30, 30); // Posición y tamaño del logo
   
+    // Añadir fecha actual
+    const fechaActual = new Date().toLocaleDateString();
+    doc.setFontSize(12);
+    doc.text(`Fecha: ${fechaActual}`, 14, 20); // Posición de la fecha
+  
+    // Añadir nombre de la empresa
+    doc.setFontSize(14);
+    doc.text("Gestión de Ecotablas", 14, 30); // Posición del nombre de la empresa
+  
+    // Título del documento
+    doc.setFontSize(18);
+    doc.text("Listado de Materiales Triturados", 14, 40); // Ajusta la posición del título según el logo y el nombre de la empresa
+  
+    // Crear la tabla
     doc.autoTable({
       head: [columns.map(col => col.header)],
       body: rows.map(row => columns.map(col => row[col.dataKey])),
-      startY: 30,
+      startY: 50, // Ajusta el startY para evitar superposición con el logo y el nombre de la empresa
       margin: { top: 20, left: 14, right: 14 },
       theme: 'striped'
     });
   
+    // Guardar el PDF
     doc.save("Listado_Materiales_Triturados.pdf");
   };
+  
 
   return (
     <>
@@ -185,46 +227,14 @@ const MaterialTrit = () => {
               </div>
             </div>
           )}
+
           
-          {modalOpcionesAbierto && selectedMaterial && (
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                  <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                </div>
-                
-                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                
-                <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-                  <div>
-                    <div className="mt-3 text-center sm:mt-5">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">Opciones del Material</h3>
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-500">Seleccione una acción para el material {selectedMaterial.IdMaterialTriturado}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-5 sm:mt-6">
-                    <button onClick={() => handleEdit(selectedMaterial)} className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-600 text-base font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:text-sm">
-                      Modificar
-                    </button>
-                    <button onClick={() => handleDelete(selectedMaterial.IdMaterialTriturado)} className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm">
-                      Eliminar
-                    </button>
-                    <button onClick={cerrarModalOpciones} className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:text-sm">
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
           
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
               <thead>
                 <tr>
-                  <th className="border-b-2 py-3 px-4 text-left text-gray-600">Id Material</th>
+        
                   <th className="border-b-2 py-3 px-4 text-left text-gray-600">Volumen</th>
                   <th className="border-b-2 py-3 px-4 text-left text-gray-600">Fecha</th>
                   <th className="border-b-2 py-3 px-4 text-left text-gray-600">Opciones</th>
@@ -232,14 +242,24 @@ const MaterialTrit = () => {
               </thead>
               <tbody>
                 {materials.map((material) => (
-                  <tr key={material.IdMaterialTriturado} className="hover:bg-gray-100">
-                    <td className="border-b py-3 px-4">{material.IdMaterialTriturado}</td>
+                  <tr key={material.IdMaterialTriturado} className="hover:bg-gray-100 m-5">
+                    
                     <td className="border-b py-3 px-4">{material.VolumenT} kgs</td>
                     <td className="border-b py-3 px-4">{material.Fecha.slice(0, 10)}</td>
                     <td className="border-b py-3 px-4">
-                      <button onClick={() => abrirModalOpciones(material)} className="bg-blue-600 flex items-center  hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Opciones <AiOutlineMore className="m-1 text-white font-bold" />
-                      </button>
+                                                  <button 
+  onClick={() => abrirModalEdit(material)}
+  className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+>
+  Modificar
+</button>
+
+<button 
+  onClick={() => handleDelete(material.IdMaterialTriturado)} 
+  className="ml-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+>
+  Eliminar 
+  </button>
                     </td>
                   </tr>
                 ))}

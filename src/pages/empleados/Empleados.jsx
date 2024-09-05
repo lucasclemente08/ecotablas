@@ -3,6 +3,9 @@ import Home from '../home/Home';
 import axios from 'axios';
 import { useReactToPrint } from 'react-to-print';
 
+import { MdExpandMore } from "react-icons/md";
+import { MdExpandLess } from "react-icons/md";
+
 const Empleados = () => {
   const [empleadosData, setEmpleadosData] = useState([]);
   const [searchFilters, setSearchFilters] = useState({ DNI: '', Nombre: '', Apellido: '' });
@@ -11,6 +14,10 @@ const Empleados = () => {
   const [filteredEmpleados, setFilteredEmpleados] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalAbiertoMod, setModalAbiertoMod] = useState(false);
+
+  const [sortConfig, setSortConfig] = useState({ campo: null, direction: 'asc' });
+
+
 
   const [empleadoSeleccionadoId, setEmpleadoSeleccionadoId] = useState("");
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState({
@@ -204,11 +211,35 @@ const Empleados = () => {
           .then((response) => {
             setEmpleadosData(response.data);
             setFilteredEmpleados(response.data);
+
+          
+
+
+
+
           })
           .catch((error) => console.error('Error al obtener los datos:', error));
       })
       .catch((error) => console.error('Error al modificar el empleado:', error));
   };
+
+
+  const handleSort = (campo) => {
+    let direction = 'asc';
+    if (sortConfig.campo === campo && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    const sortedEmpleados = [...filteredEmpleados].sort((a, b) => {
+      if (a[campo].toLowerCase() < b[campo].toLowerCase()) return direction === 'asc' ? -1 : 1;
+      if (a[campo].toLowerCase() > b[campo].toLowerCase()) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+    setFilteredEmpleados(sortedEmpleados);
+    setSortConfig({ campo, direction });
+  };
+
+
+
 
   return (
     <>
@@ -427,15 +458,25 @@ const Empleados = () => {
           </div>
 
           <table className="min-w-full bg-white mt-4" ref={componentRef}>
-            <thead className="bg-gray-800 text-white">
-              <tr>
-              <th className="w-1/4 py-2">DNI</th>
-                <th className="w-1/4 py-2">Nombre</th>
-                <th className="w-1/4 py-2">Apellido</th>
-                <th className="w-1/4 py-2">Fecha de ingreso</th>
-                <th className="w-1/4 py-2">Piso</th>
-                <th className="w-1/4 py-2">Mail</th>
-                <th className="w-1/4 py-2">Acciones</th>
+          <thead className="bg-gray-800 text-white">
+  <tr>
+  <th className="w-1/4 py-2 cursor-pointer" onClick={() => handleSort('DNI')}>
+  DNI {sortConfig.campo === 'DNI' && (sortConfig.direction === 'asc' ? <MdExpandLess /> : <MdExpandMore />)}
+</th>
+<th className="w-1/4 py-2 cursor-pointer" onClick={() => handleSort('Nombre')}>
+  Nombre {sortConfig.campo === 'Nombre' && (sortConfig.direction === 'asc' ? <MdExpandLess /> : <MdExpandMore />)}
+</th>
+<th className="w-1/4 py-2 cursor-pointer" onClick={() => handleSort('Apellido')}>
+  Apellido {sortConfig.campo === 'Apellido' && (sortConfig.direction === 'asc' ? <MdExpandLess /> : <MdExpandMore />)}
+</th>
+<th className="w-1/4 py-2 cursor-pointer" onClick={() => handleSort('FechaIngreso')}>
+  Fecha de ingreso {sortConfig.campo === 'FechaIngreso' && (sortConfig.direction === 'asc' ? <MdExpandLess /> : <MdExpandMore />)}
+</th>
+<th className="w-1/4 py-2">Piso</th>
+<th className="w-1/4 py-2">Mail</th>
+<th className="w-1/4 py-2">Acciones</th>
+
+    
               </tr>
             </thead>
             <tbody className="text-gray-700">
