@@ -24,4 +24,5 @@ dist-ssr
 *.sln
 *.sw?
 
-.github/*
+
+.github/ISSUE_TEMPLATE/

@@ -16,11 +16,7 @@ const Empleados = () => {
   const [filteredEmpleados, setFilteredEmpleados] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalAbiertoMod, setModalAbiertoMod] = useState(false);
-
   const [sortConfig, setSortConfig] = useState({ campo: null, direction: 'asc' });
-
-
-
   const [empleadoSeleccionadoId, setEmpleadoSeleccionadoId] = useState("");
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState({
     Nombre: '',
@@ -56,10 +52,7 @@ const Empleados = () => {
 
   const [mensaje, setMensaje] = useState("");
 
-  const componentRef = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
+
 
   // Obtener todos los empleados
   useEffect(() => {
@@ -273,8 +266,7 @@ const Empleados = () => {
           </div>
           <div className="">
           <AddButton abrirModal={abrirModal} title={"Añadir empleado"} />
-
-<PdfGenerator columns={columns}  rows={rows} data={filteredEmpleados} title="Empleados" />
+          <PdfGenerator columns={columns}  rows={rows} data={filteredEmpleados} title="Empleados" />
 
 
             {modalAbierto && (
