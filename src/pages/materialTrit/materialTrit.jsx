@@ -6,7 +6,8 @@ import axios from 'axios';
 import { AiOutlineMore } from "react-icons/ai";
 import { FaFilePdf } from "react-icons/fa6";
 
-
+import AddButton from '../../components/addButton';
+import PdfGenerator from '../../components/PdfGenerator';
 const MaterialTrit = () => {
   const [materials, setMaterials] = useState([]);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
@@ -128,49 +129,15 @@ const MaterialTrit = () => {
     abrirModal();
   };
 
-  const GenerarPDF = () => {
-    const doc = new jsPDF();
-  
-    const columns = [
-      { header: "Volumen (kgs)", dataKey: "VolumenT" },
-      { header: "Fecha", dataKey: "Fecha" }
-    ];
-  
-    const rows = materials.map(material => ({
-      VolumenT: `${material.VolumenT} kgs`,
-      Fecha: material.Fecha.slice(0, 10)
-    }));
-  
-    // Añadir logotipo
-    const logoURL = 'https://img.icons8.com/external-soft-fill-juicy-fish/60/external-eco-packaging-symbols-soft-fill-soft-fill-juicy-fish.png';
-    doc.addImage(logoURL, 'PNG', 160, 10, 30, 30); // Posición y tamaño del logo
-  
-    // Añadir fecha actual
-    const fechaActual = new Date().toLocaleDateString();
-    doc.setFontSize(12);
-    doc.text(`Fecha: ${fechaActual}`, 14, 20); // Posición de la fecha
-  
-    // Añadir nombre de la empresa
-    doc.setFontSize(14);
-    doc.text("Gestión de Ecotablas", 14, 30); // Posición del nombre de la empresa
-  
-    // Título del documento
-    doc.setFontSize(18);
-    doc.text("Listado de Materiales Triturados", 14, 40); // Ajusta la posición del título según el logo y el nombre de la empresa
-  
-    // Crear la tabla
-    doc.autoTable({
-      head: [columns.map(col => col.header)],
-      body: rows.map(row => columns.map(col => row[col.dataKey])),
-      startY: 50, // Ajusta el startY para evitar superposición con el logo y el nombre de la empresa
-      margin: { top: 20, left: 14, right: 14 },
-      theme: 'striped'
-    });
-  
-    // Guardar el PDF
-    doc.save("Listado_Materiales_Triturados.pdf");
-  };
-  
+  const columns = [
+    { header: "Volumen (kgs)", dataKey: "VolumenT" },
+    { header: "Fecha", dataKey: "Fecha" }
+  ];
+
+  const rows = materials.map(material => ({
+    VolumenT: `${material.VolumenT} kgs`,
+    Fecha: material.Fecha.slice(0, 10)
+  }));
 
   return (
     <>
@@ -178,16 +145,13 @@ const MaterialTrit = () => {
         <Home />
         <div className="p-4 w-full">
           <h2 className="text-2xl font-bold text-white mb-4">Materiales Triturado</h2>
-          <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded">
-            Agregar material triturado
-          </button>
-          <button
-  onClick={GenerarPDF}
-  className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-4 px-4 rounded inline-flex items-center"
->
-  <span>Imprimir listado</span>
-  <FaFilePdf className="ml-2" />
-</button>
+          <AddButton abrirModal={abrirModal} title={" Añadir Materiales triturado"} />
+
+          <PdfGenerator columns={columns} data={materials} title="Reporte de Materiales triturado" />
+
+
+
+
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
               {mensaje}
