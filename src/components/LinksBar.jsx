@@ -33,6 +33,8 @@ const LinksBar = () => {
     const materialMenus = [
       { title: "Material Triturado", link: "/materialTri" },
       { title: "Material Procesado", link: "/materialProc" },
+      { title: "Volumen", link: "/volumen" },
+
       { title: "Plásticos", link: "/material" }
     ];
 
@@ -59,7 +61,7 @@ const LinksBar = () => {
           onClick={toggleEmployeeMenu}
         >
           <div className="flex flex-col flex-nowrap justify-center items-center">
-            <span className={`${!open && "hidden"} origin-left duration-200 flex justify-center`}>
+            <span className={`${!open && "hidden"} origin-left duration-200 flex  font-bold justify-center`}>
             Empleados {open ? <FaChevronDown className="m-1" /> : <FaChevronUp className="m-1" />}
 
             </span>
@@ -93,7 +95,7 @@ const LinksBar = () => {
           <span
   className={`${
     open ? "opacity-100 max-h-10" : "opacity-0 max-h-0"
-  } overflow-hidden origin-left duration-300 flex transition-all ease-in-out`}
+  } overflow-hidden origin-left duration-300 font-bold flex transition-all ease-in-out`}
 >
   Recolección de Urbanos {open ? <FaChevronDown className="m-1" /> : <FaChevronUp className="m-1" />}
 </span>
@@ -125,11 +127,11 @@ const LinksBar = () => {
           onClick={toggleMaterialMenu}
         >
           <div className="flex flex-col flex-nowrap justify-center items-center">
-            <span className={`${!open && "hidden"} origin-left duration-200 flex`}>
+            <span className={`${!open && "hidden"} font-bold origin-left duration-200 flex`}>
               Materiales  {open ? <FaChevronDown className="m-1" /> : <FaChevronUp className="m-1" />}
             </span>
           </div>
-        </li>
+        </li> 
 
         {/* Submenús de Materiales */}
         {materialOpen &&
