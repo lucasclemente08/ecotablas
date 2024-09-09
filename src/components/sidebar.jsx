@@ -38,7 +38,13 @@ const Sidebar = () => {
                 </div>
 
                 <Links/>
+                <div className="animate-fade-in">
+  Fade in box
+</div>
 
+<div className="animate-slide-in-bottom animate-delay-300 animate-duration-slow">
+  Slow animation after 300ms to slide in from bottom
+</div>
                 <div className="mt-60 text-center justify-center mb-5 flex w-full">
                     <button
                         onClick={handleSignOut}

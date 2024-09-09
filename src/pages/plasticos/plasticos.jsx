@@ -1,5 +1,5 @@
 import React from 'react'
-import {  Chart } from "react-charts";
+
 import { useState,useMemo,useEffect } from 'react';
 import Home from '../home/Home';
 import axios from 'axios';
@@ -91,13 +91,13 @@ const Tablas = () => {
         Reset Data
       </button> */}
       <div className=" p-32 flex items-center align-center justify-center w-full max-w-4xl">
-        <Chart 
+        {/* <Chart 
           options={{
             data,
             primaryAxis,
             secondaryAxes,
           }}
-        />
+        /> */}
       </div>
     </div>
     </div></div>
