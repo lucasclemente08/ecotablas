@@ -90,9 +90,14 @@ const LinksBar = () => {
           onClick={toggleUrbanMenu}
         >
           <div className="flex flex-col flex-nowrap justify-center items-center">
-            <span className={`${!open && "hidden"} origin-left duration-200`}>
-              Recolección de Urbanos
-            </span>
+          <span
+  className={`${
+    open ? "opacity-100 max-h-10" : "opacity-0 max-h-0"
+  } overflow-hidden origin-left duration-300 flex transition-all ease-in-out`}
+>
+  Recolección de Urbanos {open ? <FaChevronDown className="m-1" /> : <FaChevronUp className="m-1" />}
+</span>
+
           </div>
         </li>
 
@@ -107,7 +112,7 @@ const LinksBar = () => {
                 to={menu.link}
                 className="flex flex-col flex-nowrap justify-center items-center"
               >
-                <span className={`${!open && "hidden"} origin-left duration-200`}>
+                <span className={`${!open && "hidden"} origin-left duration-200 `}>
                   {menu.title}
                 </span>
               </Link>
@@ -120,8 +125,8 @@ const LinksBar = () => {
           onClick={toggleMaterialMenu}
         >
           <div className="flex flex-col flex-nowrap justify-center items-center">
-            <span className={`${!open && "hidden"} origin-left duration-200`}>
-              Materiales
+            <span className={`${!open && "hidden"} origin-left duration-200 flex`}>
+              Materiales  {open ? <FaChevronDown className="m-1" /> : <FaChevronUp className="m-1" />}
             </span>
           </div>
         </li>

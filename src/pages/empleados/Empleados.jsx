@@ -5,6 +5,8 @@ import { useReactToPrint } from 'react-to-print';
 
 import { MdExpandMore } from "react-icons/md";
 import { MdExpandLess } from "react-icons/md";
+import PdfGenerator from '../../components/PdfGenerator';
+import AddButton from '../../components/addButton';
 
 const Empleados = () => {
   const [empleadosData, setEmpleadosData] = useState([]);
@@ -14,11 +16,7 @@ const Empleados = () => {
   const [filteredEmpleados, setFilteredEmpleados] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalAbiertoMod, setModalAbiertoMod] = useState(false);
-
   const [sortConfig, setSortConfig] = useState({ campo: null, direction: 'asc' });
-
-
-
   const [empleadoSeleccionadoId, setEmpleadoSeleccionadoId] = useState("");
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState({
     Nombre: '',
@@ -54,10 +52,7 @@ const Empleados = () => {
 
   const [mensaje, setMensaje] = useState("");
 
-  const componentRef = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
+
 
   // Obtener todos los empleados
   useEffect(() => {
@@ -239,7 +234,27 @@ const Empleados = () => {
   };
 
 
+  const columns = [
+    { header: "Nombre", dataKey: "Nombre" },
+    { header: "Apellido", dataKey: "Apellido" },
+    { header: "DNI", dataKey: "DNI" },
+    { header: "Código Postal", dataKey: "CodPostal" },
+    { header: "Fecha de Ingreso", dataKey: "FechaIngreso" },
+    { header: "Teléfono", dataKey: "Telefono" },
+    { header: "Email", dataKey: "Mail" },
 
+  ];
+  const rows = filteredEmpleados.map(empleado => ({
+    Nombre: empleado.Nombre,
+    Apellido: empleado.Apellido,
+    DNI: empleado.DNI,
+    CodPostal: empleado.CodPostal,
+    FechaIngreso: empleado.FechaIngreso,
+    Telefono: empleado.Telefono,
+    Mail: empleado.Mail,
+
+  }));
+    
 
   return (
     <>
@@ -250,12 +265,9 @@ const Empleados = () => {
             <h2 className="text-white text-3xl b-4">Empleados</h2>
           </div>
           <div className="">
-            <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 px-4 rounded">
-              Agregar empleado
-            </button>
-            <button onClick={handlePrint} className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-2 px-4 rounded">
-              Imprimir listado
-            </button>
+          <AddButton abrirModal={abrirModal} title={"Añadir empleado"} />
+          <PdfGenerator columns={columns}  rows={rows} data={filteredEmpleados} title="Empleados" />
+
 
             {modalAbierto && (
             <div className="fixed inset-0 overflow-y-auto">
