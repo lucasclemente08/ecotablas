@@ -80,14 +80,12 @@ const RecoUrbanos = () => {
   const cerrarModal = () => {
     setModalAbierto(false);
   }  
-
   return (
     <div className="md:flex flex-row bg-slate-900 min-h-screen">
       <Home />
       <div className="p-4 w-full">
         <h2 className="text-2xl font-bold text-white mb-4">Recolección de urbanos</h2>
         <div className="overflow-x-auto">
-
           {modalAbierto && (
             <div className="fixed inset-0 overflow-y-auto">
               <div className="flex items-center justify-center min-h-screen pt-6 px-4 pb-20 text-center sm:block">
@@ -105,10 +103,7 @@ const RecoUrbanos = () => {
                     </div>
                   </div>
                   <div className="p-2  flex justify-center">
-
-                 
-                  <MapContainer
-                
+                  <MapContainer         
                 className="overflow-y-auto w-4 "
                 center={centerPosition}
                 zoom={12}
@@ -132,7 +127,6 @@ const RecoUrbanos = () => {
                 ))}
               </MapContainer>
               </div>
-
                   <div className="mt-2 sm:mt-2">
                     <button onClick={handleSubmit} className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm">
                       Guardar
@@ -145,7 +139,6 @@ const RecoUrbanos = () => {
               </div>
             </div>
           )}
-
           <div>
           <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded">
             Agregar ubicación
@@ -163,8 +156,6 @@ const RecoUrbanos = () => {
                 center={centerPosition}
                 zoom={12}
                 scrollWheelZoom={false}
-                
-               
               >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

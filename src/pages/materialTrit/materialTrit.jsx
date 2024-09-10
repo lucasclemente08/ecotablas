@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Home from '../home/Home';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import axios from 'axios';
-import { AiOutlineMore } from "react-icons/ai";
-import { FaFilePdf } from "react-icons/fa6";
-
 import AddButton from '../../components/addButton';
 import PdfGenerator from '../../components/PdfGenerator';
+import TablaHead from '../../components/Thead';
+import DeleteButton from '../../components/DeleteButton';
+
+
 const MaterialTrit = () => {
   const [materials, setMaterials] = useState([]);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
@@ -39,30 +38,30 @@ const MaterialTrit = () => {
     setSelectedMaterial(null);
   };
 
-  useEffect(() => {
+
     const fetchMaterials = async () => {
       try {
         const response = await axios.get("http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/ListarTodo");
         setMaterials(response.data);
-        console.log(response.data);
+      
       } catch (error) {
         console.error("Error fetching materials:", error);
       }
     };
 
+
+
+  useEffect(() => {
     fetchMaterials();
   }, []);
 
+  
   const handleEditSubmit = () => {
     if (!newMaterial.VolumenP || !newMaterial.FechaIngresoP || !newMaterial.IdIngresoMaterial) {
       setMensaje("Todos los campos son obligatorios.");
       return;
     }
     
-
-
-
-
     axios.put(`http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Modificar/${materialId}`, newMaterial)
       .then(() => {
         setModalEdit(false);
@@ -72,7 +71,11 @@ const MaterialTrit = () => {
       .catch((error) => console.error('Error al modificar el material:', error));
   }
 
-
+const title=[
+  'Volumen',
+  'Fecha de ingreso',
+  'Acciones'
+]
 
   const handleSubmit = () => {
     if (selectedMaterial) {
@@ -105,7 +108,6 @@ const MaterialTrit = () => {
     }
   };
   
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewMaterial(prevState => ({
@@ -114,15 +116,7 @@ const MaterialTrit = () => {
     }));
   };
 
-  const handleDelete = (id) => {
-    axios.delete(`http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Borrar/${id}`)
-      .then((response) => {
-        setMensaje("Eliminación exitosa");
-        setMaterials(materials.filter(material => material.IdMaterialTriturado !== id));
-        cerrarModalOpciones();
-      })
-      .catch((error) => console.error('Error al eliminar el material:', error));
-  };
+
 
   const handleEdit = (material) => {
     setNewMaterial(material);
@@ -196,14 +190,9 @@ const MaterialTrit = () => {
           
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
-              <thead>
-                <tr>
-        
-                  <th className="border-b-2 py-3 px-4 text-left text-gray-600">Volumen</th>
-                  <th className="border-b-2 py-3 px-4 text-left text-gray-600">Fecha</th>
-                  <th className="border-b-2 py-3 px-4 text-left text-gray-600">Opciones</th>
-                </tr>
-              </thead>
+     
+  <TablaHead titles={title} />
+
               <tbody>
                 {materials.map((material) => (
                   <tr key={material.IdMaterialTriturado} className="hover:bg-gray-100 m-5">
@@ -217,13 +206,11 @@ const MaterialTrit = () => {
 >
   Modificar
 </button>
-
-<button 
-  onClick={() => handleDelete(material.IdMaterialTriturado)} 
-  className="ml-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
->
-  Eliminar 
-  </button>
+<DeleteButton     
+id={material.IdMaterialTriturado}
+                  endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Borrar" // Ajusta el endpoint según sea necesario
+                  updateList={fetchMaterials} // Pasa la función para actualizar la lista
+                />
                     </td>
                   </tr>
                 ))}

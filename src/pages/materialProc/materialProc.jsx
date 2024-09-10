@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Home from '../home/Home';
 import axios from "axios";
-import { FaFilePdf } from "react-icons/fa6";
-import jsPDF from 'jspdf';
 import AddButton from '../../components/addButton';
 import PdfGenerator from '../../components/PdfGenerator';
-
+import TablaHead from '../../components/Thead';
 const MaterialProc = () => {
   const [materials, setMaterials] = useState([]);
   const [newMaterial, setNewMaterial] = useState({
@@ -89,6 +87,9 @@ const MaterialProc = () => {
   useEffect(() => {
     fetchMaterials();
   }, []);
+
+  const title = ['Materias Procesados', 'Volumen (kgs)', 'Fecha de ingreso'];
+
 
 
   const columns = [
@@ -175,13 +176,8 @@ const MaterialProc = () => {
 
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
-              <thead>
-                <tr>
-                  <th className="border-b-2 py-3 px-4 text-left mr-9 text-gray-600">Volumen</th>
-                  <th className="border-b-2 py-3 px-4 text-left text-gray-600">Fecha</th>
-                  <th className="border-b-2 py-3 px-4 text-left text-gray-600">Acciones</th>
-                </tr>
-              </thead>
+  <TablaHead titles={title} />
+
               <tbody>
                 {materials.map((material) => (
                   <tr key={material.IdMaterialProcesado} className="hover:bg-gray-100">
