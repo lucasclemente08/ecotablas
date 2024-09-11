@@ -10,11 +10,10 @@ import AddModal from '../../components/AddModal';
 
 const MaterialTrit = () => {
   const [materials, setMaterials] = useState([]);
-  const [selectedMaterial, setSelectedMaterial] = useState(null);
+
   const [modalAbierto, setModalAbierto] = useState(false);
  
   const [mensaje, setMensaje] = useState("");
-
 
   const [formValues, setFormValues] = useState({
     VolumenT: '',
@@ -22,12 +21,8 @@ const MaterialTrit = () => {
     IdMaterialClasificado:''
   });
 
-
   const abrirModal = () => { setModalAbierto(true);};
-  
   const cerrarModal = () => {setModalAbierto(false);};
-
-
 
     const fetchMaterials = async () => {
       try {
@@ -38,20 +33,10 @@ const MaterialTrit = () => {
         console.error("Error fetching materials:", error);
       }
     };
-
-
-
   useEffect(() => {
     fetchMaterials();
   }, []);
 
-  
- 
-const title=[
-  'Volumen',
-  'Fecha de ingreso',
-  'Acciones'
-]
 
   const handleSubmit = () => {
     if (!formValues.VolumenT || !formValues.Fecha) {
@@ -79,9 +64,14 @@ const title=[
     }));
   };
 
-
-
+// titles for table headers
+  const title=[
+    'Volumen',
+    'Fecha de ingreso',
+    'Acciones'
+  ]
   
+  // elemente about the table (thead)
   const columns = [
     { header: "Volumen (kgs)", dataKey: "VolumenT" },
     { header: "Fecha", dataKey: "Fecha" }
@@ -92,7 +82,7 @@ const title=[
     Fecha: material.Fecha.slice(0, 10)
   }));
 
-
+  //  input fields
   const fields = [
     { name: 'VolumenT', label: 'Volumen', type: 'text', placeholder: 'Volumen *' },
     { name: 'Fecha', label: 'Fecha', type: 'date', placeholder: 'Fecha *' },
