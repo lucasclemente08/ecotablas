@@ -12,6 +12,7 @@ const MaterialProc = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
+
   const [mensaje, setMensaje] = useState("");
   const [materialId, setMaterialId] = useState(null);
   
@@ -28,7 +29,7 @@ const MaterialProc = () => {
     setMaterialId(material.IdMaterialProcesado); // Guardar el ID del material seleccionado
     setFormValues({
       VolumenP: material.VolumenP,
-      FechaIngresoP: material.FechaIngresoP.slice(0, 10), // Formatear fecha si es necesario
+      FechaIngresoP: material.FechaIngresoP, // Formatear fecha si es necesario
       IdIngresoMaterial: material.IdIngresoMaterial,
     });
     setModalEdit(true);
@@ -129,7 +130,7 @@ const MaterialProc = () => {
               handleChange={handleChange}
               handleEditSubmit={handleEditSubmit}
               cerrarModalEdit={cerrarModalEdit}
-              abrirModal={abrirModalEdit}
+  
             />
           )}
 
@@ -141,17 +142,11 @@ const MaterialProc = () => {
                   <tr key={material.IdMaterialProcesado} className="hover:bg-gray-100">
                     <td className="border-b py-3 px-4">Volumen: {material.VolumenP} kgs</td>
                     <td className="border-b py-3 px-4">{material.FechaIngresoP.slice(0, 10)}</td>
-                    <td className="border-b py-3 px-4 flex justify-center">
-                      <ButtonEdit
-                        title="Material"
-                        fields={fields}
-                        id={material.IdMaterialProcesado}
-                        formValues={formValues}
-                        handleChange={handleChange}
-                        handleEditSubmit={handleEditSubmit}
-                        cerrarModalEdit={cerrarModalEdit}
-                        abrirModal={abrirModalEdit} // Pasa la función para abrir el modal
-                      />
+                    <td className={`border-b py-3 px-4 flex justify-center ${modalEdit || modalAbierto ? 'hidden' : ''}`}>
+
+
+              <button 
+              className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105" onClick={() => abrirModalEdit(material)} >Modificar</button>
                       <DeleteButton     
                         id={material.IdMaterialProcesado}
                         endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialPros/Borrar"

@@ -8,7 +8,7 @@ const ButtonEdit = ({
   handleChange,
   handleEditSubmit,
   cerrarModalEdit,
-  abrirModal
+
 }) => {
   return (
     <div className="fixed inset-0 overflow-y-auto">
@@ -23,7 +23,7 @@ const ButtonEdit = ({
             <div className="mt-2">
               {fields.map(field => (
                 <input
-                  key={field.name}
+                  key={id}
                   type={field.type}
                   name={field.name}
                   placeholder={field.placeholder}
