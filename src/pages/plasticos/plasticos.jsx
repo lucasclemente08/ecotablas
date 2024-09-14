@@ -76,28 +76,9 @@ const Tablas = () => {
     <> 
      <div className='md:flex flex-row bg-slate-900'>
 
-    <div className="overflow-x-auto m-5">
-   
-    {/* <div className="m-3">
-      <h2 className="text-white text-3xl b-4">Tablas</h2>
-    
-
-      </div> */}
-      
+    <div className="overflow-x-auto m-5">      
     <div className="bg-white p-20  flex flex-col items-center rounded-md text-center">
-      {/* <button 
-        onClick={() => setData(myData)} 
-        className="mb-4 p-2 bg-blue-500 text-white rounded">
-        Reset Data
-      </button> */}
       <div className=" p-32 flex items-center align-center justify-center w-full max-w-4xl">
-        {/* <Chart 
-          options={{
-            data,
-            primaryAxis,
-            secondaryAxes,
-          }}
-        /> */}
       </div>
     </div>
     </div></div>

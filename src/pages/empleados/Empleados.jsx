@@ -7,6 +7,7 @@ import { MdExpandMore } from "react-icons/md";
 import { MdExpandLess } from "react-icons/md";
 import PdfGenerator from '../../components/PdfGenerator';
 import AddButton from '../../components/addButton';
+import DeleteButton from '../../components/DeleteButton';
 
 const Empleados = () => {
   const [empleadosData, setEmpleadosData] = useState([]);
@@ -55,13 +56,17 @@ const Empleados = () => {
 
 
   // Obtener todos los empleados
-  useEffect(() => {
+  function getEmpleados() {
     axios.get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
-      .then((response) => {
-        setEmpleadosData(response.data);
-        setFilteredEmpleados(response.data);
-      })
-      .catch((error) => console.error('Error al obtener los datos:', error));
+    .then((response) => {
+      setEmpleadosData(response.data);
+      setFilteredEmpleados(response.data);
+    })
+    .catch((error) => console.error('Error al obtener los datos:', error));
+  }
+
+  useEffect(() => {
+    getEmpleados()
   }, []);
 
   // Manejar filtros de búsqueda
@@ -469,7 +474,7 @@ const Empleados = () => {
         </div>
           </div>
 
-          <table className="min-w-full bg-white mt-4" ref={componentRef}>
+          <table className="min-w-full bg-white mt-4" >
           <thead className="bg-gray-800 text-white">
   <tr>
   <th className="w-1/4 py-2 cursor-pointer" onClick={() => handleSort('DNI')}>
@@ -508,12 +513,11 @@ const Empleados = () => {
                     >
                       Modificar
                     </button>
-                    <button
-                      onClick={() => handleEliminarEmpleado(empleado.IdEmpleado)}
-                      className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                    >
-                      Eliminar
-                    </button>
+            <DeleteButton     
+                id={empleado.IdEmpleado}
+                 endpoint="http://www.trazabilidadodsapi.somee.com/api/Empleados/Borrar" // Ajusta el endpoint según sea necesario
+                 updateList={getEmpleados} // Pasa la función para actualizar la lista
+                />
                   </td>
                 </tr>
               ))}

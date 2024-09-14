@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect,  } from 'react';
 import Home from '../home/Home';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { useReactToPrint } from "react-to-print";
+
 import axios from 'axios';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
+
+import { FaLeaf, FaHandHoldingHeart } from 'react-icons/fa'; 
 
 const DefaultIcon = L.icon({
   iconUrl: icon,
@@ -19,6 +21,30 @@ const DefaultIcon = L.icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
+
+const greenMarkerIcon = L.icon({
+  iconUrl: FaLeaf,
+  iconSize: [25, 41], // Tamaño del icono
+  iconAnchor: [12, 41], // Punto de anclaje
+  popupAnchor: [1, -34],
+  shadowUrl: iconShadow,
+  shadowSize: [41, 41],
+  shadowAnchor: [12, 41],
+});
+
+// Icono para empresas donantes
+const donorMarkerIcon = L.icon({
+  iconUrl: FaHandHoldingHeart,
+  iconSize: [25, 41], // Tamaño del icono
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowUrl: iconShadow,
+  shadowSize: [41, 41],
+  shadowAnchor: [12, 41],
+});
+
+
+
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
@@ -34,11 +60,6 @@ const RecoUrbanos = () => {
 
   // Centrar el mapa en la primera ubicación o en una ubicación por defecto
   const centerPosition = locations.length > 0 ? [locations[0].Lat, locations[0].Long] : [-31.4184, -64.1705];
-  
-  const componentRef = useRef();
-  const handlePrint = useReactToPrint({ 
-    content: () => componentRef.current,
-  });
 
   useEffect(() => {
     fetch("http://www.trazabilidadodsapi.somee.com/api/UbicacionesMapa/ListarTodo")
@@ -80,14 +101,12 @@ const RecoUrbanos = () => {
   const cerrarModal = () => {
     setModalAbierto(false);
   }  
-
   return (
     <div className="md:flex flex-row bg-slate-900 min-h-screen">
       <Home />
       <div className="p-4 w-full">
         <h2 className="text-2xl font-bold text-white mb-4">Recolección de urbanos</h2>
         <div className="overflow-x-auto">
-
           {modalAbierto && (
             <div className="fixed inset-0 overflow-y-auto">
               <div className="flex items-center justify-center min-h-screen pt-6 px-4 pb-20 text-center sm:block">
@@ -105,10 +124,7 @@ const RecoUrbanos = () => {
                     </div>
                   </div>
                   <div className="p-2  flex justify-center">
-
-                 
-                  <MapContainer
-                
+                  <MapContainer         
                 className="overflow-y-auto w-4 "
                 center={centerPosition}
                 zoom={12}
@@ -132,7 +148,6 @@ const RecoUrbanos = () => {
                 ))}
               </MapContainer>
               </div>
-
                   <div className="mt-2 sm:mt-2">
                     <button onClick={handleSubmit} className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm">
                       Guardar
@@ -145,14 +160,13 @@ const RecoUrbanos = () => {
               </div>
             </div>
           )}
-
           <div>
           <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded">
             Agregar ubicación
           </button>
-            <button onClick={handlePrint} className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-2 px-4 rounded">
+            {/* <button onClick={handlePrint} className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-2 px-4 rounded">
               Imprimir listado
-            </button>
+            </button> */}
           </div>
 
           <div className="flex mt-5">
@@ -163,8 +177,6 @@ const RecoUrbanos = () => {
                 center={centerPosition}
                 zoom={12}
                 scrollWheelZoom={false}
-                
-               
               >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

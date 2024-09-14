@@ -25,12 +25,6 @@ import axios from 'axios';
     useEffect(() => {
       fetchMaterials();
     }, []);
-
-
-
-
-
-
     return (
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
         <Home />
