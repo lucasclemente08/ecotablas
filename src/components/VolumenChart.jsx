@@ -5,35 +5,25 @@ import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, Filler } from 'ch
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, Filler);
 
-const VolumenChart = () => {
-  const [volumenData, setVolumenData] = useState({ VolumenUtil: 0, VolumenInutil: 0 });
-  
+const VolumenCharts = () => {
+  const [data, setData] = useState({
+    VolumenIngresoMaterial: 0,
+    VolumenMaterialProcesado: 0,
+    VolumenMaterialTriturado: 0,
+    VolumenClasificado: 0
+  });
+
   useEffect(() => {
-    axios.get('http://www.trazabilidadodsapi.somee.com/api/Volumen/ObtenerVolumen')
+    axios.get('http://localhost:61274/api/Volumen/ObtenerVolumen')
       .then(response => {
-        setVolumenData(response.data);
+        setData(response.data);
       })
       .catch(error => {
         console.error('Hubo un error al obtener los datos:', error);
       });
   }, []);
 
-  const totalVolumen = volumenData.VolumenUtil + volumenData.VolumenInutil;
-
-  const chartData = {
-    labels: ['Volumen Útil', 'Volumen No Útil'],
-    datasets: [
-      {
-        label: 'Volumen',
-        data: [volumenData.VolumenUtil, volumenData.VolumenInutil],
-        backgroundColor: ['#4CAF50', '#F44336'],
-        borderColor: '#fff',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const options = {
+  const chartOptions = {
     plugins: {
       tooltip: {
         callbacks: {
@@ -43,18 +33,14 @@ const VolumenChart = () => {
           }
         }
       },
-      datalabels: {
-        display: false,
-      },
       legend: {
         position: 'top',
       },
       title: {
         display: true,
-        text: `Total: ${totalVolumen} kg`,
         position: 'top',
         font: {
-          size: 16,
+          size: 14,
         },
       },
     },
@@ -65,17 +51,39 @@ const VolumenChart = () => {
     },
   };
 
+  const chartData = (volumen, label) => ({
+    labels: [label],
+    datasets: [
+      {
+        label: label,
+        data: [volumen],
+        backgroundColor: ['#4CAF50'],
+        borderColor: '#fff',
+        borderWidth: 1,
+      },
+    ],
+  });
+
   return (
-    <div className="flex flex-col items-center mb-8">
-      <h3 className="text-xl font-semibold text-white mb-2">Volumen Total</h3>
-      <div style={{ position: 'relative', width: '40%', height: '40%' }}> {}
-        <Doughnut data={chartData} options={options} />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white font-bold">
-          {totalVolumen} kg
-        </div>
+    <div className="flex flex-wrap justify-around gap-4 p-4 bg-white rounded-md shadow-md">
+      <div className="flex flex-col items-center mb-8 w-1/4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Volumen Ingreso Material</h3>
+        <Doughnut data={chartData(data.VolumenIngresoMaterial, 'Volumen Ingreso Material')} options={chartOptions} />
+      </div>
+      <div className="flex flex-col items-center mb-8 w-1/4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Volumen Material Procesado</h3>
+        <Doughnut data={chartData(data.VolumenProcesado, 'Volumen Material Procesado')} options={chartOptions} />
+      </div>
+      <div className="flex flex-col items-center mb-8 w-1/4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Volumen Material Triturado</h3>
+        <Doughnut data={chartData(data.VolumenTriturado, 'Volumen Material Triturado')} options={chartOptions} />
+      </div>
+      <div className="flex flex-col items-center mb-8 w-1/4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Volumen Clasificado</h3>
+        <Doughnut data={chartData(data.VolumenClasificado, 'Volumen Clasificado')} options={chartOptions} />
       </div>
     </div>
   );
 };
 
-export default VolumenChart;
+export default VolumenCharts;
