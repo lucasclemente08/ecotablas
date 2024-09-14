@@ -75,7 +75,7 @@ const VolumenCharts = () => {
         <Doughnut data={chartData(data.VolumenProcesado, 'Volumen Material Procesado')} options={chartOptions} />
       </div>
       <div className="flex flex-col items-center mb-8 w-1/4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">Volumen Material Triturado</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Volumen Material Trituradoooo</h3>
         <Doughnut data={chartData(data.VolumenTriturado, 'Volumen Material Triturado')} options={chartOptions} />
       </div>
       <div className="flex flex-col items-center mb-8 w-1/4">
