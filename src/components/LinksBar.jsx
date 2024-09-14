@@ -128,7 +128,7 @@ const LinksBar = () => {
           onClick={toggleMaterialMenu}
         >
           <div className="flex flex-col flex-nowrap justify-center items-center">
-            <span className={`${!open && "hidden"} font-bold origin-left duration-200 flex`}>
+            <span className={`${!open && "hidden"} origin-left duration-200 flex`}>
               Materiales  {open ? <FaChevronDown className="m-1" /> : <FaChevronUp className="m-1" />}
             </span>
           </div>
