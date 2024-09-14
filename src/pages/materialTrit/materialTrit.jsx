@@ -6,13 +6,15 @@ import PdfGenerator from '../../components/PdfGenerator';
 import TablaHead from '../../components/Thead';
 import DeleteButton from '../../components/DeleteButton';
 import AddModal from '../../components/AddModal';
-
+import ButtonEdit from '../../components/buttonEdit';
 
 const MaterialTrit = () => {
   const [materials, setMaterials] = useState([]);
 
   const [modalAbierto, setModalAbierto] = useState(false);
- 
+  const [materialId, setMaterialId] = useState(null);
+  const [modalEdit, setModalEdit] = useState(false);
+
   const [mensaje, setMensaje] = useState("");
 
   const [formValues, setFormValues] = useState({
@@ -20,6 +22,22 @@ const MaterialTrit = () => {
     Fecha: '',
     IdMaterialClasificado:''
   });
+
+
+
+  const abrirModalEdit = (material) => {
+    setMaterialId(material.IdMaterialProcesado); // Guardar el ID del material seleccionado
+    setFormValues({
+      VolumenT: material.VolumenT,
+      Fecha: material.Fecha,
+      IdMaterialClasificado:material.idMaterialClasificado
+    });
+    setModalEdit(true);
+  };
+  
+  const cerrarModalEdit = () => setModalEdit(false);
+
+
 
   const abrirModal = () => { setModalAbierto(true);};
   const cerrarModal = () => {setModalAbierto(false);};
@@ -63,6 +81,24 @@ const MaterialTrit = () => {
       [name]: value
     }));
   };
+
+
+  const handleEditSubmit = () => {
+    if (!formValues.VolumenT || !formValues.Fecha || !formValues.IdMaterialClasificado) {
+      setMensaje("Todos los campos son obligatorios.");
+      return;
+    }
+    
+    axios.put(`http://www.trazabilidadodsapi.somee.com/api/MaterialPros/Modificar/${materialId}`, formValues)
+      .then(() => {
+        setModalEdit(false);
+        setMensaje("Modificación exitosa");
+        fetchMaterials();
+      })
+      .catch((error) => console.error('Error al modificar el material:', error));
+  };
+
+
 
 // titles for table headers
   const title=[
@@ -115,8 +151,18 @@ const MaterialTrit = () => {
        />
         
         )}
-
-          
+  {modalEdit && (
+            <ButtonEdit
+              title="Material Triturado"
+              fields={fields}
+              id={materialId}
+              formValues={formValues}
+              handleChange={handleChange}
+              handleEditSubmit={handleEditSubmit}
+              cerrarModalEdit={cerrarModalEdit}
+  
+            />
+          )}  
           
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
@@ -129,7 +175,8 @@ const MaterialTrit = () => {
                     
                     <td className="border-b py-3 px-4">{material.VolumenT} kgs</td>
                     <td className="border-b py-3 px-4">{material.Fecha.slice(0, 10)}</td>
-                    <td className="border-b py-3 px-4">
+                       <td className={`border-b py-3 px-4 flex justify-center ${modalAbierto ? 'hidden' : ''}`}>
+
                                                   <button 
   onClick={() => abrirModalEdit(material)}
   className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"

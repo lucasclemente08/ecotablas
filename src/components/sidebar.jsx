@@ -21,7 +21,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="h-dvh">
+        <div className=" custom-scrollbar h-dvh over">
             <div
                 className={`${
                 open

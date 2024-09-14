@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect,  } from 'react';
 import Home from '../home/Home';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { useReactToPrint } from "react-to-print";
+
 import axios from 'axios';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
+
+import { FaLeaf, FaHandHoldingHeart } from 'react-icons/fa'; 
 
 const DefaultIcon = L.icon({
   iconUrl: icon,
@@ -19,6 +21,30 @@ const DefaultIcon = L.icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
+
+const greenMarkerIcon = L.icon({
+  iconUrl: FaLeaf,
+  iconSize: [25, 41], // Tamaño del icono
+  iconAnchor: [12, 41], // Punto de anclaje
+  popupAnchor: [1, -34],
+  shadowUrl: iconShadow,
+  shadowSize: [41, 41],
+  shadowAnchor: [12, 41],
+});
+
+// Icono para empresas donantes
+const donorMarkerIcon = L.icon({
+  iconUrl: FaHandHoldingHeart,
+  iconSize: [25, 41], // Tamaño del icono
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowUrl: iconShadow,
+  shadowSize: [41, 41],
+  shadowAnchor: [12, 41],
+});
+
+
+
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
@@ -34,11 +60,6 @@ const RecoUrbanos = () => {
 
   // Centrar el mapa en la primera ubicación o en una ubicación por defecto
   const centerPosition = locations.length > 0 ? [locations[0].Lat, locations[0].Long] : [-31.4184, -64.1705];
-  
-  const componentRef = useRef();
-  const handlePrint = useReactToPrint({ 
-    content: () => componentRef.current,
-  });
 
   useEffect(() => {
     fetch("http://www.trazabilidadodsapi.somee.com/api/UbicacionesMapa/ListarTodo")
@@ -143,9 +164,9 @@ const RecoUrbanos = () => {
           <button onClick={abrirModal} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded">
             Agregar ubicación
           </button>
-            <button onClick={handlePrint} className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-2 px-4 rounded">
+            {/* <button onClick={handlePrint} className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-2 px-4 rounded">
               Imprimir listado
-            </button>
+            </button> */}
           </div>
 
           <div className="flex mt-5">
