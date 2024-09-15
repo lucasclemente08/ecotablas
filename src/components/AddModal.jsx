@@ -1,6 +1,13 @@
-import React from 'react';
+import React from "react";
 
-const AddModal = ({ title, fields, handleChange, handleSubmit, cerrarModal, values }) => {
+const AddModal = ({
+  title,
+  fields,
+  handleChange,
+  handleSubmit,
+  cerrarModal,
+  values,
+}) => {
   return (
     <>
       <div className="fixed inset-0 overflow-y-auto">
@@ -8,20 +15,29 @@ const AddModal = ({ title, fields, handleChange, handleSubmit, cerrarModal, valu
           <div className="fixed inset-0 transition-opacity" aria-hidden="true">
             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
           </div>
-          <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+          <span
+            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+            aria-hidden="true"
+          >
+            &#8203;
+          </span>
           <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
             <div>
-              <h3 className="text-lg leading-6 font-medium text-gray-900">{title}</h3>
+              <h3 className="text-lg leading-6 font-medium text-gray-900">
+                {title}
+              </h3>
               <div className="mt-2">
                 {/* Genera los campos de forma dinámica según los props */}
                 {fields.map((field, index) => (
                   <div key={index} className="mt-2">
-                    <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      {field.label}
+                    </label>
                     <input
                       type={field.type}
                       name={field.name}
                       placeholder={field.placeholder}
-                      value={values[field.name] || ''}
+                      value={values[field.name] || ""}
                       onChange={handleChange}
                       className="border p-2 w-full mt-1"
                     />
