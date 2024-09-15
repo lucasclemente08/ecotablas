@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 const DeleteButton = ({ id, endpoint, updateList }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,14 +14,15 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
   };
 
   const handleDelete = () => {
-    axios.delete(`${endpoint}/${id}`)
+    axios
+      .delete(`${endpoint}/${id}`)
       .then((response) => {
         setMensaje("Eliminación exitosa");
         updateList(); // Llama a la función para actualizar la lista
         closeModal();
       })
       .catch((error) => {
-        console.error('Error al eliminar:', error);
+        console.error("Error al eliminar:", error);
         setMensaje("Error al eliminar");
       });
   };

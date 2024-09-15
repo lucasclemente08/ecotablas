@@ -1,12 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const GraficosTablas = () => {
-  return (
-    <>
-    
-    
-    </>
-  )
-}
+  return <></>;
+};
 
-export default GraficosTablas
+export default GraficosTablas;
