@@ -29,8 +29,7 @@ const MaterialProc = () => {
 
   const abrirModalEdit = (material) => {
     setMaterialId(material.IdMaterialProcesado); // Guardar el ID del material seleccionado
-    setFormValues({
-    setMaterialId(material.IdMaterialProcesado); // Guardar el ID del material seleccionado
+  
     setFormValues({
       VolumenP: material.VolumenP,
       FechaIngresoP: material.FechaIngresoP, // Formatear fecha si es necesario
@@ -157,14 +156,7 @@ const MaterialProc = () => {
           />
 
           {modalAbierto && (
-            <AddModal
-              title="Agregar Material Procesado"
-              fields={fields}
-              handleChange={handleChange}
-              handleSubmit={handleSubmit}
-              cerrarModal={cerrarModal}
-              values={formValues}
-            />
+          
             <AddModal
               title="Agregar Material Procesado"
               fields={fields}

@@ -1,15 +1,5 @@
 import React from "react";
-import React from 'react';
 
-const ButtonEdit = ({
-  title,
-  fields,
-  id,
-  formValues,
-  handleChange,
-  handleEditSubmit,
-  cerrarModalEdit,
-}) => {
 const ButtonEdit = ({
   title,
   fields,
