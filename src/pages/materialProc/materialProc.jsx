@@ -182,7 +182,7 @@ const MaterialProc = () => {
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
               <TablaHead titles={title} />
-              <TablaHead titles={title} />
+
               <tbody>
                 {materials.map((material) => (
                   <tr
