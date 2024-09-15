@@ -39,19 +39,19 @@ const Sidebar = () => {
           </div>
         </div>
 
-        <Links />
+                <Links/>
 
-        <div className="mt-60 text-center justify-center mb-5 flex w-full">
-          <button
-            onClick={handleSignOut}
-            className="font-semibold text-white hover:text-red-600"
-          >
-            Cerrar sesión
-          </button>
+                <div className="mt-60 text-center justify-center mb-5 flex w-full">
+                    <button
+                        onClick={handleSignOut}
+                        className="font-semibold text-white hover:text-red-600">
+                        Cerrar sesión
+                    </button>
+                </div>
+
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Sidebar;
