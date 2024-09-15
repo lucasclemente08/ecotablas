@@ -1,4 +1,5 @@
 import React from "react";
+import React from 'react';
 
 const ButtonEdit = ({
   title,
@@ -8,6 +9,16 @@ const ButtonEdit = ({
   handleChange,
   handleEditSubmit,
   cerrarModalEdit,
+}) => {
+const ButtonEdit = ({
+  title,
+  fields,
+  id,
+  formValues,
+  handleChange,
+  handleEditSubmit,
+  cerrarModalEdit,
+
 }) => {
   return (
     <div className="fixed inset-0 overflow-y-auto">
@@ -58,6 +69,6 @@ const ButtonEdit = ({
       </div>
     </div>
   );
-};
+}
 
 export default ButtonEdit;

@@ -13,6 +13,7 @@ const MaterialProc = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
 
+
   const [mensaje, setMensaje] = useState("");
   const [materialId, setMaterialId] = useState(null);
 
@@ -25,10 +26,14 @@ const MaterialProc = () => {
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
 
+
   const abrirModalEdit = (material) => {
     setMaterialId(material.IdMaterialProcesado); // Guardar el ID del material seleccionado
     setFormValues({
+    setMaterialId(material.IdMaterialProcesado); // Guardar el ID del material seleccionado
+    setFormValues({
       VolumenP: material.VolumenP,
+      FechaIngresoP: material.FechaIngresoP, // Formatear fecha si es necesario
       FechaIngresoP: material.FechaIngresoP, // Formatear fecha si es necesario
       IdIngresoMaterial: material.IdIngresoMaterial,
     });
@@ -44,6 +49,7 @@ const MaterialProc = () => {
         formValues,
       )
       .then(() => {
+        cerrarModal();
         cerrarModal();
         fetchMaterials();
       })
@@ -159,6 +165,14 @@ const MaterialProc = () => {
               cerrarModal={cerrarModal}
               values={formValues}
             />
+            <AddModal
+              title="Agregar Material Procesado"
+              fields={fields}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+              cerrarModal={cerrarModal}
+              values={formValues}
+            />
           )}
 
           {modalEdit && (
@@ -175,6 +189,7 @@ const MaterialProc = () => {
 
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
+              <TablaHead titles={title} />
               <TablaHead titles={title} />
               <tbody>
                 {materials.map((material) => (
