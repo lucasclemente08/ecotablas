@@ -53,7 +53,7 @@ const MaterialTrit = () => {
         setMaterials(res);
       } catch (error) {
         console.error("Error fetching data: ", error);
-      }finally{
+      } finally {
         setLoading(false);
       }
     })();
@@ -195,7 +195,7 @@ const MaterialTrit = () => {
 
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
-            <LoadingTable loading={loading} />
+              <LoadingTable loading={loading} />
               <TablaHead titles={title} />
 
               <tbody>

@@ -20,7 +20,7 @@ import Vehiculos from "./pages/vehiculos/Vehiculos";
 import Volumen from "./pages/volumen/Volumen";
 import Areas from "./pages/areas/Areas";
 import EmpresaDonante from "./pages/empresaDonante/EmpresaDonante";
-import EntradasDeMaterial from "./pages/EntradaDeMaterial/EntradasDeMaterial";
+import EntradasDeMaterial from "./pages/entradaDeMaterial/EntradasDeMaterial";
 
 function App() {
   return (

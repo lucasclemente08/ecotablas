@@ -133,7 +133,7 @@ const LinksBar = () => {
       >
         <div className="flex flex-col flex-nowrap justify-center items-center">
           <span
-            className={`${!open && "hidden"} origin-left duration-200 flex`}
+            className={`${!open && "hidden"} font-bold origin-left duration-200 flex`}
           >
             Materiales{" "}
             {open ? (
