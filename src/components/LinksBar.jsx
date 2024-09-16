@@ -29,6 +29,8 @@ const LinksBar = () => {
     { title: "Entrada de material", link: "/Entrada/material" },
     { title: "Material Triturado", link: "/materialTri" },
     { title: "Material Procesado", link: "/materialProc" },
+    { title: "Lavado de material", link: "/lavado" },
+
     { title: "Volumen", link: "/volumen" },
     { title: "Tablas producidas", link: "/tablas" },
     

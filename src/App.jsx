@@ -18,6 +18,7 @@ import Areas from "./pages/areas/Areas";
 import EmpresaDonante from "./pages/empresaDonante/EmpresaDonante";
 import TablasProducidas from "./pages/TablasProducidas/TablasProducidas";
 import EntradasDeMaterial from "./pages/entradaDeMaterial/EntradasDeMaterial";
+import LavadoMaterial from "./pages/lavadoMaterial/LavadoMaterial";
 
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
@@ -35,6 +36,8 @@ const routesConfig = [
   { path: "/areas", element: <Areas />, protected: true },
   { path: "/empresa", element: <EmpresaDonante />, protected: true },
   { path: "/Entrada/material", element: <EntradasDeMaterial />, protected: true },
+  { path: "/Lavado", element: <LavadoMaterial />, protected: true },
+
   { path: "/Tablas", element: <TablasProducidas />, protected: true },
 ];
 
