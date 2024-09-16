@@ -3,16 +3,17 @@ import Home from "../home/Home";
 import axios from "axios";
 import AddButton from "../../components/addButton";
 import PdfGenerator from "../../components/PdfGenerator";
-import TablaHead from "../../components/Thead";
+
 import DeleteButton from "../../components/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttonEdit";
-
+import LoadingTable from "../../components/LoadingTable";
+import TablaHead from "../../components/Thead";
 const MaterialProc = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
-
+  const [loading, setLoading] = useState(true);
 
   const [mensaje, setMensaje] = useState("");
   const [materialId, setMaterialId] = useState(null);
@@ -26,14 +27,12 @@ const MaterialProc = () => {
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
 
-
   const abrirModalEdit = (material) => {
-    setMaterialId(material.IdMaterialProcesado); // Guardar el ID del material seleccionado
-  
+    setMaterialId(material.IdMaterialProcesado);
+
     setFormValues({
       VolumenP: material.VolumenP,
-      FechaIngresoP: material.FechaIngresoP, // Formatear fecha si es necesario
-      FechaIngresoP: material.FechaIngresoP, // Formatear fecha si es necesario
+      FechaIngresoP: material.FechaIngresoP,
       IdIngresoMaterial: material.IdIngresoMaterial,
     });
     setModalEdit(true);
@@ -89,6 +88,7 @@ const MaterialProc = () => {
   };
 
   const fetchMaterials = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(
         "http://www.trazabilidadodsapi.somee.com/api/MaterialPros/ListarTodo",
@@ -96,6 +96,8 @@ const MaterialProc = () => {
       setMaterials(response.data);
     } catch (error) {
       console.error("Error fetching materials:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -156,7 +158,6 @@ const MaterialProc = () => {
           />
 
           {modalAbierto && (
-          
             <AddModal
               title="Agregar Material Procesado"
               fields={fields}
@@ -179,10 +180,11 @@ const MaterialProc = () => {
             />
           )}
 
+
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
-              <TablaHead titles={title} />
-              <TablaHead titles={title} />
+              <LoadingTable loading={loading} />
+<TablaHead titles={title} />
               <tbody>
                 {materials.map((material) => (
                   <tr

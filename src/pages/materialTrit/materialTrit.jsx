@@ -8,9 +8,11 @@ import DeleteButton from "../../components/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttonEdit";
 import GetAll from "../../utils/GetAll";
+import LoadingTable from "../../components/LoadingTable";
 
 const MaterialTrit = () => {
   const [materials, setMaterials] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [materialId, setMaterialId] = useState(null);
@@ -44,12 +46,15 @@ const MaterialTrit = () => {
   };
 
   const fetchMaterials = async () => {
+    setLoading(true);
     (async () => {
       try {
         const res = await GetAll("MaterialTrit/ListarTodo");
         setMaterials(res);
       } catch (error) {
         console.error("Error fetching data: ", error);
+      }finally{
+        setLoading(false);
       }
     })();
   };
@@ -190,6 +195,7 @@ const MaterialTrit = () => {
 
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
+            <LoadingTable loading={loading} />
               <TablaHead titles={title} />
 
               <tbody>
