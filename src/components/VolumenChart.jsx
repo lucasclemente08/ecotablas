@@ -12,22 +12,30 @@ import {
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, Filler);
 
-const VolumenChart = () => {
-  const [volumenData, setVolumenData] = useState({
-    VolumenUtil: 0,
-    VolumenInutil: 0,
-  });
+const VolumenChart = ({ dateRange }) => {
+  const [volumenData, setVolumenData] = useState({ VolumenUtil: 0, VolumenInutil: 0 });
+  const [activeSegment, setActiveSegment] = useState(null); 
 
   useEffect(() => {
-    axios
-      .get("http://www.trazabilidadodsapi.somee.com/api/Volumen/ObtenerVolumen")
-      .then((response) => {
-        setVolumenData(response.data);
+    const today = new Date().toISOString().split('T')[0];
+
+    const startDate = dateRange?.startDate || today;
+    const endDate = dateRange?.endDate || today;
+
+    axios.get('http://www.trazabilidadodsapi.somee.com/api/Volumen/ObtenerVolumen', {
+      params: {
+        fechaInicio: startDate,
+        fechaFin: endDate,
+      }
+    })
+      .then(response => {
+        const data = response.data;
+        setVolumenData(data);
       })
       .catch((error) => {
         console.error("Hubo un error al obtener los datos:", error);
       });
-  }, []);
+  }, [dateRange]); 
 
   const totalVolumen = volumenData.VolumenUtil + volumenData.VolumenInutil;
 
@@ -35,14 +43,25 @@ const VolumenChart = () => {
     labels: ["Volumen Útil", "Volumen No Útil"],
     datasets: [
       {
-        label: "Volumen",
-        data: [volumenData.VolumenUtil, volumenData.VolumenInutil],
-        backgroundColor: ["#4CAF50", "#F44336"],
-        borderColor: "#fff",
+        label: 'Volumen',
+        data: activeSegment === 'util' 
+          ? [volumenData.VolumenUtil, 0] 
+          : activeSegment === 'inutil' 
+          ? [0, volumenData.VolumenInutil] 
+          : [volumenData.VolumenUtil, volumenData.VolumenInutil],
+        backgroundColor: ['#4CAF50', '#F44336'],
+        borderColor: '#fff',
         borderWidth: 1,
       },
     ],
   };
+
+  const displayedText = 
+    activeSegment === 'util'
+      ? `${volumenData.VolumenUtil} kg`
+      : activeSegment === 'inutil'
+      ? `${volumenData.VolumenInutil} kg`
+      : `${totalVolumen} kg`;
 
   const options = {
     plugins: {
@@ -54,19 +73,26 @@ const VolumenChart = () => {
           },
         },
       },
-      datalabels: {
-        display: false,
-      },
       legend: {
-        position: "top",
+        position: 'top',
+        onClick: (e, legendItem, legend) => {
+          const index = legendItem.index;
+
+          if (index === 0) {
+            setActiveSegment(activeSegment === 'util' ? null : 'util');
+          } else if (index === 1) {
+            setActiveSegment(activeSegment === 'inutil' ? null : 'inutil');
+          }
+        },
       },
       title: {
         display: true,
-        text: `Total: ${totalVolumen} kg`,
-        position: "top",
+        text: displayedText,
+        position: 'top',
         font: {
-          size: 16,
+          size: 14,
         },
+        color: '#FFFFFF',
       },
     },
     elements: {
@@ -77,14 +103,12 @@ const VolumenChart = () => {
   };
 
   return (
-    <div className="flex flex-col items-center mb-8">
-      <h3 className="text-xl font-semibold text-white mb-2">Volumen Total</h3>
-      <div style={{ position: "relative", width: "40%", height: "40%" }}>
-        {" "}
-        {}
+    <div className="flex flex-col items-center mb-8 p-4">
+      <h3 className="text-lg font-semibold text-white mb-2">Volumen Clasificado</h3>
+      <div style={{ position: 'relative', width: '300px', height: '300px' }}>
         <Doughnut data={chartData} options={options} />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white font-bold">
-          {totalVolumen} kg
+          {displayedText}
         </div>
       </div>
     </div>
