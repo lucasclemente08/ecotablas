@@ -817,7 +817,7 @@ const Empleados = () => {
                   <td className="text-center py-2 flex p-2">
                     <button
                       onClick={() => abrirModalModificar(empleado.IdEmpleado)}
-                      className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2"
+                      className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded mr-2"
                     >
                       Modificar
                     </button>

@@ -21,6 +21,8 @@ import Volumen from "./pages/volumen/Volumen";
 import Areas from "./pages/areas/Areas";
 import EmpresaDonante from "./pages/empresaDonante/EmpresaDonante";
 import EntradasDeMaterial from "./pages/entradaDeMaterial/EntradasDeMaterial";
+import TablasProducidas from "./pages/TablasProducidas/TablasProducidas";
+
 
 function App() {
   return (
@@ -134,6 +136,16 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+<Route
+              path="/Tablas"
+              element={
+                <ProtectedRoute>
+                  <TablasProducidas />
+                </ProtectedRoute>
+              }
+            />
+
           </Routes>
         </div>
       </Router>

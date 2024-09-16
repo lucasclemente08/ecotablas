@@ -17,7 +17,6 @@ const MaterialTrit = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [materialId, setMaterialId] = useState(null);
   const [modalEdit, setModalEdit] = useState(false);
-
   const [mensaje, setMensaje] = useState("");
 
   const [formValues, setFormValues] = useState({
@@ -27,7 +26,7 @@ const MaterialTrit = () => {
   });
 
   const abrirModalEdit = (material) => {
-    setMaterialId(material.IdMaterialProcesado); // Guardar el ID del material seleccionado
+    setMaterialId(material.IdMaterialProcesado); 
     setFormValues({
       VolumenT: material.VolumenT,
       Fecha: material.Fecha,
@@ -53,7 +52,7 @@ const MaterialTrit = () => {
         setMaterials(res);
       } catch (error) {
         console.error("Error fetching data: ", error);
-      } finally {
+      }finally{
         setLoading(false);
       }
     })();
@@ -195,7 +194,7 @@ const MaterialTrit = () => {
 
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
-              <LoadingTable loading={loading} />
+            <LoadingTable loading={loading} />
               <TablaHead titles={title} />
 
               <tbody>
@@ -215,7 +214,7 @@ const MaterialTrit = () => {
                     >
                       <button
                         onClick={() => abrirModalEdit(material)}
-                        className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       >
                         Modificar
                       </button>
