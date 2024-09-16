@@ -2,7 +2,7 @@ import React from "react";
 
 const LoadingSpinner = () => {
   return (
-    <div className="flex items-center justify-center  border border-gray-200 rounded-lg bg-gray-50 ">
+    <div className="flex items-center justify-center  border border-gray-200 rounded-lg bg-gray-50">
       <div role="status">
         <svg
           aria-hidden="true"
@@ -20,7 +20,7 @@ const LoadingSpinner = () => {
             fill="currentFill"
           />
         </svg>
-        <span className="sr-only text-black">Cargando...</span>
+        <span className="sr-only">Cargando...</span>
       </div>
     </div>
   );
