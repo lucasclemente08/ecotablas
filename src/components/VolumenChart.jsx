@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, Filler } from 'chart.js';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Doughnut } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  Filler,
+} from "chart.js";
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, Filler);
 
@@ -25,15 +32,15 @@ const VolumenChart = ({ dateRange }) => {
         const data = response.data;
         setVolumenData(data);
       })
-      .catch(error => {
-        console.error('Hubo un error al obtener los datos:', error);
+      .catch((error) => {
+        console.error("Hubo un error al obtener los datos:", error);
       });
   }, [dateRange]); 
 
   const totalVolumen = volumenData.VolumenUtil + volumenData.VolumenInutil;
 
   const chartData = {
-    labels: ['Volumen Útil', 'Volumen No Útil'],
+    labels: ["Volumen Útil", "Volumen No Útil"],
     datasets: [
       {
         label: 'Volumen',
@@ -63,8 +70,8 @@ const VolumenChart = ({ dateRange }) => {
           label: function (tooltipItem) {
             const value = tooltipItem.raw;
             return `${tooltipItem.label}: ${value} kg`;
-          }
-        }
+          },
+        },
       },
       legend: {
         position: 'top',
