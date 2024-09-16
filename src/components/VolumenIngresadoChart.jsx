@@ -5,12 +5,11 @@ import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, Filler } from 'ch
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, Filler);
 
-const VolumenChart = ({ dateRange }) => {
-  const [volumenData, setVolumenData] = useState({ VolumenUtil: 0, VolumenInutil: 0 });
-  const [activeSegment, setActiveSegment] = useState(null); 
+const VolumenIngresadoChart = ({ dateRange }) => {
+  const [volumenIngresado, setVolumenIngresado] = useState(0);
 
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0]; 
 
     const startDate = dateRange?.startDate || today;
     const endDate = dateRange?.endDate || today;
@@ -22,39 +21,23 @@ const VolumenChart = ({ dateRange }) => {
       }
     })
       .then(response => {
-        const data = response.data;
-        setVolumenData(data);
+        setVolumenIngresado(response.data.VolumenIngresoMaterial || 0); 
       })
       .catch(error => {
         console.error('Hubo un error al obtener los datos:', error);
       });
   }, [dateRange]); 
-
-  const totalVolumen = volumenData.VolumenUtil + volumenData.VolumenInutil;
-
   const chartData = {
-    labels: ['Volumen Útil', 'Volumen No Útil'],
+    labels: ['Volumen Ingresado'],
     datasets: [
       {
         label: 'Volumen',
-        data: activeSegment === 'util' 
-          ? [volumenData.VolumenUtil, 0] 
-          : activeSegment === 'inutil' 
-          ? [0, volumenData.VolumenInutil] 
-          : [volumenData.VolumenUtil, volumenData.VolumenInutil],
-        backgroundColor: ['#4CAF50', '#F44336'],
-        borderColor: '#fff',
+        data: [volumenIngresado], 
+        backgroundColor: ['#4CAF50'], 
         borderWidth: 1,
       },
     ],
   };
-
-  const displayedText = 
-    activeSegment === 'util'
-      ? `${volumenData.VolumenUtil} kg`
-      : activeSegment === 'inutil'
-      ? `${volumenData.VolumenInutil} kg`
-      : `${totalVolumen} kg`;
 
   const options = {
     plugins: {
@@ -67,25 +50,16 @@ const VolumenChart = ({ dateRange }) => {
         }
       },
       legend: {
-        position: 'top',
-        onClick: (e, legendItem, legend) => {
-          const index = legendItem.index;
-
-          if (index === 0) {
-            setActiveSegment(activeSegment === 'util' ? null : 'util');
-          } else if (index === 1) {
-            setActiveSegment(activeSegment === 'inutil' ? null : 'inutil');
-          }
-        },
+        display: false, 
       },
       title: {
         display: true,
-        text: displayedText,
+        text: `Total Volumen Ingresado: ${volumenIngresado} kg`,
         position: 'top',
         font: {
           size: 14,
         },
-        color: '#FFFFFF',
+        color: '#FFFFFF', 
       },
     },
     elements: {
@@ -97,15 +71,15 @@ const VolumenChart = ({ dateRange }) => {
 
   return (
     <div className="flex flex-col items-center mb-8 p-4">
-      <h3 className="text-lg font-semibold text-white mb-2">Volumen Clasificado</h3>
+      <h3 className="text-lg font-semibold text-white mb-2">Volumen Ingresado</h3>
       <div style={{ position: 'relative', width: '300px', height: '300px' }}>
         <Doughnut data={chartData} options={options} />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white font-bold">
-          {displayedText}
+          {volumenIngresado} kg
         </div>
       </div>
     </div>
   );
 };
 
-export default VolumenChart;
+export default VolumenIngresadoChart;
