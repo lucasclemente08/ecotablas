@@ -12,8 +12,6 @@ import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
 
 import { FaLeaf, FaHandHoldingHeart } from "react-icons/fa";
 
-
-
 const DefaultIcon = L.icon({
   iconUrl: icon,
   iconRetinaUrl: iconRetina,
