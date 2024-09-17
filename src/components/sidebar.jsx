@@ -18,22 +18,24 @@ const Sidebar = () => {
       });
   };
 
-    return (
-        <div className=" custom-scrollbar h-dvh over">
-            <div
-                className={`${
-                open
-                    ? "w-28"
-                    : "w-20"} bg-dark-purple w-60 min-h-screen pt-1 bg-sky-600 shadow relative duration-300`}>
-                <div className="flex flex-col items-center m-1 p-4">
-                    <div className="mt-10">
-                        <h1
-                            className={`text-white origin-left font-medium text-xl duration-200 ${
-                            !open && "scale-0"}`}>
-                            Gestión de ecotablas
-                        </h1>
-                    </div>
-                </div>
+  return (
+    <div className=" custom-scrollbar h-dvh over">
+      <div
+        className={`${
+          open ? "w-28" : "w-20"
+        } bg-dark-purple w-60 min-h-screen pt-1 bg-sky-600 shadow relative duration-300`}
+      >
+        <div className="flex flex-col items-center m-1 p-4">
+          <div className="mt-10">
+            <h1
+              className={`text-white origin-left font-medium text-xl duration-200 ${
+                !open && "scale-0"
+              }`}
+            >
+              Gestión de ecotablas
+            </h1>
+          </div>
+        </div>
 
         <Links />
 

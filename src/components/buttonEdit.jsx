@@ -8,7 +8,6 @@ const ButtonEdit = ({
   handleChange,
   handleEditSubmit,
   cerrarModalEdit,
-
 }) => {
   return (
     <div className="fixed inset-0 overflow-y-auto">
@@ -59,6 +58,6 @@ const ButtonEdit = ({
       </div>
     </div>
   );
-}
+};
 
 export default ButtonEdit;

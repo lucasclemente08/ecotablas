@@ -13,29 +13,36 @@ import {
 ChartJS.register(Title, Tooltip, Legend, ArcElement, Filler);
 
 const VolumenChart = ({ dateRange }) => {
-  const [volumenData, setVolumenData] = useState({ VolumenUtil: 0, VolumenInutil: 0 });
-  const [activeSegment, setActiveSegment] = useState(null); 
+  const [volumenData, setVolumenData] = useState({
+    VolumenUtil: 0,
+    VolumenInutil: 0,
+  });
+  const [activeSegment, setActiveSegment] = useState(null);
 
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
 
     const startDate = dateRange?.startDate || today;
     const endDate = dateRange?.endDate || today;
 
-    axios.get('http://www.trazabilidadodsapi.somee.com/api/Volumen/ObtenerVolumen', {
-      params: {
-        fechaInicio: startDate,
-        fechaFin: endDate,
-      }
-    })
-      .then(response => {
+    axios
+      .get(
+        "http://www.trazabilidadodsapi.somee.com/api/Volumen/ObtenerVolumen",
+        {
+          params: {
+            fechaInicio: startDate,
+            fechaFin: endDate,
+          },
+        },
+      )
+      .then((response) => {
         const data = response.data;
         setVolumenData(data);
       })
       .catch((error) => {
         console.error("Hubo un error al obtener los datos:", error);
       });
-  }, [dateRange]); 
+  }, [dateRange]);
 
   const totalVolumen = volumenData.VolumenUtil + volumenData.VolumenInutil;
 
@@ -43,25 +50,26 @@ const VolumenChart = ({ dateRange }) => {
     labels: ["Volumen Útil", "Volumen No Útil"],
     datasets: [
       {
-        label: 'Volumen',
-        data: activeSegment === 'util' 
-          ? [volumenData.VolumenUtil, 0] 
-          : activeSegment === 'inutil' 
-          ? [0, volumenData.VolumenInutil] 
-          : [volumenData.VolumenUtil, volumenData.VolumenInutil],
-        backgroundColor: ['#4CAF50', '#F44336'],
-        borderColor: '#fff',
+        label: "Volumen",
+        data:
+          activeSegment === "util"
+            ? [volumenData.VolumenUtil, 0]
+            : activeSegment === "inutil"
+              ? [0, volumenData.VolumenInutil]
+              : [volumenData.VolumenUtil, volumenData.VolumenInutil],
+        backgroundColor: ["#4CAF50", "#F44336"],
+        borderColor: "#fff",
         borderWidth: 1,
       },
     ],
   };
 
-  const displayedText = 
-    activeSegment === 'util'
+  const displayedText =
+    activeSegment === "util"
       ? `${volumenData.VolumenUtil} kg`
-      : activeSegment === 'inutil'
-      ? `${volumenData.VolumenInutil} kg`
-      : `${totalVolumen} kg`;
+      : activeSegment === "inutil"
+        ? `${volumenData.VolumenInutil} kg`
+        : `${totalVolumen} kg`;
 
   const options = {
     plugins: {
@@ -74,25 +82,25 @@ const VolumenChart = ({ dateRange }) => {
         },
       },
       legend: {
-        position: 'top',
+        position: "top",
         onClick: (e, legendItem, legend) => {
           const index = legendItem.index;
 
           if (index === 0) {
-            setActiveSegment(activeSegment === 'util' ? null : 'util');
+            setActiveSegment(activeSegment === "util" ? null : "util");
           } else if (index === 1) {
-            setActiveSegment(activeSegment === 'inutil' ? null : 'inutil');
+            setActiveSegment(activeSegment === "inutil" ? null : "inutil");
           }
         },
       },
       title: {
         display: true,
         text: displayedText,
-        position: 'top',
+        position: "top",
         font: {
           size: 14,
         },
-        color: '#FFFFFF',
+        color: "#FFFFFF",
       },
     },
     elements: {
@@ -104,8 +112,10 @@ const VolumenChart = ({ dateRange }) => {
 
   return (
     <div className="flex flex-col items-center mb-8 p-4">
-      <h3 className="text-lg font-semibold text-white mb-2">Volumen Clasificado</h3>
-      <div style={{ position: 'relative', width: '300px', height: '300px' }}>
+      <h3 className="text-lg font-semibold text-white mb-2">
+        Volumen Clasificado
+      </h3>
+      <div style={{ position: "relative", width: "300px", height: "300px" }}>
         <Doughnut data={chartData} options={options} />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white font-bold">
           {displayedText}

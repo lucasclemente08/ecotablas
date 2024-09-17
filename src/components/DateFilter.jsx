@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const DateFilter = ({ onFilter }) => {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,7 +23,12 @@ const DateFilter = ({ onFilter }) => {
         onChange={(e) => setEndDate(e.target.value)}
         required
       />
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Filtrar</button>
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        Filtrar
+      </button>
     </form>
   );
 };
