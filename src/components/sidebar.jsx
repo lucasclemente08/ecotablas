@@ -2,8 +2,6 @@ import { useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import { Link, useNavigate } from "react-router-dom";
-import { FaChevronDown } from "react-icons/fa6";
-import { FaChevronUp } from "react-icons/fa";
 import Links from "./LinksBar";
 
 const Sidebar = () => {
