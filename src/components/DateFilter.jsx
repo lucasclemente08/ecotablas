@@ -15,11 +15,6 @@ const DateFilter = ({ onFilter }) => {
     }
   };
 
-  const handleClear = () => {
-    setStartDate("");
-    setEndDate("");
-    onFilter({ startDate: "", endDate: "" }); // Restablecer el filtro
-  };
 
   return (
     <div className="mb-4  flex content-center flex-col">
@@ -55,13 +50,7 @@ const DateFilter = ({ onFilter }) => {
         >
           Filtrar
         </button>
-        <button
-          type="button"
-          onClick={handleClear}
-          className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 mt-6 rounded-lg transition duration-200 ease-in-out shadow-md ml-2"
-        >
-          Limpiar
-        </button>
+       
       </form>
 
       {errorMessage && (
