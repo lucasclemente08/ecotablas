@@ -35,17 +35,16 @@ const routesConfig = [
   { path: "/volumen", element: <Volumen />, protected: true },
   { path: "/areas", element: <Areas />, protected: true },
   { path: "/empresa", element: <EmpresaDonante />, protected: true },
-  { path: "/Entrada/material", element: <EntradasDeMaterial />, protected: true },
-  { path: "/Lavado", element: <LavadoMaterial />, protected: true },
-
-  { path: "/Tablas", element: <TablasProducidas />, protected: true },
+  { path: "/entrada/material", element: <EntradasDeMaterial />, protected: true },
+  { path: "/lavado", element: <LavadoMaterial />, protected: true },
+  { path: "/tablas", element: <TablasProducidas />, protected: true },
 ];
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-      <div className="bg-slate-900 flex flex-col min-h-screen">
+        <div className="bg-slate-900 flex flex-col min-h-screen">
           <Routes>
             {routesConfig.map(({ path, element, protected: isProtected }) => (
               <Route
