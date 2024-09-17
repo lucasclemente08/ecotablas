@@ -42,7 +42,6 @@ const routesConfig = [
 ];
 
 function App() {
-
   return (
     <AuthProvider>
       <Router>
