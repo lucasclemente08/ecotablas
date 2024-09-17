@@ -1,7 +1,7 @@
 import React from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-
+import { FaFilePdf } from "react-icons/fa6";
 const PdfGenerator = ({ columns, data, title }) => {
   const GenerarPDF = () => {
     const doc = new jsPDF();
@@ -40,9 +40,12 @@ const PdfGenerator = ({ columns, data, title }) => {
   return (
     <button
       onClick={GenerarPDF}
-      className=" m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      className=" m-2  bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
     >
-      Generar PDF
+    <div className="flex content-center justify-between">
+    Generar PDF   <FaFilePdf  className="m-1"/>
+    </div>
+    
     </button>
   );
 };

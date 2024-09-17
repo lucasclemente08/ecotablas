@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import axios from "axios";
 import AddButton from "../../components/addButton";
 import PdfGenerator from "../../components/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttonEdit";
-import GetAll from "../../utils/GetAll";
 import LoadingTable from "../../components/LoadingTable";
+import {
+  getAllMaterials,
+  addMaterial,
+  editMaterial,
+} from "../../api/materialTritAPI";
 
 const MaterialTrit = () => {
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [modalAbierto, setModalAbierto] = useState(false);
   const [materialId, setMaterialId] = useState(null);
   const [modalEdit, setModalEdit] = useState(false);
@@ -26,11 +28,11 @@ const MaterialTrit = () => {
   });
 
   const abrirModalEdit = (material) => {
-    setMaterialId(material.IdMaterialProcesado); 
+    setMaterialId(material.IdMaterialTriturado);
     setFormValues({
       VolumenT: material.VolumenT,
       Fecha: material.Fecha,
-      IdMaterialClasificado: material.idMaterialClasificado,
+      IdMaterialClasificado: material.IdMaterialClasificado,
     });
     setModalEdit(true);
   };
@@ -46,40 +48,57 @@ const MaterialTrit = () => {
 
   const fetchMaterials = async () => {
     setLoading(true);
-    (async () => {
-      try {
-        const res = await GetAll("MaterialTrit/ListarTodo");
-        setMaterials(res);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }finally{
-        setLoading(false);
-      }
-    })();
+    try {
+      const res = await getAllMaterials();
+      setMaterials(res.data);
+    } catch (error) {
+      setMensaje("Error al cargar los materiales.");
+      console.error("Error fetching data: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
   useEffect(() => {
     fetchMaterials();
   }, []);
 
-  const handleSubmit = () => {
-    if (!formValues.VolumenT || !formValues.Fecha) {
-      setMensaje("Todos los campos son obligatorios.");
-      return;
+  const validateForm = () => {
+    let isValid = true;
+    if (!formValues.VolumenT) {
+      setMensaje("Volumen es obligatorio.");
+      isValid = false;
+    } else if (!formValues.Fecha) {
+      setMensaje("Fecha es obligatoria.");
+      isValid = false;
     }
-    axios
-      .post(
-        `http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Insertar`,
-        formValues,
-      )
-      .then((response) => {
-        setModalAbierto(false);
-        setMensaje("Inserción exitosa");
-        setMaterials([...materials, response.data]);
-      })
-      .catch((error) => {
-        setMensaje("Error al agregar el material.");
-        console.error("Error al agregar el material:", error);
-      });
+    return isValid;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+    try {
+      const response = await addMaterial(formValues);
+      setModalAbierto(false);
+      setMensaje("Inserción exitosa");
+      setMaterials([...materials, response.data]);
+    } catch (error) {
+      setMensaje("Error al agregar el material.");
+      console.error("Error al agregar el material:", error);
+    }
+  };
+
+  const handleEditSubmit = async () => {
+    if (!validateForm()) return;
+    try {
+      await editMaterial(materialId, formValues);
+      setModalEdit(false);
+      setMensaje("Modificación exitosa");
+      fetchMaterials();
+    } catch (error) {
+      setMensaje("Error al modificar el material.");
+      console.error("Error al modificar el material:", error);
+    }
   };
 
   const handleChange = (e) => {
@@ -90,35 +109,8 @@ const MaterialTrit = () => {
     }));
   };
 
-  const handleEditSubmit = () => {
-    if (
-      !formValues.VolumenT ||
-      !formValues.Fecha ||
-      !formValues.IdMaterialClasificado
-    ) {
-      setMensaje("Todos los campos son obligatorios.");
-      return;
-    }
-
-    axios
-      .put(
-        `http://www.trazabilidadodsapi.somee.com/api/MaterialPros/Modificar/${materialId}`,
-        formValues,
-      )
-      .then(() => {
-        setModalEdit(false);
-        setMensaje("Modificación exitosa");
-        fetchMaterials();
-      })
-      .catch((error) =>
-        console.error("Error al modificar el material:", error),
-      );
-  };
-
-  // titles for table headers
   const title = ["Volumen", "Fecha de ingreso", "Acciones"];
 
-  // elemente about the table (thead)
   const columns = [
     { header: "Volumen (kgs)", dataKey: "VolumenT" },
     { header: "Fecha", dataKey: "Fecha" },
@@ -129,7 +121,6 @@ const MaterialTrit = () => {
     Fecha: material.Fecha.slice(0, 10),
   }));
 
-  //  input fields
   const fields = [
     {
       name: "VolumenT",
@@ -220,8 +211,8 @@ const MaterialTrit = () => {
                       </button>
                       <DeleteButton
                         id={material.IdMaterialTriturado}
-                        endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Borrar" // Ajusta el endpoint según sea necesario
-                        updateList={fetchMaterials} // Pasa la función para actualizar la lista
+                        endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Borrar"
+                        updateList={fetchMaterials} 
                       />
                     </td>
                   </tr>
