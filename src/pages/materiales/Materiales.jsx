@@ -45,7 +45,7 @@ function Material() {
               ))}
             </tbody>
           </table>
-          <Tablas />
+        
         </div>
       </div>
     </div>

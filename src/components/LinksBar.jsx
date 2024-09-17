@@ -29,7 +29,11 @@ const LinksBar = () => {
     { title: "Entrada de material", link: "/Entrada/material" },
     { title: "Material Triturado", link: "/materialTri" },
     { title: "Material Procesado", link: "/materialProc" },
+    { title: "Lavado de material", link: "/lavado" },
+
     { title: "Volumen", link: "/volumen" },
+    { title: "Tablas producidas", link: "/tablas" },
+    
 
     { title: "Plásticos", link: "/material" },
   ];
@@ -133,7 +137,7 @@ const LinksBar = () => {
       >
         <div className="flex flex-col flex-nowrap justify-center items-center">
           <span
-            className={`${!open && "hidden"} origin-left duration-200 flex`}
+            className={`${!open && "hidden"} font-bold origin-left duration-200 flex`}
           >
             Materiales{" "}
             {open ? (

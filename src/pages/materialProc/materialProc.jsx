@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Home from "../home/Home";
 import axios from "axios";
 import AddButton from "../../components/addButton";
 import PdfGenerator from "../../components/PdfGenerator";
-import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttonEdit";
-
+import LoadingTable from "../../components/LoadingTable";
+import TablaHead from "../../components/Thead";
+import ReportButton from "../../components/ReportButton";
+import NextButton from "../../components/NextButton";
+import VolumenProcesadoChart from "../../components/VolumenProcesadoChart";
+import DateFilter from "../../components/DateFilter";
 const MaterialProc = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
   const [materialId, setMaterialId] = useState(null);
 
@@ -22,16 +26,26 @@ const MaterialProc = () => {
     IdIngresoMaterial: "1",
   });
 
+
+  const [dateRange, setDateRange] = useState({ startDate: new Date(), endDate: new Date() });
+
+  const handleFilter = (dates) => {
+    setDateRange(dates);
+  };
+
+  // Estado para la paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // Número de elementos por página
+
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
 
   const abrirModalEdit = (material) => {
-    setMaterialId(material.IdMaterialProcesado); // Guardar el ID del material seleccionado
+    setMaterialId(material.IdMaterialProcesado);
 
     setFormValues({
       VolumenP: material.VolumenP,
-      FechaIngresoP: material.FechaIngresoP, // Formatear fecha si es necesario
-      FechaIngresoP: material.FechaIngresoP, // Formatear fecha si es necesario
+      FechaIngresoP: material.FechaIngresoP,
       IdIngresoMaterial: material.IdIngresoMaterial,
     });
     setModalEdit(true);
@@ -43,10 +57,9 @@ const MaterialProc = () => {
     axios
       .post(
         "http://www.trazabilidadodsapi.somee.com/api/MaterialPros/Insertar",
-        formValues,
+        formValues
       )
       .then(() => {
-        cerrarModal();
         cerrarModal();
         fetchMaterials();
       })
@@ -54,11 +67,7 @@ const MaterialProc = () => {
   };
 
   const handleEditSubmit = () => {
-    if (
-      !formValues.VolumenP ||
-      !formValues.FechaIngresoP ||
-      !formValues.IdIngresoMaterial
-    ) {
+    if (!formValues.VolumenP || !formValues.FechaIngresoP || !formValues.IdIngresoMaterial) {
       setMensaje("Todos los campos son obligatorios.");
       return;
     }
@@ -66,7 +75,7 @@ const MaterialProc = () => {
     axios
       .put(
         `http://www.trazabilidadodsapi.somee.com/api/MaterialPros/Modificar/${materialId}`,
-        formValues,
+        formValues
       )
       .then(() => {
         setModalEdit(false);
@@ -74,7 +83,7 @@ const MaterialProc = () => {
         fetchMaterials();
       })
       .catch((error) =>
-        console.error("Error al modificar el material:", error),
+        console.error("Error al modificar el material:", error)
       );
   };
 
@@ -87,13 +96,16 @@ const MaterialProc = () => {
   };
 
   const fetchMaterials = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(
-        "http://www.trazabilidadodsapi.somee.com/api/MaterialPros/ListarTodo",
+        "http://www.trazabilidadodsapi.somee.com/api/MaterialPros/ListarTodo"
       );
       setMaterials(response.data);
     } catch (error) {
       console.error("Error fetching materials:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -101,17 +113,22 @@ const MaterialProc = () => {
     fetchMaterials();
   }, []);
 
-  const title = ["Volumen (kgs)", "Fecha de ingreso", "Acciones"];
+  // Paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = materials.slice(indexOfFirstItem, indexOfLastItem);
 
+  // Cambiar de página
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Total de páginas
+  const totalPages = Math.ceil(materials.length / itemsPerPage);
+
+  const title = ["Volumen (kgs)", "Fecha de ingreso", "Acciones"];
   const columns = [
     { header: "Volumen (kgs)", dataKey: "VolumenP" },
     { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
   ];
-
-  const rows = materials.map((material) => ({
-    VolumenP: `${material.VolumenP} kgs`,
-    FechaIngresoP: material.FechaIngresoP.slice(0, 10),
-  }));
 
   const fields = [
     {
@@ -134,12 +151,16 @@ const MaterialProc = () => {
     },
   ];
 
+  const totalVolumen = materials.reduce((acc, material) => acc + parseFloat(material.VolumenP || 0), 0);
+  const totalItems = materials.length;
+
+
   return (
     <>
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
         <Home />
         <div className="p-4 w-full">
-          <h2 className="text-2xl font-bold text-white mb-4">
+          <h2 className="text-2xl font-bold text-white mb-3">
             Materiales Procesados
           </h2>
           <AddButton
@@ -152,7 +173,7 @@ const MaterialProc = () => {
             data={materials}
             title="Reporte de Materiales procesados"
           />
-
+      <ReportButton />
           {modalAbierto && (
             <AddModal
               title="Agregar Material Procesado"
@@ -176,12 +197,25 @@ const MaterialProc = () => {
             />
           )}
 
+          <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
+                  <h5>
+                      <span class="text-gray-400">Total de materiales:</span>
+                      <span class="dark:text-white"> {totalItems}</span>
+                  </h5>
+                  <h5>
+                      <span class="text-gray-400">Total volumen: </span>
+                      <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
+                  </h5>
+              </div>
+
+
+
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
+              <LoadingTable loading={loading} />
               <TablaHead titles={title} />
-
-              <tbody>
-                {materials.map((material) => (
+              <tbody className="bg-white">
+                {currentItems.map((material) => (
                   <tr
                     key={material.IdMaterialProcesado}
                     className="hover:bg-gray-100"
@@ -193,10 +227,13 @@ const MaterialProc = () => {
                       {material.FechaIngresoP.slice(0, 10)}
                     </td>
                     <td
-                      className={`border-b py-3 px-4 flex justify-center ${modalEdit || modalAbierto ? "hidden" : ""}`}
+                      className={`border-b py-3 px-4 flex justify-center ${modalEdit || modalAbierto ? "hidden" : ""
+                        }`}
                     >
+           
+                        <NextButton />
                       <button
-                        className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        className="bg-yellow-600 ml-2 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                         onClick={() => abrirModalEdit(material)}
                       >
                         Modificar
@@ -211,9 +248,38 @@ const MaterialProc = () => {
                 ))}
               </tbody>
             </table>
+            {/* Controles de paginación integrados */}
+            <div className="flex justify-between items-center bg-gray-700">
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-4 py-2  ml-2 hover:text-gray-400 text-white rounded-l"
+              >
+                Anterior
+              </button>
+              <span className="text-gray-300">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage >= totalPages}
+                className="px-4 py-2 hover:text-gray-400  text-white rounded-r"
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
+          <div className="flex-1 flex flex-col gap-4 p-4">
+  <DateFilter onFilter={handleFilter} />
+ 
+  <VolumenProcesadoChart dateRange={dateRange} />
+
+  
+</div>
         </div>
       </div>
+  
+      
     </>
   );
 };
