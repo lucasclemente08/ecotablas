@@ -3,6 +3,7 @@ import Home from "../home/Home";
 import TablaHead from "../../components/Thead";
 import LoadingTable from "../../components/LoadingTable";
 import PdfGenerator from "../../components/PdfGenerator";
+import SectionLayout from "../../layout/SectionLayout";
 
 
 const TablasProducidas = () => {
@@ -64,12 +65,7 @@ const TablasProducidas = () => {
 
 
   return (
-    <div className="md:flex flex-row bg-slate-900 min-h-screen">
-        {" "}
-        <Home />
-        <div className="p-4 w-full">
-          <h2 className="text-2xl font-bold text-white mb-4">Tablas Producidas</h2>
-        
+<SectionLayout  title="Tablas producidas">      
         {loading  ?  <LoadingTable loading={loading} /> :
          <table className="min-w-full bg-white rounded-lg shadow-md">
 
@@ -87,10 +83,9 @@ const TablasProducidas = () => {
                   </tbody>
                 </table>
 
-        }
-       
-      </div>
-    </div>
+}
+</SectionLayout>
+
   );
 };
 
