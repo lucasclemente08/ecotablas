@@ -7,6 +7,8 @@ import DeleteButton from "../../components/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttonEdit";
 import LoadingTable from "../../components/LoadingTable";
+import NextButton from "../../components/NextButton";
+import ReportButton from "../../components/ReportButton";
 import {
   getAllMaterials,
   addMaterial,
@@ -137,6 +139,24 @@ const MaterialTrit = () => {
     },
   ];
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); 
+  // Paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = materials.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Cambiar de página
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Total de páginas
+  const totalPages = Math.ceil(materials.length / itemsPerPage);
+
+  const totalVolumen = materials.reduce((acc, material) => acc + parseFloat(material.VolumenT || 0), 0);
+  const totalItems = materials.length;
+
+
+
   return (
     <>
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
@@ -155,7 +175,7 @@ const MaterialTrit = () => {
             data={materials}
             title="Reporte de Materiales triturado"
           />
-
+      <ReportButton />
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
               {mensaje}
@@ -182,6 +202,16 @@ const MaterialTrit = () => {
               cerrarModalEdit={cerrarModalEdit}
             />
           )}
+ <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
+                  <h5>
+                      <span class="text-gray-400">Total de materiales:</span>
+                      <span class="dark:text-white"> {totalItems}</span>
+                  </h5>
+                  <h5>
+                      <span class="text-gray-400">Total volumen: </span>
+                      <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
+                  </h5>
+              </div>
 
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
@@ -189,23 +219,25 @@ const MaterialTrit = () => {
               <TablaHead titles={title} />
 
               <tbody>
-                {materials.map((material) => (
+                {currentItems.map((material) => (
                   <tr
                     key={material.IdMaterialTriturado}
                     className="hover:bg-gray-100 m-5"
                   >
-                    <td className="border-b py-3 px-4">
+                    <td className="border-b py-2 px-4">
                       {material.VolumenT} kgs
                     </td>
-                    <td className="border-b py-3 px-4">
+                    <td className="border-b py-2 px-4">
                       {material.Fecha.slice(0, 10)}
                     </td>
                     <td
-                      className={`border-b py-3 px-4 flex justify-center ${modalAbierto ? "hidden" : ""}`}
+                      className={`border-b py-2 px-4 flex justify-center ${modalAbierto ? "hidden" : ""}`}
+
                     >
+                      <NextButton />
                       <button
                         onClick={() => abrirModalEdit(material)}
-                        className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       >
                         Modificar
                       </button>
@@ -219,6 +251,26 @@ const MaterialTrit = () => {
                 ))}
               </tbody>
             </table>
+            {/* Controles de paginación integrados */}
+            <div className="flex justify-between items-center bg-gray-700">
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-4 py-2  ml-2 hover:text-gray-400 text-white rounded-l"
+              >
+                Anterior
+              </button>
+              <span className="text-gray-300">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage >= totalPages}
+                className="px-4 py-2 hover:text-gray-400  text-white rounded-r"
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -220,14 +220,14 @@ const MaterialProc = () => {
                     key={material.IdMaterialProcesado}
                     className="hover:bg-gray-100"
                   >
-                    <td className="border-b py-3 px-4">
+                    <td className="border-b py-2 px-4">
                       Volumen: {material.VolumenP} kgs
                     </td>
-                    <td className="border-b py-3 px-4">
+                    <td className="border-b py-2 px-4">
                       {material.FechaIngresoP.slice(0, 10)}
                     </td>
                     <td
-                      className={`border-b py-3 px-4 flex justify-center ${modalEdit || modalAbierto ? "hidden" : ""
+                      className={` py-2 px-4 flex justify-center ${modalEdit || modalAbierto ? "hidden" : ""
                         }`}
                     >
            
