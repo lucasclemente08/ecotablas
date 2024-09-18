@@ -19,6 +19,7 @@ import EmpresaDonante from "./pages/empresaDonante/EmpresaDonante";
 import TablasProducidas from "./pages/TablasProducidas/TablasProducidas";
 import EntradasDeMaterial from "./pages/entradaDeMaterial/EntradasDeMaterial";
 import LavadoMaterial from "./pages/lavadoMaterial/LavadoMaterial";
+import ClasificacionDeMaterial from "./pages/clasificacionDeMaterial/ClasificacionDeMaterial";
 
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
@@ -36,6 +37,8 @@ const routesConfig = [
   { path: "/areas", element: <Areas />, protected: true },
   { path: "/empresa", element: <EmpresaDonante />, protected: true },
   { path: "/entrada/material", element: <EntradasDeMaterial />, protected: true },
+  { path: "/clasificacion", element: <ClasificacionDeMaterial />, protected: true },
+  
   { path: "/lavado", element: <LavadoMaterial />, protected: true },
   { path: "/tablas", element: <TablasProducidas />, protected: true },
 ];

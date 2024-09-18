@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Home from "../home/Home";
 import axios from "axios";
-
+import PdfGenerator from "../../components/PdfGenerator";
 const Areas = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
 
@@ -42,12 +42,7 @@ const Areas = () => {
               >
                 Agregar area
               </button>
-              <button
-                //   onClick={handlePrint}
-                className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-2 px-4 rounded"
-              >
-                Imprimir listado
-              </button>
+ <PdfGenerator />
             </div>
 
             <div className="overflow-x-auto">
@@ -62,7 +57,7 @@ const Areas = () => {
                 <tbody>
                   {area.map((material) => (
                     <tr key={material.id} className="hover:bg-gray-100">
-                      <td className="border-b py-3 px-4">
+                      <td className="py-3 px-4">
                         {material.NombreRol}
                       </td>
                     </tr>
