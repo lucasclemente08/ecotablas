@@ -19,36 +19,37 @@ const Sidebar = () => {
   };
 
   return (
-    <div className=" custom-scrollbar h-dvh over">
-      <div
-        className={`${
-          open ? "w-28" : "w-20"
-        } bg-dark-purple w-60 min-h-screen pt-1 bg-sky-600 shadow relative duration-300`}
-      >
-        <div className="flex flex-col items-center m-1 p-4">
-          <div className="mt-10">
-            <h1
-              className={`text-white origin-left font-medium text-xl duration-200 ${
-                !open && "scale-0"
-              }`}
-            >
-              Gestión de ecotablas
-            </h1>
-          </div>
-        </div>
-
-        <Links />
-
-        <div className="mt-60 text-center justify-center mb-5 flex w-full">
-          <button
-            onClick={handleSignOut}
-            className="font-semibold text-white hover:text-red-600"
+    <div className="flex">
+    <div
+      className={`${
+        open ? "w-60" : "w-20"
+      } bg-sky-600 min-h-screen duration-300 shadow-md`}
+    >
+      <div className="flex flex-col items-center m-1 p-4">
+        <div className="mt-10">
+          <h1
+            className={`text-white font-medium text-xl duration-200 ${
+              !open && "scale-0"
+            }`}
           >
-            Cerrar sesión
-          </button>
+            Gestión de ecotablas
+          </h1>
         </div>
       </div>
+
+      <Links />
+
+      <div className="mt-60 text-center justify-center mb-5 flex w-full">
+        <button
+          onClick={handleSignOut}
+          className="font-semibold text-white hover:text-red-600"
+        >
+          Cerrar sesión
+        </button>
+      </div>
     </div>
+    </div>
+
   );
 };
 

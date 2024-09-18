@@ -27,8 +27,10 @@ const LinksBar = () => {
 
   const materialMenus = [
     { title: "Entrada de material", link: "/Entrada/material" },
-    { title: "Material Triturado", link: "/materialTri" },
+    { title: "Clasificacíon de material", link: "/clasificacion" },
+    
     { title: "Material Procesado", link: "/materialProc" },
+    { title: "Material Triturado", link: "/materialTri" },
     { title: "Lavado de material", link: "/lavado" },
 
     { title: "Volumen", link: "/volumen" },
