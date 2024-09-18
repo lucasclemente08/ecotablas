@@ -1,5 +1,6 @@
 import React from 'react'
 import Home from '../home/Home'
+import ReportButton from '../../components/ReportButton'
 const LavadoMaterial = () => {
   return (
     <>
@@ -9,6 +10,9 @@ const LavadoMaterial = () => {
           <h2 className="text-2xl font-bold text-white mb-4">
             Lavado de materiales
           </h2>
+
+        <ReportButton />
+
         </div>
       </section>
 
