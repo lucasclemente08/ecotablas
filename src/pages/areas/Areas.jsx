@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Home from "../home/Home";
 import axios from "axios";
 import PdfGenerator from "../../components/PdfGenerator";
+import AddButton from "../../components/addButton";
+import SectionLayout from "../../layout/SectionLayout";
 const Areas = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
 
@@ -27,21 +29,14 @@ const Areas = () => {
 
   return (
     <>
-      <div className="md:flex flex-row bg-slate-900">
-        <Home />
-        <div className="overflow-x-auto m-5">
-          <div className="m-3">
-            <h2 className="text-white text-3xl b-4">
-              Áreas y turnos de trabajos
-            </h2>
-
+      
+<SectionLayout >
             <div className="mt-5">
-              <button
-                onClick={abrirModal}
-                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 px-4 rounded"
-              >
-                Agregar area
-              </button>
+            <AddButton
+            abrirModal={abrirModal}
+            title={" Añadir Area "}
+          />
+
  <PdfGenerator />
             </div>
 
@@ -65,9 +60,7 @@ const Areas = () => {
                 </tbody>
               </table>
             </div>
-          </div>
-        </div>
-      </div>
+            </SectionLayout>
     </>
   );
 };
