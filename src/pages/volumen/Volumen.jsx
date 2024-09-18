@@ -14,7 +14,7 @@ const Volumen = () => {
   };
 
   return (
-    <div className="md:flex flex-row bg-slate-900 p-4">
+    <div className="md:flex flex-row bg-slate-900 ">
       <Home />
       <div className="flex-1 flex flex-col gap-4 p-4">
         <DateFilter onFilter={handleFilter} />
