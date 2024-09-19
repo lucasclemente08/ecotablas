@@ -1,8 +1,8 @@
 import React from "react";
 import Sidebar from "../../components/sidebar";
 import Navbar from "../../components/Navbar";
-import ButtonDelete from "../../components/buttonDelete";
-import ButtonEdit from "../../components/buttonEdit";
+import ButtonDelete from "../../components/buttons/buttonDelete";
+import ButtonEdit from "../../components/buttons/buttonEdit";
 const Home = () => {
   return (
     <>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/addButton";
-import PdfGenerator from "../../components/PdfGenerator";
+import AddButton from "../../components/buttons/addButton";
+import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
-import DeleteButton from "../../components/DeleteButton";
+import DeleteButton from "../../components/buttons/DeleteButton";
 import SectionLayout from "../../layout/SectionLayout";
 
 const EmpresaDonante = () => {

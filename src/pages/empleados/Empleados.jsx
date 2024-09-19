@@ -5,9 +5,9 @@ import { useReactToPrint } from "react-to-print";
 
 import { MdExpandMore } from "react-icons/md";
 import { MdExpandLess } from "react-icons/md";
-import PdfGenerator from "../../components/PdfGenerator";
-import AddButton from "../../components/addButton";
-import DeleteButton from "../../components/DeleteButton";
+import PdfGenerator from "../../components/buttons/PdfGenerator";
+import AddButton from "../../components/buttons/addButton";
+import DeleteButton from "../../components/buttons/DeleteButton";
 import SectionLayout from "../../layout/SectionLayout";
 
 const Empleados = () => {

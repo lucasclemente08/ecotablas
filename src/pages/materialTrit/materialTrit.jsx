@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/addButton";
-import PdfGenerator from "../../components/PdfGenerator";
+import AddButton from "../../components/buttons/addButton";
+import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
-import DeleteButton from "../../components/DeleteButton";
+import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
-import ButtonEdit from "../../components/buttonEdit";
+import ButtonEdit from "../../components/buttons/buttonEdit";
 import LoadingTable from "../../components/LoadingTable";
-import NextButton from "../../components/NextButton";
-import ReportButton from "../../components/ReportButton";
+import NextButton from "../../components/buttons/NextButton";
+import ReportButton from "../../components/buttons/ReportButton";
 import {
   getAllMaterials,
   addMaterial,

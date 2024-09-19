@@ -3,15 +3,15 @@ import SectionLayout from "../../layout/SectionLayout";
 
 
 import TablaHead from "../../components/Thead";
-import AddButton from "../../components/addButton";
-import PdfGenerator from "../../components/PdfGenerator";
-import DeleteButton from "../../components/DeleteButton";
+import AddButton from "../../components/buttons/addButton";
+import PdfGenerator from "../../components/buttons/PdfGenerator";
+import DeleteButton from "../../components/buttons/DeleteButton";
 
 
 import LoadingTable from "../../components/LoadingTable";
-import ReportButton from "../../components/ReportButton";
-import NextButton from "../../components/NextButton";
-import VolumenProcesadoChart from "../../components/VolumenProcesadoChart";
+import ReportButton from "../../components/buttons/ReportButton";
+import NextButton from "../../components/buttons/NextButton";
+
 import DateFilter from "../../components/DateFilter";
 
 const EntradasDeMaterial = () => {
