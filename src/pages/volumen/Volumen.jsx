@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import Home from "../home/Home";
-import VolumenChart from "../../components/VolumenChart";
-import VolumenIngresadoChart from "../../components/VolumenIngresadoChart";
-import VolumenProcesadoChart from "../../components/VolumenProcesadoChart";
-import VolumenTrituradoChart from "../../components/VolumenTrituradoChart";
+import VolumenChart from "../../components/volumen/VolumenChart";
+import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
+import VolumenProcesadoChart from "../../components/volumen/VolumenProcesadoChart";
+import VolumenTrituradoChart from "../../components/volumen/VolumenTrituradoChart";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 

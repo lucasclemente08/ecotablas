@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Home from "../home/Home";
 import axios from "axios";
 import AddButton from "../../components/buttons/addButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
@@ -10,7 +9,7 @@ import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 import ReportButton from "../../components/buttons/ReportButton";
 import NextButton from "../../components/buttons/NextButton";
-import VolumenProcesadoChart from "../../components/VolumenProcesadoChart";
+import VolumenProcesadoChart from "../../components/volumen/VolumenProcesadoChart";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 const MaterialProc = () => {
