@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Home from "../home/Home";
 import axios from "axios";
-import PdfGenerator from "../../components/PdfGenerator";
-import AddButton from "../../components/addButton";
+import PdfGenerator from "../../components/buttons/PdfGenerator";
+import AddButton from "../../components/buttons/addButton";
 import SectionLayout from "../../layout/SectionLayout";
 const Areas = () => {
   const [modalAbierto, setModalAbierto] = useState(false);

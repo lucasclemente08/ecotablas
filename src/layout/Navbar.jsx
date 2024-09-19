@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { HiMenu } from "react-icons/hi";
-import HamburgerModal from "./HamburguerModal";
-import { getAuth, signOut } from "firebase/auth";
-import { auth } from "../firebase/firebase";
+import HamburgerModal from "../components/HamburguerModal";
+
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {

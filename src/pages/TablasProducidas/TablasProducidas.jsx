@@ -2,7 +2,7 @@ import React,{useState,useEffect} from "react";
 import Home from "../home/Home";
 import TablaHead from "../../components/Thead";
 import LoadingTable from "../../components/LoadingTable";
-import PdfGenerator from "../../components/PdfGenerator";
+import PdfGenerator from "../../components/buttons/PdfGenerator";
 import SectionLayout from "../../layout/SectionLayout";
 
 

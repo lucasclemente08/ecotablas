@@ -2,7 +2,7 @@ import { useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import { Link, useNavigate } from "react-router-dom";
-import Links from "./LinksBar";
+import Links from "../components/LinksBar";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
