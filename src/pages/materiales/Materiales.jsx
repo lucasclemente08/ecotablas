@@ -3,6 +3,7 @@ import Home from "../home/Home";
 import Tablas from "../plasticos/plasticos";
 
 import axios from "axios";
+import SectionLayout from "../../layout/SectionLayout";
 
 function Material() {
   const [plasticos, setPlasticos] = useState([]);
@@ -22,10 +23,8 @@ function Material() {
     fetchMaterials();
   }, []);
   return (
-    <div className="md:flex flex-row bg-slate-900 min-h-screen">
-      <Home />
-      <div className="p-4 w-full">
-        <h2 className="text-2xl font-bold text-white mb-4">Materiales</h2>
+    <SectionLayout title="Plásticos">
+
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white rounded-lg shadow-md">
             <thead>
@@ -47,8 +46,8 @@ function Material() {
           </table>
         
         </div>
-      </div>
-    </div>
+   
+    </SectionLayout>
   );
 }
 

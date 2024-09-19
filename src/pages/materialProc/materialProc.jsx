@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
-import Home from "../home/Home";
 import axios from "axios";
-import AddButton from "../../components/addButton";
-import PdfGenerator from "../../components/PdfGenerator";
-import DeleteButton from "../../components/DeleteButton";
+import AddButton from "../../components/buttons/addButton";
+import PdfGenerator from "../../components/buttons/PdfGenerator";
+import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
-import ButtonEdit from "../../components/buttonEdit";
+import ButtonEdit from "../../components/buttons/buttonEdit";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
-import ReportButton from "../../components/ReportButton";
-import NextButton from "../../components/NextButton";
-import VolumenProcesadoChart from "../../components/VolumenProcesadoChart";
+import ReportButton from "../../components/buttons/ReportButton";
+import NextButton from "../../components/buttons/NextButton";
+import VolumenProcesadoChart from "../../components/volumen/VolumenProcesadoChart";
 import DateFilter from "../../components/DateFilter";
+import SectionLayout from "../../layout/SectionLayout";
 const MaterialProc = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -157,12 +157,8 @@ const MaterialProc = () => {
 
   return (
     <>
-      <div className="md:flex flex-row bg-slate-900 min-h-screen">
-        <Home />
-        <div className="p-4 w-full">
-          <h2 className="text-2xl font-bold text-white mb-3">
-            Materiales Procesados
-          </h2>
+    <SectionLayout title="Materiales Procesados">
+
           <AddButton
             abrirModal={abrirModal}
             title={"Añadir Materiales procesados"}
@@ -276,10 +272,9 @@ const MaterialProc = () => {
 
   
 </div>
-        </div>
-      </div>
+ 
   
-      
+  </SectionLayout>
     </>
   );
 };

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import Home from "../home/Home";
-import VolumenChart from "../../components/VolumenChart";
-import VolumenIngresadoChart from "../../components/VolumenIngresadoChart";
-import VolumenProcesadoChart from "../../components/VolumenProcesadoChart";
-import VolumenTrituradoChart from "../../components/VolumenTrituradoChart";
+import VolumenChart from "../../components/volumen/VolumenChart";
+import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
+import VolumenProcesadoChart from "../../components/volumen/VolumenProcesadoChart";
+import VolumenTrituradoChart from "../../components/volumen/VolumenTrituradoChart";
 import DateFilter from "../../components/DateFilter";
+import SectionLayout from "../../layout/SectionLayout";
 
 const Volumen = () => {
   const [dateRange, setDateRange] = useState({ startDate: "", endDate: "" });
@@ -14,9 +14,8 @@ const Volumen = () => {
   };
 
   return (
-    <div className="md:flex flex-row bg-slate-900 ">
-      <Home />
-      <div className="flex-1 flex flex-col gap-4 p-4">
+<SectionLayout title="Volúmen">
+  
         <DateFilter onFilter={handleFilter} />
         <div className="flex-1 flex flex-wrap gap-4">
           <div className="flex-1 min-w-[200px] max-w-[300px]">
@@ -32,8 +31,9 @@ const Volumen = () => {
             <VolumenTrituradoChart dateRange={dateRange} />
           </div>
         </div>
-      </div>
-    </div>
+</SectionLayout>
+      
+    
   );
 };
 

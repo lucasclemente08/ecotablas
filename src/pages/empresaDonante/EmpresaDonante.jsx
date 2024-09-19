@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/addButton";
-import PdfGenerator from "../../components/PdfGenerator";
+import AddButton from "../../components/buttons/addButton";
+import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
-import DeleteButton from "../../components/DeleteButton";
+import DeleteButton from "../../components/buttons/DeleteButton";
+import SectionLayout from "../../layout/SectionLayout";
 
 const EmpresaDonante = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -91,12 +92,8 @@ const EmpresaDonante = () => {
 
   return (
     <>
-      <div className="md:flex flex-row bg-slate-900 min-h-screen">
-        <Home />
-        <div className="p-4 w-full">
-          <h2 className="text-2xl font-bold text-white mb-4">
-            Empresas Donantes
-          </h2>
+     <SectionLayout title="Empresa donantes">
+
           <AddButton abrirModal={abrirModal} title={"Añadir empresa donante"} />
           <PdfGenerator
             columns={columns}
@@ -143,8 +140,7 @@ const EmpresaDonante = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      </div>
+          </SectionLayout>
     </>
   );
 };

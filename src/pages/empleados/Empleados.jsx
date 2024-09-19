@@ -5,9 +5,10 @@ import { useReactToPrint } from "react-to-print";
 
 import { MdExpandMore } from "react-icons/md";
 import { MdExpandLess } from "react-icons/md";
-import PdfGenerator from "../../components/PdfGenerator";
-import AddButton from "../../components/addButton";
-import DeleteButton from "../../components/DeleteButton";
+import PdfGenerator from "../../components/buttons/PdfGenerator";
+import AddButton from "../../components/buttons/addButton";
+import DeleteButton from "../../components/buttons/DeleteButton";
+import SectionLayout from "../../layout/SectionLayout";
 
 const Empleados = () => {
   const [empleadosData, setEmpleadosData] = useState([]);
@@ -317,12 +318,7 @@ const Empleados = () => {
 
   return (
     <>
-      <div className="md:flex flex-row bg-slate-900">
-        <Home />
-        <div className="overflow-x-auto m-5">
-          <div className="m-3">
-            <h2 className="text-white text-3xl b-4">Empleados</h2>
-          </div>
+    <SectionLayout>
           <div className="">
             <AddButton abrirModal={abrirModal} title={"Añadir empleado"} />
             <PdfGenerator
@@ -831,8 +827,7 @@ const Empleados = () => {
               ))}
             </tbody>
           </table>
-        </div>
-      </div>
+          </SectionLayout>
     </>
   );
 };

@@ -1,5 +1,6 @@
-import Sidebar from "../../components/sidebar";
+
 import profile from "../../assets/profile.jpeg";
+import SectionLayout from "../../layout/SectionLayout";
 const Profile = () => {
   const userProfile = {
     nombre: "Juan Pérez",
@@ -15,8 +16,8 @@ const Profile = () => {
 
   return (
     <>
-      <div className="flex">
-        <Sidebar />
+<SectionLayout title="Perfil">
+
         <div className="w-full font-aeonik bg-slate-900  p-6 ">
           <div className="flex items-center mb-6">
             {userProfile.fotoUrl ? (
@@ -70,7 +71,9 @@ const Profile = () => {
             <p className="text-white">{userProfile.fechaNacimiento}</p>
           </div>
         </div>
-      </div>
+
+        
+</SectionLayout>
     </>
   );
 };
