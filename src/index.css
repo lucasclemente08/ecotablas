@@ -10,20 +10,11 @@
 nav {
   border: none;
 }
-/* #map {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    
-    z-index: 0;
-  } */
   #map {
     margin: 1rem auto; /* Centrará el mapa y proporciona espacio alrededor */
-    width: 90%; /* Ajusta el ancho al 90% del contenedor padre */
-    max-width: 900px; /* Máximo ancho para pantallas grandes */
-    height: 60vh; /* Altura relativa al viewport, ajustable según el contenido */
+    width: 90%;
+    max-width: 900px; 
+    height: 60vh; 
     border-radius: 0.8rem;
     overflow: hidden; /* Controla el desbordamiento en ambos ejes */
   }
