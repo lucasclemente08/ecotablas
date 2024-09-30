@@ -22,9 +22,9 @@ const ClasificacionDeMaterial = () => {
   ];
 
   const titles = [
-    'ID Material Clasificado',
-    'Volumen Útil (m³)',
-    'Volumen Inútil (m³)'
+    'Donante',
+    'Volumen Útil ',
+    'Volumen Inútil '
   ];
 
 
@@ -59,7 +59,7 @@ const ClasificacionDeMaterial = () => {
           data={materialClasificado}
           title="Reporte de Material Clasificado"
         />
-        
+        <ReportButton />
         <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
               <TablaHead titles={titles} />
