@@ -4,9 +4,14 @@ import TablaHead from "../../components/Thead";
 import LoadingTable from "../../components/LoadingTable";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import SectionLayout from "../../layout/SectionLayout";
-
+import AddButton from "../../components/buttons/addButton";
 
 const Maquinarias = () => {
+
+  
+  const abrirModal = () => setModalAbierto(true);
+  const cerrarModal = () => setModalAbierto(false);
+
   const [loading, setLoading] = useState(true);
   const data = [
     {
@@ -35,7 +40,14 @@ const Maquinarias = () => {
     },
   ];
   
-
+  const columns = [
+    { header: "Nombre", accessor: "Nombre" },
+    { header: "Tipo", accessor: "Tipo" },
+    { header: "Modelo", accessor: "Modelo" },
+    { header: "Estado", accessor: "Estado" },
+    { header: "Fecha de incorporación", accessor: "FechaAdquisicion" },
+  ];
+  
   const titles = [
 
     "Nombre",
@@ -57,9 +69,16 @@ const Maquinarias = () => {
     fetchMaterials();
   }, []);
 
-
   return (
     <SectionLayout title="Maquinarias">
+
+<AddButton abrirModal={abrirModal} title="Ingresar maquinaria" />
+      <PdfGenerator 
+         columns={columns}
+         data={data}
+         title="Maquinaria"
+      />
+
       {loading ? (
         <LoadingTable loading={loading} />
       ) : (

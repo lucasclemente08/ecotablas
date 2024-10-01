@@ -4,10 +4,14 @@ import TablaHead from "../../components/Thead";
 import LoadingTable from "../../components/LoadingTable";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import SectionLayout from "../../layout/SectionLayout";
-
+import AddButton from "../../components/buttons/addButton";
 
 const TablasProducidas = () => {
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const abrirModal = () => setModalAbierto(true);
+  const cerrarModal = () => setModalAbierto(false);
   const [loading, setLoading] = useState(true);
+
   const data = [
     {
       ID_Tabla: 1,
@@ -43,7 +47,13 @@ const TablasProducidas = () => {
     },
   ];
   
-
+  const columns = [
+    { header: "Fecha Producción", accessor: "FechaProduccion" },
+    { header: "Dimensiones", accessor: "Dimensiones" },
+    { header: "Peso (kgs)", accessor: "Peso" },
+    { header: "Código Identificación", accessor: "CodigoIdentificacion" },
+  ];
+  
   const titles = [
 
     "Fecha Producción",
@@ -66,6 +76,10 @@ const TablasProducidas = () => {
 
   return (
 <SectionLayout  title="Tablas producidas">      
+<AddButton abrirModal={abrirModal} title="Añadir tabla" />
+
+  <PdfGenerator title="Tablas producidas" data={data} columns={columns} />
+
         {loading  ?  <LoadingTable loading={loading} /> :
          <table className="min-w-full bg-white rounded-lg shadow-md">
 
