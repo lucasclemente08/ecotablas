@@ -10,7 +10,7 @@ import RecoUrbanos from "./pages/recoUrbanos/recoUrbanos";
 import Profile from "./pages/profile/Profile";
 import Register from "./pages/login/Register";
 import Material from "./pages/materiales/Materiales";
-import { AuthProvider } from "../src/context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import Tablas from "./pages/plasticos/plasticos";
 import Vehiculos from "./pages/vehiculos/Vehiculos";
 import Volumen from "./pages/volumen/Volumen";
@@ -20,7 +20,7 @@ import TablasProducidas from "./pages/TablasProducidas/TablasProducidas";
 import EntradasDeMaterial from "./pages/entradaDeMaterial/EntradasDeMaterial";
 import LavadoMaterial from "./pages/lavadoMaterial/LavadoMaterial";
 import ClasificacionDeMaterial from "./pages/clasificacionDeMaterial/ClasificacionDeMaterial";
-
+import Maquinarias from "./pages/maquinaria/Maquinaria";
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
   { path: "/login", element: <Login />, protected: false },
@@ -38,6 +38,7 @@ const routesConfig = [
   { path: "/empresa", element: <EmpresaDonante />, protected: true },
   { path: "/entrada/material", element: <EntradasDeMaterial />, protected: true },
   { path: "/clasificacion", element: <ClasificacionDeMaterial />, protected: true },
+  { path: "/maquinaria", element: <Maquinarias />, protected: true },
   
   { path: "/lavado", element: <LavadoMaterial />, protected: true },
   { path: "/tablas", element: <TablasProducidas />, protected: true },
