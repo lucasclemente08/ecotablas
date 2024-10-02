@@ -140,7 +140,7 @@ const MaterialTrit = () => {
   ];
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); 
+  const [itemsPerPage] = useState(5);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -152,10 +152,11 @@ const MaterialTrit = () => {
   // Total de páginas
   const totalPages = Math.ceil(materials.length / itemsPerPage);
 
-  const totalVolumen = materials.reduce((acc, material) => acc + parseFloat(material.VolumenT || 0), 0);
+  const totalVolumen = materials.reduce(
+    (acc, material) => acc + parseFloat(material.VolumenT || 0),
+    0,
+  );
   const totalItems = materials.length;
-
-
 
   return (
     <>
@@ -175,7 +176,7 @@ const MaterialTrit = () => {
             data={materials}
             title="Reporte de Materiales triturado"
           />
-      <ReportButton />
+          <ReportButton />
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
               {mensaje}
@@ -202,20 +203,20 @@ const MaterialTrit = () => {
               cerrarModalEdit={cerrarModalEdit}
             />
           )}
- <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
-                  <h5>
-                      <span class="text-gray-400">Total de materiales:</span>
-                      <span class="dark:text-white"> {totalItems}</span>
-                  </h5>
-                  <h5>
-                      <span class="text-gray-400">Total volumen: </span>
-                      <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
-                  </h5>
-              </div>
+          <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
+            <h5>
+              <span class="text-gray-400">Total de materiales:</span>
+              <span class="dark:text-white"> {totalItems}</span>
+            </h5>
+            <h5>
+              <span class="text-gray-400">Total volumen: </span>
+              <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
+            </h5>
+          </div>
 
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
-            <LoadingTable loading={loading} />
+              <LoadingTable loading={loading} />
               <TablaHead titles={title} />
 
               <tbody>
@@ -232,7 +233,6 @@ const MaterialTrit = () => {
                     </td>
                     <td
                       className={`border-b py-2 px-4 flex justify-center ${modalAbierto ? "hidden" : ""}`}
-
                     >
                       <NextButton />
                       <button
@@ -244,7 +244,7 @@ const MaterialTrit = () => {
                       <DeleteButton
                         id={material.IdMaterialTriturado}
                         endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Borrar"
-                        updateList={fetchMaterials} 
+                        updateList={fetchMaterials}
                       />
                     </td>
                   </tr>

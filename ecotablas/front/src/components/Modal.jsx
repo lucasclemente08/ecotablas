@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 const Modal = ({ isOpen, onClose, children, title }) => {
   if (!isOpen) return null; // Si el modal no está abierto, no se muestra nada
@@ -32,7 +32,7 @@ Modal.propTypes = {
   isOpen: PropTypes.bool.isRequired, // Si el modal está abierto
   onClose: PropTypes.func.isRequired, // Función para cerrar el modal
   children: PropTypes.node.isRequired, // El contenido que se pasa al modal (formulario, texto, etc.)
-  title: PropTypes.string // El título del modal
+  title: PropTypes.string, // El título del modal
 };
 
 export default Modal;

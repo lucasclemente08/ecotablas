@@ -37,11 +37,19 @@ const routesConfig = [
   { path: "/volumen", element: <Volumen />, protected: true },
   { path: "/areas", element: <Areas />, protected: true },
   { path: "/empresa", element: <EmpresaDonante />, protected: true },
-  { path: "/entrada/material", element: <EntradasDeMaterial />, protected: true },
-  { path: "/clasificacion", element: <ClasificacionDeMaterial />, protected: true },
+  {
+    path: "/entrada/material",
+    element: <EntradasDeMaterial />,
+    protected: true,
+  },
+  {
+    path: "/clasificacion",
+    element: <ClasificacionDeMaterial />,
+    protected: true,
+  },
   { path: "/maquinaria", element: <Maquinarias />, protected: true },
   { path: "/tolva", element: <Tolva />, protected: true },
-  
+
   { path: "/lavado", element: <LavadoMaterial />, protected: true },
   { path: "/tablas", element: <TablasProducidas />, protected: true },
 ];
@@ -56,7 +64,13 @@ function App() {
               <Route
                 key={path}
                 path={path}
-                element={isProtected ? <ProtectedRoute>{element}</ProtectedRoute> : element}
+                element={
+                  isProtected ? (
+                    <ProtectedRoute>{element}</ProtectedRoute>
+                  ) : (
+                    element
+                  )
+                }
               />
             ))}
           </Routes>

@@ -318,213 +318,37 @@ const Empleados = () => {
 
   return (
     <>
-    <SectionLayout>
-          <div className="">
-            <AddButton abrirModal={abrirModal} title={"Añadir empleado"} />
-            <PdfGenerator
-              columns={columns}
-              rows={rows}
-              data={filteredEmpleados}
-              title="Empleados"
-            />
+      <SectionLayout>
+        <div className="">
+          <AddButton abrirModal={abrirModal} title={"Añadir empleado"} />
+          <PdfGenerator
+            columns={columns}
+            rows={rows}
+            data={filteredEmpleados}
+            title="Empleados"
+          />
 
-            {modalAbierto && (
-              <div className="fixed inset-0 overflow-y-auto">
-                <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                  <div
-                    className="fixed inset-0 transition-opacity"
-                    aria-hidden="true"
-                  >
-                    <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                  </div>
-
-                  <span
-                    className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                    aria-hidden="true"
-                  >
-                    &#8203;
-                  </span>
-                  <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-                    <div>
-                      <div></div>
-
-                      <div className=" ">
-                        {mensaje && (
-                          <div className="bg-red-700 text-white p-4 rounded-lg flex items-center space-x-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-6 w-6"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M18.364 5.636a9 9 0 11-12.728 0 9 9 0 0112.728 0z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M12 9v2m0 4h.01"
-                              />
-                            </svg>
-                            <span>{mensaje}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="mt-3 text-center sm:mt-5">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">
-                          Agregar Empleado
-                        </h3>
-                        <div></div>
-                        <div className="mt-2">
-                          <input
-                            type="text"
-                            name="DNI"
-                            placeholder="DNI *"
-                            value={nuevoEmpleado.DNI}
-                            onChange={handleChange}
-                            className="border mb-2 p-2 w-full "
-                          />
-
-                          <input
-                            type="text"
-                            name="Nombre"
-                            placeholder="Nombre *"
-                            value={nuevoEmpleado.Nombre}
-                            onChange={handleChange}
-                            className="border p-2 w-full"
-                          />
-                          <input
-                            type="text"
-                            name="Apellido"
-                            placeholder="Apellido *"
-                            value={nuevoEmpleado.Apellido}
-                            onChange={handleChange}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Calle"
-                            placeholder="Calle *"
-                            value={nuevoEmpleado.Calle}
-                            onChange={handleChange}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Numero"
-                            placeholder="Número *"
-                            value={nuevoEmpleado.Numero}
-                            onChange={handleChange}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Piso"
-                            placeholder="Piso"
-                            value={nuevoEmpleado.Piso}
-                            onChange={handleChange}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Dpto"
-                            placeholder="Dpto"
-                            value={nuevoEmpleado.Dpto}
-                            onChange={handleChange}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="CodPostal"
-                            placeholder="Código Postal *"
-                            value={nuevoEmpleado.CodPostal}
-                            onChange={handleChange}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="IdLocalidad"
-                            placeholder="IdLocalidad"
-                            value={nuevoEmpleado.IdLocalidad}
-                            onChange={handleChange}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="date"
-                            name="FechaIngreso"
-                            placeholder="Fecha de Ingreso (dd/mm/aaaa) *"
-                            value={nuevoEmpleado.FechaIngreso}
-                            onChange={handleChange}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Telefono"
-                            placeholder="Teléfono *"
-                            value={nuevoEmpleado.Telefono}
-                            onChange={handleChange}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Mail"
-                            placeholder="Mail *"
-                            value={nuevoEmpleado.Mail}
-                            onChange={handleChange}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="IdArea"
-                            placeholder="IdArea *"
-                            value={nuevoEmpleado.IdArea}
-                            onChange={handleChange}
-                            className="border p-2 w-full mt-2"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-5 sm:mt-6">
-                      <button
-                        onClick={handleSubmit}
-                        className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
-                      >
-                        Guardar
-                      </button>
-                      <button
-                        onClick={cerrarModal}
-                        className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
-                      >
-                        Cancelar
-                      </button>
-                    </div>
-                  </div>
+          {modalAbierto && (
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div
+                  className="fixed inset-0 transition-opacity"
+                  aria-hidden="true"
+                >
+                  <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
                 </div>
-              </div>
-            )}
-            {modalAbiertoMod && (
-              <div className="fixed inset-0 overflow-y-auto">
-                <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                  <div
-                    className="fixed inset-0 transition-opacity"
-                    aria-hidden="true"
-                  >
-                    <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                  </div>
-                  <span
-                    className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                    aria-hidden="true"
-                  >
-                    &#8203;
-                  </span>
-                  <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-                    <div>
+
+                <span
+                  className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                  aria-hidden="true"
+                >
+                  &#8203;
+                </span>
+                <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                  <div>
+                    <div></div>
+
+                    <div className=" ">
                       {mensaje && (
                         <div className="bg-red-700 text-white p-4 rounded-lg flex items-center space-x-2">
                           <svg
@@ -550,284 +374,460 @@ const Empleados = () => {
                           <span>{mensaje}</span>
                         </div>
                       )}
-                      <div className="mt-3 text-center sm:mt-5">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">
-                          Modificar Empleado
-                        </h3>
-                        <div className="mt-2">
-                          <input
-                            type="text"
-                            name="DNI"
-                            placeholder="DNI *"
-                            value={empleadoSeleccionado.DNI}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Nombre"
-                            placeholder="Nombre *"
-                            value={empleadoSeleccionado.Nombre}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full"
-                          />
-                          <input
-                            type="text"
-                            name="Apellido"
-                            placeholder="Apellido *"
-                            value={empleadoSeleccionado.Apellido}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Calle"
-                            placeholder="Calle *"
-                            value={empleadoSeleccionado.Calle}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Numero"
-                            placeholder="Número *"
-                            value={empleadoSeleccionado.Numero}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Piso"
-                            placeholder="Piso"
-                            value={empleadoSeleccionado.Piso}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Dpto"
-                            placeholder="Dpto"
-                            value={empleadoSeleccionado.Dpto}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="CodPostal"
-                            placeholder="Código Postal *"
-                            value={empleadoSeleccionado.CodPostal}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="IdLocalidad"
-                            placeholder="IdLocalidad"
-                            value={empleadoSeleccionado.IdLocalidad}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="date"
-                            name="FechaIngreso"
-                            placeholder="Fecha de Ingreso (dd/mm/aaaa) *"
-                            value={empleadoSeleccionado.FechaIngreso}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Telefono"
-                            placeholder="Teléfono *"
-                            value={empleadoSeleccionado.Telefono}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="Mail"
-                            placeholder="Mail *"
-                            value={empleadoSeleccionado.Mail}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                          <input
-                            type="text"
-                            name="IdArea"
-                            placeholder="IdArea *"
-                            value={empleadoSeleccionado.IdArea}
-                            onChange={handleChangeEmpleado}
-                            className="border p-2 w-full mt-2"
-                          />
-                        </div>
+                    </div>
+
+                    <div className="mt-3 text-center sm:mt-5">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        Agregar Empleado
+                      </h3>
+                      <div></div>
+                      <div className="mt-2">
+                        <input
+                          type="text"
+                          name="DNI"
+                          placeholder="DNI *"
+                          value={nuevoEmpleado.DNI}
+                          onChange={handleChange}
+                          className="border mb-2 p-2 w-full "
+                        />
+
+                        <input
+                          type="text"
+                          name="Nombre"
+                          placeholder="Nombre *"
+                          value={nuevoEmpleado.Nombre}
+                          onChange={handleChange}
+                          className="border p-2 w-full"
+                        />
+                        <input
+                          type="text"
+                          name="Apellido"
+                          placeholder="Apellido *"
+                          value={nuevoEmpleado.Apellido}
+                          onChange={handleChange}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Calle"
+                          placeholder="Calle *"
+                          value={nuevoEmpleado.Calle}
+                          onChange={handleChange}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Numero"
+                          placeholder="Número *"
+                          value={nuevoEmpleado.Numero}
+                          onChange={handleChange}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Piso"
+                          placeholder="Piso"
+                          value={nuevoEmpleado.Piso}
+                          onChange={handleChange}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Dpto"
+                          placeholder="Dpto"
+                          value={nuevoEmpleado.Dpto}
+                          onChange={handleChange}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="CodPostal"
+                          placeholder="Código Postal *"
+                          value={nuevoEmpleado.CodPostal}
+                          onChange={handleChange}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="IdLocalidad"
+                          placeholder="IdLocalidad"
+                          value={nuevoEmpleado.IdLocalidad}
+                          onChange={handleChange}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="date"
+                          name="FechaIngreso"
+                          placeholder="Fecha de Ingreso (dd/mm/aaaa) *"
+                          value={nuevoEmpleado.FechaIngreso}
+                          onChange={handleChange}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Telefono"
+                          placeholder="Teléfono *"
+                          value={nuevoEmpleado.Telefono}
+                          onChange={handleChange}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Mail"
+                          placeholder="Mail *"
+                          value={nuevoEmpleado.Mail}
+                          onChange={handleChange}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="IdArea"
+                          placeholder="IdArea *"
+                          value={nuevoEmpleado.IdArea}
+                          onChange={handleChange}
+                          className="border p-2 w-full mt-2"
+                        />
                       </div>
                     </div>
-                    <div className="mt-5 sm:mt-6">
-                      <button
-                        onClick={handleSubmitModificar}
-                        className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
-                      >
-                        Guardar Cambios
-                      </button>
-                      <button
-                        onClick={cerrarModalMod}
-                        className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
-                      >
-                        Cancelar
-                      </button>
-                    </div>
+                  </div>
+                  <div className="mt-5 sm:mt-6">
+                    <button
+                      onClick={handleSubmit}
+                      className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
+                    >
+                      Guardar
+                    </button>
+                    <button
+                      onClick={cerrarModal}
+                      className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+                    >
+                      Cancelar
+                    </button>
                   </div>
                 </div>
               </div>
-            )}
-
-            <div className="mt-4">
-              <input
-                type="text"
-                placeholder="Buscar por DNI"
-                value={searchFilters.DNI}
-                onChange={(e) =>
-                  setSearchFilters({ ...searchFilters, DNI: e.target.value })
-                }
-                className="border p-2 w-full mt-2"
-              />
-
-              {mostrarFiltros && (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Buscar por Nombre"
-                    value={searchFilters.Nombre}
-                    onChange={(e) =>
-                      setSearchFilters({
-                        ...searchFilters,
-                        Nombre: e.target.value,
-                      })
-                    }
-                    className="border p-2 w-full mt-2"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Buscar por Apellido"
-                    value={searchFilters.Apellido}
-                    onChange={(e) =>
-                      setSearchFilters({
-                        ...searchFilters,
-                        Apellido: e.target.value,
-                      })
-                    }
-                    className="border p-2 w-full mt-2"
-                  />
-                </>
-              )}
-
-              <div className="flex items-center mt-2">
-                <button
-                  onClick={handleSearch}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            </div>
+          )}
+          {modalAbiertoMod && (
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div
+                  className="fixed inset-0 transition-opacity"
+                  aria-hidden="true"
                 >
-                  Buscar
-                </button>
-                <button
-                  onClick={handleMostrarTodos}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-2 rounded"
+                  <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                </div>
+                <span
+                  className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                  aria-hidden="true"
                 >
-                  Mostrar Todos
-                </button>
-                <button
-                  onClick={() => setMostrarFiltros(!mostrarFiltros)}
-                  className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 ml-2 rounded"
-                >
-                  {mostrarFiltros ? "Ocultar Filtros" : "Agregar Filtros"}
-                </button>
+                  &#8203;
+                </span>
+                <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                  <div>
+                    {mensaje && (
+                      <div className="bg-red-700 text-white p-4 rounded-lg flex items-center space-x-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M18.364 5.636a9 9 0 11-12.728 0 9 9 0 0112.728 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M12 9v2m0 4h.01"
+                          />
+                        </svg>
+                        <span>{mensaje}</span>
+                      </div>
+                    )}
+                    <div className="mt-3 text-center sm:mt-5">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        Modificar Empleado
+                      </h3>
+                      <div className="mt-2">
+                        <input
+                          type="text"
+                          name="DNI"
+                          placeholder="DNI *"
+                          value={empleadoSeleccionado.DNI}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Nombre"
+                          placeholder="Nombre *"
+                          value={empleadoSeleccionado.Nombre}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full"
+                        />
+                        <input
+                          type="text"
+                          name="Apellido"
+                          placeholder="Apellido *"
+                          value={empleadoSeleccionado.Apellido}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Calle"
+                          placeholder="Calle *"
+                          value={empleadoSeleccionado.Calle}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Numero"
+                          placeholder="Número *"
+                          value={empleadoSeleccionado.Numero}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Piso"
+                          placeholder="Piso"
+                          value={empleadoSeleccionado.Piso}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Dpto"
+                          placeholder="Dpto"
+                          value={empleadoSeleccionado.Dpto}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="CodPostal"
+                          placeholder="Código Postal *"
+                          value={empleadoSeleccionado.CodPostal}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="IdLocalidad"
+                          placeholder="IdLocalidad"
+                          value={empleadoSeleccionado.IdLocalidad}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="date"
+                          name="FechaIngreso"
+                          placeholder="Fecha de Ingreso (dd/mm/aaaa) *"
+                          value={empleadoSeleccionado.FechaIngreso}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Telefono"
+                          placeholder="Teléfono *"
+                          value={empleadoSeleccionado.Telefono}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="Mail"
+                          placeholder="Mail *"
+                          value={empleadoSeleccionado.Mail}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                        <input
+                          type="text"
+                          name="IdArea"
+                          placeholder="IdArea *"
+                          value={empleadoSeleccionado.IdArea}
+                          onChange={handleChangeEmpleado}
+                          className="border p-2 w-full mt-2"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-5 sm:mt-6">
+                    <button
+                      onClick={handleSubmitModificar}
+                      className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
+                    >
+                      Guardar Cambios
+                    </button>
+                    <button
+                      onClick={cerrarModalMod}
+                      className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
+          )}
+
+          <div className="mt-4">
+            <input
+              type="text"
+              placeholder="Buscar por DNI"
+              value={searchFilters.DNI}
+              onChange={(e) =>
+                setSearchFilters({ ...searchFilters, DNI: e.target.value })
+              }
+              className="border p-2 w-full mt-2"
+            />
+
+            {mostrarFiltros && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Buscar por Nombre"
+                  value={searchFilters.Nombre}
+                  onChange={(e) =>
+                    setSearchFilters({
+                      ...searchFilters,
+                      Nombre: e.target.value,
+                    })
+                  }
+                  className="border p-2 w-full mt-2"
+                />
+                <input
+                  type="text"
+                  placeholder="Buscar por Apellido"
+                  value={searchFilters.Apellido}
+                  onChange={(e) =>
+                    setSearchFilters({
+                      ...searchFilters,
+                      Apellido: e.target.value,
+                    })
+                  }
+                  className="border p-2 w-full mt-2"
+                />
+              </>
+            )}
+
+            <div className="flex items-center mt-2">
+              <button
+                onClick={handleSearch}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Buscar
+              </button>
+              <button
+                onClick={handleMostrarTodos}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-2 rounded"
+              >
+                Mostrar Todos
+              </button>
+              <button
+                onClick={() => setMostrarFiltros(!mostrarFiltros)}
+                className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 ml-2 rounded"
+              >
+                {mostrarFiltros ? "Ocultar Filtros" : "Agregar Filtros"}
+              </button>
+            </div>
           </div>
+        </div>
 
-          <table className="min-w-full bg-white mt-4">
-            <thead className="bg-gray-800 text-white">
-              <tr>
-                <th
-                  className="w-1/4 py-2 cursor-pointer"
-                  onClick={() => handleSort("DNI")}
-                >
-                  DNI{" "}
-                  {sortConfig.campo === "DNI" &&
-                    (sortConfig.direction === "asc" ? (
-                      <MdExpandLess />
-                    ) : (
-                      <MdExpandMore />
-                    ))}
-                </th>
-                <th
-                  className="w-1/4 py-2 cursor-pointer"
-                  onClick={() => handleSort("Nombre")}
-                >
-                  Nombre{" "}
-                  {sortConfig.campo === "Nombre" &&
-                    (sortConfig.direction === "asc" ? (
-                      <MdExpandLess />
-                    ) : (
-                      <MdExpandMore />
-                    ))}
-                </th>
-                <th
-                  className="w-1/4 py-2 cursor-pointer"
-                  onClick={() => handleSort("Apellido")}
-                >
-                  Apellido{" "}
-                  {sortConfig.campo === "Apellido" &&
-                    (sortConfig.direction === "asc" ? (
-                      <MdExpandLess />
-                    ) : (
-                      <MdExpandMore />
-                    ))}
-                </th>
-                <th
-                  className="w-1/4 py-2 cursor-pointer"
-                  onClick={() => handleSort("FechaIngreso")}
-                >
-                  Fecha de ingreso{" "}
-                  {sortConfig.campo === "FechaIngreso" &&
-                    (sortConfig.direction === "asc" ? (
-                      <MdExpandLess />
-                    ) : (
-                      <MdExpandMore />
-                    ))}
-                </th>
-                <th className="w-1/4 py-2">Piso</th>
-                <th className="w-1/4 py-2">Mail</th>
-                <th className="w-1/4 py-2">Acciones</th>
+        <table className="min-w-full bg-white mt-4">
+          <thead className="bg-gray-800 text-white">
+            <tr>
+              <th
+                className="w-1/4 py-2 cursor-pointer"
+                onClick={() => handleSort("DNI")}
+              >
+                DNI{" "}
+                {sortConfig.campo === "DNI" &&
+                  (sortConfig.direction === "asc" ? (
+                    <MdExpandLess />
+                  ) : (
+                    <MdExpandMore />
+                  ))}
+              </th>
+              <th
+                className="w-1/4 py-2 cursor-pointer"
+                onClick={() => handleSort("Nombre")}
+              >
+                Nombre{" "}
+                {sortConfig.campo === "Nombre" &&
+                  (sortConfig.direction === "asc" ? (
+                    <MdExpandLess />
+                  ) : (
+                    <MdExpandMore />
+                  ))}
+              </th>
+              <th
+                className="w-1/4 py-2 cursor-pointer"
+                onClick={() => handleSort("Apellido")}
+              >
+                Apellido{" "}
+                {sortConfig.campo === "Apellido" &&
+                  (sortConfig.direction === "asc" ? (
+                    <MdExpandLess />
+                  ) : (
+                    <MdExpandMore />
+                  ))}
+              </th>
+              <th
+                className="w-1/4 py-2 cursor-pointer"
+                onClick={() => handleSort("FechaIngreso")}
+              >
+                Fecha de ingreso{" "}
+                {sortConfig.campo === "FechaIngreso" &&
+                  (sortConfig.direction === "asc" ? (
+                    <MdExpandLess />
+                  ) : (
+                    <MdExpandMore />
+                  ))}
+              </th>
+              <th className="w-1/4 py-2">Piso</th>
+              <th className="w-1/4 py-2">Mail</th>
+              <th className="w-1/4 py-2">Acciones</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-700">
+            {filteredEmpleados.map((empleado) => (
+              <tr key={empleado.IdEmpleado}>
+                <td className="text-center py-2">{empleado.DNI}</td>
+                <td className="text-center py-2">{empleado.Nombre}</td>
+                <td className="text-center py-2">{empleado.Apellido}</td>
+
+                <td className="text-center py-2">{empleado.FechaIngreso}</td>
+                <td className="text-center py-2">{empleado.Dpto}</td>
+                <td className="text-center py-2">{empleado.Mail}</td>
+                <td className="text-center py-2 flex p-2">
+                  <button
+                    onClick={() => abrirModalModificar(empleado.IdEmpleado)}
+                    className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded mr-2"
+                  >
+                    Modificar
+                  </button>
+                  <DeleteButton
+                    id={empleado.IdEmpleado}
+                    endpoint="http://www.trazabilidadodsapi.somee.com/api/Empleados/Borrar" // Ajusta el endpoint según sea necesario
+                    updateList={getEmpleados} // Pasa la función para actualizar la lista
+                  />
+                </td>
               </tr>
-            </thead>
-            <tbody className="text-gray-700">
-              {filteredEmpleados.map((empleado) => (
-                <tr key={empleado.IdEmpleado}>
-                  <td className="text-center py-2">{empleado.DNI}</td>
-                  <td className="text-center py-2">{empleado.Nombre}</td>
-                  <td className="text-center py-2">{empleado.Apellido}</td>
-
-                  <td className="text-center py-2">{empleado.FechaIngreso}</td>
-                  <td className="text-center py-2">{empleado.Dpto}</td>
-                  <td className="text-center py-2">{empleado.Mail}</td>
-                  <td className="text-center py-2 flex p-2">
-                    <button
-                      onClick={() => abrirModalModificar(empleado.IdEmpleado)}
-                      className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded mr-2"
-                    >
-                      Modificar
-                    </button>
-                    <DeleteButton
-                      id={empleado.IdEmpleado}
-                      endpoint="http://www.trazabilidadodsapi.somee.com/api/Empleados/Borrar" // Ajusta el endpoint según sea necesario
-                      updateList={getEmpleados} // Pasa la función para actualizar la lista
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          </SectionLayout>
+            ))}
+          </tbody>
+        </table>
+      </SectionLayout>
     </>
   );
 };

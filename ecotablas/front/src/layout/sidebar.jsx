@@ -20,34 +20,34 @@ const Sidebar = () => {
 
   return (
     <div className="flex">
-    <div
-      className={`${
-        open ? "w-60" : "w-20"
-      } bg-sky-600 min-h-screen duration-300 shadow-md`}
-    >
-      <div className="flex flex-col items-center m-1 p-4">
-        <div className="mt-10">
-          <h1
-            className={`text-white font-medium text-xl duration-200 ${
-              !open && "scale-0"
-            }`}
+      <div
+        className={`${
+          open ? "w-60" : "w-20"
+        } bg-sky-600 min-h-screen duration-300 shadow-md`}
+      >
+        <div className="flex flex-col items-center m-1 p-4">
+          <div className="mt-10">
+            <h1
+              className={`text-white font-medium text-xl duration-200 ${
+                !open && "scale-0"
+              }`}
+            >
+              Gestión de ecotablas
+            </h1>
+          </div>
+        </div>
+
+        <Links />
+
+        <div className="mt-60 text-center justify-center mb-5 flex w-full">
+          <button
+            onClick={handleSignOut}
+            className="font-semibold text-white hover:text-red-600"
           >
-            Gestión de ecotablas
-          </h1>
+            Cerrar sesión
+          </button>
         </div>
       </div>
-
-      <Links />
-
-      <div className="mt-60 text-center justify-center mb-5 flex w-full">
-        <button
-          onClick={handleSignOut}
-          className="font-semibold text-white hover:text-red-600"
-        >
-          Cerrar sesión
-        </button>
-      </div>
-    </div>
     </div>
   );
 };

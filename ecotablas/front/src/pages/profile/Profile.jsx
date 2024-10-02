@@ -1,4 +1,3 @@
-
 import profile from "../../assets/profile.jpeg";
 import SectionLayout from "../../layout/SectionLayout";
 const Profile = () => {
@@ -16,8 +15,7 @@ const Profile = () => {
 
   return (
     <>
-<SectionLayout title="Perfil">
-
+      <SectionLayout title="Perfil">
         <div className="w-full font-aeonik bg-slate-900  p-6 ">
           <div className="flex items-center mb-6">
             {userProfile.fotoUrl ? (
@@ -71,9 +69,7 @@ const Profile = () => {
             <p className="text-white">{userProfile.fechaNacimiento}</p>
           </div>
         </div>
-
-        
-</SectionLayout>
+      </SectionLayout>
     </>
   );
 };

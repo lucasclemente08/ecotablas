@@ -24,29 +24,24 @@ function Material() {
   }, []);
   return (
     <SectionLayout title="Plásticos">
-
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg shadow-md">
-            <thead>
-              <tr>
-                <th className="border-b-2 py-3 px-4 text-left text-gray-600">
-                  Nombre
-                </th>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white rounded-lg shadow-md">
+          <thead>
+            <tr>
+              <th className="border-b-2 py-3 px-4 text-left text-gray-600">
+                Nombre
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {plasticos.map((material) => (
+              <tr key={material.id} className="hover:bg-gray-100">
+                <td className="border-b py-3 px-4">{material.TipoPlastico}</td>
               </tr>
-            </thead>
-            <tbody>
-              {plasticos.map((material) => (
-                <tr key={material.id} className="hover:bg-gray-100">
-                  <td className="border-b py-3 px-4">
-                    {material.TipoPlastico}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        
-        </div>
-   
+            ))}
+          </tbody>
+        </table>
+      </div>
     </SectionLayout>
   );
 }

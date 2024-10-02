@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Home from "../home/Home";
 import TablaHead from "../../components/Thead";
 import LoadingTable from "../../components/LoadingTable";
@@ -46,25 +46,24 @@ const TablasProducidas = () => {
       CodigoIdentificacion: "TAB654321",
     },
   ];
-  
+
   const columns = [
     { header: "Fecha Producción", accessor: "FechaProduccion" },
     { header: "Dimensiones", accessor: "Dimensiones" },
     { header: "Peso (kgs)", accessor: "Peso" },
     { header: "Código Identificación", accessor: "CodigoIdentificacion" },
   ];
-  
-  const titles = [
 
+  const titles = [
     "Fecha Producción",
     "Dimensiones",
     "Peso (kgs)",
-    "Código Identificación"
+    "Código Identificación",
   ];
   const fetchMaterials = () => {
     setLoading(true); // Activa el estado de carga
     setTimeout(() => {
-    ; // Simular la respuesta de una API asignando los datos hardcodeados
+      // Simular la respuesta de una API asignando los datos hardcodeados
       setLoading(false); // Desactiva el estado de carga después del retraso
     }, 2000); // 2 segundos de espera para simular la carga
   };
@@ -73,33 +72,32 @@ const TablasProducidas = () => {
     fetchMaterials();
   }, []);
 
-
   return (
-<SectionLayout  title="Tablas producidas">      
-<AddButton abrirModal={abrirModal} title="Añadir tabla" />
+    <SectionLayout title="Tablas producidas">
+      <AddButton abrirModal={abrirModal} title="Añadir tabla" />
 
-  <PdfGenerator title="Tablas producidas" data={data} columns={columns} />
+      <PdfGenerator title="Tablas producidas" data={data} columns={columns} />
 
-        {loading  ?  <LoadingTable loading={loading} /> :
-         <table className="min-w-full bg-white rounded-lg shadow-md">
-
-         <TablaHead titles={titles}/>
-                  <tbody>
-                    {data.map((item) => (
-                      <tr key={item.ID_Tabla} className="hover:bg-gray-100">
-                 
-                        <td className="border-b py-3 px-4">{item.FechaProduccion}</td>
-                        <td className="border-b py-3 px-4">{item.Dimensiones}</td>
-                        <td className="border-b py-3 px-4">{item.Peso} kgs</td>
-                        <td className="border-b py-3 px-4">{item.CodigoIdentificacion}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-}
-</SectionLayout>
-
+      {loading ? (
+        <LoadingTable loading={loading} />
+      ) : (
+        <table className="min-w-full bg-white rounded-lg shadow-md">
+          <TablaHead titles={titles} />
+          <tbody>
+            {data.map((item) => (
+              <tr key={item.ID_Tabla} className="hover:bg-gray-100">
+                <td className="border-b py-3 px-4">{item.FechaProduccion}</td>
+                <td className="border-b py-3 px-4">{item.Dimensiones}</td>
+                <td className="border-b py-3 px-4">{item.Peso} kgs</td>
+                <td className="border-b py-3 px-4">
+                  {item.CodigoIdentificacion}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </SectionLayout>
   );
 };
 
