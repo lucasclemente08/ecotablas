@@ -10,23 +10,23 @@
 nav {
   border: none;
 }
+#map {
+  margin: 1rem auto; /* Centrará el mapa y proporciona espacio alrededor */
+  width: 90%;
+  max-width: 900px;
+  height: 60vh;
+  border-radius: 0.8rem;
+  overflow: hidden; /* Controla el desbordamiento en ambos ejes */
+}
+
+/* Ejemplo de media queries para ajuste específico en pantallas más pequeñas */
+@media (max-width: 768px) {
   #map {
-    margin: 1rem auto; /* Centrará el mapa y proporciona espacio alrededor */
-    width: 90%;
-    max-width: 900px; 
-    height: 60vh; 
-    border-radius: 0.8rem;
-    overflow: hidden; /* Controla el desbordamiento en ambos ejes */
+    width: 100%; /* Ajusta el ancho al 100% en pantallas pequeñas */
+    height: 50vh; /* Ajusta la altura en pantallas pequeñas */
+    margin: 0.5rem auto; /* Reduce el margen en pantallas pequeñas */
   }
-  
-  /* Ejemplo de media queries para ajuste específico en pantallas más pequeñas */
-  @media (max-width: 768px) {
-    #map {
-      width: 100%; /* Ajusta el ancho al 100% en pantallas pequeñas */
-      height: 50vh; /* Ajusta la altura en pantallas pequeñas */
-      margin: 0.5rem auto; /* Reduce el margen en pantallas pequeñas */
-    }
-  }
+}
 .leaflet-container {
   width: 100%;
   height: 100vh;

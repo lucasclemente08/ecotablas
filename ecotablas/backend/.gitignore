@@ -1,0 +1,39 @@
+# Archivos temporales y backups
+*.swp
+*.*~
+
+# Archivos específicos del proyecto
+project.lock.json
+.DS_Store
+*.pyc
+
+# Visual Studio Code
+.vscode/
+
+# Archivos específicos del usuario
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Resultados de compilación
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Visual Studio 2015
+.vs/
+
+# Ignorar paquetes solo en el backend
+
+*packages/

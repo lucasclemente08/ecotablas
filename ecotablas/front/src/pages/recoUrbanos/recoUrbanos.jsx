@@ -164,21 +164,29 @@ const RecoUrbanos = () => {
                         value={newUbicacion.Long}
                         onChange={handleChange}
                         className="border p-2 w-full mt-2"
-                      />  
+                      />
 
-<label htmlFor="select" className="block text-sm font-medium text-gray-700 mt-2">Tipo de donante</label>
-      <select
-        id="select"
-        name="select"
-        value={newUbicacion.select}
-        onChange={handleChange}
-        className="border p-2 w-full mt-1"
-      >
-        <option value="EmpresasDonante">Empresas donante</option>
-        <option value="RecolUrbanos">Recolección de urbanos</option>
-        <option value="Particulas">Particular</option>
-      </select>
-
+                      <label
+                        htmlFor="select"
+                        className="block text-sm font-medium text-gray-700 mt-2"
+                      >
+                        Tipo de donante
+                      </label>
+                      <select
+                        id="select"
+                        name="select"
+                        value={newUbicacion.select}
+                        onChange={handleChange}
+                        className="border p-2 w-full mt-1"
+                      >
+                        <option value="EmpresasDonante">
+                          Empresas donante
+                        </option>
+                        <option value="RecolUrbanos">
+                          Recolección de urbanos
+                        </option>
+                        <option value="Particulas">Particular</option>
+                      </select>
                     </div>
                   </div>
                   <div className="p-2  flex justify-center">

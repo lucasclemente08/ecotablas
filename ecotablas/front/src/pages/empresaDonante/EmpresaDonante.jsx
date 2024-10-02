@@ -92,55 +92,52 @@ const EmpresaDonante = () => {
 
   return (
     <>
-     <SectionLayout title="Empresa donantes">
+      <SectionLayout title="Empresa donantes">
+        <AddButton abrirModal={abrirModal} title={"Añadir empresa donante"} />
+        <PdfGenerator
+          columns={columns}
+          data={empresasDonantes}
+          title="Reporte de empresas donantes"
+        />
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white rounded-lg shadow-md">
+            <TablaHead titles={titles} />
 
-          <AddButton abrirModal={abrirModal} title={"Añadir empresa donante"} />
-          <PdfGenerator
-            columns={columns}
-            data={empresasDonantes}
-            title="Reporte de empresas donantes"
-          />
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white rounded-lg shadow-md">
-              <TablaHead titles={titles} />
-
-              <tbody>
-                {empresasDonantes.map((empresa) => (
-                  <tr key={empresa.id} className="hover:bg-gray-100">
-                    <td className="border-b py-3 px-4">{empresa.nombre}</td>
-                    <td className="border-b py-3 px-4">{empresa.direccion}</td>
-                    <td className="border-b py-3 px-4">{empresa.telefono}</td>
-                    <td className="border-b py-3 px-4">{empresa.email}</td>
-                    <td className="border-b py-3 px-4">
-                      {empresa.tipoPlastico}
-                    </td>
-                    <td className="border-b py-3 px-4">{empresa.rubro}</td>
-                    <td className="border-b py-3 px-4">
-                      {empresa.donacionesDisponibles}
-                    </td>
-                    <td className="border-b py-3 px-4">
-                      <a
-                        href={empresa.web}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {empresa.web}
-                      </a>
-                    </td>
-                    <td className="border-b py-3 px-4 flex justify-center">
-                      <button
-                        onClick={() => handleEdit(empresa)}
-                        className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        Modificar
-                      </button>
-                      <DeleteButton />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          </SectionLayout>
+            <tbody>
+              {empresasDonantes.map((empresa) => (
+                <tr key={empresa.id} className="hover:bg-gray-100">
+                  <td className="border-b py-3 px-4">{empresa.nombre}</td>
+                  <td className="border-b py-3 px-4">{empresa.direccion}</td>
+                  <td className="border-b py-3 px-4">{empresa.telefono}</td>
+                  <td className="border-b py-3 px-4">{empresa.email}</td>
+                  <td className="border-b py-3 px-4">{empresa.tipoPlastico}</td>
+                  <td className="border-b py-3 px-4">{empresa.rubro}</td>
+                  <td className="border-b py-3 px-4">
+                    {empresa.donacionesDisponibles}
+                  </td>
+                  <td className="border-b py-3 px-4">
+                    <a
+                      href={empresa.web}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {empresa.web}
+                    </a>
+                  </td>
+                  <td className="border-b py-3 px-4 flex justify-center">
+                    <button
+                      onClick={() => handleEdit(empresa)}
+                      className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                      Modificar
+                    </button>
+                    <DeleteButton />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </SectionLayout>
     </>
   );
 };

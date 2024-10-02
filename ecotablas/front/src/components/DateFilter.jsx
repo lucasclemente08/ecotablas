@@ -8,22 +8,25 @@ const DateFilter = ({ onFilter }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (new Date(startDate) > new Date(endDate)) {
-      setErrorMessage("La fecha de inicio no puede ser posterior a la fecha de fin.");
+      setErrorMessage(
+        "La fecha de inicio no puede ser posterior a la fecha de fin.",
+      );
     } else {
       setErrorMessage("");
       onFilter({ startDate, endDate });
     }
   };
 
-
   return (
     <div className="mb-4  flex content-center flex-col">
-
       <form onSubmit={handleSubmit} className="flex gap-2 items-center">
-    
-
         <div className="flex flex-col">
-        <label htmlFor="startDate" className="text-sm text-gray-100 ml-1 mb-0.5">Fecha de inicio</label>
+          <label
+            htmlFor="startDate"
+            className="text-sm text-gray-100 ml-1 mb-0.5"
+          >
+            Fecha de inicio
+          </label>
           <input
             type="date"
             id="startDate"
@@ -34,7 +37,9 @@ const DateFilter = ({ onFilter }) => {
           />
         </div>
         <div className="flex flex-col">
-        <label htmlFor="startDate" className="text-sm text-gray-100 mb-0.5">Fecha de fin</label>
+          <label htmlFor="startDate" className="text-sm text-gray-100 mb-0.5">
+            Fecha de fin
+          </label>
           <input
             type="date"
             id="endDate"
@@ -50,7 +55,6 @@ const DateFilter = ({ onFilter }) => {
         >
           Filtrar
         </button>
-       
       </form>
 
       {errorMessage && (

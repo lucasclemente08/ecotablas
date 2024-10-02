@@ -12,6 +12,7 @@ const LinksBar = () => {
   const [employeeOpen, setEmployeeOpen] = useState(false);
   const [urbanOpen, setUrbanOpen] = useState(false);
   const [materialOpen, setMaterialOpen] = useState(false);
+  const [machinesOpen, setMachinesOpen] = useState(false);
 
   const employeeMenus = [
     { title: "Empleados", link: "/empleados" },
@@ -29,21 +30,28 @@ const LinksBar = () => {
     { title: "Entrada de material", link: "/Entrada/material" },
     { title: "Clasificacíon de material", link: "/clasificacion" },
     { title: "Maquinaria", link: "/maquinaria" },
-
-    
+    { title: "Tolva", link: "/Tolva" },
     { title: "Material Procesado", link: "/materialProc" },
     { title: "Material Triturado", link: "/materialTri" },
     { title: "Lavado de material", link: "/lavado" },
-
     { title: "Volumen", link: "/volumen" },
     { title: "Tablas producidas", link: "/tablas" },
-    
+    { title: "Plásticos", link: "/material" },
+  ];
 
+  const machinesMenus = [
+    { title: "Maquinaria", link: "/maquinaria" },
+    { title: "Tolva", link: "/Tolva" },
+    { title: "Lavado de material", link: "/lavado" },
     { title: "Plásticos", link: "/material" },
   ];
 
   const toggleEmployeeMenu = () => {
     setEmployeeOpen(!employeeOpen);
+  };
+
+  const toggleMachineMenu = () => {
+    setMachinesOpen(!machinesOpen);
   };
 
   const toggleUrbanMenu = () => {
@@ -78,6 +86,42 @@ const LinksBar = () => {
       {/* Submenús de Empleados */}
       {employeeOpen &&
         employeeMenus.map((menu, index) => (
+          <li
+            key={index}
+            className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
+          >
+            <Link
+              to={menu.link}
+              className="flex flex-col flex-nowrap justify-center items-center"
+            >
+              <span className={`${!open && "hidden"} origin-left duration-200`}>
+                {menu.title}
+              </span>
+            </Link>
+          </li>
+        ))}
+      {/* Sección de Empleados */}
+      <li
+        className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
+        onClick={toggleMachineMenu}
+      >
+        <div className="flex flex-col flex-nowrap justify-center items-center">
+          <span
+            className={`${!open && "hidden"} origin-left duration-200 flex  font-bold justify-center`}
+          >
+            Maquinaria{" "}
+            {open ? (
+              <FaChevronDown className="m-1" />
+            ) : (
+              <FaChevronUp className="m-1" />
+            )}
+          </span>
+        </div>
+      </li>
+
+      {/* Submenús de Empleados */}
+      {machinesOpen &&
+        machinesMenus.map((menu, index) => (
           <li
             key={index}
             className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}

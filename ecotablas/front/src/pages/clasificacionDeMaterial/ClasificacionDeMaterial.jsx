@@ -16,17 +16,12 @@ const ClasificacionDeMaterial = () => {
   const abrirModal = () => setModalAbierto(true);
   // Definir las columnas de la tabla
   const columns = [
-    { title: 'ID', field: 'IdMaterialClasificado' },
-    { title: 'Volumen Útil', field: 'VolumenUtil' },
-    { title: 'Volumen Inútil', field: 'VolumenInutil' }
+    { title: "ID", field: "IdMaterialClasificado" },
+    { title: "Volumen Útil", field: "VolumenUtil" },
+    { title: "Volumen Inútil", field: "VolumenInutil" },
   ];
 
-  const titles = [
-    'Donante',
-    'Volumen Útil ',
-    'Volumen Inútil '
-  ];
-
+  const titles = ["Donante", "Volumen Útil ", "Volumen Inútil "];
 
   // const rows = materials.map((material) => ({
   //   VolumenUtil: `${material.VolumenUtil} m³`,
@@ -48,12 +43,13 @@ const ClasificacionDeMaterial = () => {
     },
   ];
 
-  
-
   return (
     <>
       <SectionLayout title="Clasificación de Material">
-        <AddButton abrirModal={abrirModal} title="Añadir Material Clasificado" />
+        <AddButton
+          abrirModal={abrirModal}
+          title="Añadir Material Clasificado"
+        />
         <PdfGenerator
           columns={columns}
           data={materialClasificado}
@@ -61,11 +57,10 @@ const ClasificacionDeMaterial = () => {
         />
         <ReportButton />
         <div className="overflow-x-auto">
-            <table className="min-w-full bg-white rounded-lg shadow-md">
-              <TablaHead titles={titles} />
-
-</table>
-</div>
+          <table className="min-w-full bg-white rounded-lg shadow-md">
+            <TablaHead titles={titles} />
+          </table>
+        </div>
       </SectionLayout>
     </>
   );

@@ -14,26 +14,23 @@ const Volumen = () => {
   };
 
   return (
-<SectionLayout title="Volúmen">
-  
-        <DateFilter onFilter={handleFilter} />
-        <div className="flex-1 flex flex-wrap gap-4">
-          <div className="flex-1 min-w-[200px] max-w-[300px]">
-            <VolumenChart dateRange={dateRange} />
-          </div>
-          <div className="flex-1 min-w-[200px] max-w-[300px]">
-            <VolumenIngresadoChart dateRange={dateRange} />
-          </div>
-          <div className="flex-1 min-w-[200px] max-w-[300px]">
-            <VolumenProcesadoChart dateRange={dateRange} />
-          </div>
-          <div className="flex-1 min-w-[200px] max-w-[300px]">
-            <VolumenTrituradoChart dateRange={dateRange} />
-          </div>
+    <SectionLayout title="Volúmen">
+      <DateFilter onFilter={handleFilter} />
+      <div className="flex-1 flex flex-wrap gap-4">
+        <div className="flex-1 min-w-[200px] max-w-[300px]">
+          <VolumenChart dateRange={dateRange} />
         </div>
-</SectionLayout>
-      
-    
+        <div className="flex-1 min-w-[200px] max-w-[300px]">
+          <VolumenIngresadoChart dateRange={dateRange} />
+        </div>
+        <div className="flex-1 min-w-[200px] max-w-[300px]">
+          <VolumenProcesadoChart dateRange={dateRange} />
+        </div>
+        <div className="flex-1 min-w-[200px] max-w-[300px]">
+          <VolumenTrituradoChart dateRange={dateRange} />
+        </div>
+      </div>
+    </SectionLayout>
   );
 };
 
