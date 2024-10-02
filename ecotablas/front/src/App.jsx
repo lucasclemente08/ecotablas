@@ -21,6 +21,7 @@ import EntradasDeMaterial from "./pages/entradaDeMaterial/EntradasDeMaterial";
 import LavadoMaterial from "./pages/lavadoMaterial/LavadoMaterial";
 import ClasificacionDeMaterial from "./pages/clasificacionDeMaterial/ClasificacionDeMaterial";
 import Maquinarias from "./pages/maquinaria/Maquinaria";
+import Tolva from "./pages/tolva/Tolva";
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
   { path: "/login", element: <Login />, protected: false },
@@ -39,6 +40,7 @@ const routesConfig = [
   { path: "/entrada/material", element: <EntradasDeMaterial />, protected: true },
   { path: "/clasificacion", element: <ClasificacionDeMaterial />, protected: true },
   { path: "/maquinaria", element: <Maquinarias />, protected: true },
+  { path: "/tolva", element: <Tolva />, protected: true },
   
   { path: "/lavado", element: <LavadoMaterial />, protected: true },
   { path: "/tablas", element: <TablasProducidas />, protected: true },

@@ -29,6 +29,7 @@ const LinksBar = () => {
     { title: "Entrada de material", link: "/Entrada/material" },
     { title: "Clasificacíon de material", link: "/clasificacion" },
     { title: "Maquinaria", link: "/maquinaria" },
+    { title: "Tolva", link: "/Tolva" },
 
     
     { title: "Material Procesado", link: "/materialProc" },
