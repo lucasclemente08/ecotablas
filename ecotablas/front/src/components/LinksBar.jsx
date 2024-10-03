@@ -1,9 +1,7 @@
 import React from "react";
 import { useState } from "react";
-
-import { Link, useNavigate } from "react-router-dom";
-import { FaChevronDown } from "react-icons/fa6";
-import { FaChevronUp } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import MenuSection from "./MenuSection";
 
 const LinksBar = () => {
   const [open, setOpen] = useState(true);
@@ -29,6 +27,7 @@ const LinksBar = () => {
   const materialMenus = [
     { title: "Entrada de material", link: "/Entrada/material" },
     { title: "Clasificacíon de material", link: "/clasificacion" },
+<<<<<<< HEAD
     { title: "Maquinaria", link: "/maquinaria" },
     { title: "Tolva", link: "/Tolva" },
     { title: "Material Procesado", link: "/materialProc" },
@@ -37,6 +36,12 @@ const LinksBar = () => {
     { title: "Volumen", link: "/volumen" },
     { title: "Tablas producidas", link: "/tablas" },
     { title: "Plásticos", link: "/material" },
+=======
+    { title: "Material Procesado", link: "/materialProc" },
+    { title: "Material Triturado", link: "/materialTri" },
+    { title: "Volumen", link: "/volumen" },
+    { title: "Tablas producidas", link: "/tablas" },
+>>>>>>> c8aedd49f0acaab77dad2adb4286dda9762a827d
   ];
 
   const machinesMenus = [
@@ -64,6 +69,7 @@ const LinksBar = () => {
 
   return (
     <>
+<<<<<<< HEAD
       {/* Sección de Empleados */}
       <li
         className={`flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2`}
@@ -214,6 +220,12 @@ const LinksBar = () => {
             </Link>
           </li>
         ))}
+=======
+      <MenuSection title="Empleados" menus={employeeMenus} />
+      <MenuSection title="Recolección Urbanos" menus={urbanMenus} />
+      <MenuSection title="Materiales" menus={materialMenus} />
+      <MenuSection title="Maquinaria" menus={machinesMenus} />
+>>>>>>> c8aedd49f0acaab77dad2adb4286dda9762a827d
     </>
   );
 };
