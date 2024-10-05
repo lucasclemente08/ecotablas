@@ -22,6 +22,9 @@ import LavadoMaterial from "./pages/lavadoMaterial/LavadoMaterial";
 import ClasificacionDeMaterial from "./pages/clasificacionDeMaterial/ClasificacionDeMaterial";
 import Maquinarias from "./pages/maquinaria/Maquinaria";
 import Tolva from "./pages/tolva/Tolva";
+import GastoMaquinaria from "./pages/gastos/gastosMaquinaria/GastoMaquinaria";
+import GastoVehiculos from "./pages/gastos/gastoVehiculos/GastoVehiculos";
+
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
   { path: "/login", element: <Login />, protected: false },
@@ -52,6 +55,9 @@ const routesConfig = [
 
   { path: "/lavado", element: <LavadoMaterial />, protected: true },
   { path: "/tablas", element: <TablasProducidas />, protected: true },
+  { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true },
+  { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true },
+
 ];
 
 function App() {
