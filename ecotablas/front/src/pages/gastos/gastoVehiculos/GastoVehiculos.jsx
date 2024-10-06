@@ -85,10 +85,10 @@ const GastoVehiculos = () => {
           Ver Gráfico de Líneas
         </button>
       </div>
-<div className="flex justify-center">
+{/* <div className="flex justify-center">
 
-      {/* Select para el mes */}
-      <div className="flex justify-center ">
+      Select para el mes
+      <div className="flex justify-center mb-4 ">
         <label className="text-white font-semibold mr-2" htmlFor="month-select">
           Selecciona Mes:
         </label>
@@ -110,7 +110,7 @@ const GastoVehiculos = () => {
       </div>
 
       {/* Select para el año */}
-      <div className="flex justify-center m-2">
+      {/* <div className="flex justify-center m-2">
     
 
     
@@ -130,7 +130,7 @@ const GastoVehiculos = () => {
           ))}
         </select>
       </div>
-          </div>
+          </div> */} 
 
       {/* Mostrar el gráfico basado en el estado */}
       {showPieChart ? (
@@ -141,7 +141,7 @@ const GastoVehiculos = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-zinc-800 p-4">
+        <div className="bg-slate-800 p-4">
           <h3 className="text-lg text-white font-semibold mb-4">Evolución de Gastos por Mes ({selectedYear})</h3>
           <div className="w-full h-64">
             <Line data={lineData} options={lineOptions} />
