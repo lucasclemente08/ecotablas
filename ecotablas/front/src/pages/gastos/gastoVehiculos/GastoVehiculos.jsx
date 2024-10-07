@@ -3,12 +3,22 @@ import { Pie, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import SectionLayout from '../../../layout/SectionLayout';
 
+import AddButton from '../../../components/buttons/addButton';
+import PdfGenerator from '../../../components/buttons/PdfGenerator';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
 
 const GastoVehiculos = () => {
-  const [showPieChart, setShowPieChart] = useState(true); // Estado para mostrar el gráfico circular o de líneas
-  const [selectedYear, setSelectedYear] = useState('2023'); // Estado del año seleccionado
-  const [selectedMonth, setSelectedMonth] = useState(''); // Estado del mes seleccionado
+  const [showPieChart, setShowPieChart] = useState(true); 
+  const [selectedYear, setSelectedYear] = useState('2023');
+  const [selectedMonth, setSelectedMonth] = useState(''); 
+  const [modalAbierto, setModalAbierto] = useState(false);
+
+const abrirModal =()=>{
+  setModalAbierto(true);
+}
+const cerrarModal = () => {
+  setModalAbierto(false);
+};
 
   const pieData = {
     labels: ['Combustible', 'Mantenimiento', 'Seguro'],
@@ -68,16 +78,52 @@ const GastoVehiculos = () => {
     },
   };
 
+  const columns = [
+    { header: "Tipo de Gasto", dataKey: "tipoGasto" },
+    { header: "Monto ($)", dataKey: "monto" },
+    { header: "Fecha", dataKey: "fecha" },
+    { header: "Descripción", dataKey: "descripcion" },
+  ];
+  const data = [
+    { tipoGasto: 'Combustible', monto: '1200', fecha: '2023-01-15', descripcion: 'Carga de combustible en estación YPF' },
+    { tipoGasto: 'Mantenimiento', monto: '800', fecha: '2023-02-10', descripcion: 'Cambio de aceite y filtros' },
+    { tipoGasto: 'Seguro', monto: '400', fecha: '2023-03-22', descripcion: 'Pago mensual de seguro vehicular' },
+    { tipoGasto: 'Combustible', monto: '1500', fecha: '2023-04-18', descripcion: 'Carga de combustible en estación Shell' },
+    { tipoGasto: 'Mantenimiento', monto: '950', fecha: '2023-05-25', descripcion: 'Revisión de frenos y balanceo de ruedas' },
+    { tipoGasto: 'Seguro', monto: '500', fecha: '2023-06-13', descripcion: 'Pago trimestral del seguro' },
+    // Añadir más registros según sea necesario
+  ];
+    
+
+
+  const filteredLineData = {
+    ...lineData,
+    datasets: lineData.datasets.map((dataset) => ({
+      ...dataset,
+      data: selectedMonth ? [dataset.data[selectedMonthIndex]] : dataset.data,
+    })),
+  };
+  
+
   return (
     <SectionLayout title="Gastos de Vehículos">
       {/* Botones para cambiar entre los gráficos */}
+
+      <AddButton abrirModal={abrirModal} title={"Añadir gastos"} />
+        <PdfGenerator
+          columns={columns}
+          data={data}
+          title="Reporte de gastos "
+        />
       <div className="flex justify-center gap-4 mb-8">
-        <button
-          className={`py-2 px-4 font-bold text-white rounded ${showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
-          onClick={() => setShowPieChart(true)}
-        >
-          Ver Gráfico Circular
-        </button>
+      <button
+  aria-label="Ver gráfico circular"
+  className={`py-2 px-4 font-bold text-white rounded ${showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
+  onClick={() => setShowPieChart(true)}
+>
+  Ver Gráfico Circular
+</button>
+
         <button
           className={`py-2 px-4 font-bold text-white rounded ${!showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
           onClick={() => setShowPieChart(false)}
@@ -85,10 +131,10 @@ const GastoVehiculos = () => {
           Ver Gráfico de Líneas
         </button>
       </div>
-{/* <div className="flex justify-center">
+<div className="flex justify-center">
 
-      Select para el mes
-      <div className="flex justify-center mb-4 ">
+      {/* Select para el mes */}
+      <div className="flex justify-center p-1 items-center">
         <label className="text-white font-semibold mr-2" htmlFor="month-select">
           Selecciona Mes:
         </label>
@@ -96,7 +142,7 @@ const GastoVehiculos = () => {
           id="month-select"
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(e.target.value)}
-          className="border border-gray-300 p-2 rounded-md"
+          className="border m-2 border-gray-300 p-2 rounded-md"
         >
           <option value="">Todos los Meses</option>
           {['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].map(
@@ -110,7 +156,7 @@ const GastoVehiculos = () => {
       </div>
 
       {/* Select para el año */}
-      {/* <div className="flex justify-center m-2">
+      <div className="flex justify-center p-1 items-center">
     
 
     
@@ -130,7 +176,7 @@ const GastoVehiculos = () => {
           ))}
         </select>
       </div>
-          </div> */} 
+          </div>
 
       {/* Mostrar el gráfico basado en el estado */}
       {showPieChart ? (
@@ -141,7 +187,7 @@ const GastoVehiculos = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-slate-800 p-4">
+        <div className="bg-zinc-800 p-4">
           <h3 className="text-lg text-white font-semibold mb-4">Evolución de Gastos por Mes ({selectedYear})</h3>
           <div className="w-full h-64">
             <Line data={lineData} options={lineOptions} />
