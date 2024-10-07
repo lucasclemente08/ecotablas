@@ -109,7 +109,7 @@ const cerrarModal = () => {
     <SectionLayout title="Gastos de Vehículos">
       {/* Botones para cambiar entre los gráficos */}
 
-      <AddButton abrirModal={abrirModal} title={"Añadir empresa gastos"} />
+      <AddButton abrirModal={abrirModal} title={"Añadir gastos"} />
         <PdfGenerator
           columns={columns}
           data={data}
