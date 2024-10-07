@@ -24,7 +24,7 @@ import Maquinarias from "./pages/maquinaria/Maquinaria";
 import Tolva from "./pages/tolva/Tolva";
 import GastoMaquinaria from "./pages/gastos/gastosMaquinaria/GastoMaquinaria";
 import GastoVehiculos from "./pages/gastos/gastoVehiculos/GastoVehiculos";
-
+import store from './app/store';
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
   { path: "/login", element: <Login />, protected: false },
@@ -62,6 +62,8 @@ const routesConfig = [
 
 function App() {
   return (
+      <Provider store={store}>
+        
     <AuthProvider>
       <Router>
         <div className="bg-slate-900 flex flex-col min-h-screen">
@@ -83,6 +85,7 @@ function App() {
         </div>
       </Router>
     </AuthProvider>
+      </Provider> 
   );
 }
 
