@@ -251,11 +251,7 @@ const Empleados = () => {
       setMensaje("El DNI no puede tener más de 8 dígitos");
       return;
     }
-    // if (!/^\d{2}\/\d{2}\/\d{4}$/.test(empleadoSeleccionado.FechaIngreso)) {
-    //   setMensaje("La fecha debe tener el formato dd/mm/aaaa");
-    //   return;
-    // }
-
+  
     axios
       .put(
         `http://www.trazabilidadodsapi.somee.com/api/Empleados/Modificar/${empleadoSeleccionadoId}`,
