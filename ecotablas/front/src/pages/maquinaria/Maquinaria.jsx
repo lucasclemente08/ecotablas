@@ -7,6 +7,8 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
 import LoadingTable from "../../components/LoadingTable";
+import builderApiUrl from "../../utils/BuilderApi";
+import axios from "axios";
 import {
   getAllMaquinarias,
   addMaquinarias,
@@ -30,6 +32,8 @@ const Maquinaria = () => {
     fecha_adquisicion: "",
   });
 
+  const BASE_URL = builderApiUrl("Maquinaria");
+
   const abrirModalEdit = (maquinaria) => {
     setMaquinariaId(maquinaria.Id);
     setFormValues({
@@ -37,25 +41,23 @@ const Maquinaria = () => {
       Tipo: maquinaria.Tipo,
       Modelo: maquinaria.Modelo,
       IdEstado: maquinaria.IdEstado,
-      fecha_adquisicion: maquinaria.fecha_adquisicion.slice(0, 10),
+      fecha_adquisicion: maquinaria.fecha_adquisicion
+        ? maquinaria.fecha_adquisicion.slice(0, 10)
+        : "",
     });
     setModalEdit(true);
   };
 
   const cerrarModalEdit = () => setModalEdit(false);
 
-  const abrirModal = () => {
-    setModalAbierto(true);
-  };
-  const cerrarModal = () => {
-    setModalAbierto(false);
-  };
+  const abrirModal = () => setModalAbierto(true);
+  const cerrarModal = () => setModalAbierto(false);
 
   const fetchMaquinarias = async () => {
     setLoading(true);
     try {
-      const res = await getAllMaquinarias();
-      setMaquinarias(res.data);
+      const res = await getAllMaquinarias(); // Usar la función de API para obtener los datos
+      setMaquinarias(res.data); // Actualizar el estado con la respuesta
     } catch (error) {
       setMensaje("Error al cargar las maquinarias.");
       console.error("Error fetching data: ", error);
@@ -91,28 +93,32 @@ const Maquinaria = () => {
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
+  
     try {
-        const response = await addMaquinarias(formValues);
-        // Log de respuesta para depuración
-        console.log(response);
-        
-        // Actualiza el estado y cierra la modal
-        setMaquinarias((prevMaquinarias) => [...prevMaquinarias, response.data]);
-        setModalAbierto(false);
+      const response = await axios.post(`${BASE_URL}/Insertar`, formValues);
+      if (response) {
+        await fetchMaquinarias(); // Actualiza la lista
         setMensaje("Inserción exitosa");
+      } else {
+        setMensaje("Error: no se recibió un dato válido de la API.");
+      }
+  
+      setModalAbierto(false);
     } catch (error) {
-        setMensaje("Error al agregar la maquinaria.");
-        console.error("Error al agregar la maquinaria:", error);
+      setMensaje("Error al agregar la maquinaria.");
+      console.error("Error al agregar la maquinaria:", error);
     }
-};
+  };
+  
 
   const handleEditSubmit = async () => {
     if (!validateForm()) return;
+
     try {
       await editMaquinarias(maquinariaId, formValues);
       setModalEdit(false);
       setMensaje("Modificación exitosa");
-      fetchMaquinarias();
+      await fetchMaquinarias(); // Actualiza la lista
     } catch (error) {
       setMensaje("Error al modificar la maquinaria.");
       console.error("Error al modificar la maquinaria:", error);
@@ -142,7 +148,9 @@ const Maquinaria = () => {
     Tipo: maquinaria.Tipo,
     Modelo: maquinaria.Modelo,
     IdEstado: maquinaria.IdEstado,
-    fecha_adquisicion: maquinaria.fecha_adquisicion.slice(0, 10),
+    fecha_adquisicion: maquinaria.fecha_adquisicion
+      ? maquinaria.fecha_adquisicion.slice(0, 10)
+      : "Fecha no disponible", // Manejo de fechas
   }));
 
   const fields = [
@@ -183,19 +191,9 @@ const Maquinaria = () => {
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
         <Home />
         <div className="p-4 w-full">
-          <h2 className="text-2xl font-bold text-white mb-4">
-            Maquinarias
-          </h2>
-          <AddButton
-            abrirModal={abrirModal}
-            title={" Añadir Maquinaria"}
-          />
-
-          <PdfGenerator
-            columns={columns}
-            data={maquinarias}
-            title="Reporte de Maquinarias"
-          />
+          <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
+          <AddButton abrirModal={abrirModal} title={" Añadir Maquinaria"} />
+          <PdfGenerator columns={columns} data={maquinarias} title="Reporte de Maquinarias" />
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
               {mensaje}
@@ -226,13 +224,9 @@ const Maquinaria = () => {
             <table className="min-w-full bg-white rounded-lg shadow-md">
               <LoadingTable loading={loading} />
               <TablaHead titles={title} />
-
               <tbody>
                 {maquinarias.map((maquinaria) => (
-                  <tr
-                    key={maquinaria.Id}
-                    className="hover:bg-gray-100"
-                  >
+                  <tr key={maquinaria.Id} className="hover:bg-gray-100">
                     <td className="border-b py-2 px-4">{maquinaria.Nombre}</td>
                     <td className="border-b py-2 px-4">{maquinaria.Tipo}</td>
                     <td className="border-b py-2 px-4">{maquinaria.Modelo}</td>
@@ -247,7 +241,7 @@ const Maquinaria = () => {
                       </button>
                       <DeleteButton
                         id={maquinaria.Id}
-                        endpoint="http://localhost:61274/api/Maquinaria/Borrar"
+                        endpoint={`${BASE_URL}/Borrar`}
                         updateList={fetchMaquinarias}
                       />
                     </td>
