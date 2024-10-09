@@ -52,6 +52,7 @@ const RecoUrbanos = () => {
     Nombre: "",
     Lat: "",
     Long: "",
+    TipoDonante: "",
   });
   const [locations, setLocations] = useState([]);
 
@@ -167,25 +168,25 @@ const RecoUrbanos = () => {
                       />
 
                       <label
-                        htmlFor="select"
+                        htmlFor="TipoDonante"
                         className="block text-sm font-medium text-gray-700 mt-2"
                       >
                         Tipo de donante
                       </label>
                       <select
-                        id="select"
-                        name="select"
-                        value={newUbicacion.select}
+                        id="TipoDonante"
+                        name="TipoDonante"
+                        value={newUbicacion.TipoDonante}
                         onChange={handleChange}
                         className="border p-2 w-full mt-1"
                       >
-                        <option value="EmpresasDonante">
+                        <option value="Empresa Donante">
                           Empresas donante
                         </option>
-                        <option value="RecolUrbanos">
+                        <option value="Urbanos">
                           Recolección de urbanos
                         </option>
-                        <option value="Particulas">Particular</option>
+                        <option value="Particular">Particular</option>
                       </select>
                     </div>
                   </div>
@@ -218,7 +219,7 @@ const RecoUrbanos = () => {
                           key={index}
                           position={[location.Lat, location.Long]}
                         >
-                          <Popup>{location.Nombre}</Popup>
+                          <Popup>{[location.Nombre, location.TipoDonante]}</Popup>
                         </Marker>
                       ))}
                     </MapContainer>
@@ -268,7 +269,7 @@ const RecoUrbanos = () => {
                 />
                 {locations.map((location, index) => (
                   <Marker key={index} position={[location.Lat, location.Long]}>
-                    <Popup>{location.Nombre}</Popup>
+                    <Popup>{[location.Nombre,  location.TipoDonante]}</Popup>
                   </Marker>
                 ))}
               </MapContainer>
