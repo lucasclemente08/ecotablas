@@ -50,7 +50,16 @@ const Maquinaria = () => {
 
   const cerrarModalEdit = () => setModalEdit(false);
 
-  const abrirModal = () => setModalAbierto(true);
+  const abrirModal = () => {
+    setFormValues({
+      Nombre: "",
+      Tipo: "",
+      Modelo: "",
+      IdEstado: "",
+      fecha_adquisicion: "",
+    }); // Reiniciar los valores del formulario
+    setModalAbierto(true);
+  };
   const cerrarModal = () => setModalAbierto(false);
 
   const fetchMaquinarias = async () => {
@@ -97,7 +106,9 @@ const Maquinaria = () => {
     try {
       const response = await axios.post(`${BASE_URL}/Insertar`, formValues);
       if (response) {
-        await fetchMaquinarias(); // Actualiza la lista
+        await fetchMaquinarias(); 
+
+
         setMensaje("Inserción exitosa");
       } else {
         setMensaje("Error: no se recibió un dato válido de la API.");
