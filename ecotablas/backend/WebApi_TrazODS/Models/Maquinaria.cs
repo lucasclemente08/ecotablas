@@ -5,37 +5,29 @@ using System.Web;
 
 using System.Data;
 using System.Data.SqlClient;
+using Freya.Types.Http;
+
 namespace WebApi_TrazODS.Models
 {
-    public class UbicacionesMapa
+    public class Maquinaria
     {
-
         #region Atributos
         string conectionString = @"Data Source=Ecotablas-Db.mssql.somee.com;Initial Catalog=Ecotablas-Db;User ID=lucasclemente08_SQLLogin_1;Password=apqjzszydf";
-
         #endregion
-
 
         #region Propiedades
-
-        public int IdUbicacion { get; set; }
+        public int Id { get; set; }
         public string Nombre { get; set; }
-        public float Lat { get; set; }
-        public float Long { get; set; }
-
-        public string TipoDonante { get; set; }
-
+        public string Tipo { get; set; }
+        public string Modelo { get; set; }
+        public int IdEstado { get; set; }
+        public string fecha_adquisicion { get; set; }
         #endregion
 
-        #region Metodos
-
+        #region Métodos
         public DataTable SelectAll()
         {
-
-
-            string sqlSentencia = "SP_GetAllUbicacionesMapa";
-
-
+            string sqlSentencia = "SP_GetAllMaquinaria";
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = conectionString;
 
@@ -57,18 +49,12 @@ namespace WebApi_TrazODS.Models
 
 
             return ds.Tables[0];
-
-
 
         }
 
         public DataTable SelectId()
         {
-
-
-            string sqlSentencia = "SP_GetIdUbicacionesMapa";
-
-
+            string sqlSentencia = "SP_GetIdMaquinaria";
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = conectionString;
 
@@ -77,7 +63,7 @@ namespace WebApi_TrazODS.Models
 
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
-            sqlCom.Parameters.Add("@IdUbicacion", SqlDbType.Int).Value = IdUbicacion;
+            sqlCom.Parameters.Add("@Id", SqlDbType.Int).Value = Id;
 
             DataSet ds = new DataSet();
 
@@ -88,17 +74,11 @@ namespace WebApi_TrazODS.Models
             sqlCnn.Close();
 
             return ds.Tables[0];
-
-
         }
-
 
         public void Insert()
         {
-
-            string sqlSentencia = "SP_InsertUbicacionesMapa";
-
-
+            string sqlSentencia = "SP_InsertMaquinaria";
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = conectionString;
 
@@ -106,87 +86,64 @@ namespace WebApi_TrazODS.Models
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
 
-            sqlCom.Parameters.Add("@Nombre", SqlDbType.VarChar).Value = Nombre;
-            sqlCom.Parameters.Add("@Lat", SqlDbType.Float).Value = Lat;
-            sqlCom.Parameters.Add("@Long", SqlDbType.Float).Value = Long;
-            sqlCom.Parameters.Add("TipoDonante", SqlDbType.NVarChar).Value = TipoDonante;
-
+            sqlCom.Parameters.Add("@Nombre", SqlDbType.NVarChar).Value = Nombre;
+            sqlCom.Parameters.Add("@Tipo", SqlDbType.NVarChar).Value = Tipo;
+            sqlCom.Parameters.Add("@Modelo", SqlDbType.NVarChar).Value = Modelo;
+            sqlCom.Parameters.Add("@IdEstado", SqlDbType.Int).Value = IdEstado;
+            sqlCom.Parameters.Add("@fecha_adquisicion", SqlDbType.NVarChar).Value = fecha_adquisicion;
             sqlCnn.Open();
-
-
             var res = sqlCom.ExecuteNonQuery();
-
-
             sqlCnn.Close();
-
-
         }
-
 
         public void Update()
         {
-
-
-            string sqlSentencia = "SP_UpdateUbicacionesMapa";
-
+            string sqlSentencia = "SP_UpdateMaquinaria";
 
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = conectionString;
-
-
-
-
+            
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
 
-            sqlCom.Parameters.Add("@IdUbicacion", SqlDbType.Int).Value = IdUbicacion;
-            sqlCom.Parameters.Add("@Nombre", SqlDbType.VarChar).Value = Nombre;
-            sqlCom.Parameters.Add("@Lat", SqlDbType.Float).Value = Lat;
-            sqlCom.Parameters.Add("@Long", SqlDbType.Float).Value = Long;
-            sqlCom.Parameters.Add("TipoDonante", SqlDbType.NVarChar).Value = TipoDonante;
-
-
+            sqlCom.Parameters.Add("@Id", SqlDbType.Int).Value = Id;
+            sqlCom.Parameters.Add("@Nombre", SqlDbType.NVarChar).Value = Nombre;
+            sqlCom.Parameters.Add("@Tipo", SqlDbType.NVarChar).Value = Tipo;
+            sqlCom.Parameters.Add("@Modelo", SqlDbType.NVarChar).Value = Modelo;
+            sqlCom.Parameters.Add("@IdEstado", SqlDbType.Int).Value = IdEstado;
+            sqlCom.Parameters.Add("@fecha_adquisicion", SqlDbType.NVarChar).Value = fecha_adquisicion;
             sqlCnn.Open();
-
-
             var res = sqlCom.ExecuteNonQuery();
-
-
             sqlCnn.Close();
-
-
         }
 
-
-        public void Delete()
+        public void Delete(int id)
         {
-
-            string sqlSentencia = "SP_DeleteUbicacionesMapa";
-
-
-            SqlConnection sqlCnn = new SqlConnection();
-            sqlCnn.ConnectionString = conectionString;
-
-
-
-
-            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
-            sqlCom.CommandType = CommandType.StoredProcedure;
-
-            sqlCom.Parameters.Add("@IdUbicacion", SqlDbType.Int).Value = IdUbicacion;
-
-
+            string sqlSentencia = "SP_DeleteMaquinaria";
+            SqlConnection sqlCnn = new SqlConnection(conectionString);
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            sqlCom.Parameters.Add("@Id", SqlDbType.Int).Value = id;
             sqlCnn.Open();
-
-
             var res = sqlCom.ExecuteNonQuery();
-
-
             sqlCnn.Close();
-
-
         }
-
+        public void CambiarEstado(int id, string nuevoEstado)
+        {
+            string sqlSentencia = "SP_CambiarEstadoMaquinaria";
+            SqlConnection sqlCnn = new SqlConnection(conectionString);
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            sqlCom.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+            sqlCom.Parameters.Add("@NuevoEstado", SqlDbType.NVarChar).Value = nuevoEstado;
+            sqlCnn.Open();
+            var res = sqlCom.ExecuteNonQuery();
+            sqlCnn.Close();
+        }
         #endregion
 
 

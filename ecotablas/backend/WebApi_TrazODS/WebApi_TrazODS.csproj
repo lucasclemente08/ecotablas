@@ -209,11 +209,14 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AreaTrabajoController.cs" />
     <Compile Include="Controllers\EmpleadosController.cs" />
+    <Compile Include="Controllers\EstadosMaquinariasController.cs" />
     <Compile Include="Controllers\IngresoMatController.cs" />
     <Compile Include="Controllers\LocalidadesController.cs" />
+    <Compile Include="Controllers\MaquinariaController.cs" />
     <Compile Include="Controllers\MaterialClasController.cs" />
     <Compile Include="Controllers\MaterialProsController.cs" />
     <Compile Include="Controllers\MaterialTritController.cs" />
+    <Compile Include="Controllers\ReparacionesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\TiposPlasticoController.cs" />
     <Compile Include="Controllers\UbicacionesMapaController.cs" />
@@ -227,11 +230,14 @@
     </Compile>
     <Compile Include="Models\AreaTrabajo.cs" />
     <Compile Include="Models\Empleados.cs" />
+    <Compile Include="Models\EstadosMaquinarias.cs" />
     <Compile Include="Models\IngresoMat.cs" />
     <Compile Include="Models\Localidades.cs" />
+    <Compile Include="Models\Maquinaria.cs" />
     <Compile Include="Models\MaterialClas.cs" />
     <Compile Include="Models\MaterialPros.cs" />
     <Compile Include="Models\MaterialTrit.cs" />
+    <Compile Include="Models\Reparaciones.cs" />
     <Compile Include="Models\Roles.cs" />
     <Compile Include="Models\TiposPlastico.cs" />
     <Compile Include="Models\UbicacionesMapa.cs" />
