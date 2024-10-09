@@ -97,6 +97,7 @@
       <HintPath>..\packages\System.Buffers.4.5.1\lib\netstandard1.1\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\netstandard1.1\System.Memory.dll</HintPath>
@@ -120,9 +121,11 @@
     <Reference Include="System.Web.Cors, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.3.0\lib\net45\System.Web.Cors.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.3.0\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
@@ -212,12 +215,14 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AreaTrabajoController.cs" />
     <Compile Include="Controllers\EmpleadosController.cs" />
+    <Compile Include="Controllers\EstadosMaquinariasController.cs" />
     <Compile Include="Controllers\IngresoMatController.cs" />
     <Compile Include="Controllers\LocalidadesController.cs" />
+    <Compile Include="Controllers\MaquinariaController.cs" />
     <Compile Include="Controllers\MaterialClasController.cs" />
     <Compile Include="Controllers\MaterialProsController.cs" />
     <Compile Include="Controllers\MaterialTritController.cs" />
-    <Compile Include="Controllers\ReportesController.cs" />
+    <Compile Include="Controllers\ReparacionesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\TiposPlasticoController.cs" />
     <Compile Include="Controllers\UbicacionesMapaController.cs" />
@@ -232,11 +237,14 @@
     <Compile Include="Models\AreaTrabajo.cs" />
     <Compile Include="Models\Reportes.cs" />
     <Compile Include="Models\Empleados.cs" />
+    <Compile Include="Models\EstadosMaquinarias.cs" />
     <Compile Include="Models\IngresoMat.cs" />
     <Compile Include="Models\Localidades.cs" />
+    <Compile Include="Models\Maquinaria.cs" />
     <Compile Include="Models\MaterialClas.cs" />
     <Compile Include="Models\MaterialPros.cs" />
     <Compile Include="Models\MaterialTrit.cs" />
+    <Compile Include="Models\Reparaciones.cs" />
     <Compile Include="Models\Roles.cs" />
     <Compile Include="Models\TiposPlastico.cs" />
     <Compile Include="Models\UbicacionesMapa.cs" />
