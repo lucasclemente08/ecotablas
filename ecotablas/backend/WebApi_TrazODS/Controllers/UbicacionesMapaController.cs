@@ -54,6 +54,7 @@ namespace WebApi_TrazODS.Controllers
             oUbicacionesMapa.Nombre = value.Nombre;
             oUbicacionesMapa.Lat = value.Lat;
             oUbicacionesMapa.Long = value.Long;
+            oUbicacionesMapa.TipoDonante = value.TipoDonante;
 
             oUbicacionesMapa.Insert();
         }
@@ -67,6 +68,7 @@ namespace WebApi_TrazODS.Controllers
             oUbicacionesMapa.Nombre = value.Nombre;
             oUbicacionesMapa.Lat = value.Lat;
             oUbicacionesMapa.Long = value.Long;
+            oUbicacionesMapa.TipoDonante= value.TipoDonante;
 
             oUbicacionesMapa.Insert();
         }
