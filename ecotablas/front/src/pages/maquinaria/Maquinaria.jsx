@@ -18,6 +18,8 @@ import {
 
 const Maquinaria = () => {
   const [maquinarias, setMaquinarias] = useState([]);
+  const [EstadoMaquinarias, setEstadoMaquinarias] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [maquinariaId, setMaquinariaId] = useState(null);
@@ -33,6 +35,7 @@ const Maquinaria = () => {
   });
 
   const BASE_URL = builderApiUrl("Maquinaria");
+  const BASE_URL_State = builderApiUrl("EstadosMaquinarias");
 
   const abrirModalEdit = (maquinaria) => {
     setMaquinariaId(maquinaria.Id);
@@ -197,6 +200,31 @@ const Maquinaria = () => {
     },
   ];
 
+  const estadoStyles = {
+    1: "bg-green-100 text-green-800", // Operativa
+    2: "bg-red-100 text-red-800", // Rota
+    3: "bg-yellow-100 text-yellow-800", // En Reparación
+  };
+
+  const stateMaquinaria = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL_State}/ListarTodo`);
+      setEstadoMaquinarias(response.data);
+    } catch (error) {
+      console.error("Error al obtener estados de maquinarias:", error);
+    
+    }
+  };
+useEffect(() => {
+    stateMaquinaria();
+  }, []);
+
+  const getNombreEstado = (id) => {
+    const estado = EstadoMaquinarias.find((estado) => estado.Id === id);
+    return estado ? estado.Nombre : "Estado no disponible";
+  };
+
+
   return (
     <>
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
@@ -241,7 +269,9 @@ const Maquinaria = () => {
                     <td className="border-b py-2 px-4">{maquinaria.Nombre}</td>
                     <td className="border-b py-2 px-4">{maquinaria.Tipo}</td>
                     <td className="border-b py-2 px-4">{maquinaria.Modelo}</td>
-                    <td className="border-b py-2 px-4">{maquinaria.IdEstado}</td>
+                    <td className={`border-b py-2 px-4 ${estadoStyles[maquinaria.IdEstado]}`}>
+                      {getNombreEstado(maquinaria.IdEstado)}
+                    </td>
                     <td className="border-b py-2 px-4">{maquinaria.fecha_adquisicion}</td>
                     <td className="border-b py-2 px-4 flex justify-center">
                       <button
