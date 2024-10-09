@@ -2,40 +2,48 @@ import React, { useState, useEffect } from "react";
 import Home from "../home/Home";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import office from "../../assets/office.png"
+import ecoTruck from "../../assets/ecoTruck.png"
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
 import axios from "axios";
-
+import individual from "../../assets/individual.png"
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
-
-import { FaLeaf, FaHandHoldingHeart } from "react-icons/fa";
 
 const DefaultIcon = L.icon({
   iconUrl: icon,
   iconRetinaUrl: iconRetina,
   shadowUrl: iconShadow,
-  iconSize: [25, 41],
+  iconSize: [30, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
 
 const greenMarkerIcon = L.icon({
-  iconUrl: FaLeaf,
-  iconSize: [25, 41], // Tamaño del icono
+  iconUrl: ecoTruck,
+  iconSize: [30, 41], // Tamaño del icono
   iconAnchor: [12, 41], // Punto de anclaje
   popupAnchor: [1, -34],
   shadowUrl: iconShadow,
   shadowSize: [41, 41],
   shadowAnchor: [12, 41],
 });
-
+const ParticularMarkerIcon = L.icon({
+  iconUrl: individual,
+  iconSize: [30, 41], // Tamaño del icono
+  iconAnchor: [12, 41], // Punto de anclaje
+  popupAnchor: [1, -34],
+  shadowUrl: iconShadow,
+  shadowSize: [41, 41],
+  shadowAnchor: [12, 41],
+});
 // Icono para empresas donantes
 const donorMarkerIcon = L.icon({
-  iconUrl: FaHandHoldingHeart,
-  iconSize: [25, 41], // Tamaño del icono
+  iconUrl: office,
+  iconSize: [30, 41], // Tamaño del icono
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowUrl: iconShadow,
@@ -43,7 +51,6 @@ const donorMarkerIcon = L.icon({
   shadowAnchor: [12, 41],
 });
 
-L.Marker.prototype.options.icon = DefaultIcon;
 
 const RecoUrbanos = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -113,6 +120,24 @@ const RecoUrbanos = () => {
   const cerrarModal = () => {
     setModalAbierto(false);
   };
+
+  const handleIcon = (tipoDonante) => {
+    const normalizedTipo = tipoDonante.toLowerCase();
+    console.log(normalizedTipo); // Normalizamos a minúsculas
+    switch (normalizedTipo) {
+      case "empresa":
+        return donorMarkerIcon;
+      case "urbanos":
+      case "recolurbanos": // Aceptamos "RecolUrbanos" como válido también
+        return greenMarkerIcon;
+      case "particular":
+        return ParticularMarkerIcon;
+      default:
+        return DefaultIcon; // Ícono por defecto
+    }
+  };
+  
+
   return (
     <div className="md:flex flex-row bg-slate-900 min-h-screen">
       <Home />
@@ -180,7 +205,7 @@ const RecoUrbanos = () => {
                         onChange={handleChange}
                         className="border p-2 w-full mt-1"
                       >
-                        <option value="Empresa Donante">
+                        <option value="Empresa">
                           Empresas donante
                         </option>
                         <option value="Urbanos">
@@ -218,6 +243,7 @@ const RecoUrbanos = () => {
                         <Marker
                           key={index}
                           position={[location.Lat, location.Long]}
+                          icon={handleIcon(location.TipoDonante)}
                         >
                           <Popup>{[location.Nombre, location.TipoDonante]}</Popup>
                         </Marker>
@@ -267,9 +293,13 @@ const RecoUrbanos = () => {
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {locations.map((location, index) => (
-                  <Marker key={index} position={[location.Lat, location.Long]}>
-                    <Popup>{[location.Nombre,  location.TipoDonante]}</Popup>
+          {locations.map((location, index) => (
+                  <Marker 
+                    key={index} 
+                    position={[location.Lat, location.Long]} 
+                    icon={handleIcon(location.TipoDonante)} // Usamos la función para asignar el ícono correcto
+                  >
+                    <Popup>{[location.Nombre, location.TipoDonante]}</Popup>
                   </Marker>
                 ))}
               </MapContainer>
