@@ -1,6 +1,6 @@
 // src/app/store.js
 import { configureStore } from '@reduxjs/toolkit';
-import tolvaReducer from '../features/tolva/tolvaSlice';
+import tolvaReducer from '../features/tolvaSlice'
 
 const store = configureStore({
   reducer: {

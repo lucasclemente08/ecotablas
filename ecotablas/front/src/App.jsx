@@ -25,6 +25,10 @@ import Tolva from "./pages/tolva/Tolva";
 import GastoMaquinaria from "./pages/gastos/gastosMaquinaria/GastoMaquinaria";
 import GastoVehiculos from "./pages/gastos/gastoVehiculos/GastoVehiculos";
 import store from './app/store';
+import { Provider } from 'react-redux'
+
+
+
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
   { path: "/login", element: <Login />, protected: false },

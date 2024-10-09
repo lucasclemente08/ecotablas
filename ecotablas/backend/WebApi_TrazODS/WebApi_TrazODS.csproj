@@ -217,6 +217,7 @@
     <Compile Include="Controllers\MaterialClasController.cs" />
     <Compile Include="Controllers\MaterialProsController.cs" />
     <Compile Include="Controllers\MaterialTritController.cs" />
+    <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\TiposPlasticoController.cs" />
     <Compile Include="Controllers\UbicacionesMapaController.cs" />
