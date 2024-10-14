@@ -242,6 +242,7 @@
     <Compile Include="Controllers\ReparacionesController.cs" />
     <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
+    <Compile Include="Controllers\TablaProducidasController.cs" />
     <Compile Include="Controllers\TiposPlasticoController.cs" />
     <Compile Include="Controllers\UbicacionesMapaController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
@@ -253,6 +254,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AreaTrabajo.cs" />
+    <Compile Include="Models\TablasProducidas.cs" />
     <Compile Include="Models\Reportes.cs" />
     <Compile Include="Models\Empleados.cs" />
     <Compile Include="Models\EstadosMaquinarias.cs" />

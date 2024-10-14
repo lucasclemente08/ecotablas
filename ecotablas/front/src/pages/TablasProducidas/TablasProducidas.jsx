@@ -12,40 +12,7 @@ const TablasProducidas = () => {
   const cerrarModal = () => setModalAbierto(false);
   const [loading, setLoading] = useState(true);
 
-  const data = [
-    {
-      ID_Tabla: 1,
-      ID_Proceso: 101,
-      FechaProduccion: "2023-09-12",
-      Dimensiones: "4cm x 10cm",
-      Peso: 25.5,
-      CodigoIdentificacion: "TAB123456",
-    },
-    {
-      ID_Tabla: 2,
-      ID_Proceso: 102,
-      FechaProduccion: "2023-09-13",
-      Dimensiones: "4cm x 10cm",
-      Peso: 25.5,
-      CodigoIdentificacion: "TAB789012",
-    },
-    {
-      ID_Tabla: 3,
-      ID_Proceso: 103,
-      FechaProduccion: "2023-09-14",
-      Dimensiones: "4cm x 10cm",
-      Peso: 25.5,
-      CodigoIdentificacion: "TAB456789",
-    },
-    {
-      ID_Tabla: 4,
-      ID_Proceso: 104,
-      FechaProduccion: "2023-09-15",
-      Dimensiones: "4cm x 10cm",
-      Peso: 25.5,
-      CodigoIdentificacion: "TAB654321",
-    },
-  ];
+
 
   const columns = [
     { header: "Fecha Producción", accessor: "FechaProduccion" },
