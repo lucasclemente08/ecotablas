@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { Pie, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import SectionLayout from '../../../layout/SectionLayout';
-
+import TablaHead from '../../../components/Thead';
+import LoadingTable from '../../../components/LoadingTable';
 import AddButton from '../../../components/buttons/addButton';
 import PdfGenerator from '../../../components/buttons/PdfGenerator';
+import { useEffect } from 'react';
+import DeleteButton from '../../../components/buttons/deleteButton';
+import axios from 'axios';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
 
 const GastoVehiculos = () => {
@@ -12,7 +16,8 @@ const GastoVehiculos = () => {
   const [selectedYear, setSelectedYear] = useState('2023');
   const [selectedMonth, setSelectedMonth] = useState(''); 
   const [modalAbierto, setModalAbierto] = useState(false);
-
+  const [dataV,setDataV] = useState([])
+  const [loading, setLoading] = useState(true);
 const abrirModal =()=>{
   setModalAbierto(true);
 }
@@ -78,23 +83,63 @@ const cerrarModal = () => {
     },
   };
 
-  const columns = [
-    { header: "Tipo de Gasto", dataKey: "tipoGasto" },
-    { header: "Monto ($)", dataKey: "monto" },
-    { header: "Fecha", dataKey: "fecha" },
-    { header: "Descripción", dataKey: "descripcion" },
-  ];
   const data = [
-    { tipoGasto: 'Combustible', monto: '1200', fecha: '2023-01-15', descripcion: 'Carga de combustible en estación YPF' },
-    { tipoGasto: 'Mantenimiento', monto: '800', fecha: '2023-02-10', descripcion: 'Cambio de aceite y filtros' },
-    { tipoGasto: 'Seguro', monto: '400', fecha: '2023-03-22', descripcion: 'Pago mensual de seguro vehicular' },
-    { tipoGasto: 'Combustible', monto: '1500', fecha: '2023-04-18', descripcion: 'Carga de combustible en estación Shell' },
-    { tipoGasto: 'Mantenimiento', monto: '950', fecha: '2023-05-25', descripcion: 'Revisión de frenos y balanceo de ruedas' },
-    { tipoGasto: 'Seguro', monto: '500', fecha: '2023-06-13', descripcion: 'Pago trimestral del seguro' },
-    // Añadir más registros según sea necesario
+    {
+      tipoGasto: 'Combustible',
+      tipoComprobante: 'Factura',
+      comprobante: '12345',
+      proveedor: 'YPF',
+      monto: '1200',
+      fecha: '2023-01-15',
+      descripcion: 'Carga de combustible en estación YPF',
+    },
+    {
+      tipoGasto: 'Mantenimiento',
+      tipoComprobante: 'Factura',
+      comprobante: '23456',
+      proveedor: 'Taller Mecánico',
+      monto: '800',
+      fecha: '2023-02-10',
+      descripcion: 'Cambio de aceite y filtros',
+    },
+    {
+      tipoGasto: 'Seguro',
+      tipoComprobante: 'Recibo',
+      comprobante: '34567',
+      proveedor: 'La Caja Seguros',
+      monto: '400',
+      fecha: '2023-03-22',
+      descripcion: 'Pago mensual de seguro vehicular',
+    },
+    {
+      tipoGasto: 'Combustible',
+      tipoComprobante: 'Factura',
+      comprobante: '45678',
+      proveedor: 'Shell',
+      monto: '1500',
+      fecha: '2023-04-18',
+      descripcion: 'Carga de combustible en estación Shell',
+    },
+    {
+      tipoGasto: 'Mantenimiento',
+      tipoComprobante: 'Factura',
+      comprobante: '56789',
+      proveedor: 'Taller Mecánico',
+      monto: '950',
+      fecha: '2023-05-25',
+      descripcion: 'Revisión de frenos y balanceo de ruedas',
+    },
+    {
+      tipoGasto: 'Seguro',
+      tipoComprobante: 'Recibo',
+      comprobante: '67890',
+      proveedor: 'La Caja Seguros',
+      monto: '500',
+      fecha: '2023-06-13',
+      descripcion: 'Pago trimestral del seguro',
+    },
   ];
-    
-
+  
 
   const filteredLineData = {
     ...lineData,
@@ -104,6 +149,45 @@ const cerrarModal = () => {
     })),
   };
   
+  const fetchMaterials = () => {
+    setLoading(true); // Activa el estado de carga
+    axios.get(data)
+      .then((response) => {
+        setDataV(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      })
+      .finally(() => {
+        setLoading(false); // Desactiva el estado de carga
+      });
+  };
+
+  useEffect(() => {
+    fetchMaterials();
+  }, []);
+
+  const columns = [
+    { header: "Tipo de Gasto", dataKey: "tipoGasto" },
+    { header: "tipo de comprobante", dataKey: "tipoComprobante" },
+    { header:"Comprobante", dataKey: "comprobante" },
+    { header: "Proveedor", dataKey: "proveedor" },
+    { header: "Monto ($)", dataKey: "monto" },
+    { header: "Fecha", dataKey: "fecha" },
+    { header: "Descripción", dataKey: "descripcion" },
+  ];
+
+  
+  const titles = [
+    "Tipo de comprobante",
+    "Comprobante",
+    "Tipo de gasto",
+    "Proveedor",
+    "Monto ($)",
+    "Fecha",
+    "Descripción",
+    "Acciones"
+  ];
 
   return (
     <SectionLayout title="Gastos de Vehículos">
@@ -115,7 +199,51 @@ const cerrarModal = () => {
           data={data}
           title="Reporte de gastos "
         />
-      <div className="flex justify-center gap-4 mb-8">
+
+
+{loading ? (
+        <LoadingTable loading={loading} />
+      ) : (
+        <table className="min-w-full bg-white rounded-lg shadow-md">
+          <TablaHead titles={titles} />
+          <tbody>
+          {data.map((item, index) => (
+  <tr key={index} className="hover:bg-gray-100">
+    <td className="border-b py-3 px-4">{item.tipoGasto}</td>
+    <td className="border-b py-3 px-4">{item.tipoComprobante}</td>
+    <td className="border-b py-3 px-4">{item.tipoGasto}</td>
+    <td className="border-b py-3 px-4">{item.proveedor}</td>
+    <td className="border-b py-3 px-4">{item.monto}</td>
+    <td className="border-b py-3 px-4">{item.fecha}</td>
+    <td className="border-b py-3 px-4">{item.descripcion}</td>
+    <td className="border-b py-3 px-4">
+    <button
+                        onClick={() => abrirModalEdit(material)}
+                        className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        Modificar
+                      </button>
+                      <DeleteButton
+                        id={item.index  }
+                        endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Borrar"
+                        updateList={fetchMaterials}
+                      />
+
+
+    </td>
+
+  </tr>
+))}
+          </tbody>
+          </table>
+      )
+}
+
+
+
+
+
+      <div className="flex justify-center gap-4 mt-5 mb-4">
       <button
   aria-label="Ver gráfico circular"
   className={`py-2 px-4 font-bold text-white rounded ${showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
