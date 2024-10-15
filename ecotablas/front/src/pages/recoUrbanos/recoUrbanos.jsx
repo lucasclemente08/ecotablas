@@ -123,7 +123,7 @@ const RecoUrbanos = () => {
 
   const handleIcon = (tipoDonante) => {
     const normalizedTipo = tipoDonante.toLowerCase();
-    console.log(normalizedTipo); // Normalizamos a minúsculas
+
     switch (normalizedTipo) {
       case "empresa":
         return donorMarkerIcon;
@@ -137,7 +137,7 @@ const RecoUrbanos = () => {
     }
   };
   
-
+  const [empresas, setEmpresas] = useState(["Empresa 1", "Empresa 2", "Empresa 3"]);
   return (
     <div className="md:flex flex-row bg-slate-900 min-h-screen">
       <Home />
@@ -212,10 +212,32 @@ const RecoUrbanos = () => {
                           Recolección de urbanos
                         </option>
                         <option value="Particular">Particular</option>
-                      </select>
+                      </select> 
+                      <label htmlFor="EmpresaDonante" className="block text-sm font-medium text-gray-700 mt-2">
+              Empresa o Donante
+            </label>
+            <select
+              id="EmpresaDonante"
+              name="EmpresaDonante"
+              value={newUbicacion.EmpresaDonante}
+              onChange={handleChange}
+              className="border p-2 w-full mt-1"
+            >
+              {/* Ejemplo de opciones de empresa, estas deberían venir de un array en tu componente */}
+              {empresas.map((empresa, index) => (
+                <option key={index} value={empresa}>
+                  {empresa}
+                </option>
+              ))}
+            </select>
                     </div>
                   </div>
+                  <div>
+
+                  <p className=" mt-1 font-semibold">Presionar en el mapa para seleccionar la ubicacion. </p>
+                  </div>
                   <div className="p-2  flex justify-center">
+                
                     <MapContainer
                       className="overflow-y-auto w-4 "
                       center={centerPosition}
