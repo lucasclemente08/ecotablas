@@ -7,6 +7,8 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
 import LoadingTable from "../../components/LoadingTable";
+import builderApiUrl from "../../utils/BuilderApi";
+import axios from "axios";
 import {
   getAllMaquinarias,
   addMaquinarias,
@@ -16,6 +18,8 @@ import {
 
 const Maquinaria = () => {
   const [maquinarias, setMaquinarias] = useState([]);
+  const [EstadoMaquinarias, setEstadoMaquinarias] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [maquinariaId, setMaquinariaId] = useState(null);
@@ -30,6 +34,9 @@ const Maquinaria = () => {
     fecha_adquisicion: "",
   });
 
+  const BASE_URL = builderApiUrl("Maquinaria");
+  const BASE_URL_State = builderApiUrl("EstadosMaquinarias");
+
   const abrirModalEdit = (maquinaria) => {
     setMaquinariaId(maquinaria.Id);
     setFormValues({
@@ -37,7 +44,9 @@ const Maquinaria = () => {
       Tipo: maquinaria.Tipo,
       Modelo: maquinaria.Modelo,
       IdEstado: maquinaria.IdEstado,
-      fecha_adquisicion: maquinaria.fecha_adquisicion.slice(0, 10),
+      fecha_adquisicion: maquinaria.fecha_adquisicion
+        ? maquinaria.fecha_adquisicion.slice(0, 10)
+        : "",
     });
     setModalEdit(true);
   };
@@ -45,17 +54,22 @@ const Maquinaria = () => {
   const cerrarModalEdit = () => setModalEdit(false);
 
   const abrirModal = () => {
+    setFormValues({
+      Nombre: "",
+      Tipo: "",
+      Modelo: "",
+      IdEstado: "",
+      fecha_adquisicion: "",
+    }); // Reiniciar los valores del formulario
     setModalAbierto(true);
   };
-  const cerrarModal = () => {
-    setModalAbierto(false);
-  };
+  const cerrarModal = () => setModalAbierto(false);
 
   const fetchMaquinarias = async () => {
     setLoading(true);
     try {
-      const res = await getAllMaquinarias();
-      setMaquinarias(res.data);
+      const res = await getAllMaquinarias(); // Usar la función de API para obtener los datos
+      setMaquinarias(res.data); // Actualizar el estado con la respuesta
     } catch (error) {
       setMensaje("Error al cargar las maquinarias.");
       console.error("Error fetching data: ", error);
@@ -91,28 +105,34 @@ const Maquinaria = () => {
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
+  
     try {
-        const response = await addMaquinarias(formValues);
-        // Log de respuesta para depuración
-        console.log(response);
-        
-        // Actualiza el estado y cierra la modal
-        setMaquinarias((prevMaquinarias) => [...prevMaquinarias, response.data]);
-        setModalAbierto(false);
+      const response = await axios.post(`${BASE_URL}/Insertar`, formValues);
+      if (response) {
+        await fetchMaquinarias(); 
+
+
         setMensaje("Inserción exitosa");
+      } else {
+        setMensaje("Error: no se recibió un dato válido de la API.");
+      }
+  
+      setModalAbierto(false);
     } catch (error) {
-        setMensaje("Error al agregar la maquinaria.");
-        console.error("Error al agregar la maquinaria:", error);
+      setMensaje("Error al agregar la maquinaria.");
+      console.error("Error al agregar la maquinaria:", error);
     }
-};
+  };
+  
 
   const handleEditSubmit = async () => {
     if (!validateForm()) return;
+
     try {
       await editMaquinarias(maquinariaId, formValues);
       setModalEdit(false);
       setMensaje("Modificación exitosa");
-      fetchMaquinarias();
+      await fetchMaquinarias(); // Actualiza la lista
     } catch (error) {
       setMensaje("Error al modificar la maquinaria.");
       console.error("Error al modificar la maquinaria:", error);
@@ -142,7 +162,9 @@ const Maquinaria = () => {
     Tipo: maquinaria.Tipo,
     Modelo: maquinaria.Modelo,
     IdEstado: maquinaria.IdEstado,
-    fecha_adquisicion: maquinaria.fecha_adquisicion.slice(0, 10),
+    fecha_adquisicion: maquinaria.fecha_adquisicion
+      ? maquinaria.fecha_adquisicion.slice(0, 10)
+      : "Fecha no disponible", // Manejo de fechas
   }));
 
   const fields = [
@@ -178,24 +200,39 @@ const Maquinaria = () => {
     },
   ];
 
+  const estadoStyles = {
+    1: "bg-green-100 text-green-800", // Operativa
+    2: "bg-red-100 text-red-800", // Rota
+    3: "bg-yellow-100 text-yellow-800", // En Reparación
+  };
+
+  const stateMaquinaria = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL_State}/ListarTodo`);
+      setEstadoMaquinarias(response.data);
+    } catch (error) {
+      console.error("Error al obtener estados de maquinarias:", error);
+    
+    }
+  };
+useEffect(() => {
+    stateMaquinaria();
+  }, []);
+
+  const getNombreEstado = (id) => {
+    const estado = EstadoMaquinarias.find((estado) => estado.Id === id);
+    return estado ? estado.Nombre : "Estado no disponible";
+  };
+
+
   return (
     <>
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
         <Home />
         <div className="p-4 w-full">
-          <h2 className="text-2xl font-bold text-white mb-4">
-            Maquinarias
-          </h2>
-          <AddButton
-            abrirModal={abrirModal}
-            title={" Añadir Maquinaria"}
-          />
-
-          <PdfGenerator
-            columns={columns}
-            data={maquinarias}
-            title="Reporte de Maquinarias"
-          />
+          <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
+          <AddButton abrirModal={abrirModal} title={" Añadir Maquinaria"} />
+          <PdfGenerator columns={columns} data={maquinarias} title="Reporte de Maquinarias" />
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
               {mensaje}
@@ -226,17 +263,15 @@ const Maquinaria = () => {
             <table className="min-w-full bg-white rounded-lg shadow-md">
               <LoadingTable loading={loading} />
               <TablaHead titles={title} />
-
               <tbody>
                 {maquinarias.map((maquinaria) => (
-                  <tr
-                    key={maquinaria.Id}
-                    className="hover:bg-gray-100"
-                  >
+                  <tr key={maquinaria.Id} className="hover:bg-gray-100">
                     <td className="border-b py-2 px-4">{maquinaria.Nombre}</td>
                     <td className="border-b py-2 px-4">{maquinaria.Tipo}</td>
                     <td className="border-b py-2 px-4">{maquinaria.Modelo}</td>
-                    <td className="border-b py-2 px-4">{maquinaria.IdEstado}</td>
+                    <td className={`border-b py-2 px-4 ${estadoStyles[maquinaria.IdEstado]}`}>
+                      {getNombreEstado(maquinaria.IdEstado)}
+                    </td>
                     <td className="border-b py-2 px-4">{maquinaria.fecha_adquisicion}</td>
                     <td className="border-b py-2 px-4 flex justify-center">
                       <button
@@ -247,7 +282,7 @@ const Maquinaria = () => {
                       </button>
                       <DeleteButton
                         id={maquinaria.Id}
-                        endpoint="http://localhost:61274/api/Maquinaria/Borrar"
+                        endpoint={`${BASE_URL}/Borrar`}
                         updateList={fetchMaquinarias}
                       />
                     </td>

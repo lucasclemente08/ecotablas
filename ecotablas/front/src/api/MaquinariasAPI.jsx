@@ -1,15 +1,17 @@
 import axios from "axios";
 import builderApiUrl from "../utils/BuilderApi";
 
-const BASE_URL = `${builderApiUrl}/Maquinaria`;
+const BASE_URL = builderApiUrl("Maquinaria");
+
 
 export const getAllMaquinarias = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/ListarTodo`);
+    
     return response;
   } catch (error) {
     console.error("Error fetching maquinarias:", error);
-    throw error; // Propaga el error para que pueda ser manejado en el componente
+    throw error; 
   }
 };
 export const addMaquinarias = (data) => axios.post(`${BASE_URL}/Insertar`, data);

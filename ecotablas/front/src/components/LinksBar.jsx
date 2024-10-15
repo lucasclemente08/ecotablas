@@ -39,6 +39,10 @@ const LinksBar = () => {
     { title: "Lavado de material", link: "/lavado" },
     { title: "Plásticos", link: "/material" },
   ];
+  const ExpensesMenus = [
+    { title: "Gastos de vehículos", link: "/gastos/vehiculos" },
+    { title: "Gastos de maquinaria", link: "/gastos/maquinaria" },
+  ]
 
   const toggleEmployeeMenu = () => {
     setEmployeeOpen(!employeeOpen);
@@ -62,6 +66,8 @@ const LinksBar = () => {
       <MenuSection title="Recolección Urbanos" menus={urbanMenus} />
       <MenuSection title="Materiales" menus={materialMenus} />
       <MenuSection title="Maquinaria" menus={machinesMenus} />
+      <MenuSection title="Gastos" menus={ExpensesMenus} />
+
     </>
   );
 };
