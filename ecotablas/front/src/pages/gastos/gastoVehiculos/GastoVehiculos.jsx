@@ -9,37 +9,56 @@ import PdfGenerator from '../../../components/buttons/PdfGenerator';
 import { useEffect } from 'react';
 import DeleteButton from '../../../components/buttons/deleteButton';
 import axios from 'axios';
+import DataView from '../../../components/buttons/DataView';
+import { FaChartLine } from "react-icons/fa";
+import { FaChartPie } from "react-icons/fa";
+
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
 
 const GastoVehiculos = () => {
-  const [showPieChart, setShowPieChart] = useState(true); 
+  const [showPieChart, setShowPieChart] = useState(true);
+  const [showTable, setShowTable] = useState(true); // Estado para mostrar/ocultar tabla
   const [selectedYear, setSelectedYear] = useState('2023');
-  const [selectedMonth, setSelectedMonth] = useState(''); 
+  const [selectedMonth, setSelectedMonth] = useState('');
   const [modalAbierto, setModalAbierto] = useState(false);
-  const [dataV,setDataV] = useState([])
+  const [dataV, setDataV] = useState([]);
+  const [dataView, setDataview] = useState(false);
   const [loading, setLoading] = useState(true);
-const abrirModal =()=>{
-  setModalAbierto(true);
-}
-const cerrarModal = () => {
-  setModalAbierto(false);
-};
+
+  const abrirModal = () => {
+    setModalAbierto(true);
+  };
+  const cerrarModal = () => {
+    setModalAbierto(false);
+  };
 
   const pieData = {
     labels: ['Combustible', 'Mantenimiento', 'Seguro'],
     datasets: [
       {
         label: 'Gastos por Categoría',
-        data: [1200, 800, 400], // Datos simulados
+        data: [1200, 800, 400],
         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
         hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
       },
     ],
   };
 
-  // Datos para el gráfico de líneas (por mes filtrado)
   const lineData = {
-    labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    labels: [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
+    ],
     datasets: [
       {
         label: 'Combustible',
@@ -70,7 +89,7 @@ const cerrarModal = () => {
 
   const pieOptions = {
     responsive: true,
-    maintainAspectRatio: false, // Permite ajustar el tamaño manualmente
+    maintainAspectRatio: false,
   };
 
   const lineOptions = {
@@ -81,6 +100,10 @@ const cerrarModal = () => {
         beginAtZero: true,
       },
     },
+  };
+  const handleShowTable = () => {
+    setShowTable(true);
+    setShowPieChart(false); // Ocultar gráficos
   };
 
   const data = [
@@ -111,55 +134,24 @@ const cerrarModal = () => {
       fecha: '2023-03-22',
       descripcion: 'Pago mensual de seguro vehicular',
     },
-    {
-      tipoGasto: 'Combustible',
-      tipoComprobante: 'Factura',
-      comprobante: '45678',
-      proveedor: 'Shell',
-      monto: '1500',
-      fecha: '2023-04-18',
-      descripcion: 'Carga de combustible en estación Shell',
-    },
-    {
-      tipoGasto: 'Mantenimiento',
-      tipoComprobante: 'Factura',
-      comprobante: '56789',
-      proveedor: 'Taller Mecánico',
-      monto: '950',
-      fecha: '2023-05-25',
-      descripcion: 'Revisión de frenos y balanceo de ruedas',
-    },
-    {
-      tipoGasto: 'Seguro',
-      tipoComprobante: 'Recibo',
-      comprobante: '67890',
-      proveedor: 'La Caja Seguros',
-      monto: '500',
-      fecha: '2023-06-13',
-      descripcion: 'Pago trimestral del seguro',
-    },
   ];
-  
 
-  const filteredLineData = {
-    ...lineData,
-    datasets: lineData.datasets.map((dataset) => ({
-      ...dataset,
-      data: selectedMonth ? [dataset.data[selectedMonthIndex]] : dataset.data,
-    })),
+  const OpenDataview = () => {
+    setDataview(true);
   };
-  
+
   const fetchMaterials = () => {
-    setLoading(true); // Activa el estado de carga
-    axios.get(data)
+    setLoading(true); 
+    axios
+      .get(data)
       .then((response) => {
         setDataV(response.data);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       })
       .finally(() => {
-        setLoading(false); // Desactiva el estado de carga
+        setLoading(false); 
       });
   };
 
@@ -168,158 +160,94 @@ const cerrarModal = () => {
   }, []);
 
   const columns = [
-    { header: "Tipo de Gasto", dataKey: "tipoGasto" },
-    { header: "tipo de comprobante", dataKey: "tipoComprobante" },
-    { header:"Comprobante", dataKey: "comprobante" },
-    { header: "Proveedor", dataKey: "proveedor" },
-    { header: "Monto ($)", dataKey: "monto" },
-    { header: "Fecha", dataKey: "fecha" },
-    { header: "Descripción", dataKey: "descripcion" },
+    { header: 'Tipo de Gasto', dataKey: 'tipoGasto' },
+    { header: 'tipo de comprobante', dataKey: 'tipoComprobante' },
+    { header: 'Comprobante', dataKey: 'comprobante' },
+    { header: 'Proveedor', dataKey: 'proveedor' },
+    { header: 'Monto ($)', dataKey: 'monto' },
+    { header: 'Fecha', dataKey: 'fecha' },
+    { header: 'Descripción', dataKey: 'descripcion' },
   ];
 
-  
   const titles = [
-    "Tipo de comprobante",
-    "Comprobante",
-    "Tipo de gasto",
-    "Proveedor",
-    "Monto ($)",
-    "Fecha",
-    "Descripción",
-    "Acciones"
+    'Tipo de comprobante',
+    'Comprobante',
+    'Tipo de gasto',
+    'Proveedor',
+    'Monto ($)',
+    'Fecha',
+    'Descripción',
+    'Acciones',
   ];
 
   return (
     <SectionLayout title="Gastos de Vehículos">
-      {/* Botones para cambiar entre los gráficos */}
-
-      <AddButton abrirModal={abrirModal} title={"Añadir gastos"} />
-        <PdfGenerator
-          columns={columns}
-          data={data}
-          title="Reporte de gastos "
-        />
-
-
-{loading ? (
-        <LoadingTable loading={loading} />
-      ) : (
-        <table className="min-w-full bg-white rounded-lg shadow-md">
-          <TablaHead titles={titles} />
-          <tbody>
-          {data.map((item, index) => (
-  <tr key={index} className="hover:bg-gray-100">
-    <td className="border-b py-3 px-4">{item.tipoGasto}</td>
-    <td className="border-b py-3 px-4">{item.tipoComprobante}</td>
-    <td className="border-b py-3 px-4">{item.tipoGasto}</td>
-    <td className="border-b py-3 px-4">{item.proveedor}</td>
-    <td className="border-b py-3 px-4">{item.monto}</td>
-    <td className="border-b py-3 px-4">{item.fecha}</td>
-    <td className="border-b py-3 px-4">{item.descripcion}</td>
-    <td className="border-b py-3 px-4">
-    <button
-                        onClick={() => abrirModalEdit(material)}
-                        className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        Modificar
-                      </button>
-                      <DeleteButton
-                        id={item.index  }
-                        endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Borrar"
-                        updateList={fetchMaterials}
-                      />
-
-
-    </td>
-
-  </tr>
-))}
-          </tbody>
-          </table>
-      )
-}
-
-
-
-
-
-      <div className="flex justify-center gap-4 mt-5 mb-4">
-      <button
-  aria-label="Ver gráfico circular"
-  className={`py-2 px-4 font-bold text-white rounded ${showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
-  onClick={() => setShowPieChart(true)}
->
-  Ver Gráfico Circular
-</button>
+      {/* Botones para cambiar entre los gráficos y las tablas */}
+      <div className="flex items-center align-middle">
+        <AddButton abrirModal={abrirModal} title="Añadir gastos" />
+        <PdfGenerator columns={columns} data={data} title="Reporte de gastos" />
+        <DataView ShowTable={handleShowTable} />
 
         <button
-          className={`py-2 px-4 font-bold text-white rounded ${!showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
-          onClick={() => setShowPieChart(false)}
+          aria-label="Ver gráfico circular"
+          className={`p-2   ml-2 mt-2 mb-5 font-bold rounded text-white flex items-center justify-center ${showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
+          onClick={() => {
+            setShowPieChart(true);
+            setShowTable(false);
+          }}
         >
-          Ver Gráfico de Líneas
+          Ver Gráfico Circular <FaChartPie className="ml-2" />
+        </button>
+
+        <button
+          className={`  p-2  mt-2 mb-5  ml-2 font-bold rounded text-white flex items-center justify-center ${!showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
+          onClick={() => {
+            setShowPieChart(false);
+            setShowTable(false);
+          }}
+        >
+          Ver Gráfico de Líneas <FaChartLine className="ml-2" />
         </button>
       </div>
-<div className="flex justify-center">
 
-      {/* Select para el mes */}
-      <div className="flex justify-center p-1 items-center">
-        <label className="text-white font-semibold mr-2" htmlFor="month-select">
-          Selecciona Mes:
-        </label>
-        <select
-          id="month-select"
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          className="border m-2 border-gray-300 p-2 rounded-md"
-        >
-          <option value="">Todos los Meses</option>
-          {['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].map(
-            (month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            )
-          )}
-        </select>
-      </div>
+       
 
-      {/* Select para el año */}
-      <div className="flex justify-center p-1 items-center">
-    
+      
 
-    
-        <label className="text-white font-semibold mr-2" htmlFor="year-select">
-          Selecciona Año:
-        </label>
-        <select
-          id="year-select"
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(e.target.value)}
-          className="border border-gray-300 p-2 rounded-md"
-        >
-          {['2022', '2023', '2024'].map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
-      </div>
-          </div>
+      
 
-      {/* Mostrar el gráfico basado en el estado */}
-      {showPieChart ? (
-        <div className="mb-8">
-          <h3 className="text-lg text-white font-semibold mb-4">Distribución de Gastos</h3>
-          <div className="w-full h-64">
-            <Pie data={pieData} options={pieOptions} />
-          </div>
+      {/* Renderizado condicional para la tabla y los gráficos */}
+      {showTable ? (
+        loading ? (
+          <LoadingTable loading={loading} />
+        ) : (
+          <table className="min-w-full bg-white rounded-lg shadow-md">
+            <TablaHead titles={titles} />
+            <tbody>
+              {data.map((item, index) => (
+                <tr key={index} className="hover:bg-gray-100">
+                  <td className="border-b py-3 px-4">{item.tipoGasto}</td>
+                  <td className="border-b py-3 px-4">{item.tipoComprobante}</td>
+                  <td className="border-b py-3 px-4">{item.tipoGasto}</td>
+                  <td className="border-b py-3 px-4">{item.proveedor}</td>
+                  <td className="border-b py-3 px-4">{item.monto}</td>
+                  <td className="border-b py-3 px-4">{item.fecha}</td>
+                  <td className="border-b py-3 px-4">{item.descripcion}</td>
+                  <td className="border-b py-3 px-4">
+                    <DeleteButton />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+      ) : showPieChart ? (
+        <div className="w-full h-96">
+          <Pie data={pieData} options={pieOptions} />
         </div>
       ) : (
-        <div className="bg-zinc-800 p-4">
-          <h3 className="text-lg text-white font-semibold mb-4">Evolución de Gastos por Mes ({selectedYear})</h3>
-          <div className="w-full h-64">
-            <Line data={lineData} options={lineOptions} />
-          </div>
+        <div className="w-full h-96">
+          <Line data={lineData} options={lineOptions} />
         </div>
       )}
     </SectionLayout>
