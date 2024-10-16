@@ -240,6 +240,7 @@
     <Compile Include="Controllers\MaterialProsController.cs" />
     <Compile Include="Controllers\MaterialTritController.cs" />
     <Compile Include="Controllers\ReparacionesController.cs" />
+    <Compile Include="Controllers\EmpresaDonanteController.cs" />
     <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\TablaProducidasController.cs" />
@@ -254,6 +255,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AreaTrabajo.cs" />
+    <Compile Include="Models\EmpresasDonante.cs" />
     <Compile Include="Models\TablasProducidas.cs" />
     <Compile Include="Models\Reportes.cs" />
     <Compile Include="Models\Empleados.cs" />

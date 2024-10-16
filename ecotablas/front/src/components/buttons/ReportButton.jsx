@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { IoMdAlert } from "react-icons/io";
+import axios from "axios";
+
 const ReportButton = () => {
-  const [modalOpen, setModalOpen] = useState(false); // Controla la visibilidad del modal
+  const [modalOpen, setModalOpen] = useState(false); 
   const [report, setReport] = useState({
-    title: "",
-    description: "",
-    area: "",
-    date: "",
+    Titulo: "",
+    Descripcion: "",
+    Area: "",
+    FechaIncidente: "",
+    Estado: "Pendiente", 
   });
   const [message, setMessage] = useState("");
 
-  // Maneja el cambio en los inputs del formulario
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setReport({
@@ -19,21 +22,34 @@ const ReportButton = () => {
     });
   };
 
-  // Simula el envío del reporte
+  const PostReportes = () => {
+    const reporteConFecha = {
+      ...report,
+      FechaReporte: new Date().toISOString(), 
+    };
+
+    axios
+      .post("http://localhost:61274/api/Reportes/CrearReporte", reporteConFecha)
+      .then((response) => {
+        console.log("Reporte enviado:", response.data);
+        setMessage("¡Reporte enviado con éxito!");
+        setModalOpen(false); 
+      })
+      .catch((error) => {
+        console.error("Error al enviar el reporte:", error);
+        setMessage("Error al enviar el reporte. Inténtalo de nuevo.");
+      });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validación simple
-    if (!report.title || !report.description || !report.area || !report.date) {
+
+    if (!report.Titulo || !report.Descripcion || !report.Area || !report.FechaIncidente) {
       setMessage("Por favor, completa todos los campos.");
       return;
     }
-
-    // Simula el envío del reporte (puedes reemplazar esto con una llamada a una API)
-    console.log("Reporte enviado:", report);
-
-    setMessage("¡Reporte enviado con éxito!");
-    setModalOpen(false); // Cierra el modal después de enviar el reporte
+    PostReportes();
   };
 
   return (
@@ -47,7 +63,7 @@ const ReportButton = () => {
         </div>
       </button>
 
-      {/* Modal para el formulario del reporte */}
+   
       {modalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75">
           <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96">
@@ -57,15 +73,15 @@ const ReportButton = () => {
             {message && <p className="mb-4 text-red-500">{message}</p>}
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="title">
+                <label className="block text-sm font-bold mb-2" htmlFor="Titulo">
                   Título
                 </label>
                 <input
                   type="text"
-                  name="title"
-                  id="title"
+                  name="Titulo"
+                  id="Titulo"
                   placeholder="Título del reporte"
-                  value={report.title}
+                  value={report.Titulo}
                   onChange={handleChange}
                   className="border border-indigo-300 rounded w-full py-2 px-3 focus:outline-none focus:border-indigo-500"
                 />
@@ -73,50 +89,50 @@ const ReportButton = () => {
               <div className="mb-4">
                 <label
                   className="block text-sm font-bold mb-2"
-                  htmlFor="description"
+                  htmlFor="Descripcion"
                 >
                   Descripción
                 </label>
                 <textarea
-                  name="description"
-                  id="description"
+                  name="Descripcion"
+                  id="Descripcion"
                   placeholder="Describe el problema"
-                  value={report.description}
+                  value={report.Descripcion}
                   onChange={handleChange}
                   className="border border-indigo-300 rounded w-full py-2 px-3 focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
-              {/* Campo para elegir el área del error */}
+
               <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="area">
+                <label className="block text-sm font-bold mb-2" htmlFor="Area">
                   Área del problema
                 </label>
                 <select
-                  name="area"
-                  id="area"
-                  value={report.area}
+                  name="Area"
+                  id="Area"
+                  value={report.Area}
                   onChange={handleChange}
                   className="border border-indigo-300 rounded w-full py-2 px-3 focus:outline-none focus:border-indigo-500"
                 >
                   <option value="">Seleccione un área</option>
                   <option value="Lavado">Lavado de material</option>
-                  <option value="materialTrit">trituración de material</option>
-                  <option value="materialPro">Procesado de material</option>
-                  <option value="CargaMat">Carga de material</option>
+                  <option value="materialTriturado">Trituración de material</option>
+                  <option value="materialProcesado">Procesado de material</option>
+                  <option value="CargaMaterial">Carga de material</option>
                 </select>
               </div>
 
-              {/* Campo para elegir la fecha */}
+ 
               <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="date">
+                <label className="block text-sm font-bold mb-2" htmlFor="FechaIncidente">
                   Fecha del incidente
                 </label>
                 <input
                   type="date"
-                  name="date"
-                  id="date"
-                  value={report.date}
+                  name="FechaIncidente"
+                  id="FechaIncidente"
+                  value={report.FechaIncidente}
                   onChange={handleChange}
                   className="border border-indigo-300 rounded w-full py-2 px-3 focus:outline-none focus:border-indigo-500"
                 />
