@@ -128,12 +128,12 @@ const RecoUrbanos = () => {
       case "empresa":
         return donorMarkerIcon;
       case "urbanos":
-      case "recolurbanos": // Aceptamos "RecolUrbanos" como válido también
+      case "recolurbanos": 
         return greenMarkerIcon;
       case "particular":
         return ParticularMarkerIcon;
       default:
-        return DefaultIcon; // Ícono por defecto
+        return DefaultIcon; 
     }
   };
   
