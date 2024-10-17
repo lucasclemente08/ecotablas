@@ -5,11 +5,16 @@ import LoadingTable from '../../../components/LoadingTable';
 import AddButton from '../../../components/buttons/addButton';
 import PdfGenerator from '../../../components/buttons/PdfGenerator';
 import axios from 'axios';
+import { BsClipboardDataFill } from "react-icons/bs";
+import DataView from '../../../components/buttons/DataView';
+import DeleteButton from '../../../components/buttons/deleteButton';
 
 const GastoMaquinaria = () => {
   const [dataM, setDataM] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [dataView, setDataview] = useState(false)
+
 
   const abrirModal = () => {
     setModalAbierto(true);
@@ -43,6 +48,10 @@ const GastoMaquinaria = () => {
       descripcion: 'Pago anual del seguro de maquinaria',
     },
   ];
+const OpenDataview=() => {
+  setDataview(true)
+}
+
   const cerrarModal = () => {
     setModalAbierto(false);
   };
@@ -84,13 +93,17 @@ const GastoMaquinaria = () => {
     "Monto ($)",
     "Fecha",
     "Descripción",
+    "Acciones"
   ];
 
   return (
     <SectionLayout title="Gasto de Maquinaria">
+      <div className="flex">
+
       <AddButton abrirModal={abrirModal} title="Añadir Gasto de Maquinaria" />
       <PdfGenerator columns={columns} data={dataM} title="Reporte de Gastos de Maquinaria" />
-
+      <DataView abrirModal={OpenDataview}/>
+      </div>
       {loading ? (
         <LoadingTable loading={loading} />
       ) : (
@@ -106,6 +119,17 @@ const GastoMaquinaria = () => {
                 <td className="border-b py-3 px-4">{item.monto}</td>
                 <td className="border-b py-3 px-4">{item.fecha}</td>
                 <td className="border-b py-3 px-4">{item.descripcion}</td>
+                <td className="border-b py-3 px-4">
+                <button
+                        onClick={() => abrirModalEdit(material)}
+                        className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        Modificar
+                      </button>
+
+                  <DeleteButton/>
+                </td>
+
               </tr>
             ))}
           </tbody>
