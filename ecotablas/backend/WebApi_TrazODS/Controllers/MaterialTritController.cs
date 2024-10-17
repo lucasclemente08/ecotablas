@@ -55,6 +55,7 @@ namespace WebApi_TrazODS.Controllers
             oMaterialTrit.VolumenT = value.VolumenT;
             oMaterialTrit.Fecha = value.Fecha;
             oMaterialTrit.IdMaterialClasificado = value.IdMaterialClasificado;
+            oMaterialTrit.VolumenTInutil = value.VolumenTInutil;
 
             oMaterialTrit.Insert();
         }
@@ -70,6 +71,7 @@ namespace WebApi_TrazODS.Controllers
             oMaterialTrit.VolumenT = value.VolumenT;
             oMaterialTrit.Fecha = value.Fecha;
             oMaterialTrit.IdMaterialClasificado = value.IdMaterialClasificado;
+            oMaterialTrit.VolumenTInutil = value.VolumenTInutil;
 
             oMaterialTrit.Update();
 

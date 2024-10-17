@@ -22,6 +22,14 @@ import LavadoMaterial from "./pages/lavadoMaterial/LavadoMaterial";
 import ClasificacionDeMaterial from "./pages/clasificacionDeMaterial/ClasificacionDeMaterial";
 import Maquinarias from "./pages/maquinaria/Maquinaria";
 import Tolva from "./pages/tolva/Tolva";
+import GastoMaquinaria from "./pages/gastos/gastosMaquinaria/GastoMaquinaria";
+import GastoVehiculos from "./pages/gastos/gastoVehiculos/GastoVehiculos";
+import store from './app/store';
+import { Provider } from 'react-redux'
+import Reportes from './pages/reportes/Reportes'
+import Reparaciones from "./pages/reparaciones/Reparaciones";
+
+
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
   { path: "/login", element: <Login />, protected: false },
@@ -37,6 +45,8 @@ const routesConfig = [
   { path: "/volumen", element: <Volumen />, protected: true },
   { path: "/areas", element: <Areas />, protected: true },
   { path: "/empresa", element: <EmpresaDonante />, protected: true },
+  { path: "/reportes", element: <Reportes />, protected: true },
+
   {
     path: "/entrada/material",
     element: <EntradasDeMaterial />,
@@ -49,13 +59,19 @@ const routesConfig = [
   },
   { path: "/maquinaria", element: <Maquinarias />, protected: true },
   { path: "/tolva", element: <Tolva />, protected: true },
+  { path: "/reparaciones", element: <Reparaciones/>, protected: true},
 
   { path: "/lavado", element: <LavadoMaterial />, protected: true },
   { path: "/tablas", element: <TablasProducidas />, protected: true },
+  { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true },
+  { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true },
+
 ];
 
 function App() {
   return (
+      <Provider store={store}>
+        
     <AuthProvider>
       <Router>
         <div className="bg-slate-900 flex flex-col min-h-screen">
@@ -77,6 +93,7 @@ function App() {
         </div>
       </Router>
     </AuthProvider>
+      </Provider> 
   );
 }
 

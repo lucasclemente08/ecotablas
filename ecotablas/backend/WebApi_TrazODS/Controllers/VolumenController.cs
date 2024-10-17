@@ -31,8 +31,11 @@ namespace WebApi_TrazODS.Controllers
                 VolumenUtil = volumenClasificado?.VolumenUtil ?? 0,
                 VolumenInutil = volumenClasificado?.VolumenInutil ?? 0,
                 VolumenProcesado = volumenProcesado?.VolumenProcesado ?? 0,
+                VolumenPInutil = volumenProcesado?.VolumenPInutil ?? 0,
                 VolumenTriturado = volumenTriturado?.VolumenTriturado ?? 0,
-                VolumenIngresoMaterial = volumenIngresoMaterial?.VolumenIngresoMaterial ?? 0
+                VolumenTInutil = volumenProcesado?.VolumenTInutil ?? 0,
+                VolumenIngresoMaterial = volumenIngresoMaterial?.VolumenIngresoMaterial ?? 0,
+                VolumenMInutil = volumenProcesado?.VolumenMInutil ?? 0,
             };
 
             return resultado;

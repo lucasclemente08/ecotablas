@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import builderApiUrl from "../../utils/BuilderApi";
 
 const DeleteButton = ({ id, endpoint, updateList }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,6 +13,8 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+
 
   const handleDelete = () => {
     axios

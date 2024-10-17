@@ -23,6 +23,7 @@ namespace WebApi_TrazODS.Models
         public int VolumenP { get; set; }
         public string FechaIngresoP { get; set; }
         public int IdIngresoMaterial { get; set; }
+        public int? VolumenPInutil { get; set; }
 
         #endregion
 
@@ -108,6 +109,7 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@VolumenP", SqlDbType.Int).Value = VolumenP;
             sqlCom.Parameters.Add("@FechaIngresoP", SqlDbType.NVarChar).Value = FechaIngresoP;
             sqlCom.Parameters.Add("@IdIngresoMaterial", SqlDbType.Int).Value = IdIngresoMaterial;
+            sqlCom.Parameters.Add("@VolumenPInutil", SqlDbType.Int).Value = VolumenPInutil;
 
             sqlCnn.Open();
 
@@ -141,6 +143,7 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@VolumenP", SqlDbType.Int).Value = VolumenP;
             sqlCom.Parameters.Add("@FechaIngresoP", SqlDbType.NVarChar).Value = FechaIngresoP;
             sqlCom.Parameters.Add("@IdIngresoMaterial", SqlDbType.Int).Value = IdIngresoMaterial;
+            sqlCom.Parameters.Add("@VolumenPInutil", SqlDbType.Int).Value = VolumenPInutil;
 
 
             sqlCnn.Open();

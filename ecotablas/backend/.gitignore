@@ -37,3 +37,5 @@ msbuild.wrn
 # Ignorar paquetes solo en el backend
 
 *packages/
+
+.env

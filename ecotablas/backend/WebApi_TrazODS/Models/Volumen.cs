@@ -11,8 +11,11 @@ namespace WebApi_TrazODS.Models
         public int? VolumenUtil { get; set; }
         public int? VolumenInutil { get; set; }
         public int? VolumenProcesado { get; set; }
+        public int? VolumenPInutil { get; set; }
         public int? VolumenTriturado { get; set; }
+        public int? VolumenTInutil { get; set; }
         public int? VolumenIngresoMaterial { get; set; }
+        public int? VolumenMInutil { get; set; }
 
         // Volúmenes de Material Clasificado sin filtro de fecha
         public DataTable SelectVolumenesClasificado(DateTime? fechaInicio = null, DateTime? fechaFin = null)
@@ -47,7 +50,7 @@ namespace WebApi_TrazODS.Models
         // Volúmenes de Material Procesado con filtro por fecha
         public DataTable SelectVolumenesProcesado(DateTime? fechaInicio = null, DateTime? fechaFin = null)
         {
-            string sqlQuery = "SELECT SUM(VolumenP) AS VolumenProcesado FROM MaterialProcesado";
+            string sqlQuery = "SELECT SUM(VolumenP) AS VolumenProcesado, SUM(VolumenPInutil) AS VolumenPInutil FROM MaterialProcesado";
 
             if (fechaInicio.HasValue && fechaFin.HasValue)
             {
@@ -77,7 +80,7 @@ namespace WebApi_TrazODS.Models
         // Volúmenes de Material Triturado con filtro por fecha
         public DataTable SelectVolumenesTriturado(DateTime? fechaInicio = null, DateTime? fechaFin = null)
         {
-            string sqlQuery = "SELECT SUM(VolumenT) AS VolumenTriturado FROM MaterialTriturado";
+            string sqlQuery = "SELECT SUM(VolumenT) AS VolumenTriturado, SUM(VolumenTInutil) AS VolumenTInutil FROM MaterialTriturado";
 
             if (fechaInicio.HasValue && fechaFin.HasValue)
             {
@@ -107,7 +110,7 @@ namespace WebApi_TrazODS.Models
         // Volúmenes de Ingreso Material con filtro por fecha
         public DataTable SelectVolumenesIngresoMaterial(DateTime? fechaInicio = null, DateTime? fechaFin = null)
         {
-            string sqlQuery = "SELECT SUM(VolumenM) AS VolumenIngresoMaterial FROM IngresoMaterial";
+            string sqlQuery = "SELECT SUM(VolumenM) AS VolumenIngresoMaterial, SUM(VolumenMInutil) AS VolumenMInutil FROM IngresoMaterial";
 
             if (fechaInicio.HasValue && fechaFin.HasValue)
             {

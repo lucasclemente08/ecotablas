@@ -40,9 +40,9 @@ const PdfGenerator = ({ columns, data, title }) => {
   return (
     <button
       onClick={GenerarPDF}
-      className=" m-2  bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      className=" m-2 bg-blue-500 hover:bg-blue-700 mb-5 text-white font-bold p-2 rounded"
     >
-      <div className="flex content-center justify-between">
+      <div className="flex items-center">
         Generar PDF <FaFilePdf className="m-1" />
       </div>
     </button>

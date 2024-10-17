@@ -55,6 +55,7 @@ namespace WebApi_TrazODS.Controllers
             oMaterialPros.VolumenP = value.VolumenP;
             oMaterialPros.FechaIngresoP = value.FechaIngresoP;
             oMaterialPros.IdIngresoMaterial = value.IdIngresoMaterial;
+            oMaterialPros.VolumenPInutil = value.VolumenPInutil;
 
             oMaterialPros.Insert();
         }
@@ -70,6 +71,7 @@ namespace WebApi_TrazODS.Controllers
             oMaterialPros.VolumenP = value.VolumenP;
             oMaterialPros.FechaIngresoP = value.FechaIngresoP;
             oMaterialPros.IdIngresoMaterial = value.IdIngresoMaterial;
+            oMaterialPros.VolumenPInutil = value.VolumenPInutil;
 
             oMaterialPros.Update();
 
