@@ -13,7 +13,11 @@ import {
 ChartJS.register(Title, Tooltip, Legend, ArcElement, Filler);
 
 const VolumenIngresadoChart = ({ dateRange }) => {
-  const [volumenIngresado, setVolumenIngresado] = useState(0);
+  const [volumenData, setVolumenData] = useState({
+    VolumenIngrsoMaterial: 0,
+    VolumenMInutil: 0,
+  });
+  const [activeSegment, setActiveSegment] = useState(null);
 
   useEffect(() => {
     const today = new Date().toISOString().split("T")[0];
@@ -32,23 +36,40 @@ const VolumenIngresadoChart = ({ dateRange }) => {
         },
       )
       .then((response) => {
-        setVolumenIngresado(response.data.VolumenIngresoMaterial || 0);
+        const data = response.data;
+        setVolumenData(data);
       })
       .catch((error) => {
         console.error("Hubo un error al obtener los datos:", error);
       });
   }, [dateRange]);
+
+  const totalVolumen = volumenData.VolumenIngresoMaterial + volumenData.VolumenMInutil;
+
   const chartData = {
-    labels: ["Volumen Ingresado"],
+    labels: ["Volumen Útil", "Volumen No Útil"],
     datasets: [
       {
         label: "Volumen",
-        data: [volumenIngresado],
-        backgroundColor: ["#4CAF50"],
+        data:
+          activeSegment === "util"
+            ? [volumenData.VolumenIngresoMaterial, 0]
+            : activeSegment === "inutil"
+              ? [0, volumenData.VolumenMInutil]
+              : [volumenData.VolumenIngresoMaterial, volumenData.VolumenMInutil],
+        backgroundColor: ["#4CAF50", "#F44336"],
+        borderColor: "#fff",
         borderWidth: 1,
       },
     ],
   };
+
+  const displayedText =
+    activeSegment === "util"
+      ? `${volumenData.VolumenIngresoMaterial} kg`
+      : activeSegment === "inutil"
+        ? `${volumenData.VolumenMInutil} kg`
+        : `${totalVolumen} kg`;
 
   const options = {
     plugins: {
@@ -61,11 +82,20 @@ const VolumenIngresadoChart = ({ dateRange }) => {
         },
       },
       legend: {
-        display: false,
+        position: "top",
+        onClick: (e, legendItem, legend) => {
+          const index = legendItem.index;
+
+          if (index === 0) {
+            setActiveSegment(activeSegment === "util" ? null : "util");
+          } else if (index === 1) {
+            setActiveSegment(activeSegment === "inutil" ? null : "inutil");
+          }
+        },
       },
       title: {
         display: true,
-        text: `Total Volumen Ingresado: ${volumenIngresado} kg`,
+        text: displayedText,
         position: "top",
         font: {
           size: 14,
@@ -88,7 +118,7 @@ const VolumenIngresadoChart = ({ dateRange }) => {
       <div style={{ position: "relative", width: "300px", height: "300px" }}>
         <Doughnut data={chartData} options={options} />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white font-bold">
-          {volumenIngresado} kg
+          {displayedText}
         </div>
       </div>
     </div>

@@ -13,41 +13,63 @@ import {
 ChartJS.register(Title, Tooltip, Legend, ArcElement, Filler);
 
 const VolumenProcesadoChart = ({ dateRange }) => {
-  const [volumenProcesado, setVolumenProcesado] = useState(0);
+  const [volumenData, setVolumenData] = useState({
+    VolumenProcesado: 0,
+    VolumenPInutil: 0,
+  });
+  const [activeSegment, setActiveSegment] = useState(null);
 
   useEffect(() => {
-    if (!dateRange.startDate || !dateRange.endDate) return;
+    const today = new Date().toISOString().split("T")[0];
+
+    const startDate = dateRange?.startDate || today;
+    const endDate = dateRange?.endDate || today;
 
     axios
       .get(
         "http://www.trazabilidadodsapi.somee.com/api/Volumen/ObtenerVolumen",
         {
           params: {
-            fechaInicio: dateRange.startDate,
-            fechaFin: dateRange.endDate,
+            fechaInicio: startDate,
+            fechaFin: endDate,
           },
         },
       )
       .then((response) => {
-        setVolumenProcesado(response.data.VolumenProcesado || 0);
+        const data = response.data;
+        setVolumenData(data);
       })
       .catch((error) => {
         console.error("Hubo un error al obtener los datos:", error);
       });
   }, [dateRange]);
 
+  const totalVolumen = volumenData.VolumenProcesado + volumenData.VolumenPInutil;
+
   const chartData = {
-    labels: ["Volumen Procesado"],
+    labels: ["Volumen Útil", "Volumen No Útil"],
     datasets: [
       {
         label: "Volumen",
-        data: [volumenProcesado],
-        backgroundColor: ["#4CAF50"],
+        data:
+          activeSegment === "util"
+            ? [volumenData.VolumenProcesado, 0]
+            : activeSegment === "inutil"
+              ? [0, volumenData.VolumenPInutil]
+              : [volumenData.VolumenProcesado, volumenData.VolumenPInutil],
+        backgroundColor: ["#4CAF50", "#F44336"],
         borderColor: "#fff",
         borderWidth: 1,
       },
     ],
   };
+
+  const displayedText =
+    activeSegment === "util"
+      ? `${volumenData.VolumenProcesado} kg`
+      : activeSegment === "inutil"
+        ? `${volumenData.VolumenPInutil} kg`
+        : `${totalVolumen} kg`;
 
   const options = {
     plugins: {
@@ -60,11 +82,20 @@ const VolumenProcesadoChart = ({ dateRange }) => {
         },
       },
       legend: {
-        display: false,
+        position: "top",
+        onClick: (e, legendItem, legend) => {
+          const index = legendItem.index;
+
+          if (index === 0) {
+            setActiveSegment(activeSegment === "util" ? null : "util");
+          } else if (index === 1) {
+            setActiveSegment(activeSegment === "inutil" ? null : "inutil");
+          }
+        },
       },
       title: {
         display: true,
-        text: `Total Volumen Procesado: ${volumenProcesado} kg`,
+        text: displayedText,
         position: "top",
         font: {
           size: 14,
@@ -87,7 +118,7 @@ const VolumenProcesadoChart = ({ dateRange }) => {
       <div style={{ position: "relative", width: "300px", height: "300px" }}>
         <Doughnut data={chartData} options={options} />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white font-bold">
-          {volumenProcesado} kg
+          {displayedText}
         </div>
       </div>
     </div>

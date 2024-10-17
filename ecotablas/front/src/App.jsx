@@ -27,6 +27,7 @@ import GastoVehiculos from "./pages/gastos/gastoVehiculos/GastoVehiculos";
 import store from './app/store';
 import { Provider } from 'react-redux'
 import Reportes from './pages/reportes/Reportes'
+import Reparaciones from "./pages/reparaciones/Reparaciones";
 
 
 const routesConfig = [
@@ -58,6 +59,7 @@ const routesConfig = [
   },
   { path: "/maquinaria", element: <Maquinarias />, protected: true },
   { path: "/tolva", element: <Tolva />, protected: true },
+  { path: "/reparaciones", element: <Reparaciones/>, protected: true},
 
   { path: "/lavado", element: <LavadoMaterial />, protected: true },
   { path: "/tablas", element: <TablasProducidas />, protected: true },
