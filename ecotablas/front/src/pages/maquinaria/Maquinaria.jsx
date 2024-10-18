@@ -15,6 +15,7 @@ import {
   editMaquinarias,
   deleteMaquinarias,
 } from "../../api/MaquinariasAPI";
+import { addReparacion } from "../../api/ReparacionesAPI";
 
 const Maquinaria = () => {
   const [maquinarias, setMaquinarias] = useState([]);
@@ -24,6 +25,8 @@ const Maquinaria = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [maquinariaId, setMaquinariaId] = useState(null);
   const [modalEdit, setModalEdit] = useState(false);
+  const [modalReparacion, setModalReparacion] = useState(false);
+  
   const [mensaje, setMensaje] = useState("");
 
   const [formValues, setFormValues] = useState({
@@ -32,6 +35,15 @@ const Maquinaria = () => {
     Modelo: "",
     IdEstado: "",
     fecha_adquisicion: "",
+  });
+
+  const [reparacionValues, setReparacionValues] = useState({
+    IdMaquinaria: "",
+    IdVehiculo: "",
+    Detalle: "",
+    FechaInicio: "",
+    IdEstadoReparacion: "",
+    Costo: "",
   });
 
   const BASE_URL = builderApiUrl("Maquinaria");
@@ -64,6 +76,12 @@ const Maquinaria = () => {
     setModalAbierto(true);
   };
   const cerrarModal = () => setModalAbierto(false);
+  const abrirModalReparacion = (id) => {
+    setMaquinariaId(id);
+    setReparacionValues({ ...reparacionValues, IdMaquinaria: id });
+    setModalReparacion(true);
+  };
+  const cerrarModalReparacion = () => setModalReparacion(false);
 
   const fetchMaquinarias = async () => {
     setLoading(true);
@@ -142,6 +160,45 @@ const Maquinaria = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const validateReparacionForm = () => {
+    let isValid = true;
+    if (!reparacionValues.Detalle) {
+      setMensaje("El detalle es obligatorio.");
+      isValid = false;
+    } else if (!reparacionValues.FechaInicio) {
+      setMensaje("La fecha de inicio es obligatoria.");
+      isValid = false;
+    } else if (!reparacionValues.IdEstadoReparacion) {
+      setMensaje("El estado de la reparación es obligatorio.");
+      isValid = false;
+    } else if (!reparacionValues.Costo) {
+      setMensaje("El costo es obligatorio.");
+      isValid = false;
+    }
+    return isValid;
+  };
+
+  const handleSubmitReparacion = async () => {
+    if (!validateReparacionForm()) return;
+    try {
+      await addReparacion(reparacionValues);
+      setMensaje("Reparación agregada exitosamente");
+      setModalReparacion(false);
+      fetchMaquinarias(); // Refrescar la lista para mostrar cambios
+    } catch (error) {
+      setMensaje("Error al agregar la reparación.");
+      console.error("Error al agregar la reparación:", error);
+    }
+  };
+
+  const handleChangeReparacion = (e) => {
+    const { name, value } = e.target;
+    setReparacionValues((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -259,6 +316,23 @@ useEffect(() => {
               cerrarModalEdit={cerrarModalEdit}
             />
           )}
+          
+          {modalReparacion && (
+            <AddModal
+              title="Agregar Reparación"
+              fields={[
+                { name: "IdVehiculo", label: "Vehículo", type: "text", placeholder: "ID Vehículo" },
+                { name: "Detalle", label: "Detalle", type: "text", placeholder: "Detalle *" },
+                { name: "FechaInicio", label: "Fecha de Inicio", type: "date", placeholder: "Fecha *" },
+                { name: "IdEstadoReparacion", label: "Estado", type: "text", placeholder: "Estado *" },
+                { name: "Costo", label: "Costo", type: "number", placeholder: "Costo *" }
+              ]}
+              handleChange={handleChangeReparacion}
+              handleSubmit={handleSubmitReparacion}
+              cerrarModal={cerrarModalReparacion}
+              values={reparacionValues}
+            />
+          )}
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
               <LoadingTable loading={loading} />
@@ -279,6 +353,12 @@ useEffect(() => {
                         className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       >
                         Modificar
+                      </button>
+                      <button
+                        onClick={() => abrirModalReparacion(maquinaria.Id)}
+                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        Agregar Reparación
                       </button>
                       <DeleteButton
                         id={maquinaria.Id}
