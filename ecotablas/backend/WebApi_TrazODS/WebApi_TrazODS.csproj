@@ -274,6 +274,7 @@
     <Compile Include="Models\Vehiculos.cs" />
     <Compile Include="Models\Volumen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="db.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />

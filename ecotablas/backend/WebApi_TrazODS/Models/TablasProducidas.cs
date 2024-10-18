@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-
+using System.Configuration;
 namespace WebApi_TrazODS.Models
 {
     public class Reportes
@@ -12,7 +12,8 @@ namespace WebApi_TrazODS.Models
         // Constructor que obtiene la cadena de conexión desde una variable de entorno
         public Reportes()
         {
-            connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+            connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
         }
         #endregion
 

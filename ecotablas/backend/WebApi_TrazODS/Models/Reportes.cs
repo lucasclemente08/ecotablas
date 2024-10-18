@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace WebApi_TrazODS.Models
 {
@@ -9,10 +10,11 @@ namespace WebApi_TrazODS.Models
         #region Atributos
         private readonly string connectionString;
 
-        // Constructor que obtiene la cadena de conexión desde una variable de entorno
+     
         public TablasProducidas()
         {
-            connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+            connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
         }
         #endregion
 
