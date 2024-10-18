@@ -232,6 +232,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AreaTrabajoController.cs" />
     <Compile Include="Controllers\EmpleadosController.cs" />
+    <Compile Include="Controllers\EmpresaDonanteController - Copia.cs" />
     <Compile Include="Controllers\EstadosMaquinariasController.cs" />
     <Compile Include="Controllers\IngresoMatController.cs" />
     <Compile Include="Controllers\LocalidadesController.cs" />
@@ -240,7 +241,7 @@
     <Compile Include="Controllers\MaterialProsController.cs" />
     <Compile Include="Controllers\MaterialTritController.cs" />
     <Compile Include="Controllers\ReparacionesController.cs" />
-    <Compile Include="Controllers\EmpresaDonanteController.cs" />
+    <Compile Include="Controllers\GastoVehiculos.cs" />
     <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\TablaProducidasController.cs" />
@@ -255,6 +256,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AreaTrabajo.cs" />
+    <Compile Include="Models\GastoVehiculos.cs" />
     <Compile Include="Models\EmpresasDonante.cs" />
     <Compile Include="Models\TablasProducidas.cs" />
     <Compile Include="Models\Reportes.cs" />

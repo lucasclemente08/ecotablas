@@ -7,11 +7,12 @@ import LoadingTable from '../../../components/LoadingTable';
 import AddButton from '../../../components/buttons/addButton';
 import PdfGenerator from '../../../components/buttons/PdfGenerator';
 import { useEffect } from 'react';
-import DeleteButton from '../../../components/buttons/deleteButton';
+import DeleteButton from '../../../components/buttons/DeleteButton';
 import axios from 'axios';
 import DataView from '../../../components/buttons/DataView';
 import { FaChartLine } from "react-icons/fa";
 import { FaChartPie } from "react-icons/fa";
+import builderApiUrl from '../../../utils/BuilderApi';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
 
@@ -24,6 +25,8 @@ const GastoVehiculos = () => {
   const [dataV, setDataV] = useState([]);
   const [dataView, setDataview] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [trucks,setTrucks]=useState([])
+
 
   const abrirModal = () => {
     setModalAbierto(true);
@@ -108,33 +111,27 @@ const GastoVehiculos = () => {
 
   const data = [
     {
-      tipoGasto: 'Combustible',
-      tipoComprobante: 'Factura',
-      comprobante: '12345',
-      proveedor: 'YPF',
-      monto: '1200',
-      fecha: '2023-01-15',
-      descripcion: 'Carga de combustible en estación YPF',
+      "tipoGasto": "Seguro",
+      "tipoComprobante": "Recibo",
+      "id_vehiculo": 1,
+      "comprobante": "987654",
+      "proveedor": "Seguros Rurales",
+      "monto": "1200",
+      "fecha": "2023-09-22",
+      "descripcion": "Pago anual del seguro de maquinaria"
     },
     {
-      tipoGasto: 'Mantenimiento',
-      tipoComprobante: 'Factura',
-      comprobante: '23456',
-      proveedor: 'Taller Mecánico',
-      monto: '800',
-      fecha: '2023-02-10',
-      descripcion: 'Cambio de aceite y filtros',
+      "tipoGasto": "Combustible",
+      "tipoComprobante": "Factura",
+      "id_vehiculo": 2,
+      "comprobante": "345678",
+      "proveedor": "YPF",
+      "monto": "500",
+      "fecha": "2023-10-01",
+      "descripcion": "Carga de combustible para tractor"
     },
-    {
-      tipoGasto: 'Seguro',
-      tipoComprobante: 'Recibo',
-      comprobante: '34567',
-      proveedor: 'La Caja Seguros',
-      monto: '400',
-      fecha: '2023-03-22',
-      descripcion: 'Pago mensual de seguro vehicular',
-    },
-  ];
+  ]
+  
 
   const OpenDataview = () => {
     setDataview(true);
@@ -155,15 +152,28 @@ const GastoVehiculos = () => {
       });
   };
 
+  const URLTrucks=builderApiUrl("Vehiculos/ListarTodo")
+const fetchTrucks=()=>{
+  axios.get(URLTrucks).then((res)=>{
+    setTrucks(res.data);
+  })
+}
   useEffect(() => {
+    fetchTrucks()
     fetchMaterials();
   }, []);
+  const GetIdVehiculos = (id) => {
+    const vehicle = trucks.find((vehicle) => vehicle.IdVehiculo === id);
+    return vehicle ? `${vehicle.Modelo} (${vehicle.Tipo})` : "Vehículo no disponible";
+  };
+  
 
   const columns = [
     { header: 'Tipo de Gasto', dataKey: 'tipoGasto' },
     { header: 'tipo de comprobante', dataKey: 'tipoComprobante' },
     { header: 'Comprobante', dataKey: 'comprobante' },
     { header: 'Proveedor', dataKey: 'proveedor' },
+    { header: 'Vehicúlo', dataKey: 'vehiculo' },
     { header: 'Monto ($)', dataKey: 'monto' },
     { header: 'Fecha', dataKey: 'fecha' },
     { header: 'Descripción', dataKey: 'descripcion' },
@@ -173,12 +183,15 @@ const GastoVehiculos = () => {
     'Tipo de comprobante',
     'Comprobante',
     'Tipo de gasto',
+    'vehicúlo',
     'Proveedor',
     'Monto ($)',
     'Fecha',
     'Descripción',
     'Acciones',
   ];
+
+  
 
   return (
     <SectionLayout title="Gastos de Vehículos">
@@ -229,6 +242,8 @@ const GastoVehiculos = () => {
                   <td className="border-b py-3 px-4">{item.tipoGasto}</td>
                   <td className="border-b py-3 px-4">{item.tipoComprobante}</td>
                   <td className="border-b py-3 px-4">{item.tipoGasto}</td>
+                  <td className="border-b py-3 px-4">{GetIdVehiculos(item.id_vehiculo)}</td>
+
                   <td className="border-b py-3 px-4">{item.proveedor}</td>
                   <td className="border-b py-3 px-4">{item.monto}</td>
                   <td className="border-b py-3 px-4">{item.fecha}</td>
