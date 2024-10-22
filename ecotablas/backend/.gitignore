@@ -39,3 +39,7 @@ msbuild.wrn
 *packages/
 
 .env
+db.config
+
+.env
+db.config
