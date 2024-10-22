@@ -120,7 +120,7 @@ const dimensionesOptions = [
       name: "Dimensiones",
       label: "Dimensiones",
       type: "select",
-      options: dimensionesOptions, // Opciones de dimensiones
+      options: dimensionesOptions, 
     },
     { name: "Peso", label: "Peso (kgs)", type: "number" },
     // { name: "CodigoIdentificacion", label: "Código Identificación" },
@@ -140,16 +140,22 @@ const dimensionesOptions = [
       ) : (
         <table className="min-w-full bg-white rounded-lg shadow-md">
           <TablaHead titles={titles} />
-          <tbody>
-            {data.map((item) => (
-              <tr key={item.ID_Tabla} className="hover:bg-gray-100">
-                <td className="border-b py-3 px-4">{item.FechaProduccion.slice(0, 10)}</td>
-              <td className="border-b py-3 px-4">{item.Dimensiones}</td>
+          <tbody>{data && data.length > 0 ? (
+  data.map((item) => (
+    <tr key={item.ID_Tabla} className="hover:bg-gray-100">
+      <td className="border-b py-3 px-4">{item.FechaProduccion.slice(0, 10)}</td>
+      <td className="border-b py-3 px-4">{item.Dimensiones}</td>
+      <td className="border-b py-3 px-4">{item.Peso} kgs</td>
+      <td className="border-b py-3 px-4">{item.CodigoIdentificacion}</td>
+    </tr>
+  ))
+) : (
+  <tr>
+    <td colSpan="4" className="border-b py-3 px-4 text-center">No hay tablas cargadas</td>
+  </tr>
+)}
 
-                <td className="border-b py-3 px-4">{item.Peso} kgs</td>
-                <td className="border-b py-3 px-4">{item.CodigoIdentificacion}</td>
-              </tr>
-            ))}
+          
           </tbody>
         </table>
       )}

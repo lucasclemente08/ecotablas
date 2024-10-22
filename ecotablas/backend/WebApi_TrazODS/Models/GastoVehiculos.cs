@@ -5,13 +5,12 @@ using System.Configuration;
 
 namespace WebApi_TrazODS.Models
 {
-    public class GastoVehiculo
+    public class GastoVehiculos
     {
         #region Atributos
         private readonly string connectionString;
 
-        // Constructor que obtiene la cadena de conexión desde una variable de entorno
-        public GastoVehiculo()
+        public GastoVehiculos()
         {
             connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
         }
@@ -61,7 +60,7 @@ namespace WebApi_TrazODS.Models
 
         public DataTable SelectById(int id)
         {
-            string sqlSentencia = "SP_ObtenerGastoVehiculoPorId"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "GetGastoVehiculoById"; // Nombre del procedimiento almacenado
             DataTable dataTable = new DataTable();
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
@@ -89,9 +88,9 @@ namespace WebApi_TrazODS.Models
             return dataTable;
         }
 
-        public void Insert(GastoVehiculo nuevoGasto)
+        public void Insert(GastoVehiculos nuevoGasto)
         {
-            string sqlSentencia = "SP_InsertarGastoVehiculo"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "InsertGastoVehiculo"; // Nombre del procedimiento almacenado
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
@@ -122,9 +121,10 @@ namespace WebApi_TrazODS.Models
             }
         }
 
-        public void Update(GastoVehiculo gastoActualizado)
+
+        public void Update(GastoVehiculos gastoActualizado)
         {
-            string sqlSentencia = "SP_ActualizarGastoVehiculo"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "UpdateGastoVehiculo"; // Nombre del procedimiento almacenado
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
@@ -158,7 +158,7 @@ namespace WebApi_TrazODS.Models
 
         public void Delete(int id)
         {
-            string sqlSentencia = "SP_EliminarGastoVehiculo"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "DeleteGastoVehiculo"; // Nombre del procedimiento almacenado
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
