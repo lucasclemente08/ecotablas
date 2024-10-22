@@ -185,9 +185,21 @@ const Maquinaria = () => {
 
   const handleSubmitReparacion = async () => {
     if (!validateReparacionForm()) return;
+  
     try {
+      // Primero, agrega la reparación
       await addReparacion(reparacionValues);
       setMensaje("Reparación agregada exitosamente");
+  
+      // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
+      const maquinariaActualizada = {
+        ...maquinarias.find((m) => m.Id === maquinariaId),
+        IdEstado: 3, // Establecer el estado a 3 (en reparación)
+      };
+  
+      await editMaquinarias(maquinariaId, maquinariaActualizada);
+      setMensaje("Estado de maquinaria actualizado a 'En Reparación'");
+  
       setModalReparacion(false);
       fetchMaquinarias(); // Refrescar la lista para mostrar cambios
     } catch (error) {
@@ -276,6 +288,18 @@ useEffect(() => {
     stateMaquinaria();
   }, []);
 
+  const handleChangeState = async (maquinaria) => {
+    const nuevoEstado = maquinaria.IdEstado === 1 ? 2 : 1; // Cambiar entre 1 y 2
+    try {
+      await editMaquinarias(maquinaria.Id, { ...maquinaria, IdEstado: nuevoEstado });
+      setMensaje("Estado cambiado exitosamente");
+      await fetchMaquinarias(); // Actualizar la lista
+    } catch (error) {
+      setMensaje("Error al cambiar el estado de la maquinaria.");
+      console.error("Error al cambiar el estado:", error);
+    }
+  };
+
   const getNombreEstado = (id) => {
     const estado = EstadoMaquinarias.find((estado) => estado.Id === id);
     return estado ? estado.Nombre : "Estado no disponible";
@@ -321,7 +345,6 @@ useEffect(() => {
             <AddModal
               title="Agregar Reparación"
               fields={[
-                { name: "IdVehiculo", label: "Vehículo", type: "text", placeholder: "ID Vehículo" },
                 { name: "Detalle", label: "Detalle", type: "text", placeholder: "Detalle *" },
                 { name: "FechaInicio", label: "Fecha de Inicio", type: "date", placeholder: "Fecha *" },
                 { name: "IdEstadoReparacion", label: "Estado", type: "text", placeholder: "Estado *" },
@@ -348,18 +371,36 @@ useEffect(() => {
                     </td>
                     <td className="border-b py-2 px-4">{maquinaria.fecha_adquisicion}</td>
                     <td className="border-b py-2 px-4 flex justify-center">
+
+                    {maquinaria.IdEstado === 3? (
+                        <button
+                          className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700"
+                        >
+                          Ver Reparacion
+                        </button>
+                      ) : null}
                       <button
                         onClick={() => abrirModalEdit(maquinaria)}
                         className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       >
                         Modificar
                       </button>
+                      {maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2 ? (
                       <button
                         onClick={() => abrirModalReparacion(maquinaria.Id)}
                         className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       >
                         Agregar Reparación
                       </button>
+                      ) : null}
+                      {maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2 ? (
+                        <button
+                          onClick={() => handleChangeState(maquinaria)}
+                          className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700"
+                        >
+                          Cambiar Estado
+                        </button>
+                      ) : null}
                       <DeleteButton
                         id={maquinaria.Id}
                         endpoint={`${BASE_URL}/Borrar`}

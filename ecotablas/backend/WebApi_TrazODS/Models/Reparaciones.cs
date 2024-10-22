@@ -85,6 +85,32 @@ namespace WebApi_TrazODS.Models
                 return ds.Tables[0];
 
             }
+            public DataTable SelectIdMaquinaria()
+            {
+                string sqlSentencia = "SP_GetReparacionesPorMaquinaria";
+
+
+                SqlConnection sqlCnn = new SqlConnection();
+                sqlCnn.ConnectionString = conectionString;
+
+
+                sqlCnn.Open();
+
+                SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+                sqlCom.CommandType = CommandType.StoredProcedure;
+                sqlCom.Parameters.Add("@IdMaquinaria", SqlDbType.Int).Value = IdMaquinaria;
+
+                DataSet ds = new DataSet();
+
+                SqlDataAdapter da = new SqlDataAdapter();
+                da.SelectCommand = sqlCom;
+                da.Fill(ds);
+
+                sqlCnn.Close();
+
+                return ds.Tables[0];
+
+            }
 
             public void Insert()
             {

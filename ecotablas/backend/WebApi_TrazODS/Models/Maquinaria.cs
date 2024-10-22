@@ -130,7 +130,7 @@ namespace WebApi_TrazODS.Models
             var res = sqlCom.ExecuteNonQuery();
             sqlCnn.Close();
         }
-        public void CambiarEstado(int id, string nuevoEstado)
+        public void CambiarEstado(int id, int nuevoEstado)
         {
             string sqlSentencia = "SP_CambiarEstadoMaquinaria";
             SqlConnection sqlCnn = new SqlConnection(conectionString);
@@ -139,7 +139,7 @@ namespace WebApi_TrazODS.Models
                 CommandType = CommandType.StoredProcedure
             };
             sqlCom.Parameters.Add("@Id", SqlDbType.Int).Value = id;
-            sqlCom.Parameters.Add("@NuevoEstado", SqlDbType.NVarChar).Value = nuevoEstado;
+            sqlCom.Parameters.Add("@NuevoEstado", SqlDbType.Int).Value = nuevoEstado;
             sqlCnn.Open();
             var res = sqlCom.ExecuteNonQuery();
             sqlCnn.Close();
