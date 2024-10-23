@@ -36,7 +36,7 @@ const LinksBar = () => {
   const machinesMenus = [
     { title: "Maquinaria", link: "/maquinaria" },
     { title: "Tolva", link: "/Tolva" },
-    { title: "Lavado de material", link: "/lavado" },
+    // { title: "Lavado de material", link: "/lavado" },
     { title: "Plásticos", link: "/material" },
   ];
   const ExpensesMenus = [
