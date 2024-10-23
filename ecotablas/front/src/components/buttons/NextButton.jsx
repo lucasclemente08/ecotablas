@@ -5,7 +5,9 @@ const NextButton = () => {
     <>
       <button
         className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-        onClick={() => console.log("Terminado button clicked")}
+        onClick={() => {
+          
+        }}
       >
         <div className="flex">
           Terminado <GrLinkNext className="m-1" />
