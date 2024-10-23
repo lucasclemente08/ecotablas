@@ -22,6 +22,7 @@ const MaterialTrit = () => {
   const [materialId, setMaterialId] = useState(null);
   const [modalEdit, setModalEdit] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [modalAbiertoNext,setModalAbiertoNext] = useState(false);
 
   const [formValues, setFormValues] = useState({
     VolumenT: "",
@@ -41,6 +42,9 @@ const MaterialTrit = () => {
 
   const cerrarModalEdit = () => setModalEdit(false);
 
+  const abrirModalNext=()=>{
+    setModalAbiertoNext(true);
+  }
   const abrirModal = () => {
     setModalAbierto(true);
   };
