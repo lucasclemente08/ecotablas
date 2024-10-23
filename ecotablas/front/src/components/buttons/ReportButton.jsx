@@ -56,10 +56,11 @@ const ReportButton = () => {
     <>
       <button
         onClick={() => setModalOpen(true)}
-        className="bg-gradient-to-r mb-1 bg-orange-400 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+        className="bg-gradient-to-r mb-1  text-white text-center font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105"
       >
         <div className="flex ">
-          Reportar un problema <IoMdAlert className="m-1" />
+          Reportar un problema 
+          <IoMdAlert className="m-1" />
         </div>
       </button>
 
