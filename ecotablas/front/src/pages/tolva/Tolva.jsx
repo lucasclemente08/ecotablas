@@ -148,7 +148,7 @@ const Tolva = () => {
             <tbody>
               {currentItems.map((item) => (
                 <tr key={item.IdTolva}>
-                  <td className="px-4 py-2">{item.HorarioInicio}</td>
+                  <td className="px-4 py-2">{item.d}</td>
                   <td className="px-4 py-2">{item.CantidadCargada}</td>
                   <td className="px-4 py-2">{item.TipoPlastico}</td>
                   <td className="px-4 py-2">{item.Proporcion}</td>
