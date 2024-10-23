@@ -233,7 +233,7 @@
     <Compile Include="Controllers\AreaTrabajoController.cs" />
     <Compile Include="Controllers\EmpleadosController.cs" />
     <Compile Include="Controllers\TolvaController.cs" />
-    <Compile Include="Controllers\EmpresaDonanteController - Copia.cs" />
+    <Compile Include="Controllers\EmpresaDonanteController.cs" />
     <Compile Include="Controllers\EstadosMaquinariasController.cs" />
     <Compile Include="Controllers\IngresoMatController.cs" />
     <Compile Include="Controllers\LocalidadesController.cs" />

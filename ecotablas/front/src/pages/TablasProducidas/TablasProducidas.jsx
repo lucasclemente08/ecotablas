@@ -1,163 +1,174 @@
 import React, { useState, useEffect } from "react";
-import Home from "../home/Home";
-import TablaHead from "../../components/Thead";
-import LoadingTable from "../../components/LoadingTable";
-import PdfGenerator from "../../components/buttons/PdfGenerator";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchTablasProducidas,
+  addTablaProducida,
+  editTablaProducida,
+  deleteTablaProducida,
+} from "../../features/tablasProducidasSlice"; 
 import SectionLayout from "../../layout/SectionLayout";
-import AddButton from "../../components/buttons/addButton";
-import axios from "axios";
-
+import AddButton from "../../components/buttons/AddButton";
+import PdfGenerator from "../../components/buttons/PdfGenerator";
+import LoadingTable from "../../components/LoadingTable";
+import TablaHead from "../../components/Thead";
+import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
-const TablasProducidas = () => {
-  const [modalAbierto, setModalAbierto] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-  const [selectedDimension, setSelectedDimension] = useState({});
+import ButtonEdit from "../../components/buttons/ButtonEdit";
+import NextButton from "../../components/buttons/NextButton";
+import ReportButton from "../../components/buttons/ReportButton";
 
+const TablasProducidas = () => {
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state) => state.tablasProducidas);
+
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [modalEdit, setModalEdit] = useState(false);
+  const [tablaId, setTablaId] = useState(null);
   const [formValues, setFormValues] = useState({
-    ID_Proceso: "1",
     FechaProduccion: "",
     Dimensiones: "",
     Peso: "",
     CodigoIdentificacion: "",
   });
 
-
-  const identificationCode=(dimensiones,peso)=>{
-
-  } 
-  // Columnas para la tabla
   const columns = [
     { header: "Fecha Producción", accessor: "FechaProduccion" },
     { header: "Dimensiones", accessor: "Dimensiones" },
     { header: "Peso (kgs)", accessor: "Peso" },
     { header: "Código Identificación", accessor: "CodigoIdentificacion" },
   ];
-  const handleDimensionChange = (id, value) => {
-    setSelectedDimension((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
-  
-  const titles = [
-    "Fecha Producción",
-    "Dimensiones",
-    "Peso (kgs)",
-    "Código Identificación",
-  ];
 
-  // Función para obtener datos de la API
-  const fetchMaterials = () => {
-    setLoading(true); // Activa el estado de carga
-    axios.get("http://localhost:61274/api/TablaProducidas/GetAll")
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      })
-      .finally(() => {
-        setLoading(false); // Desactiva el estado de carga
-      });
-  };
+  const titles = [...columns.map((col) => col.header), "Acciones"];
 
   useEffect(() => {
-    fetchMaterials();
-  }, []);
+    dispatch(fetchTablasProducidas());
+  }, [dispatch]);
 
-  // Maneja el cambio en los campos del formulario
+  const abrirModal = () => setModalAbierto(true);
+  const cerrarModal = () => setModalAbierto(false);
+
+  const abrirModalEdit = (tabla) => {
+    setTablaId(tabla.ID_Tabla);
+    setFormValues({
+      FechaProduccion: tabla.FechaProduccion,
+      Dimensiones: tabla.Dimensiones,
+      Peso: tabla.Peso,
+      CodigoIdentificacion: tabla.CodigoIdentificacion,
+    });
+    setModalEdit(true);
+  };
+  const cerrarModalEdit = () => setModalEdit(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await dispatch(addTablaProducida(formValues));
+    cerrarModal();
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    await dispatch(editTablaProducida({ id: tablaId, formValues }));
+    cerrarModalEdit();
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
+    setFormValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
-  // Maneja el envío del formulario
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    axios.post("http://localhost:61274/api/TablaProducidas/Create", formValues)
-      .then((response) => {
-        fetchMaterials(); 
-        cerrarModal(); 
-      })
-      .catch((error) => {
-        console.error("Error adding new table:", error);
-      });
-  };
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const abrirModal = () => {
-    setModalAbierto(true);
-  }
-  const cerrarModal = () => {
-    setModalAbierto(false);
-    // Restablecer el formulario
-    setFormValues({
-      ID_Proceso: "",
-      FechaProduccion: "",
-      Dimensiones: "",
-      Peso: "",
-      CodigoIdentificacion: "",
-    });
-};
-const dimensionesOptions = [
-  "1,60mts x 10cm",
-  "1,50mts x 10cm"
-];
+  const totalPeso = data.reduce(
+    (acc, tabla) => acc + parseFloat(tabla.Peso || 0),
+    0
+  );
+  const totalItems = data.length;
 
+  const dimensionesOptions = [
+    "1,60mts x 10cm",
+    "1,50mts x 10cm",
+    // ... otras opciones
+  ];
 
   return (
-    <SectionLayout title="Tablas producidas">
+    <SectionLayout title="Tablas Producidas">
       <AddButton abrirModal={abrirModal} title="Añadir tabla" />
+      <PdfGenerator columns={columns} data={data} title="Reporte de Tablas Producidas" />
+      <ReportButton />
 
-      <PdfGenerator title="Tablas producidas" data={data} columns={columns} />
-{modalAbierto && 
-  <AddModalWithSelect
-  title="Agregar Tabla Producida"
-  fields={[
-    // { name: "ID_Proceso", label: "ID Proceso", type: "text" }, // Campo de texto
-    { name: "FechaProduccion", label: "Fecha Producción", type: "date" }, // Campo de fecha
-    {
-      name: "Dimensiones",
-      label: "Dimensiones",
-      type: "select",
-      options: dimensionesOptions, 
-    },
-    { name: "Peso", label: "Peso (kgs)", type: "number" },
-    // { name: "CodigoIdentificacion", label: "Código Identificación" },
-  ]}
-  handleChange={handleChange}
-  handleSubmit={handleSubmit}
-  cerrarModal={cerrarModal}
-  values={formValues}
-/>
+      {error && <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">Error: {error}</div>}
+      {modalAbierto && (
+        <AddModalWithSelect
+          title="Agregar Tabla Producida"
+          fields={[
+            { name: "FechaProduccion", label: "Fecha Producción", type: "date" },
+            { name: "Dimensiones", label: "Dimensiones", type: "select", options: dimensionesOptions },
+            { name: "Peso", label: "Peso (kgs)", type: "number" },
+          ]}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          cerrarModal={cerrarModal}
+          values={formValues}
+        />
+      )}
+      {modalEdit && (
+        <ButtonEdit
+          title="Editar Tabla Producida"
+          fields={[
+            { name: "Dimensiones", label: "Dimensiones", type: "select", options: dimensionesOptions },
+            { name: "Peso", label: "Peso (kgs)", type: "number" },
+          ]}
+          formValues={formValues}
+          handleChange={handleChange}
+          handleSubmit={handleEditSubmit}
+          cerrarModal={cerrarModalEdit}
+        />
+      )}
 
-
-
-}
-    
       {loading ? (
-        <LoadingTable loading={loading} />
+        <LoadingTable />
       ) : (
-        <table className="min-w-full bg-white rounded-lg shadow-md">
-          <TablaHead titles={titles} />
-          <tbody>{data && data.length > 0 ? (
-  data.map((item) => (
-    <tr key={item.ID_Tabla} className="hover:bg-gray-100">
-      <td className="border-b py-3 px-4">{item.FechaProduccion.slice(0, 10)}</td>
-      <td className="border-b py-3 px-4">{item.Dimensiones}</td>
-      <td className="border-b py-3 px-4">{item.Peso} kgs</td>
-      <td className="border-b py-3 px-4">{item.CodigoIdentificacion}</td>
-    </tr>
-  ))
-) : (
-  <tr>
-    <td colSpan="4" className="border-b py-3 px-4 text-center">No hay tablas cargadas</td>
-  </tr>
-)}
-
-          
-          </tbody>
-        </table>
+        <>
+          <table className="table-auto w-full bg-white rounded-lg shadow-lg">
+            <TablaHead titles={titles} />
+            <tbody>
+              {currentItems.map((item) => (
+                <tr key={item.ID_Tabla}>
+                  <td className="px-4 py-2">{item.FechaProduccion.slice(0, 10)}</td>
+                  <td className="px-4 py-2">{item.Dimensiones}</td>
+                  <td className="px-4 py-2">{item.Peso}</td>
+                  <td className="px-4 py-2">{item.CodigoIdentificacion}</td>
+                  <td className="px-4 py-2 flex">
+                    <NextButton />
+                    <button
+                      onClick={() => abrirModalEdit(item)}
+                      className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                      Modificar
+                    </button>
+                    <DeleteButton onClick={() => dispatch(deleteTabla(item.ID_Tabla))} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="mt-4 flex justify-center">
+            {/* Paginación */}
+          </div>
+          <div className="mt-4 text-white">
+            <p>Total Peso: {totalPeso} kg</p>
+            <p>Total de Items: {totalItems}</p>
+          </div>
+        </>
       )}
     </SectionLayout>
   );

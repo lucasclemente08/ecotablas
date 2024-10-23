@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using WebApi_TrazODS.Models;
+using Newtonsoft.Json;
 
 namespace WebApi_TrazODS.Controllers
 {
@@ -20,97 +22,64 @@ namespace WebApi_TrazODS.Controllers
 
         // GET: api/TablasProducidas
         [HttpGet]
-
-        public IHttpActionResult GetAll()
+        public List<TablasProducidas> ListarTodo()
         {
-            try
-            {
-                DataTable result = _tablasProducidas.SelectAll();
-                return Ok(result); // Retornar un 200 OK con los datos
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex); // Retornar un 500 si ocurre un error
-            }
+            DataTable dt = _tablasProducidas.SelectAll();
+
+            // Serializar DataTable a JSON y luego deserializar a lista de objetos
+            var listaJson = JsonConvert.SerializeObject(dt);
+            var lista = JsonConvert.DeserializeObject<List<TablasProducidas>>(listaJson);
+
+            return lista;
         }
 
         // GET: api/TablasProducidas/5
         [HttpGet]
-     
-        public IHttpActionResult GetById(int id)
+        public TablasProducidas ListarPorId(int id)
         {
-            try
-            {
-                DataTable result = _tablasProducidas.SelectById(id);
-                if (result.Rows.Count == 0)
-                {
-                    return NotFound(); // Retornar 404 si no se encuentra la tabla
-                }
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
+            _tablasProducidas.ID_Tabla = id;
+
+            DataTable dt = _tablasProducidas.SelectById(id);
+
+            // Serializar DataTable a JSON y luego deserializar a objeto
+            var listaJson = JsonConvert.SerializeObject(dt);
+            var obj = JsonConvert.DeserializeObject<List<TablasProducidas>>(listaJson).FirstOrDefault();
+
+            return obj;
         }
 
         // POST: api/TablasProducidas
         [HttpPost]
-        
-        public IHttpActionResult Create([FromBody] TablasProducidas nuevaTabla)
+        public void Insertar([FromBody] TablasProducidas nuevaTabla)
         {
-            if (nuevaTabla == null)
-            {
-                return BadRequest("Los datos de la tabla producida son inválidos."); // Retornar 400 si la solicitud es inválida
-            }
+            _tablasProducidas.FechaProduccion = nuevaTabla.FechaProduccion;
+            _tablasProducidas.Dimensiones = nuevaTabla.Dimensiones;
+            _tablasProducidas.Peso = nuevaTabla.Peso;
+            _tablasProducidas.CodigoIdentificacion = nuevaTabla.CodigoIdentificacion;
 
-            try
-            {
-                _tablasProducidas.Insert(nuevaTabla); // Inserta la nueva tabla producida
-                return CreatedAtRoute("DefaultApi", new { id = nuevaTabla.ID_Tabla }, nuevaTabla); // Retornar 201 con la ubicación del nuevo recurso
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
+            _tablasProducidas.Insert();
         }
 
         // PUT: api/TablasProducidas/5
         [HttpPut]
-     
-        public IHttpActionResult Update(int id, [FromBody] TablasProducidas tablaActualizada)
+        public void Modificar(int id, [FromBody] TablasProducidas tablaActualizada)
         {
-            if (tablaActualizada == null || tablaActualizada.ID_Tabla != id)
-            {
-                return BadRequest("Los datos de la tabla producida son inválidos."); // Retornar 400 si la solicitud es inválida
-            }
+            _tablasProducidas.ID_Tabla = id;
+            _tablasProducidas.FechaProduccion = tablaActualizada.FechaProduccion;
+            _tablasProducidas.Dimensiones = tablaActualizada.Dimensiones;
+            _tablasProducidas.Peso = tablaActualizada.Peso;
+            _tablasProducidas.CodigoIdentificacion = tablaActualizada.CodigoIdentificacion;
 
-            try
-            {
-                // Aquí puedes agregar lógica para verificar si la tabla existe antes de actualizar
-                _tablasProducidas.Update(tablaActualizada); // Actualiza la tabla producida
-                return StatusCode(HttpStatusCode.NoContent); // Retornar 204 si la actualización fue exitosa
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
+            _tablasProducidas.Update();
         }
 
         // DELETE: api/TablasProducidas/5
         [HttpDelete]
- 
-        public IHttpActionResult Delete(int id)
+        public void Borrar(int id)
         {
-            try
-            {
-                _tablasProducidas.Delete(id); // Elimina la tabla producida
-                return StatusCode(HttpStatusCode.NoContent); // Retornar 204 si la eliminación fue exitosa
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
+            _tablasProducidas.ID_Tabla = id;
+
+            _tablasProducidas.Delete();
         }
     }
 }

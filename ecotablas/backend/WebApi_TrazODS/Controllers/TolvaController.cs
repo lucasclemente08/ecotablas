@@ -1,128 +1,85 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Newtonsoft.Json;
 using WebApi_TrazODS.Models;
 
 namespace WebApi_TrazODS.Controllers
 {
     public class TolvaController : ApiController
     {
-        private readonly Tolva _tolva;
-
-        public TolvaController()
-        {
-            _tolva = new Tolva(); // Inicializar la clase del modelo
-        }
-
-        // GET: api/tolvas
+        // GET: api/Tolva
         [HttpGet]
-        public IHttpActionResult ListarTodo()
+        public List<Tolva> ListarTodo()
         {
-            DataTable dt = _tolva.SelectAll();
-
-            if (dt.Rows.Count == 0)
-            {
-                return NotFound(); // Si no hay tolvas, devuelve 404
-            }
-
-            var listaTolvas = new List<Tolva>();
-            foreach (DataRow row in dt.Rows)
-            {
-                listaTolvas.Add(new Tolva
-                {
-                    IdTolva = Convert.ToInt32(row["idTolva"]),
-                    IdTriturado = Convert.ToInt32(row["id_triturado"]),
-                    HorarioInicio = Convert.ToDateTime(row["horario_inicio"]),
-                    CantidadCargada = Convert.ToDecimal(row["cantidad_cargada"]),
-                    TipoPlastico = row["tipo_plastico"].ToString(),
-                    Proporcion = row["proporcion"].ToString(),
-                    Especificaciones = row["especificaciones"].ToString()
-                });
-            }
-
-            return Ok(listaTolvas); // Devuelve la lista de tolvas
+            Tolva oTolva = new Tolva();
+            DataTable dt = oTolva.SelectAll();
+            var listaJson = JsonConvert.SerializeObject(dt);
+            var lista = JsonConvert.DeserializeObject<List<Tolva>>(listaJson);
+            return lista; // Retornar la lista de tolvas
         }
 
-        // GET: api/tolvas/{id}
+        // GET: api/Tolva/{id}
         //[HttpGet]
-        //[Route("api/tolvas/{id:int}")]
-        //public IHttpActionResult ObtenerTolva(int id)
+        //public Tolva ListarPorId(int id)
         //{
-        //    DataTable dt = _tolva.SelectById(id); // Asume que tienes un método SelectById
+        //    Tolva oTolva = new Tolva();
+        //    oTolva.IdTolva = id; // Establecer el IdTolva
 
-        //    if (dt.Rows.Count == 0)
-        //    {
-        //        return NotFound(); // Si no se encuentra la tolva, devuelve 404
-        //    }
+        //    DataTable dt = oTolva.SelectId(); // Llamar al método que selecciona por ID
 
-        //    DataRow row = dt.Rows[0];
-        //    var tolva = new Tolva
-        //    {
-        //        IdTolva = Convert.ToInt32(row["idTolva"]),
-        //        IdTriturado = Convert.ToInt32(row["id_triturado"]),
-        //        HorarioInicio = Convert.ToDateTime(row["horario_inicio"]),
-        //        CantidadCargada = Convert.ToDecimal(row["cantidad_cargada"]),
-        //        TipoPlastico = row["tipo_plastico"].ToString(),
-        //        Proporcion = row["proporcion"].ToString(),
-        //        Especificaciones = row["especificaciones"].ToString()
-        //    };
+        //    var listaJson = JsonConvert.SerializeObject(dt);
+        //    var obj = JsonConvert.DeserializeObject<List<Tolva>>(listaJson).FirstOrDefault();
 
-        //    return Ok(tolva); // Devuelve la tolva encontrada
+        //    return obj; // Retornar una tolva específica por ID
         //}
 
-        // POST: api/tolvas
+        // POST: api/Tolva
         [HttpPost]
-        public IHttpActionResult CrearTolva([FromBody] Tolva nuevaTolva)
+        public void Insertar([FromBody] Tolva value)
         {
-            if (nuevaTolva == null || !ModelState.IsValid)
+            Tolva oTolva = new Tolva
             {
-                return BadRequest(ModelState); // Manejo de errores de modelo
-            }
+                IdTriturado = value.IdTriturado,
+                HorarioInicio = value.HorarioInicio,
+                CantidadCargada = value.CantidadCargada,
+                TipoPlastico = value.TipoPlastico,
+                Proporcion = value.Proporcion,
+                Especificaciones = value.Especificaciones
+            };
 
-            // Lógica para agregar la nueva tolva a la base de datos
-            _tolva.Insert(nuevaTolva);
-
-            return CreatedAtRoute("DefaultApi", new { id = nuevaTolva.IdTolva }, nuevaTolva); // Devuelve 201 Created
+            oTolva.Insert(); // Llamar al método Insertar de la clase Tolva
         }
 
-        // PUT: api/tolvas/{id}
+        // PUT: api/Tolva/{id}
         [HttpPut]
-        [Route("api/tolvas/{id:int}")]
-        public IHttpActionResult ActualizarTolva(int id, [FromBody] Tolva tolvaActualizada)
+        public void Modificar(int id, [FromBody] Tolva value)
         {
-            if (tolvaActualizada == null || !ModelState.IsValid)
+            Tolva oTolva = new Tolva
             {
-                return BadRequest(ModelState); // Manejo de errores de modelo
-            }
+                IdTolva = id,
+                IdTriturado = value.IdTriturado,
+                HorarioInicio = value.HorarioInicio,
+                CantidadCargada = value.CantidadCargada,
+                TipoPlastico = value.TipoPlastico,
+                Proporcion = value.Proporcion,
+                Especificaciones = value.Especificaciones
+            };
 
-            // Verificar si la tolva existe
-            if (!_tolva.Exists(id))
-            {
-                return NotFound(); // Si no se encuentra la tolva, devuelve 404
-            }
-
-            tolvaActualizada.IdTolva = id;
-            _tolva.Update(tolvaActualizada);
-
-            return StatusCode(HttpStatusCode.NoContent); // Devuelve 204 No Content
+            oTolva.Update(); // Llamar al método Modificar (Update)
         }
 
-        // DELETE: api/tolvas/{id}
+        // DELETE: api/Tolva/{id}
         [HttpDelete]
-        [Route("api/tolvas/{id:int}")]
-        public IHttpActionResult EliminarTolva(int id)
+        public void Borrar(int id)
         {
-            // Verificar si la tolva existe
-            if (!_tolva.Exists(id))
-            {
-                return NotFound(); // Si no se encuentra la tolva, devuelve 404
-            }
-
-            _tolva.Delete(id);
-            return StatusCode(HttpStatusCode.NoContent); // Devuelve 204 No Content
+            Tolva oTolva = new Tolva();
+      
+            oTolva.Delete(id); 
         }
     }
 }

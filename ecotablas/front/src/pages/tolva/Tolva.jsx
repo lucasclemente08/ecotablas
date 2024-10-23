@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchTolva, addTolva, editTolva, deleteTolva } from "../../features/tolvaSlice";
 import SectionLayout from "../../layout/SectionLayout";
-import AddButton from "../../components/buttons/addButton";
+import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
@@ -60,8 +60,9 @@ const Tolva = () => {
     if (!formValues.HorarioInicio || !formValues.CantidadCargada) {
       console.error("Por favor completa todos los campos requeridos");
       return;
+      console.log(formValues)
     }
-    await dispatch(addTolva(formValues)); // Asegúrate de manejar la respuesta y errores aquí
+    await dispatch(addTolva(formValues)); 
     cerrarModal();
   };
 
@@ -147,7 +148,7 @@ const Tolva = () => {
             <tbody>
               {currentItems.map((item) => (
                 <tr key={item.IdTolva}>
-                  <td className="px-4 py-2">{item.HorarioInicio.slice(0,10)}</td>
+                  <td className="px-4 py-2">{item.HorarioInicio}</td>
                   <td className="px-4 py-2">{item.CantidadCargada}</td>
                   <td className="px-4 py-2">{item.TipoPlastico}</td>
                   <td className="px-4 py-2">{item.Proporcion}</td>
@@ -161,7 +162,9 @@ const Tolva = () => {
                       Modificar
                     </button>
                     <DeleteButton
-                      onClick={() => dispatch(deleteTolva(item.IdTolva))}
+                      id={item.IdTolva}
+                      endpoint="http://localhost:61274/api/Tolva/Borrar"
+                      updateList={fetchTolva}
                     />
                   </td>
                 </tr>

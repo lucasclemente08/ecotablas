@@ -1,154 +1,185 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // Importa axios
-import Home from "../home/Home";
-import AddButton from "../../components/buttons/addButton";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchEmpresaDonante, addEmpresaDonante, editEmpresaDonante, deleteEmpresaDonante } from "../../features/empresaDonanteSlice"; // Debes crear estos thunks en tu slice
+import SectionLayout from "../../layout/SectionLayout";
+import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
+import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
-import SectionLayout from "../../layout/SectionLayout";
-import Modal from "../../components/Modal";
-
-const API_URL = "http://localhost:61274/api/EmpresasDonantes/ListarTodo"; // Reemplaza con la URL de tu API
+import AddModalWithSelect from "../../components/AddModalWithSelect";
+import ButtonEdit from "../../components/buttons/ButtonEdit";
+import NextButton from "../../components/buttons/NextButton";
+import ReportButton from "../../components/buttons/ReportButton";
 
 const EmpresaDonante = () => {
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state) => state.empresaDonante);
   const [modalAbierto, setModalAbierto] = useState(false);
-  const [empresasDonantes, setEmpresasDonantes] = useState([]);
-  const [currentEmpresa, setCurrentEmpresa] = useState(null);
+  const [modalEdit, setModalEdit] = useState(false);
+  const [empresaId, setEmpresaId] = useState(null);
+  const [formValues, setFormValues] = useState({
+    Nombre: "",
+    Direccion: "",
+    Telefono: "",
+    Email: "",
+    TipoPlastico: "unico",
+    Rubro: "",
+    Web: "",
+    CUIT: "",
+  });
+
+  const columns = [
+    { header: "Nombre", accessor: "nombre" },
+    { header: "Dirección", accessor: "direccion" },
+    { header: "Teléfono", accessor: "telefono" },
+    { header: "Email", accessor: "email" },
+    { header: "Tipo Plástico", accessor: "tipo_plastico" },
+    { header: "Rubro", accessor: "rubro" },
+    { header: "Web", accessor: "web" },
+  ];
+
+  const titles = [...columns.map((col) => col.header), "Acciones"];
 
   useEffect(() => {
-    const fetchEmpresasDonantes = async () => {
-      try {
-        const response = await axios.get(API_URL);
-        setEmpresasDonantes(response.data);
-      } catch (error) {
-        console.error("Error al cargar las empresas donantes:", error);
-      }
-    };
+    dispatch(fetchEmpresaDonante());
+  }, [dispatch]);
 
-    fetchEmpresasDonantes();
-  }, []); // Solo se ejecuta una vez al montar el componente
-
-  const abrirModal = (empresa = null) => {
-    setCurrentEmpresa(empresa);
-    setModalAbierto(true);
+  const abrirModal = () => setModalAbierto(true);
+  const cerrarModal = () => setModalAbierto(false);
+  const abrirModalEdit = (empresa) => {
+    setEmpresaId(empresa.idEmpresa);
+    setFormValues({
+      Nombre: empresa.nombre,
+      Direccion: empresa.direccion,
+      Telefono: empresa.telefono,
+      Email: empresa.email,
+      TipoPlastico: empresa.tipo_plastico,
+      Rubro: empresa.rubro,
+      Web: empresa.web,
+      CUIT: empresa.cuit,
+    });
+    setModalEdit(true);
   };
+  const cerrarModalEdit = () => setModalEdit(false);
 
-  const cerrarModal = () => {
-    setCurrentEmpresa(null);
-    setModalAbierto(false);
-  };
-
-  const handleSave = async (empresa) => {
-    if (empresa.id) {
-      // Editar empresa existente
-      try {
-        await axios.put(`${API_URL}/${empresa.id}`, empresa); // Actualiza en la API
-        setEmpresasDonantes((prev) =>
-          prev.map((e) => (e.id === empresa.id ? empresa : e))
-        );
-      } catch (error) {
-        console.error("Error al actualizar la empresa:", error);
-      }
-    } else {
-      // Añadir nueva empresa
-      try {
-        const response = await axios.post(API_URL, empresa); // Crea en la API
-        setEmpresasDonantes((prev) => [...prev, { ...empresa, id: response.data.id }]);
-      } catch (error) {
-        console.error("Error al añadir la empresa:", error);
-      }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formValues.Nombre || !formValues.Direccion || !formValues.Telefono) {
+      console.error("Por favor completa todos los campos requeridos");
+      return;
     }
+    await dispatch(addEmpresaDonante(formValues)); // Asegúrate de manejar la respuesta y errores aquí
     cerrarModal();
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`${API_URL}/${id}`); // Elimina de la API
-      setEmpresasDonantes((prev) => prev.filter((empresa) => empresa.id !== id));
-    } catch (error) {
-      console.error("Error al eliminar la empresa:", error);
-    }
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    await dispatch(editEmpresaDonante({ id: empresaId, formValues }));
+    cerrarModalEdit();
   };
 
-  const columns = [
-    { header: "Nombre", dataKey: "nombre" },
-    { header: "Dirección", dataKey: "direccion" },
-    { header: "Teléfono", dataKey: "telefono" },
-    { header: "Email", dataKey: "email" },
-    { header: "Tipo Plástico", dataKey: "tipoPlastico" },
-    { header: "Rubro", dataKey: "rubro" },
-    { header: "Donaciones Disponibles", dataKey: "donacionesDisponibles" },
-    { header: "Web", dataKey: "web" },
-    { header: "CUIT", dataKey: "cuit" },
-  ];
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
-  const titles = [
-    "Nombre",
-    "Dirección",
-    "Teléfono",
-    "Email",
-    "Tipo Plástico",
-    "Rubro",
-    // "Donaciones Disponibles",
-    "Web",
-    "Acciones",
-  ];
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <>
-      <SectionLayout title="Empresa donantes">
-        <AddButton abrirModal={() => abrirModal()} title={"Añadir empresa donante"} />
-        <PdfGenerator
-          columns={columns}
-          data={empresasDonantes}
-          title="Reporte de empresas donantes"
+    <SectionLayout title="Empresas Donantes">
+      <AddButton abrirModal={abrirModal} title="Añadir Empresa Donante" />
+      <PdfGenerator columns={columns} data={data} title="Reporte de Empresas Donantes" />
+      <ReportButton />
+
+      {error && <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">Error: {error}</div>}
+      {modalAbierto && (
+        <AddModalWithSelect 
+          title="Agregar Empresa Donante"
+          fields={[
+            { name: "Nombre", label: "Nombre", type: "text" },
+            { name: "Direccion", label: "Dirección", type: "text" },
+            { name: "Telefono", label: "Teléfono", type: "text" },
+            { name: "Email", label: "Email", type: "email" },
+            { name: "TipoPlastico", label: "Tipo de Plástico", type: "select", options: [{ value: 'Unico', label: 'Tipo-Único' }, { value: 'Mezcla', label: 'Tipo-Mezcla' }] },
+            { name: "Rubro", label: "Rubro", type: "text" },
+            { name: "Web", label: "Web", type: "text" },
+            { name: "CUIT", label: "CUIT", type: "text" },
+          ]}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          cerrarModal={cerrarModal}
+          values={formValues}
         />
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg shadow-md">
+      )}
+      {modalEdit && (
+        <ButtonEdit
+          title="Editar Empresa Donante"
+          fields={[
+            { name: "Nombre", label: "Nombre", type: "text" },
+            { name: "Direccion", label: "Dirección", type: "text" },
+            { name: "Telefono", label: "Teléfono", type: "text" },
+            { name: "Email", label: "Email", type: "email" },
+            { name: "TipoPlastico", label: "Tipo de Plástico", type: "select", options: [{ value: 'Unico', label: 'Tipo-Único' }, { value: 'Mezcla', label: 'Tipo-Mezcla' }] },
+            { name: "Rubro", label: "Rubro", type: "text" },
+            { name: "Web", label: "Web", type: "text" },
+            { name: "CUIT", label: "CUIT", type: "text" },
+          ]}
+          formValues={formValues}
+          handleChange={handleChange}
+          handleSubmit={handleEditSubmit}
+          cerrarModal={cerrarModalEdit}
+        />
+      )}
+
+      {loading ? (
+        <LoadingTable />
+      ) : (
+        <>
+        <div className="max-h-96 overflow-y-auto border border-gray-300 mt-4">
+
+          <table className="min-w-full border-collapse border  bg-white rounded-lg shadow-lg">
             <TablaHead titles={titles} />
-            <tbody className="overflow-y-auto">
-              {empresasDonantes.map((empresa) => (
-                <tr key={empresa.id} className="hover:bg-gray-100">
-                  <td className="border-b py-3 px-4">{empresa.Nombre}</td>
-                  <td className="border-b py-3 px-4">{empresa.Direccion}</td>
-                  <td className="border-b py-3 px-4">{empresa.Telefono}</td>
-                  <td className="border-b py-3 px-4">{empresa.Email}</td>
-                  <td className="border-b py-3 px-4">{empresa.TipoPlastico}</td>
-                  <td className="border-b py-3 px-4">{empresa.Rubro}</td>
-                  {/* <td className="border-b py-3 px-4">{empresa.DonacionesDisponibles}</td> */}
-                  <td className="border-b py-3 px-4">
-                    <a
-                      href={empresa.Web}
-                      className="text-blue-600 hover:underline"
-                    >
-                      {empresa.Web}
-                    </a>
+            <tbody>
+              {currentItems.map((item) => (
+                <tr key={item.idEmpresa}>
+                  <td className="px-4 py-2">{item.Nombre}</td>
+                  <td className="px-4 py-2">{item.Direccion}</td> 
+                  <td className="px-4 py-2">{item.Telefono}</td>
+                  <td className="px-4 py-2">{item.Email}</td>
+                  <td className="px-4 py-2">{item.TipoPlastico}</td>
+                  <td className="px-4 py-2">{item.Rubro}</td>
+                  <td className="px-4 py-2">
+                    <a href={item.Web} className="text-blue-600 hover:underline">{item.Web}</a>
                   </td>
-                  <td className="border-b py-3 px-4 flex justify-center">
+                  <td className="px-4 py-2 flex">
+                    <NextButton />
                     <button
-                      onClick={() => abrirModal(empresa)}
-                      className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      onClick={() => abrirModalEdit(item)}
+                      className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                     >
                       Modificar
                     </button>
-                    <DeleteButton onClick={() => handleDelete(empresa.id)} />
+                    <DeleteButton onClick={() => dispatch(deleteEmpresaDonante(item.idEmpresa))} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </SectionLayout>
-
-      {/* Modal para agregar/editar empresas */}
-      {modalAbierto && (
-        <Modal 
-          empresa={currentEmpresa}
-          onClose={cerrarModal}
-          onSave={handleSave}
-        />
+        
+        </>
       )}
-    </>
+    </SectionLayout>
   );
 };
 

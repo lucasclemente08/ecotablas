@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -11,12 +12,12 @@ namespace WebApi_TrazODS.Models
 
         public EmpresaDonante()
         {
-            connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+            connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
         }
         #endregion
 
         #region Propiedades
-        public int Id_empresaDonante { get; set; } // Cambié el nombre a Id_empresaDonante según tus instrucciones
+        public int IdEmpresaDonante { get; set; } // Cambié el nombre a IdEmpresaDonante siguiendo el formato
         public string CUIT { get; set; }
         public string Nombre { get; set; }
         public string Direccion { get; set; }
@@ -29,6 +30,7 @@ namespace WebApi_TrazODS.Models
         #endregion
 
         #region Métodos
+
         // Método para obtener todas las empresas donantes
         public DataTable SelectAll()
         {
@@ -43,7 +45,6 @@ namespace WebApi_TrazODS.Models
                     using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
                     {
                         sqlCom.CommandType = CommandType.StoredProcedure;
-
                         using (SqlDataAdapter da = new SqlDataAdapter(sqlCom))
                         {
                             da.Fill(dataTable);
@@ -140,7 +141,7 @@ namespace WebApi_TrazODS.Models
                         sqlCom.CommandType = CommandType.StoredProcedure;
 
                         // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@Id", empresaActualizada.Id_empresaDonante); // Cambié a Id_empresaDonante
+                        sqlCom.Parameters.AddWithValue("@Id", empresaActualizada.IdEmpresaDonante);
                         sqlCom.Parameters.AddWithValue("@CUIT", empresaActualizada.CUIT);
                         sqlCom.Parameters.AddWithValue("@Nombre", empresaActualizada.Nombre);
                         sqlCom.Parameters.AddWithValue("@Direccion", empresaActualizada.Direccion);
@@ -185,9 +186,11 @@ namespace WebApi_TrazODS.Models
                 }
             }
         }
+
+        // Método para verificar si una empresa donante existe
         public bool Exists(int id)
         {
-            string sqlSentencia = "SP_VerificarEmpresaDonante"; // Procedimiento almacenado para verificar existencia
+            string sqlSentencia = "SP_VerificarEmpresaDonante"; // Procedimiento almacenado
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
@@ -199,14 +202,13 @@ namespace WebApi_TrazODS.Models
                         sqlCom.CommandType = CommandType.StoredProcedure;
                         sqlCom.Parameters.AddWithValue("@Id", id);
 
-                        // Devuelve true si existe al menos una fila, false de lo contrario
-                        return Convert.ToBoolean(sqlCom.ExecuteScalar());
+                        return Convert.ToBoolean(sqlCom.ExecuteScalar()); // Verificar si existe
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    return false; // Retorna false en caso de error
+                    return false;
                 }
             }
         }

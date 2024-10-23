@@ -1,11 +1,14 @@
 // src/app/store.js
 import { configureStore } from '@reduxjs/toolkit';
-import tolvaReducer from '../features/tolvaSlice'
+import tolvaReducer from '../features/tolvaSlice';
+import tablasProducidasReducer from '../features/tablasProducidasSlice';
+import empresaDonanteReducer from '../features/empresaDonanteSlice'; 
 
 const store = configureStore({
   reducer: {
     tolva: tolvaReducer,
-    // agrega otros reductores aquí
+    tablasProducidas: tablasProducidasReducer, // Faltaba una coma aquí
+    empresaDonante: empresaDonanteReducer,
   },
 });
 
