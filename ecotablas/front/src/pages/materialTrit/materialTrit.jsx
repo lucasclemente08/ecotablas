@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/buttons/addButton";
+import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -8,6 +8,10 @@ import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
 import LoadingTable from "../../components/LoadingTable";
 import NextButton from "../../components/buttons/NextButton";
+import NextModal from "../../components/NextModal";
+import { useSelector, useDispatch } from "react-redux";
+import {addTolva} from "../../features/tolvaSlice";
+
 import ReportButton from "../../components/buttons/ReportButton";
 import {
   getAllMaterials,
@@ -142,6 +146,17 @@ const MaterialTrit = () => {
       placeholder: "Material Triturado *",
     },
   ];
+  
+handleSubmitNext=async (e)=>{
+  
+  if (!formValues.HorarioInicio || !formValues.CantidadCargada) {
+    console.error("Por favor completa todos los campos requeridos");
+    return;
+    console.log(formValues)
+  }
+  await dispatch(addTolva(formValues)); 
+}
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
@@ -186,6 +201,14 @@ const MaterialTrit = () => {
               {mensaje}
             </div>
           )}
+
+          {modalAbiertoNext &&
+          <NextModal title="Pasar a Extrucción/tolva"
+
+          />
+
+          }
+
           {modalAbierto && (
             <AddModal
               title="Agregar Material Triturado"
@@ -238,7 +261,7 @@ const MaterialTrit = () => {
                     <td
                       className={`border-b py-2 px-4 flex justify-center ${modalAbierto ? "hidden" : ""}`}
                     >
-                      <NextButton />
+                      <NextButton abrirModal={abrirModalNext}/>
                       <button
                         onClick={() => abrirModalEdit(material)}
                         className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
