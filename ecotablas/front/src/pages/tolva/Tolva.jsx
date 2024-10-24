@@ -81,7 +81,7 @@ const Tolva = () => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
@@ -148,7 +148,7 @@ const Tolva = () => {
             <tbody>
               {currentItems.map((item) => (
                 <tr key={item.IdTolva}>
-                  <td className="px-4 py-2">{item.d}</td>
+                  <td className="px-4 py-2 ">{item.HorarioInicio.slice(0,10)}</td>
                   <td className="px-4 py-2">{item.CantidadCargada}</td>
                   <td className="px-4 py-2">{item.TipoPlastico}</td>
                   <td className="px-4 py-2">{item.Proporcion}</td>

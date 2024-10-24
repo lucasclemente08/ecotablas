@@ -18,8 +18,11 @@ import {
   addMaterial,
   editMaterial,
 } from "../../api/materialTritAPI";
+import { Await } from "react-router-dom";
 
 const MaterialTrit = () => {
+
+  const dispatch = useDispatch();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -33,6 +36,18 @@ const MaterialTrit = () => {
     Fecha: "",
     IdMaterialClasificado: "",
   });
+  const [formValuesTolva, setFormValuesTolva] = useState({
+    IdMaterialTriturado:"",
+    HorarioInicio: "",
+    CantidadCargada: "",
+    TipoPlastico: "",
+    Proporcion: "",
+    Especificaciones: "",
+  });
+
+
+
+
 
   const abrirModalEdit = (material) => {
     setMaterialId(material.IdMaterialTriturado);
@@ -46,8 +61,16 @@ const MaterialTrit = () => {
 
   const cerrarModalEdit = () => setModalEdit(false);
 
-  const abrirModalNext=()=>{
+  const abrirModalNext = (material) => {
+    setFormValuesTolva((prevState) => ({
+      ...prevState,
+      IdMaterialTriturado: material.IdMaterialTriturado,
+    }));
     setModalAbiertoNext(true);
+  };
+  
+  const cerrarModalNext=()=>{
+    setModalAbiertoNext(false);
   }
   const abrirModal = () => {
     setModalAbierto(true);
@@ -119,6 +142,15 @@ const MaterialTrit = () => {
     }));
   };
 
+  const handleChangeTolva = (e) => {
+    const { name, value } = e.target;
+    setFormValuesTolva((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+
+  };
+
   const title = ["Volumen", "Fecha de ingreso", "Acciones"];
 
   const columns = [
@@ -147,15 +179,7 @@ const MaterialTrit = () => {
     },
   ];
   
-handleSubmitNext=async (e)=>{
-  
-  if (!formValues.HorarioInicio || !formValues.CantidadCargada) {
-    console.error("Por favor completa todos los campos requeridos");
-    return;
-    console.log(formValues)
-  }
-  await dispatch(addTolva(formValues)); 
-}
+
 
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -176,6 +200,30 @@ handleSubmitNext=async (e)=>{
     0,
   );
   const totalItems = materials.length;
+
+  const handleSubmitNext = async (e) => {
+    e.preventDefault(); // Prevenir comportamiento por defecto
+  
+    if (!formValuesTolva.HorarioInicio || !formValuesTolva.CantidadCargada) {
+      console.error("Por favor completa todos los campos requeridos");
+      return;
+    }
+   
+   await dispatch(addTolva(formValuesTolva)); 
+   
+   cerrarModalNext(); // Cierra el modal tras el envío exitoso
+   setMensaje("Material pasado a extrucción/tolva correctamente");
+    
+  };
+  
+
+
+  const optionsTipoPlastico = [
+    { value: 'Unico', label: 'Tipo-Único' },
+    { value: 'Mescla', label: 'Tipo-Mezcla' },
+    // ... otras opciones
+  ];
+
 
   return (
     <>
@@ -202,13 +250,7 @@ handleSubmitNext=async (e)=>{
             </div>
           )}
 
-          {modalAbiertoNext &&
-          <NextModal title="Pasar a Extrucción/tolva"
-
-          />
-
-          }
-
+         
           {modalAbierto && (
             <AddModal
               title="Agregar Material Triturado"
@@ -261,7 +303,34 @@ handleSubmitNext=async (e)=>{
                     <td
                       className={`border-b py-2 px-4 flex justify-center ${modalAbierto ? "hidden" : ""}`}
                     >
-                      <NextButton abrirModal={abrirModalNext}/>
+                   <NextButton abrirModal={() => abrirModalNext(material)} />
+
+                      {modalAbiertoNext &&
+          <NextModal title="Pasar a Extrucción/tolva"
+          id={material.IdMaterialTriturado}
+          fields={[
+           
+            { name: "IdMaterialTriturado", label: "ID Material triturado (Id no modificable)", type: "text", },
+
+            { name: "HorarioInicio", label: "Horario de inicio", type: "datetime-local" },
+            { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
+            { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
+            { name: "Proporcion", label: "Proporción cargada", type: "number" },
+            { name: "Especificaciones", label: "Especificaciones", type: "text" },
+          ]}
+            handleSubmitNext={handleSubmitNext}
+            handleChangeNext={handleChangeTolva}
+            cerrarModal={cerrarModalNext}
+          values={formValuesTolva}
+          />
+
+          }
+
+
+
+
+
+                      
                       <button
                         onClick={() => abrirModalEdit(material)}
                         className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"

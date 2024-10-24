@@ -4,13 +4,13 @@ import builderApiUrl from '../utils/BuilderApi';
 
 
 export const fetchTolva = createAsyncThunk('http://localhost:61274/api/Tolva/ListarTodo', async () => {
-  const response = await axios.get("http://localhost:61274/api/Tolva/ListarTodo");
+  const response = await axios.get("http://www.gestiondeecotablas.somee.com/api/Tolva/ListarTodo");
 
   return response.data;
 });
 
 export const addTolva = createAsyncThunk('tolva/addTolva', async (formValues) => {
-  const response = await axios.post("http://localhost:61274/api/Tolva/Insertar", formValues);
+  const response = await axios.post("http://www.gestiondeecotablas.somee.com/api/Tolva/Insertar", formValues);
 
   return response.data;
 });

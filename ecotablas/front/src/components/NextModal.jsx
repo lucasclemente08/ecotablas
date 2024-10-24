@@ -1,6 +1,6 @@
 import React from 'react'
 import { GrLinkNext } from "react-icons/gr";
-const NextModal = ({title}) => {
+const NextModal = ({id, title ,fields,handlesubmitNext, handleChangeNext, cerrarModal,values }) => {
 
   
   return (
@@ -22,15 +22,15 @@ const NextModal = ({title}) => {
               {title} <GrLinkNext className="m-1" />
             </h3>
             <div className="mt-2">
-              {/* <form onSubmit={handleSubmitNext}> */}
-                {/* {fields.map((field) => (
+              <form onSubmit={handlesubmitNext}>
+                {fields.map((field) => (
                   <div key={field.name} className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                     {field.type === "select" ? (
                       <select
                         name={field.name}
                         value={values[field.name]}
-                        onChange={handleChange}
+                        onChange={handleChangeNext}
                         className="border border-gray-300 rounded p-2 w-full"
                       >
                         <option value="">Selecciona una opción</option>
@@ -45,30 +45,33 @@ const NextModal = ({title}) => {
                         type={field.type || "text"}
                         name={field.name}
                         value={values[field.name]}
-                        onChange={handleChange}
+                        onChange={handleChangeNext}
                         className="border border-gray-300 rounded p-2 w-full"
                         required
+               
+                        
                       />
                     )}
                   </div>
-                ))} */}
-              {/* </form> */}
-            </div>
-          </div>
-          <div className="mt-5 sm:mt-6">
-            {/* <button
-              onClick={handleSubmit}
-              className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
-            >
-              {submitButtonText}
-            </button>
+                ))}
+                <div className="mt-5 sm:mt-6">
+          <button
+                onClick={handlesubmitNext }
+                className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
+              >
+                Guardar
+              </button>
             <button
               onClick={cerrarModal}
               className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
             >
-              {cancelButtonText} 
-            </button> */}
+             Cerrar
+            </button>
           </div>
+              </form>
+            </div>
+          </div>
+          
         </div>
       </div>
     </div>
