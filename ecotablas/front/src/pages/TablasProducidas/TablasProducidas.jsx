@@ -17,6 +17,7 @@ import ButtonEdit from "../../components/buttons/ButtonEdit";
 import NextButton from "../../components/buttons/NextButton";
 import ReportButton from "../../components/buttons/ReportButton";
 import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
 
 const TablasProducidas = () => {
   const dispatch = useDispatch();
@@ -65,7 +66,13 @@ const TablasProducidas = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await dispatch(addTablaProducida(formValues));
+    const newFormValues = {
+      ...formValues,
+      CodigoIdentificacion: GenerateIdentificationCode(formValues.Dimensiones,formValues.Peso),
+    };
+
+    await dispatch(addTablaProducida(newFormValues));
+    await dispatch(fetchTablasProducidas())
     cerrarModal();
   };
 
@@ -100,6 +107,18 @@ const TablasProducidas = () => {
   const dimensionesOptions = [
   { value: '1,50mts x 10cm', label: '1,50mts x 10cm' }, { value: '1,60mts x 10cm', label: '1,60mts x 10cm' }
   ];
+
+
+  const GenerateIdentificationCode = (size, large) => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0'); 
+    const codeUID = uuidv4().replace(/-/g, '').slice(0,8); 
+    return `$${size}_${large}_${hours}_${codeUID}`;
+
+
+  };
+  
+
 
   return (
     <SectionLayout title="Tablas Producidas">
@@ -145,7 +164,7 @@ const TablasProducidas = () => {
             <tbody>
               {currentItems.map((item) => (
                 <tr key={item.ID_Tabla}>
-                  <td className="px-4 py-2">{item.FechaProduccion.slice(0, 10)}</td>
+               <td className="px-4 py-2"> {item.FechaProduccion ? item.FechaProduccion.slice(0, 10) : "Fecha no disponible"}</td>
                   <td className="px-4 py-2">{item.Dimensiones}</td>
                   <td className="px-4 py-2">{item.Peso}</td>
                   <td className="px-4 py-2">{item.CodigoIdentificacion}</td>
