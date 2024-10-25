@@ -6,7 +6,7 @@ export const fetchTablasProducidas = createAsyncThunk(
   'tablasProducidas/fetchTablasProducidas',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('http://localhost:61274/api/TablaProducidas/ListarTodo');
+      const response = await axios.get('http://www.gestiondeecotablas.somee.com/api/TablaProducidas/ListarTodo');
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -18,7 +18,7 @@ export const addTablaProducida = createAsyncThunk(
   'tablasProducidas/addTablaProducida',
   async (newTabla, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:61274/api/TablaProducidas/Create', newTabla);
+      const response = await axios.post('http://www.gestiondeecotablas.somee.com/api/TablaProducidas/Insertar', newTabla);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -42,7 +42,7 @@ export const deleteTablaProducida = createAsyncThunk(
   'tablasProducidas/deleteTablaProducida',
   async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(`http://localhost:61274/api/TablaProducidas/Delete/${id}`);
+      await axios.delete(`http://www.gestiondeecotablas.somee.com/api/TablaProducidas/Borrar/${id}`);
       return id;
     } catch (error) {
       return rejectWithValue(error.response.data);

@@ -16,6 +16,7 @@ import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
 import NextButton from "../../components/buttons/NextButton";
 import ReportButton from "../../components/buttons/ReportButton";
+import axios from "axios";
 
 const TablasProducidas = () => {
   const dispatch = useDispatch();
@@ -40,7 +41,10 @@ const TablasProducidas = () => {
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
 
+
+
   useEffect(() => {
+
     dispatch(fetchTablasProducidas());
   }, [dispatch]);
 
@@ -94,9 +98,7 @@ const TablasProducidas = () => {
   const totalItems = data.length;
 
   const dimensionesOptions = [
-    "1,60mts x 10cm",
-    "1,50mts x 10cm",
-    // ... otras opciones
+  { value: '1,50mts x 10cm', label: '1,50mts x 10cm' }, { value: '1,60mts x 10cm', label: '1,60mts x 10cm' }
   ];
 
   return (
@@ -155,7 +157,11 @@ const TablasProducidas = () => {
                     >
                       Modificar
                     </button>
-                    <DeleteButton onClick={() => dispatch(deleteTabla(item.ID_Tabla))} />
+                    <DeleteButton 
+                    id={item.ID_Tabla}
+                     endpoint={"http://www.gestiondeecotablas.somee.com/api/TablaProducidas/Borrar"} 
+                     updateList={() => dispatch(fetchTablasProducidas())}
+                      />
                   </td>
                 </tr>
               ))}

@@ -8,12 +8,7 @@ namespace WebApi_TrazODS.Models
     public class TablasProducidas
     {
         #region Atributos
-        private readonly string connectionString;
-
-        public TablasProducidas()
-        {
-            connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-        }
+        string connectionString = @"Data Source=Ecotablas-Db.mssql.somee.com;Initial Catalog=Ecotablas-Db;User ID=lucasclemente08_SQLLogin_1;Password=apqjzszydf";
         #endregion
 
         #region Propiedades
