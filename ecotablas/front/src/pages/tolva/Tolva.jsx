@@ -104,7 +104,7 @@ const Tolva = () => {
     <SectionLayout title="Tolva">
       <AddButton abrirModal={abrirModal} title="Añadir Registro" />
       <PdfGenerator columns={columns} data={data} title="Reporte de Tolva" />
-      <ReportButton />
+     
 
       {error && <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">Error: {error}</div>}
       {modalAbierto && (
@@ -123,21 +123,21 @@ const Tolva = () => {
           values={formValues}
         />
       )}
-      {modalEdit && (
-        <ButtonEdit
-          title="Editar Registro de Tolva"
-          fields={[
-            { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },
-            { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
-            { name: "Proporcion", label: "Proporción cargada", type: "number", placeholder: "Proporción *" },
-            { name: "Especificaciones", label: "Especificaciones", type: "text", placeholder: "Especificaciones *" },
-          ]}
-          formValues={formValues}
-          handleChange={handleChange}
-          handleSubmit={handleEditSubmit}
-          cerrarModal={cerrarModalEdit}
-        />
-      )}
+{modalEdit && (
+  <ButtonEdit
+    title="Editar Registro de Tolva"
+    fields={[
+      { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },
+      { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
+      { name: "Proporcion", label: "Proporción cargada", type: "number", placeholder: "Proporción *" },
+      { name: "Especificaciones", label: "Especificaciones", type: "text", placeholder: "Especificaciones *" },
+    ]}
+    formValues={formValues}
+    handleChange={handleChange}
+    handleEditSubmit={handleEditSubmit}   // Cambiado a handleEditSubmit
+    cerrarModalEdit={cerrarModalEdit}     // Cambiado a cerrarModalEdit
+  />
+)}
 
       {loading ? (
         <LoadingTable />

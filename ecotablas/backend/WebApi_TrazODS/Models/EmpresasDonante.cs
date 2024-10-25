@@ -8,12 +8,7 @@ namespace WebApi_TrazODS.Models
     public class EmpresaDonante
     {
         #region Atributos
-        private readonly string connectionString;
-
-        public EmpresaDonante()
-        {
-            connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-        }
+        string connectionString = @"Data Source=Ecotablas-Db.mssql.somee.com;Initial Catalog=Ecotablas-Db;User ID=lucasclemente08_SQLLogin_1;Password=apqjzszydf";
         #endregion
 
         #region Propiedades
@@ -35,61 +30,29 @@ namespace WebApi_TrazODS.Models
         public DataTable SelectAll()
         {
             string sqlSentencia = "SP_ObtenerEmpresasDonantes"; // Procedimiento almacenado
-            DataTable dataTable = new DataTable();
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
 
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataAdapter da = new SqlDataAdapter(sqlCom))
-                        {
-                            da.Fill(dataTable);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
 
-            return dataTable; // Retornar el DataTable con todas las empresas donantes
+            sqlCnn.Open();
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+
+            DataSet ds = new DataSet();
+
+            SqlDataAdapter da = new SqlDataAdapter();
+            da.SelectCommand = sqlCom;
+            da.Fill(ds);
+
+
+
+            sqlCnn.Close();
+
+
+            return ds.Tables[0];
         }
 
-        // Método para obtener una empresa donante por su ID
-        public DataTable SelectById(int id)
-        {
-            string sqlSentencia = "SP_ObtenerEmpresaDonantePorId"; // Procedimiento almacenado
-            DataTable dataTable = new DataTable();
-
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@Id", id);
-
-                        using (SqlDataAdapter da = new SqlDataAdapter(sqlCom))
-                        {
-                            da.Fill(dataTable);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-
-            return dataTable; // Retornar el DataTable con la empresa donante por ID
-        }
 
         // Método para insertar una nueva empresa donante
         public void Insert(EmpresaDonante nuevaEmpresa)

@@ -25,18 +25,6 @@ namespace WebApi_TrazODS.Controllers
             return lista;
         }
 
-        // GET: api/EmpresaDonante/{id}
-        [HttpGet]
-        public EmpresaDonante ListarPorId(int id)
-        {
-            EmpresaDonante empresaDonante = new EmpresaDonante();
-            DataTable dt = empresaDonante.SelectById(id);
-
-            var listaJson = JsonConvert.SerializeObject(dt);
-            var obj = JsonConvert.DeserializeObject<List<EmpresaDonante>>(listaJson).FirstOrDefault();
-
-            return obj;
-        }
 
         // POST: api/EmpresaDonante
         [HttpPost]

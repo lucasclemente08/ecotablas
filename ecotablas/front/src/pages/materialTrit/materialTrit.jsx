@@ -45,10 +45,6 @@ const MaterialTrit = () => {
     Especificaciones: "",
   });
 
-
-
-
-
   const abrirModalEdit = (material) => {
     setMaterialId(material.IdMaterialTriturado);
     setFormValues({
@@ -202,7 +198,7 @@ const MaterialTrit = () => {
   const totalItems = materials.length;
 
   const handleSubmitNext = async (e) => {
-    e.preventDefault(); // Prevenir comportamiento por defecto
+    e.preventDefault(); 
   
     if (!formValuesTolva.HorarioInicio || !formValuesTolva.CantidadCargada) {
       console.error("Por favor completa todos los campos requeridos");
@@ -210,8 +206,9 @@ const MaterialTrit = () => {
     }
    
    await dispatch(addTolva(formValuesTolva)); 
+   axios.delet
    
-   cerrarModalNext(); // Cierra el modal tras el envío exitoso
+   cerrarModalNext(); 
    setMensaje("Material pasado a extrucción/tolva correctamente");
     
   };
@@ -243,7 +240,7 @@ const MaterialTrit = () => {
             data={materials}
             title="Reporte de Materiales triturado"
           />
-          <ReportButton />
+
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
               {mensaje}
