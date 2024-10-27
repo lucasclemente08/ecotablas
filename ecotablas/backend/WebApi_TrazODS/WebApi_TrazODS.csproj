@@ -231,6 +231,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AreaTrabajoController.cs" />
+    <Compile Include="Controllers\GastoMaquinariaController.cs" />
     <Compile Include="Controllers\EmpleadosController.cs" />
     <Compile Include="Controllers\TolvaController.cs" />
     <Compile Include="Controllers\EmpresaDonanteController.cs" />
@@ -257,6 +258,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AreaTrabajo.cs" />
+    <Compile Include="Models\GastoMaquinaria.cs" />
     <Compile Include="Models\Tolva.cs" />
     <Compile Include="Models\GastoVehiculos.cs" />
     <Compile Include="Models\EmpresasDonante.cs" />
