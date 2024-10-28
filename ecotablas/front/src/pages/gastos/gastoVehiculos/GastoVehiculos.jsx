@@ -4,7 +4,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 import SectionLayout from '../../../layout/SectionLayout';
 import TablaHead from '../../../components/Thead';
 import LoadingTable from '../../../components/LoadingTable';
-import AddButton from '../../../components/buttons/addButton';
+import AddButton from '../../../components/buttons/AddButton';
 import PdfGenerator from '../../../components/buttons/PdfGenerator';
 import DeleteButton from '../../../components/buttons/DeleteButton';
 import DataView from '../../../components/buttons/DataView';
@@ -225,7 +225,7 @@ const GastoVehiculos = () => {
 
         {ModalAbierto && (
           <AddModalWithSelect
-            title="Agregar Reporte"
+            title="Agregar Gastos vehiculos"
             fields={fields}
             handleChange={handleChange}
             handleSubmit={handleSubmit}

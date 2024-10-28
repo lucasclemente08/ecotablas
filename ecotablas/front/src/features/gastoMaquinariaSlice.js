@@ -24,7 +24,7 @@ export const updateGasto = createAsyncThunk('gastoMaquinaria/updateGasto', async
 
 // Async thunk para eliminar un gasto de maquinaria
 export const deleteGasto = createAsyncThunk('gastoMaquinaria/deleteGasto', async (id) => {
-  await axios.delete(`${API_URL}/Delete/${id}`);
+  await axios.delete(`http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Delete/${id}`);
   return id;
 });
 
