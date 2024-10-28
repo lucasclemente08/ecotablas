@@ -1,49 +1,103 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchGastos, deleteGasto,addGasto} from '../../../features/gastoMaquinariaSlice';
+import { fetchGastos, deleteGasto, addGasto } from '../../../features/gastoMaquinariaSlice';
 import SectionLayout from '../../../layout/SectionLayout';
+import { Pie } from 'react-chartjs-2'; 
+import axios from 'axios';
 import TablaHead from '../../../components/Thead';
 import LoadingTable from '../../../components/LoadingTable';
 import AddButton from '../../../components/buttons/AddButton';
 import PdfGenerator from '../../../components/buttons/PdfGenerator';
+import { FaChartLine, FaChartPie } from "react-icons/fa";
 import DataView from '../../../components/buttons/DataView';
 import DeleteButton from '../../../components/buttons/DeleteButton';
 import AddModalWithSelect from '../../../components/AddModalWithSelect';
 
+const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'];
+
 const GastoMaquinaria = () => {
   const dispatch = useDispatch();
-
-
-const { gastos: dataM, loading } = useSelector((state) => state.gastoMaquinaria);
+  const { gastos: dataM, loading } = useSelector((state) => state.gastoMaquinaria);
 
   const [modalAbierto, setModalAbierto] = useState(false);
-  const [dataView, setDataview] = useState(false);
+  const [dataView, setDataView] = useState(false);
   const [gastoEdit, setGastoEdit] = useState(null);
+  const [showTable, setShowTable] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
+  const [maquinaria, setMaquinaria] = useState([]);
+  const [mensaje, setMensaje] = useState("");
+  const [pieData, setPieData] = useState({});
+  const [showPieChart, setShowPieChart] = useState(true);
 
-  const abrirModalEdit = (gasto) => {
-    setGastoEdit(gasto);
-    setFormValues(gasto); // Pobla formValues con los valores actuales del gasto
-    setModalEdit(true);
-  };
-  
-  const cerrarModalEdit = () => setModalEdit(false);
-  
-  const abrirModal = () => {
-    setModalAbierto(true);
-  };
+  const [formValues, setFormValues] = useState({
+    tipoGasto: "",
+    tipoComprobante: "",
+    comprobante: "",
+    proveedor: "",
+    monto: "",
+    fecha: "",
+    descripcion: "",
+  });
 
-  const OpenDataview = () => {
-    setDataview(true);
-  };
+  
+  const abrirModal = () => setModalAbierto(true);
+  const cerrarModal = () => setModalAbierto(false);
+  
 
   useEffect(() => {
     dispatch(fetchGastos());
-  
   }, [dispatch]);
 
+  useEffect(() => {
+    const calculatePieData = () => {
+      const categories = {};
+      dataM.forEach((item) => {
+        categories[item.TipoGasto] = (categories[item.TipoGasto] || 0) + parseFloat(item.Monto);
+      });
+
+      setPieData({
+        labels: Object.keys(categories),
+        datasets: [{
+          label: 'Gastos por Categoría',
+          data: Object.values(categories),
+          backgroundColor: COLORS,
+          hoverBackgroundColor: COLORS,
+        }],
+      });
+    };
+
+    calculatePieData();
+  }, [dataM]);
+
   const handleDelete = (id) => {
-    dispatch(deleteGasto(id));
+    dispatch(deleteGasto(id)).then(() => {
+      dispatch(fetchGastos());
+    });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(addGasto(formValues)).then(() => {
+      setModalAbierto(false);
+      dispatch(fetchGastos());
+    });
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    dispatch(addGasto(gastoEdit)).then(() => {
+      setMensaje("Gasto actualizado con éxito");
+      dispatch(fetchGastos());
+      setModalEdit(false);
+    }).catch(error => console.error("Error al actualizar:", error));
   };
 
   const columns = [
@@ -64,118 +118,129 @@ const { gastos: dataM, loading } = useSelector((state) => state.gastoMaquinaria)
     "Monto ($)",
     "Fecha",
     "Descripción",
-    "Acciones"
+    "Acciones",
   ];
-// Definir los campos para el modal
-const fields = [
-  { name: "tipoGasto", label: "Tipo de Gasto", type: "text", required: true },
-  { name: "tipoComprobante", label: "Tipo de Comprobante", type: "text", required: true },
-  { name: "comprobante", label: "Comprobante", type: "text", required: true },
-  { name: "proveedor", label: "Proveedor", type: "text", required: true },
-  { name: "monto", label: "Monto ($)", type: "number", required: true },
-  { name: "fecha", label: "Fecha", type: "date", required: true },
-  { name: "descripcion", label: "Descripción", type: "textarea", required: true },
-];
 
-// Valores iniciales del formulario
-const [formValues, setFormValues] = useState({
-  tipoGasto: "",
-  tipoComprobante: "",
-  comprobante: "",
-  proveedor: "",
-  monto: "",
-  fecha: "",
-  descripcion: "",
-});
-
-// Manejo de cambios en el formulario
-const handleChange = (e) => {
-  const { name, value } = e.target;
-  setFormValues((prevValues) => ({
-    ...prevValues,
-    [name]: value,
+  const fetchMaquinaria = () => {
+    axios.get("http://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo")
+      .then((response) => {
+        setMaquinaria(response.data);
+        c
+      })
+      .catch((error) => {
+        console.error('Error fetching trucks:', error);
+      });
+  };
+  useEffect(()=>{
+    fetchMaquinaria()
+  },[])
+  const getMachinesById = (id) => {
+    const machine = maquinaria.find((machine) => machine.Id === id);
+    return machine ? `${machine.Modelo} (${machine.Tipo})` : "Maquinaria no disponible";
+  };
+  
+  const optionsMaquinaria = maquinaria.map((machine) => ({
+    value: machine.Id,
+    label: `${machine.Modelo} (${machine.Tipo})`
   }));
-};
+  
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-
-  dispatch(addGasto(formValues)).then(() => {
-    setModalAbierto(false); 
-      dispatch(fetchGastos());
-  });
-};
-const handleEditSubmit = (e) => {
-  e.preventDefault();
-  axios.put(`http://localhost:61274/api/GastoVehiculos/Actualizar/${gastoEdit.IdGastoVehiculo}`, formValues)
-    .then(() => {
-      setMensaje("Gasto actualizado con éxito");
-      fetchMaterials(); // Actualiza la tabla
-      cerrarModalEdit();
-    })
-    .catch(error => console.error("Error al actualizar:", error));
-};
+  const pieOptions = { responsive: true, maintainAspectRatio: false };
+  
+  const fields = [
+    { name: "tipoGasto", label: "Tipo de Gasto", type: "text", required: true },
+    { name: "tipoComprobante", label: "Tipo de Comprobante", type: "text", required: true },
+    { name: "comprobante", label: "Comprobante", type: "text", required: true },
+    { name: "proveedor", label: "Proveedor", type: "text", required: true },
+    { name: "Id_Maquinaria", label: "Maquinaria", type: "select", options:optionsMaquinaria, required: true },
 
 
-const cerrarModal = () => setModalAbierto(false)
+    { name: "monto", label: "Monto ($)", type: "number", required: true },
+    { name: "fecha", label: "Fecha", type: "date", required: true },
+    { name: "descripcion", label: "Descripción", type: "textarea", required: true },
+  ];
 
   return (
     <SectionLayout title="Gasto de Maquinaria">
       <div className="flex">
-        <AddButton abrirModal={abrirModal} title="Añadir Gasto de Maquinaria" />
+        <AddButton abrirModal={() => setModalAbierto(true)} title="Añadir Gasto de Maquinaria" />
         <PdfGenerator columns={columns} data={dataM} title="Reporte de Gastos de Maquinaria" />
-        <DataView abrirModal={OpenDataview} />
+        <DataView abrirModal={() => setDataView(true)} />
       </div>
-      {modalAbierto && (
-  <AddModalWithSelect
-    title="Agregar Gasto de Maquinaria"
-    fields={fields}
-    handleChange={handleChange}
-    handleSubmit={handleSubmit}
-    cerrarModal={cerrarModal}
-    values={formValues}
-  />
-)}
 
-{modalEdit && (
-  <AddModalWithSelect
-    title="Editar Gasto Vehículo"
-    fields={fields}
-    handleChange={handleChange}
-    handleSubmit={handleEditSubmit}
-    cerrarModal={cerrarModalEdit}
-    values={gastoEdit} // Carga los valores actuales
-  />
-)}
-      {loading ? (
-        <LoadingTable loading={loading} />
-      ) : (
-        <table className="min-w-full bg-white rounded-lg shadow-md">
-          <TablaHead titles={titles} />
-          <tbody>
-            {dataM.map((item, index) => (
-              <tr key={index} className="hover:bg-gray-100">
-                <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
-                <td className="border-b py-3 px-4">{item.Comprobante}</td>
-                <td className="border-b py-3 px-4">{item.TipoGasto}</td>
-                <td className="border-b py-3 px-4">{item.Proveedor}</td>
-                <td className="border-b py-3 px-4">{item.Monto}</td>
-                <td className="border-b py-3 px-4 ">{item.Fecha.slice(0,10)}</td>
-                <td className="border-b py-3 px-4">{item.Descripcion}</td>
-                <td className="border-b py-3 px-4 flex">
-                  <button
-                    onClick={() => abrirModalEdit(item)}  // Puedes definir `abrirModalEdit` para editar
-                    className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                  >
-                    Modificar
-                  </button>
-                  <DeleteButton onClick={() => handleDelete(item.IdGastoMaquinaria)} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <button
+          aria-label="Ver gráfico circular"
+          className={`p-2 ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
+          onClick={() => { setShowPieChart(true); setShowTable(false); }}
+        >
+          Ver Gráfico Circular <FaChartPie className="ml-2" />
+        </button>
+
+      {/* {dataView && <DataViewModal data={dataM} columns={columns} cerrarModal={() => setDataView(false)} />} */}
+      {modalAbierto && (
+        <AddModalWithSelect
+          title="Agregar Gasto de Maquinaria"
+          fields={fields}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          cerrarModal={cerrarModal}
+          values={formValues}
+        />
       )}
+      {modalEdit && (
+        <AddModalWithSelect
+          title="Editar Gasto de Maquinaria"
+          fields={fields}
+          handleChange={handleChange}
+          handleSubmit={handleEditSubmit}
+          cerrarModal={() => setModalEdit(false)}
+          values={formValues}
+        />
+      )}
+{showTable ? (
+  loading ? (
+    <LoadingTable loading={loading} />
+  ) : (
+    <table className="min-w-full bg-white rounded-lg shadow-md">
+      <TablaHead titles={titles} />
+      <tbody>
+        {dataM.map((item) => (
+          <tr key={item.IdGastoMaquinaria} className="hover:bg-gray-100">
+            <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
+            <td className="border-b py-3 px-4">{item.Comprobante}</td>
+            <td className="border-b py-3 px-4">{item.TipoGasto}</td>
+            <td className="border-b py-3 px-4">{item.Proveedor}</td>
+            <td className="border-b py-3 px-4">{item.Monto}</td>
+            <td className="border-b py-3 px-4">{item.Fecha.slice(0, 10)}</td>
+            <td className="border-b py-3 px-4">{item.Descripcion}</td>
+            <td className="border-b py-3 px-4 flex">
+              <button
+                onClick={() => {
+                  setGastoEdit(item);
+                  setFormValues(item);
+                  setModalEdit(true);
+                }}
+                className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+              >
+                Modificar
+              </button>
+              <DeleteButton
+                endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Delete"
+                id={item.IdGastoMaquinaria}
+                updateList={() => dispatch(fetchGastos())}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+) : showPieChart ? (
+  <div className="w-full h-96">
+    <Pie data={pieData} options={pieOptions} />
+  </div>
+) : null}
+
     </SectionLayout>
   );
 };
