@@ -8,7 +8,7 @@ using System.Web.Http;
 using System.Data;
 using WebApi_TrazODS.Models;
 using Newtonsoft.Json;
-
+using WebApi_TrazODS.Models.WebApi_TrazODS.Models;
 
 namespace WebApi_TrazODS.Controllers
 {
