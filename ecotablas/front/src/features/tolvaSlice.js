@@ -3,13 +3,14 @@ import axios from 'axios';
 import builderApiUrl from '../utils/BuilderApi';
 
 
-export const fetchTolva = createAsyncThunk('tolva/fetchTolva', async () => {
-  const response = await axios.get(builderApiUrl('Tolva'));
+export const fetchTolva = createAsyncThunk('http://localhost:61274/api/Tolva/ListarTodo', async () => {
+  const response = await axios.get("http://localhost:61274/api/Tolva/ListarTodo");
+  console.log(response.data)
   return response.data;
 });
 
 export const addTolva = createAsyncThunk('tolva/addTolva', async (formValues) => {
-  const response = await axios.post(builderApiUrl('Tolva/Agregar'), formValues);
+  const response = await axios.post("http://localhost:61274/api/Tolva/CrearTolva", formValues);
   return response.data;
 });
 
@@ -21,7 +22,7 @@ export const editTolva = createAsyncThunk('tolva/editTolva', async ({ id, formVa
 
 
 export const deleteTolva = createAsyncThunk('tolva/deleteTolva', async (id) => {
-  await axios.delete(builderApiUrl(`Tolva/Borrar/${id}`));
+  await axios.delete(builderApiUrl(`http://localhost:61274/api/tolvas/${id}`));
   return id;
 });
 

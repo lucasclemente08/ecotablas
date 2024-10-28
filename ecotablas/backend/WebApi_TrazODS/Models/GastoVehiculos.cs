@@ -1,37 +1,37 @@
-
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+
 namespace WebApi_TrazODS.Models
 {
-    public class Reportes
+    public class GastoVehiculos
     {
         #region Atributos
         private readonly string connectionString;
 
-        // Constructor que obtiene la cadena de conexión desde una variable de entorno
-        public Reportes()
+        public GastoVehiculos()
         {
             connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-
         }
         #endregion
 
         #region Propiedades
-        public int Id_reporte { get; set; }
-        public string Titulo { get; set; }
+        public int IdGasto { get; set; }
+        public string TipoGasto { get; set; }
+        public string TipoComprobante { get; set; }
+        public int IdVehiculo { get; set; }
+        public string Comprobante { get; set; }
+        public string Proveedor { get; set; }
+        public decimal Monto { get; set; }
+        public DateTime Fecha { get; set; }
         public string Descripcion { get; set; }
-        public string Area { get; set; }
-        public DateTime FechaIncidente { get; set; }
-        public DateTime FechaReporte { get; set; } = DateTime.Now;
-        public string Estado { get; set; } = "Pendiente";
         #endregion
 
         #region Métodos
         public DataTable SelectAll()
         {
-            string sqlSentencia = "SP_ObtenerReportes"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "SP_ObtenerGastosVehiculos"; // Nombre del procedimiento almacenado
             DataTable dataTable = new DataTable();
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
@@ -55,11 +55,12 @@ namespace WebApi_TrazODS.Models
                 }
             }
 
-            return dataTable; // Retornar el DataTable con los reportes
+            return dataTable; // Retornar el DataTable con los gastos
         }
+
         public DataTable SelectById(int id)
         {
-            string sqlSentencia = "SP_ObtenerReportePorId"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "GetGastoVehiculoById"; // Nombre del procedimiento almacenado
             DataTable dataTable = new DataTable();
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
@@ -70,7 +71,7 @@ namespace WebApi_TrazODS.Models
                     using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
                     {
                         sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@Id_reporte", id); // Añadir parámetro
+                        sqlCom.Parameters.AddWithValue("@IdGasto", id); // Añadir parámetro
 
                         using (SqlDataAdapter da = new SqlDataAdapter(sqlCom))
                         {
@@ -87,10 +88,9 @@ namespace WebApi_TrazODS.Models
             return dataTable;
         }
 
-        // Método para insertar un nuevo reporte
-        public void Insert(Reportes nuevoReporte)
+        public void Insert(GastoVehiculos nuevoGasto)
         {
-            string sqlSentencia = "SP_InsertarReporte"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "InsertGastoVehiculo"; // Nombre del procedimiento almacenado
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
@@ -102,11 +102,14 @@ namespace WebApi_TrazODS.Models
                         sqlCom.CommandType = CommandType.StoredProcedure;
 
                         // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@Titulo", nuevoReporte.Titulo);
-                        sqlCom.Parameters.AddWithValue("@Descripcion", nuevoReporte.Descripcion);
-                        sqlCom.Parameters.AddWithValue("@Area", nuevoReporte.Area);
-                        sqlCom.Parameters.AddWithValue("@FechaIncidente", nuevoReporte.FechaIncidente);
-                        sqlCom.Parameters.AddWithValue("@Estado", nuevoReporte.Estado);
+                        sqlCom.Parameters.AddWithValue("@TipoGasto", nuevoGasto.TipoGasto);
+                        sqlCom.Parameters.AddWithValue("@TipoComprobante", nuevoGasto.TipoComprobante);
+                        sqlCom.Parameters.AddWithValue("@IdVehiculo", nuevoGasto.IdVehiculo);
+                        sqlCom.Parameters.AddWithValue("@Comprobante", nuevoGasto.Comprobante);
+                        sqlCom.Parameters.AddWithValue("@Proveedor", nuevoGasto.Proveedor);
+                        sqlCom.Parameters.AddWithValue("@Monto", nuevoGasto.Monto);
+                        sqlCom.Parameters.AddWithValue("@Fecha", nuevoGasto.Fecha);
+                        sqlCom.Parameters.AddWithValue("@Descripcion", nuevoGasto.Descripcion);
 
                         sqlCom.ExecuteNonQuery(); // Ejecutar el comando
                     }
@@ -118,10 +121,10 @@ namespace WebApi_TrazODS.Models
             }
         }
 
-        // Método para actualizar un reporte
-        public void Update(Reportes reporteActualizado)
+
+        public void Update(GastoVehiculos gastoActualizado)
         {
-            string sqlSentencia = "SP_ActualizarReporte"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "UpdateGastoVehiculo"; // Nombre del procedimiento almacenado
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
@@ -133,12 +136,15 @@ namespace WebApi_TrazODS.Models
                         sqlCom.CommandType = CommandType.StoredProcedure;
 
                         // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@Id_reporte", reporteActualizado.Id_reporte);
-                        sqlCom.Parameters.AddWithValue("@Titulo", reporteActualizado.Titulo);
-                        sqlCom.Parameters.AddWithValue("@Descripcion", reporteActualizado.Descripcion);
-                        sqlCom.Parameters.AddWithValue("@Area", reporteActualizado.Area);
-                        sqlCom.Parameters.AddWithValue("@FechaIncidente", reporteActualizado.FechaIncidente);
-                        sqlCom.Parameters.AddWithValue("@Estado", reporteActualizado.Estado);
+                        sqlCom.Parameters.AddWithValue("@IdGasto", gastoActualizado.IdGasto);
+                        sqlCom.Parameters.AddWithValue("@TipoGasto", gastoActualizado.TipoGasto);
+                        sqlCom.Parameters.AddWithValue("@TipoComprobante", gastoActualizado.TipoComprobante);
+                        sqlCom.Parameters.AddWithValue("@IdVehiculo", gastoActualizado.IdVehiculo);
+                        sqlCom.Parameters.AddWithValue("@Comprobante", gastoActualizado.Comprobante);
+                        sqlCom.Parameters.AddWithValue("@Proveedor", gastoActualizado.Proveedor);
+                        sqlCom.Parameters.AddWithValue("@Monto", gastoActualizado.Monto);
+                        sqlCom.Parameters.AddWithValue("@Fecha", gastoActualizado.Fecha);
+                        sqlCom.Parameters.AddWithValue("@Descripcion", gastoActualizado.Descripcion);
 
                         sqlCom.ExecuteNonQuery(); // Ejecutar el comando
                     }
@@ -150,10 +156,9 @@ namespace WebApi_TrazODS.Models
             }
         }
 
-        // Método para eliminar un reporte
         public void Delete(int id)
         {
-            string sqlSentencia = "SP_EliminarReporte"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "DeleteGastoVehiculo"; // Nombre del procedimiento almacenado
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
@@ -163,7 +168,7 @@ namespace WebApi_TrazODS.Models
                     using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
                     {
                         sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@Id_reporte", id); // Añadir parámetro
+                        sqlCom.Parameters.AddWithValue("@IdGasto", id); // Añadir parámetro
                         sqlCom.ExecuteNonQuery(); // Ejecutar el comando
                     }
                 }
@@ -174,10 +179,9 @@ namespace WebApi_TrazODS.Models
             }
         }
 
-        // Método para verificar si existe un reporte
         public bool Exists(int id)
         {
-            string sqlSentencia = "SP_ExisteReporte"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "SP_ExisteGastoVehiculo"; // Nombre del procedimiento almacenado
             int count = 0;
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
@@ -188,7 +192,7 @@ namespace WebApi_TrazODS.Models
                     using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
                     {
                         sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@Id_reporte", id);
+                        sqlCom.Parameters.AddWithValue("@IdGasto", id);
 
                         count = (int)sqlCom.ExecuteScalar(); // Obtener el conteo
                     }

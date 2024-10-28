@@ -1,37 +1,35 @@
-
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+
 namespace WebApi_TrazODS.Models
 {
-    public class Reportes
+    public class Tolva
     {
         #region Atributos
         private readonly string connectionString;
 
-        // Constructor que obtiene la cadena de conexión desde una variable de entorno
-        public Reportes()
+        public Tolva()
         {
             connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-
         }
         #endregion
 
         #region Propiedades
-        public int Id_reporte { get; set; }
-        public string Titulo { get; set; }
-        public string Descripcion { get; set; }
-        public string Area { get; set; }
-        public DateTime FechaIncidente { get; set; }
-        public DateTime FechaReporte { get; set; } = DateTime.Now;
-        public string Estado { get; set; } = "Pendiente";
+        public int IdTolva { get; set; } // Identificador único para la tolva
+        public int IdTriturado { get; set; } // Identificador del triturado asociado
+        public DateTime HorarioInicio { get; set; } // Hora de inicio
+        public decimal CantidadCargada { get; set; } // Cantidad de plástico cargado
+        public string TipoPlastico { get; set; } // Tipo de plástico
+        public string Proporcion { get; set; } // Proporción de mezcla o uso
+        public string Especificaciones { get; set; } // Especificaciones adicionales
         #endregion
 
         #region Métodos
         public DataTable SelectAll()
         {
-            string sqlSentencia = "SP_ObtenerReportes"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "sp_GetAllTolva"; // Nombre del procedimiento almacenado
             DataTable dataTable = new DataTable();
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
@@ -55,42 +53,12 @@ namespace WebApi_TrazODS.Models
                 }
             }
 
-            return dataTable; // Retornar el DataTable con los reportes
-        }
-        public DataTable SelectById(int id)
-        {
-            string sqlSentencia = "SP_ObtenerReportePorId"; // Nombre del procedimiento almacenado
-            DataTable dataTable = new DataTable();
-
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@Id_reporte", id); // Añadir parámetro
-
-                        using (SqlDataAdapter da = new SqlDataAdapter(sqlCom))
-                        {
-                            da.Fill(dataTable);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-
-            return dataTable;
+            return dataTable; // Retornar el DataTable con las tolvas
         }
 
-        // Método para insertar un nuevo reporte
-        public void Insert(Reportes nuevoReporte)
+        public void Insert(Tolva nuevaTolva)
         {
-            string sqlSentencia = "SP_InsertarReporte"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "sp_InsertTolva"; // Nombre del procedimiento almacenado
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
@@ -102,11 +70,12 @@ namespace WebApi_TrazODS.Models
                         sqlCom.CommandType = CommandType.StoredProcedure;
 
                         // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@Titulo", nuevoReporte.Titulo);
-                        sqlCom.Parameters.AddWithValue("@Descripcion", nuevoReporte.Descripcion);
-                        sqlCom.Parameters.AddWithValue("@Area", nuevoReporte.Area);
-                        sqlCom.Parameters.AddWithValue("@FechaIncidente", nuevoReporte.FechaIncidente);
-                        sqlCom.Parameters.AddWithValue("@Estado", nuevoReporte.Estado);
+                        sqlCom.Parameters.AddWithValue("@id_triturado", nuevaTolva.IdTriturado);
+                        sqlCom.Parameters.AddWithValue("@horario_inicio", nuevaTolva.HorarioInicio);
+                        sqlCom.Parameters.AddWithValue("@cantidad_cargada", nuevaTolva.CantidadCargada);
+                        sqlCom.Parameters.AddWithValue("@tipo_plastico", nuevaTolva.TipoPlastico);
+                        sqlCom.Parameters.AddWithValue("@proporcion", nuevaTolva.Proporcion);
+                        sqlCom.Parameters.AddWithValue("@especificaciones", nuevaTolva.Especificaciones);
 
                         sqlCom.ExecuteNonQuery(); // Ejecutar el comando
                     }
@@ -118,10 +87,9 @@ namespace WebApi_TrazODS.Models
             }
         }
 
-        // Método para actualizar un reporte
-        public void Update(Reportes reporteActualizado)
+        public void Update(Tolva tolvaActualizada)
         {
-            string sqlSentencia = "SP_ActualizarReporte"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "sp_UpdateTolva"; // Nombre del procedimiento almacenado
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
@@ -133,12 +101,13 @@ namespace WebApi_TrazODS.Models
                         sqlCom.CommandType = CommandType.StoredProcedure;
 
                         // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@Id_reporte", reporteActualizado.Id_reporte);
-                        sqlCom.Parameters.AddWithValue("@Titulo", reporteActualizado.Titulo);
-                        sqlCom.Parameters.AddWithValue("@Descripcion", reporteActualizado.Descripcion);
-                        sqlCom.Parameters.AddWithValue("@Area", reporteActualizado.Area);
-                        sqlCom.Parameters.AddWithValue("@FechaIncidente", reporteActualizado.FechaIncidente);
-                        sqlCom.Parameters.AddWithValue("@Estado", reporteActualizado.Estado);
+                        sqlCom.Parameters.AddWithValue("@idTolva", tolvaActualizada.IdTolva);
+                        sqlCom.Parameters.AddWithValue("@id_triturado", tolvaActualizada.IdTriturado);
+                        sqlCom.Parameters.AddWithValue("@horario_inicio", tolvaActualizada.HorarioInicio);
+                        sqlCom.Parameters.AddWithValue("@cantidad_cargada", tolvaActualizada.CantidadCargada);
+                        sqlCom.Parameters.AddWithValue("@tipo_plastico", tolvaActualizada.TipoPlastico);
+                        sqlCom.Parameters.AddWithValue("@proporcion", tolvaActualizada.Proporcion);
+                        sqlCom.Parameters.AddWithValue("@especificaciones", tolvaActualizada.Especificaciones);
 
                         sqlCom.ExecuteNonQuery(); // Ejecutar el comando
                     }
@@ -150,10 +119,9 @@ namespace WebApi_TrazODS.Models
             }
         }
 
-        // Método para eliminar un reporte
-        public void Delete(int id)
+        public void Delete(int idTolva)
         {
-            string sqlSentencia = "SP_EliminarReporte"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "sp_DeleteTolva"; // Nombre del procedimiento almacenado
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
@@ -163,7 +131,7 @@ namespace WebApi_TrazODS.Models
                     using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
                     {
                         sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@Id_reporte", id); // Añadir parámetro
+                        sqlCom.Parameters.AddWithValue("@idTolva", idTolva); // Añadir parámetro
                         sqlCom.ExecuteNonQuery(); // Ejecutar el comando
                     }
                 }
@@ -174,10 +142,9 @@ namespace WebApi_TrazODS.Models
             }
         }
 
-        // Método para verificar si existe un reporte
-        public bool Exists(int id)
+        public bool Exists(int idTolva)
         {
-            string sqlSentencia = "SP_ExisteReporte"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "sp_ExistsTolva"; // Nombre del procedimiento almacenado
             int count = 0;
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
@@ -188,7 +155,7 @@ namespace WebApi_TrazODS.Models
                     using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
                     {
                         sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@Id_reporte", id);
+                        sqlCom.Parameters.AddWithValue("@idTolva", idTolva);
 
                         count = (int)sqlCom.ExecuteScalar(); // Obtener el conteo
                     }
@@ -201,7 +168,6 @@ namespace WebApi_TrazODS.Models
 
             return count > 0; // Retornar true si existe
         }
-
         #endregion
     }
 }

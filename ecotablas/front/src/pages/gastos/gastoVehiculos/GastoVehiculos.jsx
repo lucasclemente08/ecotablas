@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pie, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import SectionLayout from '../../../layout/SectionLayout';
@@ -6,31 +6,110 @@ import TablaHead from '../../../components/Thead';
 import LoadingTable from '../../../components/LoadingTable';
 import AddButton from '../../../components/buttons/addButton';
 import PdfGenerator from '../../../components/buttons/PdfGenerator';
-import { useEffect } from 'react';
-import DeleteButton from '../../../components/buttons/deleteButton';
-import axios from 'axios';
+import DeleteButton from '../../../components/buttons/DeleteButton';
 import DataView from '../../../components/buttons/DataView';
-import { FaChartLine } from "react-icons/fa";
-import { FaChartPie } from "react-icons/fa";
+import { FaChartLine, FaChartPie } from "react-icons/fa";
+import axios from 'axios';
+import builderApiUrl from '../../../utils/BuilderApi';
+import AddModal from '../../../components/AddModal';
+import AddModalWithSelect from '../../../components/AddModalWithSelect';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
 
 const GastoVehiculos = () => {
-  const [showPieChart, setShowPieChart] = useState(true);
-  const [showTable, setShowTable] = useState(true); // Estado para mostrar/ocultar tabla
-  const [selectedYear, setSelectedYear] = useState('2023');
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [modalAbierto, setModalAbierto] = useState(false);
-  const [dataV, setDataV] = useState([]);
-  const [dataView, setDataview] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  const abrirModal = () => {
-    setModalAbierto(true);
+  const [showPieChart, setShowPieChart] = useState(true);
+  const [showTable, setShowTable] = useState(true); 
+  const [dataV, setDataV] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [trucks, setTrucks] = useState([]); 
+  const [ModalAbierto,setModalAbierto] = useState(false);
+  const [modalEdit, setModalEdit] = useState(false);
+  const [mensaje, setMensaje] = useState("");
+
+
+
+  const [formValues, setFormValues] = useState({
+    TipoComprobante: "",
+    Comprobante: "",
+    TipoGasto: "",
+    IdVehiculo: "", // ID del vehículo seleccionado
+    Proveedor: "",
+    Monto: "",
+    Fecha: "", // Cambiar a un formato de fecha adecuado
+    Descripcion: "",
+  });
+  
+
+
+  const abrirModal = () => setModalAbierto(true);
+  const cerrarModal = () => setModalAbierto(false);
+  // const URL_gastos = builderApiUrl("http://localhost:61274/api/GastoVehiculos/ListarTodo");
+  const URL_trucks = builderApiUrl("Vehiculos/ListarTodo");
+
+
+  const fetchMaterials = () => {
+    setLoading(true); 
+    axios.get("http://localhost:61274/api/GastoVehiculos/ListarTodo")
+      .then((response) => {
+        setDataV(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      })
+      .finally(() => {
+        setLoading(false); 
+      });
   };
-  const cerrarModal = () => {
-    setModalAbierto(false);
+
+  const fetchTrucks = () => {
+    axios.get(URL_trucks)
+      .then((response) => {
+        setTrucks(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching trucks:', error);
+      });
   };
+
+
+  useEffect(() => {
+    fetchTrucks();
+    fetchMaterials();
+  }, []);
+
+
+  const getVehicleById = (id) => {
+    const vehicle = trucks.find((vehicle) => vehicle.IdVehiculo === id);
+    return vehicle ? `${vehicle.Modelo} (${vehicle.Tipo})` : "Vehículo no disponible";
+  };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  
+  // Función para enviar el formulario
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Lógica para enviar los datos al servidor
+    axios.post("http://localhost:61274/api/GastoVehiculos/CrearGastoVehiculo", formValues)
+      .then((response) => {
+        setMensaje("Gasto agregado con éxito");
+        fetchMaterials(); // Para actualizar la tabla después de agregar el gasto
+        cerrarModal(); // Cerrar el modal después de agregar
+      })
+      .catch((error) => {
+        console.error('Error al agregar el gasto:', error);
+        setMensaje("Error al agregar el gasto");
+      });
+  };
+  
+
+
+  
 
   const pieData = {
     labels: ['Combustible', 'Mantenimiento', 'Seguro'],
@@ -45,20 +124,7 @@ const GastoVehiculos = () => {
   };
 
   const lineData = {
-    labels: [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre',
-    ],
+    labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     datasets: [
       {
         label: 'Combustible',
@@ -86,137 +152,105 @@ const GastoVehiculos = () => {
       },
     ],
   };
-
-  const pieOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-  };
-
-  const lineOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
+  const fields = [
+    {
+      name: "TipoComprobante",
+      label: "Tipo de Comprobante",
+      type: "text",
+      required: true,
     },
-  };
+    {
+      name: "Comprobante",
+      label: "Comprobante",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "TipoGasto",
+      label: "Tipo de Gasto",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "IdVehiculo",
+      label: "Vehículo",
+      type: "select", 
+      options: trucks, 
+      required: true,
+    },
+    {
+      name: "Proveedor",
+      label: "Proveedor",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "Monto",
+      label: "Monto",
+      type: "number",
+      required: true,
+    },
+    {
+      name: "Fecha",
+      label: "Fecha",
+      type: "date",
+      required: true,
+    },
+    {
+      name: "Descripcion",
+      label: "Descripción",
+      type: "textarea",
+      required: true,
+    },
+  ];
+  
+  // Opciones de configuración de gráficos
+  const pieOptions = { responsive: true, maintainAspectRatio: false };
+  const lineOptions = { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } };
+
+  // Manejar mostrar tabla
   const handleShowTable = () => {
     setShowTable(true);
-    setShowPieChart(false); // Ocultar gráficos
+    setShowPieChart(false);
   };
 
-  const data = [
-    {
-      tipoGasto: 'Combustible',
-      tipoComprobante: 'Factura',
-      comprobante: '12345',
-      proveedor: 'YPF',
-      monto: '1200',
-      fecha: '2023-01-15',
-      descripcion: 'Carga de combustible en estación YPF',
-    },
-    {
-      tipoGasto: 'Mantenimiento',
-      tipoComprobante: 'Factura',
-      comprobante: '23456',
-      proveedor: 'Taller Mecánico',
-      monto: '800',
-      fecha: '2023-02-10',
-      descripcion: 'Cambio de aceite y filtros',
-    },
-    {
-      tipoGasto: 'Seguro',
-      tipoComprobante: 'Recibo',
-      comprobante: '34567',
-      proveedor: 'La Caja Seguros',
-      monto: '400',
-      fecha: '2023-03-22',
-      descripcion: 'Pago mensual de seguro vehicular',
-    },
-  ];
-
-  const OpenDataview = () => {
-    setDataview(true);
-  };
-
-  const fetchMaterials = () => {
-    setLoading(true); 
-    axios
-      .get(data)
-      .then((response) => {
-        setDataV(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      })
-      .finally(() => {
-        setLoading(false); 
-      });
-  };
-
-  useEffect(() => {
-    fetchMaterials();
-  }, []);
-
-  const columns = [
-    { header: 'Tipo de Gasto', dataKey: 'tipoGasto' },
-    { header: 'tipo de comprobante', dataKey: 'tipoComprobante' },
-    { header: 'Comprobante', dataKey: 'comprobante' },
-    { header: 'Proveedor', dataKey: 'proveedor' },
-    { header: 'Monto ($)', dataKey: 'monto' },
-    { header: 'Fecha', dataKey: 'fecha' },
-    { header: 'Descripción', dataKey: 'descripcion' },
-  ];
-
-  const titles = [
-    'Tipo de comprobante',
-    'Comprobante',
-    'Tipo de gasto',
-    'Proveedor',
-    'Monto ($)',
-    'Fecha',
-    'Descripción',
-    'Acciones',
-  ];
+  const titles = ['Tipo de comprobante', 'Comprobante', 'Tipo de gasto', 'Vehículo', 'Proveedor', 'Monto ($)', 'Fecha', 'Descripción', 'Acciones'];
 
   return (
     <SectionLayout title="Gastos de Vehículos">
-      {/* Botones para cambiar entre los gráficos y las tablas */}
-      <div className="flex items-center align-middle">
+      <div className="flex items-center">
         <AddButton abrirModal={abrirModal} title="Añadir gastos" />
-        <PdfGenerator columns={columns} data={data} title="Reporte de gastos" />
+        <PdfGenerator columns={titles} data={dataV} title="Reporte de gastos" />
         <DataView ShowTable={handleShowTable} />
+
+        {ModalAbierto && (
+          <AddModalWithSelect
+            title="Agregar Reporte"
+            fields={fields}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            cerrarModal={cerrarModal}
+            values={formValues}
+          />
+        )}
 
         <button
           aria-label="Ver gráfico circular"
-          className={`p-2   ml-2 mt-2 mb-5 font-bold rounded text-white flex items-center justify-center ${showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
-          onClick={() => {
-            setShowPieChart(true);
-            setShowTable(false);
-          }}
+          className={`p-2 ml-2 mt-2 mb-5 font-bold rounded text-white ${showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
+          onClick={() => { setShowPieChart(true); setShowTable(false); }}
         >
           Ver Gráfico Circular <FaChartPie className="ml-2" />
         </button>
 
         <button
-          className={`  p-2  mt-2 mb-5  ml-2 font-bold rounded text-white flex items-center justify-center ${!showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
-          onClick={() => {
-            setShowPieChart(false);
-            setShowTable(false);
-          }}
+          className={`p-2 mt-2 mb-5 ml-2 font-bold rounded text-white ${!showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
+          onClick={() => { setShowPieChart(false); setShowTable(false); }}
         >
           Ver Gráfico de Líneas <FaChartLine className="ml-2" />
         </button>
       </div>
 
-       
-
-      
-
-      
-
-      {/* Renderizado condicional para la tabla y los gráficos */}
+      {/* Renderizado condicional de la tabla o gráficos */}
       {showTable ? (
         loading ? (
           <LoadingTable loading={loading} />
@@ -224,15 +258,16 @@ const GastoVehiculos = () => {
           <table className="min-w-full bg-white rounded-lg shadow-md">
             <TablaHead titles={titles} />
             <tbody>
-              {data.map((item, index) => (
+              {dataV.map((item, index) => (
                 <tr key={index} className="hover:bg-gray-100">
-                  <td className="border-b py-3 px-4">{item.tipoGasto}</td>
-                  <td className="border-b py-3 px-4">{item.tipoComprobante}</td>
-                  <td className="border-b py-3 px-4">{item.tipoGasto}</td>
-                  <td className="border-b py-3 px-4">{item.proveedor}</td>
-                  <td className="border-b py-3 px-4">{item.monto}</td>
-                  <td className="border-b py-3 px-4">{item.fecha}</td>
-                  <td className="border-b py-3 px-4">{item.descripcion}</td>
+                  <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
+                  <td className="border-b py-3 px-4">{item.Comprobante}</td>
+                  <td className="border-b py-3 px-4">{item.TipoGasto}</td>
+                  <td className="border-b py-3 px-4">{getVehicleById(item.IdVehiculo)}</td>
+                  <td className="border-b py-3 px-4">{item.Proveedor}</td>
+                  <td className="border-b py-3 px-4">{item.Monto}</td>
+                  <td className="border-b py-3 px-4">{item.Fecha.slice(0,10)}</td>
+                  <td className="border-b py-3 px-4">{item.Descripcion}</td>
                   <td className="border-b py-3 px-4">
                     <DeleteButton />
                   </td>
@@ -254,4 +289,4 @@ const GastoVehiculos = () => {
   );
 };
 
-export default GastoVehiculos;
+export default GastoVehiculos

@@ -7,7 +7,7 @@ import PdfGenerator from '../../../components/buttons/PdfGenerator';
 import axios from 'axios';
 import { BsClipboardDataFill } from "react-icons/bs";
 import DataView from '../../../components/buttons/DataView';
-import DeleteButton from '../../../components/buttons/deleteButton';
+import DeleteButton from '../../../components/buttons/DeleteButton';
 
 const GastoMaquinaria = () => {
   const [dataM, setDataM] = useState([]);
@@ -23,6 +23,7 @@ const GastoMaquinaria = () => {
     {
       tipoGasto: 'Reparación',
       tipoComprobante: 'Factura',
+      id_maquinaria: 1,
       comprobante: '123456',
       proveedor: 'Taller Industrial',
       monto: '5000',
@@ -32,6 +33,7 @@ const GastoMaquinaria = () => {
     {
       tipoGasto: 'Mantenimiento',
       tipoComprobante: 'Factura',
+      id_maquinaria: 2,
       comprobante: '654321',
       proveedor: 'Proveedor de Repuestos',
       monto: '3000',
@@ -41,13 +43,25 @@ const GastoMaquinaria = () => {
     {
       tipoGasto: 'Seguro',
       tipoComprobante: 'Recibo',
+      id_maquinaria: 2,
       comprobante: '987654',
       proveedor: 'Seguros Rurales',
       monto: '1200',
       fecha: '2023-09-22',
       descripcion: 'Pago anual del seguro de maquinaria',
     },
+    {
+      tipoGasto: 'Combustible',
+      tipoComprobante: 'Boleta',
+      id_maquinaria: 2,
+      comprobante: '789123',
+      proveedor: 'Estación de Servicio',
+      monto: '1500',
+      fecha: '2023-10-10',
+      descripcion: 'Carga de combustible para tractor',
+    },
   ];
+  
 const OpenDataview=() => {
   setDataview(true)
 }
