@@ -69,11 +69,6 @@ const GastoMaquinaria = () => {
     calculatePieData();
   }, [dataM]);
 
-  const handleDelete = (id) => {
-    dispatch(deleteGasto(id)).then(() => {
-      dispatch(fetchGastos());
-    });
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -125,7 +120,7 @@ const GastoMaquinaria = () => {
     axios.get("http://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo")
       .then((response) => {
         setMaquinaria(response.data);
-        c
+        
       })
       .catch((error) => {
         console.error('Error fetching trucks:', error);
@@ -153,8 +148,6 @@ const GastoMaquinaria = () => {
     { name: "comprobante", label: "Comprobante", type: "text", required: true },
     { name: "proveedor", label: "Proveedor", type: "text", required: true },
     { name: "Id_Maquinaria", label: "Maquinaria", type: "select", options:optionsMaquinaria, required: true },
-
-
     { name: "monto", label: "Monto ($)", type: "number", required: true },
     { name: "fecha", label: "Fecha", type: "date", required: true },
     { name: "descripcion", label: "Descripción", type: "textarea", required: true },
@@ -166,7 +159,6 @@ const GastoMaquinaria = () => {
         <AddButton abrirModal={() => setModalAbierto(true)} title="Añadir Gasto de Maquinaria" />
         <PdfGenerator columns={columns} data={dataM} title="Reporte de Gastos de Maquinaria" />
         <DataView abrirModal={() => setDataView(true)} />
-      </div>
 
       <button
           aria-label="Ver gráfico circular"
@@ -175,8 +167,9 @@ const GastoMaquinaria = () => {
         >
           Ver Gráfico Circular <FaChartPie className="ml-2" />
         </button>
+        </div>
 
-      {/* {dataView && <DataViewModal data={dataM} columns={columns} cerrarModal={() => setDataView(false)} />} */}
+
       {modalAbierto && (
         <AddModalWithSelect
           title="Agregar Gasto de Maquinaria"
