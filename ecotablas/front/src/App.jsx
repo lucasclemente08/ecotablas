@@ -61,7 +61,7 @@ const routesConfig = [
   { path: "/tolva", element: <Tolva />, protected: true },
   { path: "/reparaciones", element: <Reparaciones/>, protected: true},
 
-  { path: "/lavado", element: <LavadoMaterial />, protected: true },
+  // { path: "/lavado", element: <LavadoMaterial />, protected: true },
   { path: "/tablas", element: <TablasProducidas />, protected: true },
   { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true },
   { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true },

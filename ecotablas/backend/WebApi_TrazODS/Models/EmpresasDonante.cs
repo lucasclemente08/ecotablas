@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -7,16 +8,11 @@ namespace WebApi_TrazODS.Models
     public class EmpresaDonante
     {
         #region Atributos
-        private readonly string connectionString;
-
-        public EmpresaDonante()
-        {
-            connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
-        }
+        string connectionString = @"Data Source=Ecotablas-Db.mssql.somee.com;Initial Catalog=Ecotablas-Db;User ID=lucasclemente08_SQLLogin_1;Password=apqjzszydf";
         #endregion
 
         #region Propiedades
-        public int Id_empresaDonante { get; set; } // Cambié el nombre a Id_empresaDonante según tus instrucciones
+        public int IdEmpresaDonante { get; set; } // Cambié el nombre a IdEmpresaDonante siguiendo el formato
         public string CUIT { get; set; }
         public string Nombre { get; set; }
         public string Direccion { get; set; }
@@ -29,66 +25,34 @@ namespace WebApi_TrazODS.Models
         #endregion
 
         #region Métodos
+
         // Método para obtener todas las empresas donantes
         public DataTable SelectAll()
         {
             string sqlSentencia = "SP_ObtenerEmpresasDonantes"; // Procedimiento almacenado
-            DataTable dataTable = new DataTable();
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
 
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
 
-                        using (SqlDataAdapter da = new SqlDataAdapter(sqlCom))
-                        {
-                            da.Fill(dataTable);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
+            sqlCnn.Open();
 
-            return dataTable; // Retornar el DataTable con todas las empresas donantes
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+
+            DataSet ds = new DataSet();
+
+            SqlDataAdapter da = new SqlDataAdapter();
+            da.SelectCommand = sqlCom;
+            da.Fill(ds);
+
+
+
+            sqlCnn.Close();
+
+
+            return ds.Tables[0];
         }
 
-        // Método para obtener una empresa donante por su ID
-        public DataTable SelectById(int id)
-        {
-            string sqlSentencia = "SP_ObtenerEmpresaDonantePorId"; // Procedimiento almacenado
-            DataTable dataTable = new DataTable();
-
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@Id", id);
-
-                        using (SqlDataAdapter da = new SqlDataAdapter(sqlCom))
-                        {
-                            da.Fill(dataTable);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-
-            return dataTable; // Retornar el DataTable con la empresa donante por ID
-        }
 
         // Método para insertar una nueva empresa donante
         public void Insert(EmpresaDonante nuevaEmpresa)
@@ -140,7 +104,7 @@ namespace WebApi_TrazODS.Models
                         sqlCom.CommandType = CommandType.StoredProcedure;
 
                         // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@Id", empresaActualizada.Id_empresaDonante); // Cambié a Id_empresaDonante
+                        sqlCom.Parameters.AddWithValue("@Id", empresaActualizada.IdEmpresaDonante);
                         sqlCom.Parameters.AddWithValue("@CUIT", empresaActualizada.CUIT);
                         sqlCom.Parameters.AddWithValue("@Nombre", empresaActualizada.Nombre);
                         sqlCom.Parameters.AddWithValue("@Direccion", empresaActualizada.Direccion);
@@ -185,9 +149,11 @@ namespace WebApi_TrazODS.Models
                 }
             }
         }
+
+        // Método para verificar si una empresa donante existe
         public bool Exists(int id)
         {
-            string sqlSentencia = "SP_VerificarEmpresaDonante"; // Procedimiento almacenado para verificar existencia
+            string sqlSentencia = "SP_VerificarEmpresaDonante"; // Procedimiento almacenado
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
@@ -199,14 +165,13 @@ namespace WebApi_TrazODS.Models
                         sqlCom.CommandType = CommandType.StoredProcedure;
                         sqlCom.Parameters.AddWithValue("@Id", id);
 
-                        // Devuelve true si existe al menos una fila, false de lo contrario
-                        return Convert.ToBoolean(sqlCom.ExecuteScalar());
+                        return Convert.ToBoolean(sqlCom.ExecuteScalar()); // Verificar si existe
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    return false; // Retorna false en caso de error
+                    return false;
                 }
             }
         }

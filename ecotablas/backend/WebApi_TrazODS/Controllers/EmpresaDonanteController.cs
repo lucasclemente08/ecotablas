@@ -1,134 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Newtonsoft.Json;
 using WebApi_TrazODS.Models;
 
 namespace WebApi_TrazODS.Controllers
 {
-    public class EmpresasDonantesController : ApiController
+    public class EmpresaDonanteController : ApiController
     {
-        private readonly EmpresaDonante _empresasDonantes;
-
-        public EmpresasDonantesController()
+        // GET: api/EmpresaDonante
+        [HttpGet]
+        public List<EmpresaDonante> ListarTodo()
         {
-            _empresasDonantes = new EmpresaDonante(); // Inicializar la clase del modelo
+            EmpresaDonante empresaDonante = new EmpresaDonante();
+            DataTable dt = empresaDonante.SelectAll();
+
+            var listaJson = JsonConvert.SerializeObject(dt);
+            var lista = JsonConvert.DeserializeObject<List<EmpresaDonante>>(listaJson);
+
+            return lista;
         }
 
-        // GET: api/empresasdonantes
-        [HttpGet]
-        public IHttpActionResult ListarTodo()
+
+        // POST: api/EmpresaDonante
+        [HttpPost]
+        public void Insertar([FromBody] EmpresaDonante value)
         {
-            DataTable dt = _empresasDonantes.SelectAll();
-
-            if (dt.Rows.Count == 0)
+            EmpresaDonante empresaDonante = new EmpresaDonante
             {
-                return NotFound(); // Si no hay empresas donantes, devuelve 404
-            }
-
-            var listaEmpresasDonantes = new List<EmpresaDonante>();
-            foreach (DataRow row in dt.Rows)
-            {
-                listaEmpresasDonantes.Add(new EmpresaDonante
-                {
-                    Id_empresaDonante = Convert.ToInt32(row["Id_empresaDonante"]),
-                    CUIT = row["CUIT"].ToString(), // Cambié a CUIT
-                    Nombre = row["Nombre"].ToString(),
-                    Direccion = row["Direccion"].ToString(),
-                    Telefono = row["Telefono"].ToString(),
-                    Email = row["Email"].ToString(),
-                    TipoPlastico = row["TipoPlastico"].ToString(), // Añadido según la clase
-                    Rubro = row["Rubro"].ToString(), // Añadido según la clase
-                    DonacionesDisponibles = row["DonacionesDisponibles"].ToString(), // Añadido según la clase
-                    Web = row["Web"].ToString() // Añadido según la clase
-                });
-            }
-
-            return Ok(listaEmpresasDonantes); // Devuelve la lista de empresas donantes
-        }
-
-        // GET: api/empresasdonantes/{id}
-        [HttpGet]
-        [Route("api/empresasdonantes/{id:int}")]
-        public IHttpActionResult ObtenerEmpresaDonante(int id)
-        {
-            DataTable dt = _empresasDonantes.SelectById(id);
-
-            if (dt.Rows.Count == 0)
-            {
-                return NotFound(); // Si no se encuentra la empresa, devuelve 404
-            }
-
-            DataRow row = dt.Rows[0];
-            var empresaDonante = new EmpresaDonante
-            {
-                Id_empresaDonante = Convert.ToInt32(row["Id_empresaDonante"]),
-                CUIT = row["CUIT"].ToString(), // Cambié a CUIT
-                Nombre = row["Nombre"].ToString(),
-                Direccion = row["Direccion"].ToString(),
-                Telefono = row["Telefono"].ToString(),
-                Email = row["Email"].ToString(),
-                TipoPlastico = row["TipoPlastico"].ToString(), // Añadido según la clase
-                Rubro = row["Rubro"].ToString(), // Añadido según la clase
-                DonacionesDisponibles = row["DonacionesDisponibles"].ToString(), // Añadido según la clase
-                Web = row["Web"].ToString() // Añadido según la clase
+                CUIT = value.CUIT,
+                Nombre = value.Nombre,
+                Direccion = value.Direccion,
+                Telefono = value.Telefono,
+                Email = value.Email,
+                TipoPlastico = value.TipoPlastico,
+                Rubro = value.Rubro,
+                DonacionesDisponibles = value.DonacionesDisponibles,
+                Web = value.Web
             };
 
-            return Ok(empresaDonante); // Devuelve la empresa donante encontrada
+            empresaDonante.Insert(empresaDonante);
         }
 
-        // POST: api/empresasdonantes
-        [HttpPost]
-        public IHttpActionResult CrearEmpresaDonante([FromBody] EmpresaDonante nuevaEmpresa)
-        {
-            if (nuevaEmpresa == null || !ModelState.IsValid)
-            {
-                return BadRequest(ModelState); // Manejo de errores de modelo
-            }
-
-            // Lógica para agregar la nueva empresa donante a la base de datos
-            _empresasDonantes.Insert(nuevaEmpresa);
-
-            return CreatedAtRoute("DefaultApi", new { id = nuevaEmpresa.Id_empresaDonante }, nuevaEmpresa); // Devuelve 201 Created
-        }
-
-        // PUT: api/empresasdonantes/{id}
+        // PUT: api/EmpresaDonante/{id}
         [HttpPut]
-        [Route("api/empresasdonantes/{id:int}")]
-        public IHttpActionResult ActualizarEmpresaDonante(int id, [FromBody] EmpresaDonante empresaActualizada)
+        public void Modificar(int id, [FromBody] EmpresaDonante value)
         {
-            if (empresaActualizada == null || !ModelState.IsValid)
+            EmpresaDonante empresaDonante = new EmpresaDonante
             {
-                return BadRequest(ModelState); // Manejo de errores de modelo
-            }
+                IdEmpresaDonante = id,
+                CUIT = value.CUIT,
+                Nombre = value.Nombre,
+                Direccion = value.Direccion,
+                Telefono = value.Telefono,
+                Email = value.Email,
+                TipoPlastico = value.TipoPlastico,
+                Rubro = value.Rubro,
+                DonacionesDisponibles = value.DonacionesDisponibles,
+                Web = value.Web
+            };
 
-            // Aquí se asume que debes tener un método Exists() en tu modelo para verificar si la empresa existe
-            if (!_empresasDonantes.Exists(id))
-            {
-                return NotFound(); // Si no se encuentra la empresa, devuelve 404
-            }
-
-            empresaActualizada.Id_empresaDonante = id;
-            _empresasDonantes.Update(empresaActualizada);
-
-            return StatusCode(HttpStatusCode.NoContent); // Devuelve 204 No Content
+            empresaDonante.Update(empresaDonante);
         }
 
-        // DELETE: api/empresasdonantes/{id}
+        // DELETE: api/EmpresaDonante/{id}
         [HttpDelete]
-        [Route("api/empresasdonantes/{id:int}")]
-        public IHttpActionResult EliminarEmpresaDonante(int id)
+        public void Borrar(int id)
         {
-            // Aquí se asume que debes tener un método Exists() en tu modelo para verificar si la empresa existe
-            if (!_empresasDonantes.Exists(id))
-            {
-                return NotFound(); // Si no se encuentra la empresa, devuelve 404
-            }
-
-            _empresasDonantes.Delete(id);
-            return StatusCode(HttpStatusCode.NoContent); // Devuelve 204 No Content
+            EmpresaDonante empresaDonante = new EmpresaDonante();
+            empresaDonante.Delete(id);
         }
     }
 }

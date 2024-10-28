@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/buttons/addButton";
+import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -8,25 +8,41 @@ import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
 import LoadingTable from "../../components/LoadingTable";
 import NextButton from "../../components/buttons/NextButton";
+import NextModal from "../../components/NextModal";
+import { useSelector, useDispatch } from "react-redux";
+import {addTolva} from "../../features/tolvaSlice";
+
 import ReportButton from "../../components/buttons/ReportButton";
 import {
   getAllMaterials,
   addMaterial,
   editMaterial,
 } from "../../api/materialTritAPI";
+import { Await } from "react-router-dom";
 
 const MaterialTrit = () => {
+
+  const dispatch = useDispatch();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [materialId, setMaterialId] = useState(null);
   const [modalEdit, setModalEdit] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [modalAbiertoNext,setModalAbiertoNext] = useState(false);
 
   const [formValues, setFormValues] = useState({
     VolumenT: "",
     Fecha: "",
     IdMaterialClasificado: "",
+  });
+  const [formValuesTolva, setFormValuesTolva] = useState({
+    IdMaterialTriturado:"",
+    HorarioInicio: "",
+    CantidadCargada: "",
+    TipoPlastico: "",
+    Proporcion: "",
+    Especificaciones: "",
   });
 
   const abrirModalEdit = (material) => {
@@ -41,6 +57,17 @@ const MaterialTrit = () => {
 
   const cerrarModalEdit = () => setModalEdit(false);
 
+  const abrirModalNext = (material) => {
+    setFormValuesTolva((prevState) => ({
+      ...prevState,
+      IdMaterialTriturado: material.IdMaterialTriturado,
+    }));
+    setModalAbiertoNext(true);
+  };
+  
+  const cerrarModalNext=()=>{
+    setModalAbiertoNext(false);
+  }
   const abrirModal = () => {
     setModalAbierto(true);
   };
@@ -111,6 +138,15 @@ const MaterialTrit = () => {
     }));
   };
 
+  const handleChangeTolva = (e) => {
+    const { name, value } = e.target;
+    setFormValuesTolva((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+
+  };
+
   const title = ["Volumen", "Fecha de ingreso", "Acciones"];
 
   const columns = [
@@ -138,6 +174,9 @@ const MaterialTrit = () => {
       placeholder: "Material Triturado *",
     },
   ];
+  
+
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
@@ -158,6 +197,31 @@ const MaterialTrit = () => {
   );
   const totalItems = materials.length;
 
+  const handleSubmitNext = async (e) => {
+    e.preventDefault(); 
+  
+    if (!formValuesTolva.HorarioInicio || !formValuesTolva.CantidadCargada) {
+      console.error("Por favor completa todos los campos requeridos");
+      return;
+    }
+   
+   await dispatch(addTolva(formValuesTolva)); 
+   axios.delet
+   
+   cerrarModalNext(); 
+   setMensaje("Material pasado a extrucción/tolva correctamente");
+    
+  };
+  
+
+
+  const optionsTipoPlastico = [
+    { value: 'Unico', label: 'Tipo-Único' },
+    { value: 'Mescla', label: 'Tipo-Mezcla' },
+    // ... otras opciones
+  ];
+
+
   return (
     <>
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
@@ -176,12 +240,14 @@ const MaterialTrit = () => {
             data={materials}
             title="Reporte de Materiales triturado"
           />
-          <ReportButton />
+
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
               {mensaje}
             </div>
           )}
+
+         
           {modalAbierto && (
             <AddModal
               title="Agregar Material Triturado"
@@ -234,7 +300,34 @@ const MaterialTrit = () => {
                     <td
                       className={`border-b py-2 px-4 flex justify-center ${modalAbierto ? "hidden" : ""}`}
                     >
-                      <NextButton />
+                   <NextButton abrirModal={() => abrirModalNext(material)} />
+
+                      {modalAbiertoNext &&
+          <NextModal title="Pasar a Extrucción/tolva"
+          id={material.IdMaterialTriturado}
+          fields={[
+           
+            { name: "IdMaterialTriturado", label: "ID Material triturado (Id no modificable)", type: "text", },
+
+            { name: "HorarioInicio", label: "Horario de inicio", type: "datetime-local" },
+            { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
+            { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
+            { name: "Proporcion", label: "Proporción cargada", type: "number" },
+            { name: "Especificaciones", label: "Especificaciones", type: "text" },
+          ]}
+            handleSubmitNext={handleSubmitNext}
+            handleChangeNext={handleChangeTolva}
+            cerrarModal={cerrarModalNext}
+          values={formValuesTolva}
+          />
+
+          }
+
+
+
+
+
+                      
                       <button
                         onClick={() => abrirModalEdit(material)}
                         className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
