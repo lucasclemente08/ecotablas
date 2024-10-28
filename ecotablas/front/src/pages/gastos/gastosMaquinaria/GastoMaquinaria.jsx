@@ -152,13 +152,19 @@ const GastoMaquinaria = () => {
     { name: "fecha", label: "Fecha", type: "date", required: true },
     { name: "descripcion", label: "Descripción", type: "textarea", required: true },
   ];
+  
+  const handleShowTable = () => {
+    setShowTable(true);
+    setShowPieChart(false);
+  };
+
 
   return (
     <SectionLayout title="Gasto de Maquinaria">
       <div className="flex">
         <AddButton abrirModal={() => setModalAbierto(true)} title="Añadir Gasto de Maquinaria" />
         <PdfGenerator columns={columns} data={dataM} title="Reporte de Gastos de Maquinaria" />
-        <DataView abrirModal={() => setDataView(true)} />
+        <DataView ShowTable={handleShowTable}f/>
 
       <button
           aria-label="Ver gráfico circular"
@@ -167,7 +173,7 @@ const GastoMaquinaria = () => {
         >
           Ver Gráfico Circular <FaChartPie className="ml-2" />
         </button>
-        </div>
+      </div>
 
 
       {modalAbierto && (
