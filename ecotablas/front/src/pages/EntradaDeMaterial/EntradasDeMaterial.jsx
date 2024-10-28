@@ -12,6 +12,15 @@ import NextButton from "../../components/buttons/NextButton";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
+import {
+  getAllMaterialClas,
+  addMaterialClas,
+  editMaterialClas,
+} from "../../api/MaterialClasAPI";
+import {
+editIngresoMat,
+} from "../../api/IngresoMaterialAPI";
+
 const EntradasDeMaterial = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -19,12 +28,21 @@ const EntradasDeMaterial = () => {
   const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
   const [materialId, setMaterialId] = useState(null);
+  const [modalClasificado, setModalClasificado] = useState(false); 
 
   const [formValues, setFormValues] = useState({
     VolumenM: "",
     VolumenMInutil: "",
     FechaIngresoM: "",
     IdTipoPlastico: "",
+    Estado: 1,
+  });
+
+  const [clasificacionValues, setClasificacionValues] = useState({
+    VolumenUtil: "",
+    VolumenInutil: "",
+    FechaC: "",
+    IdIngresoMaterial: "",
   });
 
   const [dateRange, setDateRange] = useState({
@@ -60,7 +78,7 @@ const EntradasDeMaterial = () => {
   const handleSubmit = () => {
     axios
       .post(
-        "http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Insertar",
+        "http://localhost:61274/api/IngresoMat/Insertar",
         formValues,
       )
       .then(() => {
@@ -83,7 +101,7 @@ const EntradasDeMaterial = () => {
 
     axios
       .put(
-        `http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Modificar/${materialId}`,
+        `http://localhost:61274/api/IngresoMat/Modificar/${materialId}`,
         formValues,
       )
       .then(() => {
@@ -96,6 +114,51 @@ const EntradasDeMaterial = () => {
       );
   };
 
+  const abrirModalClasificado = (id) => {
+    const fechaActual = new Date().toISOString();
+    setMaterialId(id);
+    setClasificacionValues({ ...clasificacionValues, FechaC: fechaActual, IdIngresoMaterial: id });
+    setModalClasificado(true);
+  };
+
+  const cerrarModalClasificado = () => setModalClasificado(false);
+
+  const validateClasificadoForm = () => {
+    let isValid = true;
+    if (!clasificacionValues.VolumenUtil) {
+      setMensaje("El volumen util es obligatorio.");
+      isValid = false;
+    } else if (!clasificacionValues.VolumenInutil) {
+      setMensaje("El volumen inutil es obligatorio.");
+      isValid = false;
+    } 
+    return isValid;
+  };
+
+  const handleSubmitClasificado = async () => {
+    if (!validateClasificadoForm()) return;
+  
+    try {
+      await addMaterialClas(clasificacionValues);
+      setMensaje("Lote enviado a clasificación");
+  
+      // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
+      const materialActualizado = {
+        ...materials.find((m) => m.IdIngresoMaterial === materialId),
+        Estado: 2, // Establecer el estado a 3 (en reparación)
+      };
+  
+      await editIngresoMat(materialId, materialActualizado);
+  
+      setModalClasificado(false);
+      fetchMaterials(); // Refrescar la lista para mostrar cambios
+    } catch (error) {
+      setMensaje("Error al terminar el proceso.");
+      console.error("Error al terminar el proceso:", error);
+    }
+  };
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prevState) => ({
@@ -104,11 +167,20 @@ const EntradasDeMaterial = () => {
     }));
   };
 
+  const handleChangeClasificado = (e) => {
+    const { name, value } = e.target;
+    setClasificacionValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+
   const fetchMaterials = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://www.trazabilidadodsapi.somee.com/api/IngresoMat/ListarTodo",
+        "http://localhost:61274/api/IngresoMat/ListarTodo",
       );
       setMaterials(response.data);
     } catch (error) {
@@ -211,6 +283,20 @@ const EntradasDeMaterial = () => {
           />
         )}
 
+        {modalClasificado && (
+            <AddModal
+              title="Enviar lote a clasificación"
+              fields={[
+                { name: "VolumenUtil", label: "Volumen Util", type: "number", placeholder: "Volumen Util *" },
+                { name: "VolumenInutil", label: "Volumen Inutil", type: "number", placeholder: "Volumen Inutil *" }
+              ]}
+              handleChange={handleChangeClasificado}
+              handleSubmit={handleSubmitClasificado}
+              cerrarModal={cerrarModalClasificado}
+              values={clasificacionValues}
+            />
+          )}
+
         <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
           <h5>
             <span class="text-gray-400">Total de materiales ingresados:</span>
@@ -252,13 +338,19 @@ const EntradasDeMaterial = () => {
                       modalEdit || modalAbierto ? "hidden" : ""
                     }`}
                   >
-                    <NextButton />
+                    <NextButton  />
                     <button
                       className="bg-yellow-600 ml-2 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       onClick={() => abrirModalEdit(material)}
                     >
                       Modificar
                     </button>
+                    <button
+                        onClick={() => abrirModalClasificado(material.IdIngresoMaterial)}
+                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        Terminado
+                      </button>
                     <DeleteButton
                       id={material.IdIngresoMaterial}
                       endpoint="http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Borrar"

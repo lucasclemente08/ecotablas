@@ -14,7 +14,7 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement, Filler);
 
 const VolumenIngresadoChart = ({ dateRange }) => {
   const [volumenData, setVolumenData] = useState({
-    VolumenIngrsoMaterial: 0,
+    VolumenIngresoMaterial: 0,
     VolumenMInutil: 0,
   });
   const [activeSegment, setActiveSegment] = useState(null);

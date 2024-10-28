@@ -56,6 +56,7 @@ namespace WebApi_TrazODS.Controllers
             oIngresoMat.FechaIngresoM = value.FechaIngresoM;
             oIngresoMat.IdTipoPlastico = value.IdTipoPlastico;
             oIngresoMat.VolumenMInutil = value.VolumenMInutil;
+            oIngresoMat.Estado = value.Estado;
 
 
 
@@ -74,6 +75,7 @@ namespace WebApi_TrazODS.Controllers
             oIngresoMat.FechaIngresoM = value.FechaIngresoM;
             oIngresoMat.IdTipoPlastico = value.IdTipoPlastico;
             oIngresoMat.VolumenMInutil = value.VolumenMInutil;
+            oIngresoMat.Estado = value.Estado;
 
             oIngresoMat.Update();
 
