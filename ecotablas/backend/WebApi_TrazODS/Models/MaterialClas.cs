@@ -27,6 +27,8 @@ namespace WebApi_TrazODS.Models
         public string FechaC { get; set; }
         public int IdIngresoMaterial { get; set; }
 
+        public int Estado { get; set; }
+
         #endregion
 
         #region Metodos
@@ -112,6 +114,7 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@VolumenInutil", SqlDbType.Int).Value = VolumenInutil;
             sqlCom.Parameters.Add("FechaC", SqlDbType.NVarChar).Value = FechaC;
             sqlCom.Parameters.Add("@IdIngresoMaterial", SqlDbType.Int).Value = IdIngresoMaterial;
+            sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
 
 
             sqlCnn.Open();
@@ -147,6 +150,7 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@VolumenInutil", SqlDbType.Int).Value = VolumenInutil;
             sqlCom.Parameters.Add("FechaC", SqlDbType.NVarChar).Value = FechaC;
             sqlCom.Parameters.Add("@IdIngresoMaterial", SqlDbType.Int).Value = IdIngresoMaterial;
+            sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
 
 
             sqlCnn.Open();

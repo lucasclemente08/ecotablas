@@ -206,7 +206,6 @@ const MaterialTrit = () => {
     }
    
    await dispatch(addTolva(formValuesTolva)); 
-   axios.delet
    
    cerrarModalNext(); 
    setMensaje("Material pasado a extrucción/tolva correctamente");
