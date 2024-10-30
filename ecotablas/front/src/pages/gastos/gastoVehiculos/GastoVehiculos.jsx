@@ -25,6 +25,8 @@ const GastoVehiculos = () => {
   const [ModalAbierto,setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [gastoEdit, setGastoEdit] = useState(null);
+
 
 
   const abrirModal = () => setModalAbierto(true);
@@ -203,7 +205,23 @@ const GastoVehiculos = () => {
   ];
 
 
-
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    
+    axios.put(`http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo`, formValues)
+      .then((response) => {
+        setMensaje("Gasto actualizado con éxito");
+        fetchMaterials(); // Actualiza la lista después de la edición
+        cerrarModalEdit(); // Cierra el modal de edición
+      })
+      .catch((error) => {
+        console.error('Error al actualizar el gasto:', error);
+        setMensaje("Error al actualizar el gasto");
+      });
+  };
+  
+  const cerrarModalEdit = () => setModalEdit(false);
+  
   const titles = ['Tipo de comprobante', 'Comprobante', 'Tipo de gasto', 'Vehículo', 'Proveedor', 'Monto ($)', 'Fecha', 'Descripción', 'Acciones'];
 
   return (
@@ -245,6 +263,17 @@ const GastoVehiculos = () => {
           />
         )}
 
+{modalEdit && (
+  <AddModalWithSelect
+    title="Editar Gasto de Vehículo"
+    fields={fields}
+    handleChange={handleChange}
+    handleSubmit={handleEditSubmit} // Cambia el manejador al de edición
+    cerrarModal={cerrarModalEdit} // Cambia al cierre de modal de edición
+    values={formValues}
+  />
+)}
+
 
       {showTable ? (
         loading ? (
@@ -254,7 +283,7 @@ const GastoVehiculos = () => {
             <TablaHead titles={titles} />
             <tbody>
               {dataV.map((item, index) => (
-                <tr key={index} className="hover:bg-gray-100">
+                <tr key={index} className="hover:bg-gray-100 ">
                   <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
                   <td className="border-b py-3 px-4">{item.Comprobante}</td>
                   <td className="border-b py-3 px-4">{item.TipoGasto}</td>
@@ -263,7 +292,18 @@ const GastoVehiculos = () => {
                   <td className="border-b py-3 px-4">{item.Monto}</td>
                   <td className="border-b py-3 px-4">{item.Fecha.slice(0,10)}</td>
                   <td className="border-b py-3 px-4">{item.Descripcion}</td>
-                  <td className="border-b py-3 px-4">
+                  <td className="border-b py-3 px-4 flex items-center">
+                  <button
+  onClick={() => {
+    setGastoEdit(item); // Almacenar el gasto seleccionado
+    setFormValues(item); // Rellenar el formulario con los valores del gasto
+    setModalEdit(true); // Mostrar el modal de edición
+  }}
+  className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+>
+  Modificar
+</button>
+
                     <DeleteButton endpoint={"http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"} id={item.IdGasto} updateList={fetchMaterials} />
                   </td>
                 </tr>
