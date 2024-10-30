@@ -124,7 +124,6 @@ const TablasProducidas = () => {
     <SectionLayout title="Tablas Producidas">
       <AddButton abrirModal={abrirModal} title="Añadir tabla" />
       <PdfGenerator columns={columns} data={data} title="Reporte de Tablas Producidas" />
-      <ReportButton />
 
       {error && <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">Error: {error}</div>}
       {modalAbierto && (
@@ -186,8 +185,24 @@ const TablasProducidas = () => {
               ))}
             </tbody>
           </table>
-          <div className="mt-4 flex justify-center">
-            {/* Paginación */}
+          <div className="flex justify-between items-center bg-gray-700">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2  ml-2 hover:text-gray-400 text-white rounded-l"
+            >
+              Anterior
+            </button>
+            <span className="text-gray-300">
+              Página {currentPage} de {totalPages}
+            </span>
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage >= totalPages}
+              className="px-4 py-2 hover:text-gray-400  text-white rounded-r"
+            >
+              Siguiente
+            </button>
           </div>
           <div className="mt-4 text-white">
             <p>Total Peso: {totalPeso} kg</p>
