@@ -99,7 +99,7 @@ const EmpresaDonante = () => {
     <SectionLayout title="Empresas Donantes">
       <AddButton abrirModal={abrirModal} title="Añadir Empresa Donante" />
       <PdfGenerator columns={columns} data={data} title="Reporte de Empresas Donantes" />
-      <ReportButton />
+     
 
       {error && <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">Error: {error}</div>}
       {modalAbierto && (

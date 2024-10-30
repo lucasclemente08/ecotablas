@@ -1,11 +1,21 @@
-import React, { useEffect, useState, useContext } from "react";
+
 import SectionLayout from "../../layout/SectionLayout";
-import { AuthContext } from '../../context/AuthContext';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const Profile = () => {
   const [userProfile, setUserProfile] = useState(null);  // State for user profile
   const [loading, setLoading] = useState(true);          // State for loading
-  const { user } = useContext(AuthContext); 
+  const [user, setUser] = useState(" ");
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+
+    return () => unsubscribe();
+  }, [auth]);
 
   useEffect(() => {
     if (user) {

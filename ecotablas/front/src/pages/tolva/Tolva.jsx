@@ -10,7 +10,6 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
 import NextButton from "../../components/buttons/NextButton";
-import ReportButton from "../../components/buttons/ReportButton";
 
 const Tolva = () => {
   const dispatch = useDispatch();
@@ -18,6 +17,7 @@ const Tolva = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [materialId, setMaterialId] = useState(null);
+  const [mensaje, setMensaje] = useState("");
   const [formValues, setFormValues] = useState({
     HorarioInicio: "",
     CantidadCargada: "",
@@ -25,6 +25,10 @@ const Tolva = () => {
     Proporcion: "",
     Especificaciones: "",
   });
+  const [dataLoaded, setDataLoaded] = useState(false); // Estado para verificar si los datos han sido cargados
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Cambié a 5 items por página
+  const totalPages = Math.ceil(data.length / itemsPerPage); // Total de páginas
 
   const columns = [
     { header: "Horario de inicio", accessor: "horario_inicio" },
@@ -35,13 +39,21 @@ const Tolva = () => {
   ];
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
-
+  const optionsTipoPlastico = [
+    { value: 'Unico', label: 'Tipo-Único' },
+    { value: 'Mescla', label: 'Tipo-Mezcla' },
+    // ... otras opciones
+  ];
   useEffect(() => {
-    dispatch(fetchTolva());
-  }, [dispatch]);
+    if (!dataLoaded) {
+      dispatch(fetchTolva());
+      setDataLoaded(true);
+    }
+  }, [dispatch, dataLoaded]);
 
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
+
   const abrirModalEdit = (material) => {
     setMaterialId(material.idTolva);
     setFormValues({
@@ -58,17 +70,18 @@ const Tolva = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formValues.HorarioInicio || !formValues.CantidadCargada) {
-      console.error("Por favor completa todos los campos requeridos");
+      setMensaje("Por favor completa todos los campos requeridos");
       return;
-      console.log(formValues)
     }
-    await dispatch(addTolva(formValues)); 
+    await dispatch(addTolva(formValues));
+    setMensaje("Registro agregado exitosamente!");
     cerrarModal();
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     await dispatch(editTolva({ id: materialId, formValues }));
+    setMensaje("Registro editado exitosamente!");
     cerrarModalEdit();
   };
 
@@ -80,35 +93,31 @@ const Tolva = () => {
     }));
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const totalVolumen = data.reduce(
-    (acc, material) => acc + parseFloat(material.cantidadCargada || 0),
-    0
-  );
-  const totalItems = data.length;
-
-  const optionsTipoPlastico = [
-    { value: 'Unico', label: 'Tipo-Único' },
-    { value: 'Mescla', label: 'Tipo-Mezcla' },
-    // ... otras opciones
-  ];
 
   return (
     <SectionLayout title="Tolva">
       <AddButton abrirModal={abrirModal} title="Añadir Registro" />
       <PdfGenerator columns={columns} data={data} title="Reporte de Tolva" />
      
+      {mensaje && (
+        <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
+          {mensaje}
+        </div>
+      )}
 
-      {error && <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">Error: {error}</div>}
+      {error && (
+        <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">
+          Error: {error}
+        </div>
+      )}
+
       {modalAbierto && (
-        <AddModalWithSelect 
+        <AddModalWithSelect
           title="Agregar Registro de Tolva"
           fields={[
             { name: "HorarioInicio", label: "Horario de inicio", type: "datetime-local" },
@@ -123,21 +132,21 @@ const Tolva = () => {
           values={formValues}
         />
       )}
-{modalEdit && (
-  <ButtonEdit
-    title="Editar Registro de Tolva"
-    fields={[
-      { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },
-      { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
-      { name: "Proporcion", label: "Proporción cargada", type: "number", placeholder: "Proporción *" },
-      { name: "Especificaciones", label: "Especificaciones", type: "text", placeholder: "Especificaciones *" },
-    ]}
-    formValues={formValues}
-    handleChange={handleChange}
-    handleEditSubmit={handleEditSubmit}   // Cambiado a handleEditSubmit
-    cerrarModalEdit={cerrarModalEdit}     // Cambiado a cerrarModalEdit
-  />
-)}
+      {modalEdit && (
+        <ButtonEdit
+          title="Editar Registro de Tolva"
+          fields={[
+            { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },
+            { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
+            { name: "Proporcion", label: "Proporción cargada", type: "number", placeholder: "Proporción *" },
+            { name: "Especificaciones", label: "Especificaciones", type: "text", placeholder: "Especificaciones *" },
+          ]}
+          formValues={formValues}
+          handleChange={handleChange}
+          handleEditSubmit={handleEditSubmit}
+          cerrarModalEdit={cerrarModalEdit}
+        />
+      )}
 
       {loading ? (
         <LoadingTable />
@@ -154,7 +163,7 @@ const Tolva = () => {
                   <td className="px-4 py-2">{item.Proporcion}</td>
                   <td className="px-4 py-2">{item.Especificaciones}</td>
                   <td className="px-4 py-2 flex">
-                    <NextButton/>
+                    <NextButton />
                     <button
                       onClick={() => abrirModalEdit(item)}
                       className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
@@ -163,24 +172,38 @@ const Tolva = () => {
                     </button>
                     <DeleteButton
                       id={item.IdTolva}
-                      endpoint="http://localhost:61274/api/Tolva/Borrar"
-                      updateList={fetchTolva}
+                      endpoint="http://www.gestiondeecotablas.somee.com/api/Tolva/Delete"
+                      updateList={() => {
+                        dispatch(fetchTolva());
+                        setMensaje("Registro eliminado exitosamente!");
+                      }}
                     />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="mt-4 flex justify-center">
-            {/* {Array.from({ length: totalPages }).map((_, index) => (
-              <NextButton key={index} onClick={() => paginate(index + 1)} active={currentPage === index + 1}>
-                {index + 1}
-              </NextButton>
-            ))} */}
+    <div className="flex justify-between items-center bg-gray-700">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2  ml-2 hover:text-gray-400 text-white rounded-l"
+            >
+              Anterior
+            </button>
+            <span className="text-gray-300">
+              Página {currentPage} de {totalPages}
+            </span>
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage >= totalPages}
+              className="px-4 py-2 hover:text-gray-400  text-white rounded-r"
+            >
+              Siguiente
+            </button>
           </div>
           <div className="mt-4 text-white">
-            <p>Total de Volumen Cargado: {totalVolumen} kg</p>
-            <p>Total de Items: {totalItems}</p>
+            <p>Total de Items: {data.length}</p>
           </div>
         </>
       )}

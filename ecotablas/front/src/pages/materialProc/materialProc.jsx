@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AddButton from "../../components/buttons/addButton";
+import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";

@@ -143,8 +143,28 @@ const GastoMaquinaria = () => {
   const pieOptions = { responsive: true, maintainAspectRatio: false };
   
   const fields = [
-    { name: "tipoGasto", label: "Tipo de Gasto", type: "text", required: true },
-    { name: "tipoComprobante", label: "Tipo de Comprobante", type: "text", required: true },
+    { name: "tipoGasto", label: "Tipo de Gasto", type: "select",    options: [
+      { value: "Combustible", label: "Combustible" },
+      { value: "Mantenimiento", label: "Mantenimiento" },
+      { value: "Reparacion", label: "Reparación" },
+      { value: "Seguro", label: "Seguro" },
+      { value: "Otros", label: "Otros" },
+
+    ], required: true },
+    {
+      name: "tipoComprobante",
+      label: "Tipo de Comprobante",
+      type: "select",
+      options: [
+        { value: "factura", label: "Factura" },
+        { value: "recibo", label: "Recibo" }, 
+        { value: "boleta", label: "Boleta" }, 
+        { value: "otro", label: "Otro" }, 
+
+      ],
+      required: true
+    },
+    
     { name: "comprobante", label: "Comprobante", type: "text", required: true },
     { name: "proveedor", label: "Proveedor", type: "text", required: true },
     { name: "Id_Maquinaria", label: "Maquinaria", type: "select", options:optionsMaquinaria, required: true },
