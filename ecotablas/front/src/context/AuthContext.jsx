@@ -2,11 +2,11 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 // Crear el contexto de autenticación
-const AuthContext = createContext();
+export const AuthContext = createContext(); // Ensure it is exported
 
 // Proveedor de autenticación
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(" ");
+  const [user, setUser] = useState(null); // Default to null for clarity
   const auth = getAuth();
 
   useEffect(() => {
