@@ -32,9 +32,9 @@ export const editEmpresaDonante = createAsyncThunk(
 
 // Asincronía para eliminar empresa donante
 export const deleteEmpresaDonante = createAsyncThunk(
-  "empresaDonante/deleteEmpresaDonante",
+  "http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar",
   async (id) => {
-    await axios.delete(`${API_URL}/${id}`);
+    await axios.delete(`${"http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar"}/${id}`);
     return id;
   }
 );

@@ -1,104 +1,57 @@
 import React, { useState, useEffect } from "react";
-import Home from "../home/Home";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import SectionLayout from "../../layout/SectionLayout";
+import AddButton from "../../components/buttons/AddButton";
+import LoadingTable from "../../components/LoadingTable";
+import TablaHead from "../../components/Thead";
 import L from "leaflet";
+import DeleteButton from "../../components/buttons/DeleteButton";
 import "leaflet/dist/leaflet.css";
-import office from "../../assets/office.png"
-import ecoTruck from "../../assets/ecoTruck.png"
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
-import axios from "axios";
-import individual from "../../assets/individual.png"
-import icon from "leaflet/dist/images/marker-icon.png";
+// Importamos íconos personalizados
+import office from "../../assets/office.png";
+import ecoTruck from "../../assets/ecoTruck.png";
+import individual from "../../assets/individual.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
+import icon from "leaflet/dist/images/marker-icon.png";
+
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
-
-const DefaultIcon = L.icon({
-  iconUrl: icon,
-  iconRetinaUrl: iconRetina,
-  shadowUrl: iconShadow,
-  iconSize: [30, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-
-const greenMarkerIcon = L.icon({
-  iconUrl: ecoTruck,
-  iconSize: [30, 41], // Tamaño del icono
-  iconAnchor: [12, 41], // Punto de anclaje
-  popupAnchor: [1, -34],
-  shadowUrl: iconShadow,
-  shadowSize: [41, 41],
-  shadowAnchor: [12, 41],
-});
-const ParticularMarkerIcon = L.icon({
-  iconUrl: individual,
-  iconSize: [30, 41], // Tamaño del icono
-  iconAnchor: [12, 41], // Punto de anclaje
-  popupAnchor: [1, -34],
-  shadowUrl: iconShadow,
-  shadowSize: [41, 41],
-  shadowAnchor: [12, 41],
-});
-// Icono para empresas donantes
-const donorMarkerIcon = L.icon({
-  iconUrl: office,
-  iconSize: [30, 41], // Tamaño del icono
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl: iconShadow,
-  shadowSize: [41, 41],
-  shadowAnchor: [12, 41],
-});
-
-
 const RecoUrbanos = () => {
+  const [showMap, setShowMap] = useState(false);
+  const [locations, setLocations] = useState([]);
+  const dispatch = useDispatch();
+  const [error, setError] = useState("");
   const [modalAbierto, setModalAbierto] = useState(false);
-  const [mensaje, setMensaje] = useState("");
   const [newUbicacion, setNewUbicacion] = useState({
     Nombre: "",
     Lat: "",
     Long: "",
     TipoDonante: "",
   });
-  const [locations, setLocations] = useState([]);
-
-  // Centrar el mapa en la primera ubicación o en una ubicación por defecto
-  const centerPosition =
-    locations.length > 0
-      ? [locations[0].Lat, locations[0].Long]
-      : [-31.4184, -64.1705];
-
+  const columns = [
+    { header: "Nombre", accessor: "Nombre" },
+    { header: "Tipo de Donante", accessor: "TipoDonante" },
+    { header: "Latitud", accessor: "Lat" },
+    { header: "Longitud", accessor: "Long" },
+  ];
+  const titles = [...columns.map((col) => col.header), "Acciones"];
+  const abrirModal = () => setModalAbierto(true);
+  const cerrarModal = () => setModalAbierto(false);
   useEffect(() => {
-    fetch(
-      "http://www.trazabilidadodsapi.somee.com/api/UbicacionesMapa/ListarTodo",
-    )
-      .then((response) => response.json())
-      .then((data) => setLocations(data))
-      .catch((err) => console.log("error al traer la data: " + err));
+    fetchLocations();
   }, []);
 
-  const handleSubmit = () => {
-    axios
-      .post(
-        `http://www.trazabilidadodsapi.somee.com/api/UbicacionesMapa/Insertar`,
-        newUbicacion,
-      )
-      .then((response) => {
-        setModalAbierto(false);
-        setMensaje("Inserción exitosa");
-        // Refrescar la lista de ubicaciones después de insertar
-        axios
-          .get(
-            `http://www.trazabilidadodsapi.somee.com/api/UbicacionesMapa/ListarTodo`,
-          )
-          .then((response) => setLocations(response.data))
-          .catch((error) =>
-            console.error("Error al obtener los datos:", error),
-          );
-      })
-      .catch((error) => console.error("error al obtener los datos:", error));
-  };
+  const DefaultIcon = L.icon({
+    iconUrl: icon,
+    iconRetinaUrl: iconRetina,
+    shadowUrl: iconShadow,
+    iconSize: [30, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -108,44 +61,92 @@ const RecoUrbanos = () => {
     }));
   };
 
-  const handleMapClick = (e) => {
-    const { lat, lng } = e.latlng;
-    setNewUbicacion({ Nombre: "", Lat: lat.toFixed(6), Long: lng.toFixed(6) });
-  };
 
-  const abrirModal = () => {
-    setModalAbierto(true);
-  };
+  const centerPosition =
+    locations.length > 0
+      ? [locations[0].Lat, locations[0].Long]
+      : [-31.4184, -64.1705];
 
-  const cerrarModal = () => {
-    setModalAbierto(false);
-  };
+      const handleSubmit = () => {
 
-  const handleIcon = (tipoDonante) => {
-    const normalizedTipo = tipoDonante.toLowerCase();
+        if (!newUbicacion.Nombre || !newUbicacion.Lat || !newUbicacion.Long) {
+          alert("Por favor, completa todos los campos obligatorios.");
+          return;
+      }
 
-    switch (normalizedTipo) {
-      case "empresa":
-        return donorMarkerIcon;
-      case "urbanos":
-      case "recolurbanos": 
-        return greenMarkerIcon;
-      case "particular":
-        return ParticularMarkerIcon;
-      default:
-        return DefaultIcon; 
+        axios
+          .post(
+            `http://www.trazabilidadodsapi.somee.com/api/UbicacionesMapa/Insertar`,
+            newUbicacion,
+          )
+          .then((response) => {
+            setModalAbierto(false);
+            setMensaje("Inserción exitosa");
+            // Refrescar la lista de ubicaciones después de insertar
+            axios
+              .get(
+                `http://www.trazabilidadodsapi.somee.com/api/UbicacionesMapa/ListarTodo`,
+              )
+              .then((response) => setLocations(response.data))
+              .catch((error) =>
+                console.error("Error al obtener los datos:", error),
+              );
+          })
+          .catch((error) => console.error("error al obtener los datos:", error));
+      };
+    
+  const fetchLocations = async () => {
+    try {
+      const response = await axios.get(
+        "http://www.trazabilidadodsapi.somee.com/api/UbicacionesMapa/ListarTodo"
+      );
+      setLocations(response.data);
+    } catch (error) {
+      console.error("Error fetching locations:", error);
     }
   };
-  
-  const [empresas, setEmpresas] = useState(["Empresa 1", "Empresa 2", "Empresa 3"]);
+
+  const toggleMap = () => setShowMap(!showMap);
+
+  // Definimos íconos personalizados
+  const handleIcon = (tipoDonante) => {
+    const normalizedTipo = tipoDonante.toLowerCase();
+    switch (normalizedTipo) {
+      case "empresa":
+        return L.icon({ iconUrl: office, iconSize: [30, 41], shadowUrl: iconShadow });
+      case "urbanos":
+        return L.icon({ iconUrl: ecoTruck, iconSize: [30, 41], shadowUrl: iconShadow });
+      case "particular":
+        return L.icon({ iconUrl: individual, iconSize: [30, 41], shadowUrl: iconShadow });
+      default:
+        return L.icon({
+          iconUrl: L.Icon.Default.prototype.options.iconUrl,
+          iconSize: [30, 41],
+          shadowUrl: iconShadow,
+        });
+    }
+  };
+
+  // Función para editar una ubicación
+  const handleEdit = (location) => {
+    console.log("Editar:", location);
+    // Aquí podrías abrir un modal de edición o redirigir a una página de edición.
+  };
+
+  // Función para eliminar una ubicación
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Delete/${id}`);
+      setLocations(locations.filter((location) => location.id !== id)); // Filtra la ubicación eliminada
+      console.log("Ubicación eliminada");
+    } catch (error) {
+      console.error("Error al eliminar ubicación:", error);
+    }
+  };
+
   return (
-    <div className="md:flex flex-row bg-slate-900 min-h-screen">
-      <Home />
-      <div className="p-4 w-full">
-        <h2 className="text-2xl font-bold text-white mb-4">
-          Recolección de urbanos
-        </h2>
-        <div className="overflow-x-auto">
+    <SectionLayout title="Recolección de Urbanos">
+<div className="overflow-x-auto">
           {modalAbierto && (
             <div className="fixed inset-0 overflow-y-auto">
               <div className="flex items-center justify-center min-h-screen pt-6 px-4 pb-20 text-center sm:block">
@@ -206,30 +207,14 @@ const RecoUrbanos = () => {
                         className="border p-2 w-full mt-1"
                       >
                         <option value="Empresa">
-                          Empresas donante
+                          Empresa donante
                         </option>
                         <option value="Urbanos">
                           Recolección de urbanos
                         </option>
                         <option value="Particular">Particular</option>
                       </select> 
-                      <label htmlFor="EmpresaDonante" className="block text-sm font-medium text-gray-700 mt-2">
-              Empresa o Donante
-            </label>
-            <select
-              id="EmpresaDonante"
-              name="EmpresaDonante"
-              value={newUbicacion.EmpresaDonante}
-              onChange={handleChange}
-              className="border p-2 w-full mt-1"
-            >
-              {/* Ejemplo de opciones de empresa, estas deberían venir de un array en tu componente */}
-              {empresas.map((empresa, index) => (
-                <option key={index} value={empresa}>
-                  {empresa}
-                </option>
-              ))}
-            </select>
+    
                     </div>
                   </div>
                   <div>
@@ -290,46 +275,66 @@ const RecoUrbanos = () => {
               </div>
             </div>
           )}
-          <div>
-            <button
+          </div>
+          <button
               onClick={abrirModal}
               className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded"
             >
               Agregar ubicación
             </button>
-            {/* <button onClick={handlePrint} className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 mt-2 m-2 px-4 rounded">
-              Imprimir listado
-            </button> */}
-          </div>
+      <button
+        onClick={toggleMap}
+        className="px-4 py-2 m-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-200 ease-in-out"
+      >
+        {showMap ? "Ocultar Mapa" : "Mostrar Mapa"}
+      </button>
 
-          <div className="flex mt-5">
-            {!modalAbierto && (
-              <MapContainer
-                id="map"
-                className="overflow-y-auto"
-                center={centerPosition}
-                zoom={12}
-                scrollWheelZoom={false}
+      {showMap ? (
+        <div className="flex mt-5">
+          <MapContainer center={[-31.4184, -64.1705]} zoom={12} className="w-full h-96">
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            {locations.map((location, index) => (
+              <Marker
+                key={index}
+                position={[location.Lat, location.Long]}
+                icon={handleIcon(location.TipoDonante)}
               >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-          {locations.map((location, index) => (
-                  <Marker 
-                    key={index} 
-                    position={[location.Lat, location.Long]} 
-                    icon={handleIcon(location.TipoDonante)} // Usamos la función para asignar el ícono correcto
-                  >
-                    <Popup>{[location.Nombre, location.TipoDonante]}</Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
-            )}
-          </div>
+                <Popup>
+                  {location.Nombre} - {location.TipoDonante}
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
         </div>
-      </div>
-    </div>
+      ) : (
+        <table className="table-auto w-full bg-white rounded-lg shadow-lg mt-4">
+          <TablaHead titles={titles} />
+          <tbody>
+            {locations.map((location) => (
+              <tr key={location.Nombre}>
+                <td className="px-4 py-2">{location.Nombre}</td>
+                <td className="px-4 py-2">{location.TipoDonante}</td>
+                <td className="px-4 py-2">{location.Lat}</td>
+                <td className="px-4 py-2">{location.Long}</td>
+                <td className="px-4 py-2 flex gap-2">
+                  <button
+                    onClick={() => handleEdit(location)}
+                    className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                  >
+                    Modificar
+                  </button>
+                  <DeleteButton 
+                    id={location.IdUbicacion}
+                     endpoint={"http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Delete"} 
+                     updateList={fetchLocations}
+                      />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </SectionLayout>
   );
 };
 

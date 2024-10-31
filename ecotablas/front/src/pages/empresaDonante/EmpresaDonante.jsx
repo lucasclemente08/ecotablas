@@ -10,7 +10,7 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
 import NextButton from "../../components/buttons/NextButton";
-import ReportButton from "../../components/buttons/ReportButton";
+
 
 const EmpresaDonante = () => {
   const dispatch = useDispatch();
@@ -151,6 +151,7 @@ const EmpresaDonante = () => {
             <TablaHead titles={titles} />
             <tbody>
               {currentItems.map((item) => (
+              
                 <tr key={item.idEmpresa}>
                   <td className="px-4 py-2">{item.Nombre}</td>
                   <td className="px-4 py-2">{item.Direccion}</td> 
@@ -169,8 +170,10 @@ const EmpresaDonante = () => {
                     >
                       Modificar
                     </button>
-                    <DeleteButton onClick={() => dispatch(deleteEmpresaDonante(item.idEmpresa))} />
-                  </td>
+                    <DeleteButton endpoint="http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar"
+                     updateList={() => dispatch(fetchEmpresaDonante())}
+                      id={item.IdEmpresaDonante} />
+                  </td>                         
                 </tr>
               ))}
             </tbody>
