@@ -26,7 +26,7 @@ const Maquinaria = () => {
   const [maquinariaId, setMaquinariaId] = useState(null);
   const [modalEdit, setModalEdit] = useState(false);
   const [modalReparacion, setModalReparacion] = useState(false);
-  
+
   const [mensaje, setMensaje] = useState("");
 
   const [formValues, setFormValues] = useState({
@@ -123,25 +123,23 @@ const Maquinaria = () => {
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
-  
+
     try {
       const response = await axios.post(`${BASE_URL}/Insertar`, formValues);
       if (response) {
-        await fetchMaquinarias(); 
-
+        await fetchMaquinarias();
 
         setMensaje("Inserción exitosa");
       } else {
         setMensaje("Error: no se recibió un dato válido de la API.");
       }
-  
+
       setModalAbierto(false);
     } catch (error) {
       setMensaje("Error al agregar la maquinaria.");
       console.error("Error al agregar la maquinaria:", error);
     }
   };
-  
 
   const handleEditSubmit = async () => {
     if (!validateForm()) return;
@@ -185,21 +183,21 @@ const Maquinaria = () => {
 
   const handleSubmitReparacion = async () => {
     if (!validateReparacionForm()) return;
-  
+
     try {
       // Primero, agrega la reparación
       await addReparacion(reparacionValues);
       setMensaje("Reparación agregada exitosamente");
-  
+
       // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
       const maquinariaActualizada = {
         ...maquinarias.find((m) => m.Id === maquinariaId),
         IdEstado: 3, // Establecer el estado a 3 (en reparación)
       };
-  
+
       await editMaquinarias(maquinariaId, maquinariaActualizada);
       setMensaje("Estado de maquinaria actualizado a 'En Reparación'");
-  
+
       setModalReparacion(false);
       fetchMaquinarias(); // Refrescar la lista para mostrar cambios
     } catch (error) {
@@ -216,7 +214,14 @@ const Maquinaria = () => {
     }));
   };
 
-  const title = ["Nombre", "Tipo", "Modelo", "Estado", "Fecha de adquisición", "Acciones"];
+  const title = [
+    "Nombre",
+    "Tipo",
+    "Modelo",
+    "Estado",
+    "Fecha de adquisición",
+    "Acciones",
+  ];
 
   const columns = [
     { header: "Nombre", dataKey: "Nombre" },
@@ -281,17 +286,19 @@ const Maquinaria = () => {
       setEstadoMaquinarias(response.data);
     } catch (error) {
       console.error("Error al obtener estados de maquinarias:", error);
-    
     }
   };
-useEffect(() => {
+  useEffect(() => {
     stateMaquinaria();
   }, []);
 
   const handleChangeState = async (maquinaria) => {
     const nuevoEstado = maquinaria.IdEstado === 1 ? 2 : 1; // Cambiar entre 1 y 2
     try {
-      await editMaquinarias(maquinaria.Id, { ...maquinaria, IdEstado: nuevoEstado });
+      await editMaquinarias(maquinaria.Id, {
+        ...maquinaria,
+        IdEstado: nuevoEstado,
+      });
       setMensaje("Estado cambiado exitosamente");
       await fetchMaquinarias(); // Actualizar la lista
     } catch (error) {
@@ -305,7 +312,6 @@ useEffect(() => {
     return estado ? estado.Nombre : "Estado no disponible";
   };
 
-
   return (
     <>
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
@@ -313,7 +319,11 @@ useEffect(() => {
         <div className="p-4 w-full">
           <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
           <AddButton abrirModal={abrirModal} title={" Añadir Maquinaria"} />
-          <PdfGenerator columns={columns} data={maquinarias} title="Reporte de Maquinarias" />
+          <PdfGenerator
+            columns={columns}
+            data={maquinarias}
+            title="Reporte de Maquinarias"
+          />
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
               {mensaje}
@@ -340,15 +350,35 @@ useEffect(() => {
               cerrarModalEdit={cerrarModalEdit}
             />
           )}
-          
+
           {modalReparacion && (
             <AddModal
               title="Agregar Reparación"
               fields={[
-                { name: "Detalle", label: "Detalle", type: "text", placeholder: "Detalle *" },
-                { name: "FechaInicio", label: "Fecha de Inicio", type: "date", placeholder: "Fecha *" },
-                { name: "IdEstadoReparacion", label: "Estado", type: "text", placeholder: "Estado *" },
-                { name: "Costo", label: "Costo", type: "number", placeholder: "Costo *" }
+                {
+                  name: "Detalle",
+                  label: "Detalle",
+                  type: "text",
+                  placeholder: "Detalle *",
+                },
+                {
+                  name: "FechaInicio",
+                  label: "Fecha de Inicio",
+                  type: "date",
+                  placeholder: "Fecha *",
+                },
+                {
+                  name: "IdEstadoReparacion",
+                  label: "Estado",
+                  type: "text",
+                  placeholder: "Estado *",
+                },
+                {
+                  name: "Costo",
+                  label: "Costo",
+                  type: "number",
+                  placeholder: "Costo *",
+                },
               ]}
               handleChange={handleChangeReparacion}
               handleSubmit={handleSubmitReparacion}
@@ -366,16 +396,17 @@ useEffect(() => {
                     <td className="border-b py-2 px-4">{maquinaria.Nombre}</td>
                     <td className="border-b py-2 px-4">{maquinaria.Tipo}</td>
                     <td className="border-b py-2 px-4">{maquinaria.Modelo}</td>
-                    <td className={`border-b py-2 px-4 ${estadoStyles[maquinaria.IdEstado]}`}>
+                    <td
+                      className={`border-b py-2 px-4 ${estadoStyles[maquinaria.IdEstado]}`}
+                    >
                       {getNombreEstado(maquinaria.IdEstado)}
                     </td>
-                    <td className="border-b py-2 px-4">{maquinaria.fecha_adquisicion}</td>
+                    <td className="border-b py-2 px-4">
+                      {maquinaria.fecha_adquisicion}
+                    </td>
                     <td className="border-b py-2 px-4 flex justify-center">
-
-                    {maquinaria.IdEstado === 3? (
-                        <button
-                          className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700"
-                        >
+                      {maquinaria.IdEstado === 3 ? (
+                        <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700">
                           Ver Reparacion
                         </button>
                       ) : null}
@@ -385,15 +416,17 @@ useEffect(() => {
                       >
                         Modificar
                       </button>
-                      {maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2 ? (
-                      <button
-                        onClick={() => abrirModalReparacion(maquinaria.Id)}
-                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        Agregar Reparación
-                      </button>
+                      {maquinaria.IdEstado === 1 ||
+                      maquinaria.IdEstado === 2 ? (
+                        <button
+                          onClick={() => abrirModalReparacion(maquinaria.Id)}
+                          className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        >
+                          Agregar Reparación
+                        </button>
                       ) : null}
-                      {maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2 ? (
+                      {maquinaria.IdEstado === 1 ||
+                      maquinaria.IdEstado === 2 ? (
                         <button
                           onClick={() => handleChangeState(maquinaria)}
                           className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700"

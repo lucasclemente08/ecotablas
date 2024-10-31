@@ -17,9 +17,7 @@ import {
   addMaterialClas,
   editMaterialClas,
 } from "../../api/MaterialClasAPI";
-import {
-editIngresoMat,
-} from "../../api/IngresoMaterialAPI";
+import { editIngresoMat } from "../../api/IngresoMaterialAPI";
 
 const EntradasDeMaterial = () => {
   const [materials, setMaterials] = useState([]);
@@ -28,7 +26,7 @@ const EntradasDeMaterial = () => {
   const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
   const [materialId, setMaterialId] = useState(null);
-  const [modalClasificado, setModalClasificado] = useState(false); 
+  const [modalClasificado, setModalClasificado] = useState(false);
 
   const [formValues, setFormValues] = useState({
     VolumenM: "",
@@ -66,7 +64,7 @@ const EntradasDeMaterial = () => {
 
     setFormValues({
       VolumenUtil: material.VolumenM,
-      VolumenInutil:material.VolumenMInutil,
+      VolumenInutil: material.VolumenMInutil,
       FechaIngresoM: material.FechaIngresoM,
       IdTipoPlastico: material.IdTipoPlastico,
     });
@@ -77,10 +75,7 @@ const EntradasDeMaterial = () => {
 
   const handleSubmit = () => {
     axios
-      .post(
-        "http://localhost:61274/api/IngresoMat/Insertar",
-        formValues,
-      )
+      .post("http://localhost:61274/api/IngresoMat/Insertar", formValues)
       .then(() => {
         cerrarModal();
         fetchMaterials();
@@ -117,7 +112,11 @@ const EntradasDeMaterial = () => {
   const abrirModalClasificado = (id) => {
     const fechaActual = new Date().toISOString();
     setMaterialId(id);
-    setClasificacionValues({ ...clasificacionValues, FechaC: fechaActual, IdIngresoMaterial: id });
+    setClasificacionValues({
+      ...clasificacionValues,
+      FechaC: fechaActual,
+      IdIngresoMaterial: id,
+    });
     setModalClasificado(true);
   };
 
@@ -131,25 +130,25 @@ const EntradasDeMaterial = () => {
     } else if (!clasificacionValues.VolumenInutil) {
       setMensaje("El volumen inutil es obligatorio.");
       isValid = false;
-    } 
+    }
     return isValid;
   };
 
   const handleSubmitClasificado = async () => {
     if (!validateClasificadoForm()) return;
-  
+
     try {
       await addMaterialClas(clasificacionValues);
       setMensaje("Lote enviado a clasificación");
-  
+
       // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
       const materialActualizado = {
         ...materials.find((m) => m.IdIngresoMaterial === materialId),
         Estado: 2, // Establecer el estado a 3 (en reparación)
       };
-  
+
       await editIngresoMat(materialId, materialActualizado);
-  
+
       setModalClasificado(false);
       fetchMaterials(); // Refrescar la lista para mostrar cambios
     } catch (error) {
@@ -157,7 +156,6 @@ const EntradasDeMaterial = () => {
       console.error("Error al terminar el proceso:", error);
     }
   };
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -174,7 +172,6 @@ const EntradasDeMaterial = () => {
       [name]: value,
     }));
   };
-
 
   const fetchMaterials = async () => {
     setLoading(true);
@@ -205,7 +202,14 @@ const EntradasDeMaterial = () => {
   // Total de páginas
   const totalPages = Math.ceil(materials.length / itemsPerPage);
 
-  const title = ["Volumen Util (kgs)", "Volumen Inutil (kgs)", "Fecha de ingreso", "Tipo Donante","Vehículo" , "Acciones"];
+  const title = [
+    "Volumen Util (kgs)",
+    "Volumen Inutil (kgs)",
+    "Fecha de ingreso",
+    "Tipo Donante",
+    "Vehículo",
+    "Acciones",
+  ];
   const columns = [
     { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenInutil" },
@@ -241,7 +245,9 @@ const EntradasDeMaterial = () => {
 
   const totalVolumen = materials.reduce(
     (acc, material) =>
-      acc + parseFloat(material.VolumenM || 0) + parseFloat(material.VolumenMInutil || 0),
+      acc +
+      parseFloat(material.VolumenM || 0) +
+      parseFloat(material.VolumenMInutil || 0),
     0,
   );
   const totalItems = materials.length;
@@ -284,18 +290,28 @@ const EntradasDeMaterial = () => {
         )}
 
         {modalClasificado && (
-            <AddModal
-              title="Enviar lote a clasificación"
-              fields={[
-                { name: "VolumenUtil", label: "Volumen Util", type: "number", placeholder: "Volumen Util *" },
-                { name: "VolumenInutil", label: "Volumen Inutil", type: "number", placeholder: "Volumen Inutil *" }
-              ]}
-              handleChange={handleChangeClasificado}
-              handleSubmit={handleSubmitClasificado}
-              cerrarModal={cerrarModalClasificado}
-              values={clasificacionValues}
-            />
-          )}
+          <AddModal
+            title="Enviar lote a clasificación"
+            fields={[
+              {
+                name: "VolumenUtil",
+                label: "Volumen Util",
+                type: "number",
+                placeholder: "Volumen Util *",
+              },
+              {
+                name: "VolumenInutil",
+                label: "Volumen Inutil",
+                type: "number",
+                placeholder: "Volumen Inutil *",
+              },
+            ]}
+            handleChange={handleChangeClasificado}
+            handleSubmit={handleSubmitClasificado}
+            cerrarModal={cerrarModalClasificado}
+            values={clasificacionValues}
+          />
+        )}
 
         <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
           <h5>
@@ -327,18 +343,14 @@ const EntradasDeMaterial = () => {
                   <td className="border-b py-2 px-4">
                     {material.FechaIngresoM.slice(0, 10)}
                   </td>
-                  <td className="border-b py-2 px-4">
-                    Empresa Recolectora
-                  </td>
-                  <td className="border-b py-2 px-4">
-                    Vehiculo 1
-                  </td>
+                  <td className="border-b py-2 px-4">Empresa Recolectora</td>
+                  <td className="border-b py-2 px-4">Vehiculo 1</td>
                   <td
                     className={` py-2 px-4 flex justify-center ${
                       modalEdit || modalAbierto ? "hidden" : ""
                     }`}
                   >
-                    <NextButton  />
+                    <NextButton />
                     <button
                       className="bg-yellow-600 ml-2 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       onClick={() => abrirModalEdit(material)}
@@ -346,11 +358,13 @@ const EntradasDeMaterial = () => {
                       Modificar
                     </button>
                     <button
-                        onClick={() => abrirModalClasificado(material.IdIngresoMaterial)}
-                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        Terminado
-                      </button>
+                      onClick={() =>
+                        abrirModalClasificado(material.IdIngresoMaterial)
+                      }
+                      className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                      Terminado
+                    </button>
                     <DeleteButton
                       id={material.IdIngresoMaterial}
                       endpoint="http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Borrar"

@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchTolva, addTolva, editTolva, deleteTolva } from "../../features/tolvaSlice";
+import {
+  fetchTolva,
+  addTolva,
+  editTolva,
+  deleteTolva,
+} from "../../features/tolvaSlice";
 import SectionLayout from "../../layout/SectionLayout";
 import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
@@ -40,8 +45,8 @@ const Tolva = () => {
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
   const optionsTipoPlastico = [
-    { value: 'Unico', label: 'Tipo-Único' },
-    { value: 'Mescla', label: 'Tipo-Mezcla' },
+    { value: "Unico", label: "Tipo-Único" },
+    { value: "Mescla", label: "Tipo-Mezcla" },
     // ... otras opciones
   ];
   useEffect(() => {
@@ -103,7 +108,7 @@ const Tolva = () => {
     <SectionLayout title="Tolva">
       <AddButton abrirModal={abrirModal} title="Añadir Registro" />
       <PdfGenerator columns={columns} data={data} title="Reporte de Tolva" />
-     
+
       {mensaje && (
         <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
           {mensaje}
@@ -120,11 +125,28 @@ const Tolva = () => {
         <AddModalWithSelect
           title="Agregar Registro de Tolva"
           fields={[
-            { name: "HorarioInicio", label: "Horario de inicio", type: "datetime-local" },
-            { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
-            { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
+            {
+              name: "HorarioInicio",
+              label: "Horario de inicio",
+              type: "datetime-local",
+            },
+            {
+              name: "CantidadCargada",
+              label: "Cantidad cargada (kg)",
+              type: "number",
+            },
+            {
+              name: "TipoPlastico",
+              label: "Tipo de plástico",
+              type: "select",
+              options: optionsTipoPlastico,
+            },
             { name: "Proporcion", label: "Proporción cargada", type: "number" },
-            { name: "Especificaciones", label: "Especificaciones", type: "text" },
+            {
+              name: "Especificaciones",
+              label: "Especificaciones",
+              type: "text",
+            },
           ]}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
@@ -136,10 +158,30 @@ const Tolva = () => {
         <ButtonEdit
           title="Editar Registro de Tolva"
           fields={[
-            { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },
-            { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
-            { name: "Proporcion", label: "Proporción cargada", type: "number", placeholder: "Proporción *" },
-            { name: "Especificaciones", label: "Especificaciones", type: "text", placeholder: "Especificaciones *" },
+            {
+              name: "CantidadCargada",
+              label: "Cantidad cargada (kg)",
+              type: "number",
+              placeholder: "Cantidad cargada *",
+            },
+            {
+              name: "TipoPlastico",
+              label: "Tipo de plástico",
+              type: "select",
+              options: optionsTipoPlastico,
+            },
+            {
+              name: "Proporcion",
+              label: "Proporción cargada",
+              type: "number",
+              placeholder: "Proporción *",
+            },
+            {
+              name: "Especificaciones",
+              label: "Especificaciones",
+              type: "text",
+              placeholder: "Especificaciones *",
+            },
           ]}
           formValues={formValues}
           handleChange={handleChange}
@@ -157,7 +199,9 @@ const Tolva = () => {
             <tbody>
               {currentItems.map((item) => (
                 <tr key={item.IdTolva}>
-                  <td className="px-4 py-2 ">{item.HorarioInicio.slice(0,10)}</td>
+                  <td className="px-4 py-2 ">
+                    {item.HorarioInicio.slice(0, 10)}
+                  </td>
                   <td className="px-4 py-2">{item.CantidadCargada}</td>
                   <td className="px-4 py-2">{item.TipoPlastico}</td>
                   <td className="px-4 py-2">{item.Proporcion}</td>
@@ -183,7 +227,7 @@ const Tolva = () => {
               ))}
             </tbody>
           </table>
-    <div className="flex justify-between items-center bg-gray-700">
+          <div className="flex justify-between items-center bg-gray-700">
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}

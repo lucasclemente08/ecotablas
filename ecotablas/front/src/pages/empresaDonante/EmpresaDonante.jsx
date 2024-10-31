@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchEmpresaDonante, addEmpresaDonante, editEmpresaDonante, deleteEmpresaDonante } from "../../features/empresaDonanteSlice"; // Debes crear estos thunks en tu slice
+import {
+  fetchEmpresaDonante,
+  addEmpresaDonante,
+  editEmpresaDonante,
+  deleteEmpresaDonante,
+} from "../../features/empresaDonanteSlice"; // Debes crear estos thunks en tu slice
 import SectionLayout from "../../layout/SectionLayout";
 import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
@@ -10,7 +15,6 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
 import NextButton from "../../components/buttons/NextButton";
-
 
 const EmpresaDonante = () => {
   const dispatch = useDispatch();
@@ -98,19 +102,34 @@ const EmpresaDonante = () => {
   return (
     <SectionLayout title="Empresas Donantes">
       <AddButton abrirModal={abrirModal} title="Añadir Empresa Donante" />
-      <PdfGenerator columns={columns} data={data} title="Reporte de Empresas Donantes" />
-     
+      <PdfGenerator
+        columns={columns}
+        data={data}
+        title="Reporte de Empresas Donantes"
+      />
 
-      {error && <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">Error: {error}</div>}
+      {error && (
+        <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">
+          Error: {error}
+        </div>
+      )}
       {modalAbierto && (
-        <AddModalWithSelect 
+        <AddModalWithSelect
           title="Agregar Empresa Donante"
           fields={[
             { name: "Nombre", label: "Nombre", type: "text" },
             { name: "Direccion", label: "Dirección", type: "text" },
             { name: "Telefono", label: "Teléfono", type: "text" },
             { name: "Email", label: "Email", type: "email" },
-            { name: "TipoPlastico", label: "Tipo de Plástico", type: "select", options: [{ value: 'Unico', label: 'Tipo-Único' }, { value: 'Mezcla', label: 'Tipo-Mezcla' }] },
+            {
+              name: "TipoPlastico",
+              label: "Tipo de Plástico",
+              type: "select",
+              options: [
+                { value: "Unico", label: "Tipo-Único" },
+                { value: "Mezcla", label: "Tipo-Mezcla" },
+              ],
+            },
             { name: "Rubro", label: "Rubro", type: "text" },
             { name: "Web", label: "Web", type: "text" },
             { name: "CUIT", label: "CUIT", type: "text" },
@@ -129,7 +148,15 @@ const EmpresaDonante = () => {
             { name: "Direccion", label: "Dirección", type: "text" },
             { name: "Telefono", label: "Teléfono", type: "text" },
             { name: "Email", label: "Email", type: "email" },
-            { name: "TipoPlastico", label: "Tipo de Plástico", type: "select", options: [{ value: 'Unico', label: 'Tipo-Único' }, { value: 'Mezcla', label: 'Tipo-Mezcla' }] },
+            {
+              name: "TipoPlastico",
+              label: "Tipo de Plástico",
+              type: "select",
+              options: [
+                { value: "Unico", label: "Tipo-Único" },
+                { value: "Mezcla", label: "Tipo-Mezcla" },
+              ],
+            },
             { name: "Rubro", label: "Rubro", type: "text" },
             { name: "Web", label: "Web", type: "text" },
             { name: "CUIT", label: "CUIT", type: "text" },
@@ -145,41 +172,45 @@ const EmpresaDonante = () => {
         <LoadingTable />
       ) : (
         <>
-        <div className="max-h-96 overflow-y-auto border border-gray-300 mt-4">
-
-          <table className="min-w-full border-collapse border  bg-white rounded-lg shadow-lg">
-            <TablaHead titles={titles} />
-            <tbody>
-              {currentItems.map((item) => (
-              
-                <tr key={item.idEmpresa}>
-                  <td className="px-4 py-2">{item.Nombre}</td>
-                  <td className="px-4 py-2">{item.Direccion}</td> 
-                  <td className="px-4 py-2">{item.Telefono}</td>
-                  <td className="px-4 py-2">{item.Email}</td>
-                  <td className="px-4 py-2">{item.TipoPlastico}</td>
-                  <td className="px-4 py-2">{item.Rubro}</td>
-                  <td className="px-4 py-2">
-                    <a href={item.Web} className="text-blue-600 hover:underline">{item.Web}</a>
-                  </td>
-                  <td className="px-4 py-2 flex">
-                    <NextButton />
-                    <button
-                      onClick={() => abrirModalEdit(item)}
-                      className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                    >
-                      Modificar
-                    </button>
-                    <DeleteButton endpoint="http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar"
-                     updateList={() => dispatch(fetchEmpresaDonante())}
-                      id={item.IdEmpresaDonante} />
-                  </td>                         
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        
+          <div className="max-h-96 overflow-y-auto border border-gray-300 mt-4">
+            <table className="min-w-full border-collapse border  bg-white rounded-lg shadow-lg">
+              <TablaHead titles={titles} />
+              <tbody>
+                {currentItems.map((item) => (
+                  <tr key={item.idEmpresa}>
+                    <td className="px-4 py-2">{item.Nombre}</td>
+                    <td className="px-4 py-2">{item.Direccion}</td>
+                    <td className="px-4 py-2">{item.Telefono}</td>
+                    <td className="px-4 py-2">{item.Email}</td>
+                    <td className="px-4 py-2">{item.TipoPlastico}</td>
+                    <td className="px-4 py-2">{item.Rubro}</td>
+                    <td className="px-4 py-2">
+                      <a
+                        href={item.Web}
+                        className="text-blue-600 hover:underline"
+                      >
+                        {item.Web}
+                      </a>
+                    </td>
+                    <td className="px-4 py-2 flex">
+                      <NextButton />
+                      <button
+                        onClick={() => abrirModalEdit(item)}
+                        className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        Modificar
+                      </button>
+                      <DeleteButton
+                        endpoint="http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar"
+                        updateList={() => dispatch(fetchEmpresaDonante())}
+                        id={item.IdEmpresaDonante}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </SectionLayout>

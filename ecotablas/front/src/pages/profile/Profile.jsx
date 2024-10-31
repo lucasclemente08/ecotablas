@@ -1,11 +1,10 @@
-
 import SectionLayout from "../../layout/SectionLayout";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const Profile = () => {
-  const [userProfile, setUserProfile] = useState(null);  // State for user profile
-  const [loading, setLoading] = useState(true);          // State for loading
+  const [userProfile, setUserProfile] = useState(null); // State for user profile
+  const [loading, setLoading] = useState(true); // State for loading
   const [user, setUser] = useState(" ");
   const auth = getAuth();
 

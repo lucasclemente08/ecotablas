@@ -33,7 +33,13 @@ const Reparaciones = () => {
     fetchReparaciones();
   }, []);
 
-  const title = ["ID Maquinaria", "Detalle", "Fecha de Inicio", "Estado", "Costo"];
+  const title = [
+    "ID Maquinaria",
+    "Detalle",
+    "Fecha de Inicio",
+    "Estado",
+    "Costo",
+  ];
 
   const rows = reparaciones.map((reparacion) => ({
     IdMaquinaria: reparacion.IdMaquinaria,
@@ -50,7 +56,9 @@ const Reparaciones = () => {
         <div className="p-4 w-full">
           <h2 className="text-2xl font-bold text-white mb-4">Reparaciones</h2>
           {mensaje && (
-            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">{mensaje}</div>
+            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
+              {mensaje}
+            </div>
           )}
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
@@ -59,10 +67,16 @@ const Reparaciones = () => {
               <tbody>
                 {rows.map((reparacion) => (
                   <tr key={reparacion.Id} className="hover:bg-gray-100">
-                    <td className="border-b py-2 px-4">{reparacion.IdMaquinaria}</td>
+                    <td className="border-b py-2 px-4">
+                      {reparacion.IdMaquinaria}
+                    </td>
                     <td className="border-b py-2 px-4">{reparacion.Detalle}</td>
-                    <td className="border-b py-2 px-4">{reparacion.FechaInicio}</td>
-                    <td className="border-b py-2 px-4">{reparacion.IdEstadoReparacion}</td>
+                    <td className="border-b py-2 px-4">
+                      {reparacion.FechaInicio}
+                    </td>
+                    <td className="border-b py-2 px-4">
+                      {reparacion.IdEstadoReparacion}
+                    </td>
                     <td className="border-b py-2 px-4">{reparacion.Costo}</td>
                   </tr>
                 ))}
