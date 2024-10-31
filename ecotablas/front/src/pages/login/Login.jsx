@@ -10,12 +10,11 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
-    uid: '',
-    email: ''
+    uid: "",
+    email: "",
   });
-  
+
   // ...
-  
 
   const navigate = useNavigate();
 
@@ -27,8 +26,10 @@ const Login = () => {
     try {
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-    
-          setUser({ uid: userCredential.user.uid, email: userCredential.user.email });
+          setUser({
+            uid: userCredential.user.uid,
+            email: userCredential.user.email,
+          });
           navigate("/");
         })
         .catch((error) => {

@@ -1,23 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchGastos, deleteGasto, addGasto } from '../../../features/gastoMaquinariaSlice';
-import SectionLayout from '../../../layout/SectionLayout';
-import { Pie } from 'react-chartjs-2'; 
-import axios from 'axios';
-import TablaHead from '../../../components/Thead';
-import LoadingTable from '../../../components/LoadingTable';
-import AddButton from '../../../components/buttons/AddButton';
-import PdfGenerator from '../../../components/buttons/PdfGenerator';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchGastos,
+  deleteGasto,
+  addGasto,
+} from "../../../features/gastoMaquinariaSlice";
+import SectionLayout from "../../../layout/SectionLayout";
+import { Pie } from "react-chartjs-2";
+import axios from "axios";
+import TablaHead from "../../../components/Thead";
+import LoadingTable from "../../../components/LoadingTable";
+import AddButton from "../../../components/buttons/AddButton";
+import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import { FaChartLine, FaChartPie } from "react-icons/fa";
-import DataView from '../../../components/buttons/DataView';
-import DeleteButton from '../../../components/buttons/DeleteButton';
-import AddModalWithSelect from '../../../components/AddModalWithSelect';
+import DataView from "../../../components/buttons/DataView";
+import DeleteButton from "../../../components/buttons/DeleteButton";
+import AddModalWithSelect from "../../../components/AddModalWithSelect";
 
-const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'];
+const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
 
 const GastoMaquinaria = () => {
   const dispatch = useDispatch();
-  const { gastos: dataM, loading } = useSelector((state) => state.gastoMaquinaria);
+  const { gastos: dataM, loading } = useSelector(
+    (state) => state.gastoMaquinaria,
+  );
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [dataView, setDataView] = useState(false);
@@ -39,10 +45,8 @@ const GastoMaquinaria = () => {
     descripcion: "",
   });
 
-  
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
-  
 
   useEffect(() => {
     dispatch(fetchGastos());
@@ -52,23 +56,25 @@ const GastoMaquinaria = () => {
     const calculatePieData = () => {
       const categories = {};
       dataM.forEach((item) => {
-        categories[item.TipoGasto] = (categories[item.TipoGasto] || 0) + parseFloat(item.Monto);
+        categories[item.TipoGasto] =
+          (categories[item.TipoGasto] || 0) + parseFloat(item.Monto);
       });
 
       setPieData({
         labels: Object.keys(categories),
-        datasets: [{
-          label: 'Gastos por Categoría',
-          data: Object.values(categories),
-          backgroundColor: COLORS,
-          hoverBackgroundColor: COLORS,
-        }],
+        datasets: [
+          {
+            label: "Gastos por Categoría",
+            data: Object.values(categories),
+            backgroundColor: COLORS,
+            hoverBackgroundColor: COLORS,
+          },
+        ],
       });
     };
 
     calculatePieData();
   }, [dataM]);
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -88,11 +94,13 @@ const GastoMaquinaria = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    dispatch(addGasto(gastoEdit)).then(() => {
-      setMensaje("Gasto actualizado con éxito");
-      dispatch(fetchGastos());
-      setModalEdit(false);
-    }).catch(error => console.error("Error al actualizar:", error));
+    dispatch(addGasto(gastoEdit))
+      .then(() => {
+        setMensaje("Gasto actualizado con éxito");
+        dispatch(fetchGastos());
+        setModalEdit(false);
+      })
+      .catch((error) => console.error("Error al actualizar:", error));
   };
 
   const columns = [
@@ -117,84 +125,108 @@ const GastoMaquinaria = () => {
   ];
 
   const fetchMaquinaria = () => {
-    axios.get("http://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo")
+    axios
+      .get("http://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo")
       .then((response) => {
         setMaquinaria(response.data);
-        
       })
       .catch((error) => {
-        console.error('Error fetching trucks:', error);
+        console.error("Error fetching trucks:", error);
       });
   };
-  useEffect(()=>{
-    fetchMaquinaria()
-  },[])
+  useEffect(() => {
+    fetchMaquinaria();
+  }, []);
   const getMachinesById = (id) => {
     const machine = maquinaria.find((machine) => machine.Id === id);
-    return machine ? `${machine.Modelo} (${machine.Tipo})` : "Maquinaria no disponible";
+    return machine
+      ? `${machine.Modelo} (${machine.Tipo})`
+      : "Maquinaria no disponible";
   };
-  
+
   const optionsMaquinaria = maquinaria.map((machine) => ({
     value: machine.Id,
-    label: `${machine.Modelo} (${machine.Tipo})`
+    label: `${machine.Modelo} (${machine.Tipo})`,
   }));
-  
 
   const pieOptions = { responsive: true, maintainAspectRatio: false };
-  
-  const fields = [
-    { name: "tipoGasto", label: "Tipo de Gasto", type: "select",    options: [
-      { value: "Combustible", label: "Combustible" },
-      { value: "Mantenimiento", label: "Mantenimiento" },
-      { value: "Reparacion", label: "Reparación" },
-      { value: "Seguro", label: "Seguro" },
-      { value: "Otros", label: "Otros" },
 
-    ], required: true },
+  const fields = [
+    {
+      name: "tipoGasto",
+      label: "Tipo de Gasto",
+      type: "select",
+      options: [
+        { value: "Combustible", label: "Combustible" },
+        { value: "Mantenimiento", label: "Mantenimiento" },
+        { value: "Reparacion", label: "Reparación" },
+        { value: "Seguro", label: "Seguro" },
+        { value: "Otros", label: "Otros" },
+      ],
+      required: true,
+    },
     {
       name: "tipoComprobante",
       label: "Tipo de Comprobante",
       type: "select",
       options: [
         { value: "factura", label: "Factura" },
-        { value: "recibo", label: "Recibo" }, 
-        { value: "boleta", label: "Boleta" }, 
-        { value: "otro", label: "Otro" }, 
-
+        { value: "recibo", label: "Recibo" },
+        { value: "boleta", label: "Boleta" },
+        { value: "otro", label: "Otro" },
       ],
-      required: true
+      required: true,
     },
-    
+
     { name: "comprobante", label: "Comprobante", type: "text", required: true },
     { name: "proveedor", label: "Proveedor", type: "text", required: true },
-    { name: "Id_Maquinaria", label: "Maquinaria", type: "select", options:optionsMaquinaria, required: true },
+    {
+      name: "Id_Maquinaria",
+      label: "Maquinaria",
+      type: "select",
+      options: optionsMaquinaria,
+      required: true,
+    },
     { name: "monto", label: "Monto ($)", type: "number", required: true },
     { name: "fecha", label: "Fecha", type: "date", required: true },
-    { name: "descripcion", label: "Descripción", type: "textarea", required: true },
+    {
+      name: "descripcion",
+      label: "Descripción",
+      type: "textarea",
+      required: true,
+    },
   ];
-  
+
   const handleShowTable = () => {
     setShowTable(true);
     setShowPieChart(false);
   };
 
-
   return (
     <SectionLayout title="Gasto de Maquinaria">
       <div className="flex">
-        <AddButton abrirModal={() => setModalAbierto(true)} title="Añadir Gasto de Maquinaria" />
-        <PdfGenerator columns={columns} data={dataM} title="Reporte de Gastos de Maquinaria" />
-        <DataView ShowTable={handleShowTable}f/>
+        <AddButton
+          abrirModal={() => setModalAbierto(true)}
+          title="Añadir Gasto de Maquinaria"
+        />
+        <PdfGenerator
+          columns={columns}
+          data={dataM}
+          title="Reporte de Gastos de Maquinaria"
+        />
+        <DataView ShowTable={handleShowTable} f />
 
-      <button
+        <button
           aria-label="Ver gráfico circular"
-          className={`p-2 ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
-          onClick={() => { setShowPieChart(true); setShowTable(false); }}
+          className={`p-2 ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? "bg-blue-600" : "bg-gray-500"}`}
+          onClick={() => {
+            setShowPieChart(true);
+            setShowTable(false);
+          }}
         >
           Ver Gráfico Circular <FaChartPie className="ml-2" />
         </button>
       </div>
-
 
       {modalAbierto && (
         <AddModalWithSelect
@@ -216,50 +248,51 @@ const GastoMaquinaria = () => {
           values={formValues}
         />
       )}
-{showTable ? (
-  loading ? (
-    <LoadingTable loading={loading} />
-  ) : (
-    <table className="min-w-full bg-white rounded-lg shadow-md">
-      <TablaHead titles={titles} />
-      <tbody>
-        {dataM.map((item) => (
-          <tr key={item.IdGastoMaquinaria} className="hover:bg-gray-100">
-            <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
-            <td className="border-b py-3 px-4">{item.Comprobante}</td>
-            <td className="border-b py-3 px-4">{item.TipoGasto}</td>
-            <td className="border-b py-3 px-4">{item.Proveedor}</td>
-            <td className="border-b py-3 px-4">{item.Monto}</td>
-            <td className="border-b py-3 px-4">{item.Fecha.slice(0, 10)}</td>
-            <td className="border-b py-3 px-4">{item.Descripcion}</td>
-            <td className="border-b py-3 px-4 flex">
-              <button
-                onClick={() => {
-                  setGastoEdit(item);
-                  setFormValues(item);
-                  setModalEdit(true);
-                }}
-                className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-              >
-                Modificar
-              </button>
-              <DeleteButton
-                endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Delete"
-                id={item.IdGastoMaquinaria}
-                updateList={() => dispatch(fetchGastos())}
-              />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  )
-) : showPieChart ? (
-  <div className="w-full h-96">
-    <Pie data={pieData} options={pieOptions} />
-  </div>
-) : null}
-
+      {showTable ? (
+        loading ? (
+          <LoadingTable loading={loading} />
+        ) : (
+          <table className="min-w-full bg-white rounded-lg shadow-md">
+            <TablaHead titles={titles} />
+            <tbody>
+              {dataM.map((item) => (
+                <tr key={item.IdGastoMaquinaria} className="hover:bg-gray-100">
+                  <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
+                  <td className="border-b py-3 px-4">{item.Comprobante}</td>
+                  <td className="border-b py-3 px-4">{item.TipoGasto}</td>
+                  <td className="border-b py-3 px-4">{item.Proveedor}</td>
+                  <td className="border-b py-3 px-4">{item.Monto}</td>
+                  <td className="border-b py-3 px-4">
+                    {item.Fecha.slice(0, 10)}
+                  </td>
+                  <td className="border-b py-3 px-4">{item.Descripcion}</td>
+                  <td className="border-b py-3 px-4 flex">
+                    <button
+                      onClick={() => {
+                        setGastoEdit(item);
+                        setFormValues(item);
+                        setModalEdit(true);
+                      }}
+                      className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                      Modificar
+                    </button>
+                    <DeleteButton
+                      endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Delete"
+                      id={item.IdGastoMaquinaria}
+                      updateList={() => dispatch(fetchGastos())}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+      ) : showPieChart ? (
+        <div className="w-full h-96">
+          <Pie data={pieData} options={pieOptions} />
+        </div>
+      ) : null}
     </SectionLayout>
   );
 };

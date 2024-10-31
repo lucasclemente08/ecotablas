@@ -48,7 +48,7 @@ const ClasificacionDeMaterial = () => {
 
     setFormValues({
       VolumenUtil: material.VolumenUtil,
-      VolumenInutil:material.VolumenInutil,
+      VolumenInutil: material.VolumenInutil,
       IdMaterialProcesado: material.IdMaterialProcesado,
       FechaC: material.FechaC,
     });
@@ -133,7 +133,12 @@ const ClasificacionDeMaterial = () => {
   // Total de páginas
   const totalPages = Math.ceil(materials.length / itemsPerPage);
 
-  const title = ["Volumen Util (kgs)", "Volumen Inutil (kgs)", "Fecha de ingreso", "Acciones"];
+  const title = [
+    "Volumen Util (kgs)",
+    "Volumen Inutil (kgs)",
+    "Fecha de ingreso",
+    "Acciones",
+  ];
   const columns = [
     { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenInutil" },
@@ -169,7 +174,9 @@ const ClasificacionDeMaterial = () => {
 
   const totalVolumen = materials.reduce(
     (acc, material) =>
-      acc + parseFloat(material.VolumenUtil || 0) + parseFloat(material.VolumenInutil || 0),
+      acc +
+      parseFloat(material.VolumenUtil || 0) +
+      parseFloat(material.VolumenInutil || 0),
     0,
   );
   const totalItems = materials.length;

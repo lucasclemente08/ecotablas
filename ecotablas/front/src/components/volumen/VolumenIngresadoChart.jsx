@@ -44,7 +44,8 @@ const VolumenIngresadoChart = ({ dateRange }) => {
       });
   }, [dateRange]);
 
-  const totalVolumen = volumenData.VolumenIngresoMaterial + volumenData.VolumenMInutil;
+  const totalVolumen =
+    volumenData.VolumenIngresoMaterial + volumenData.VolumenMInutil;
 
   const chartData = {
     labels: ["Volumen Útil", "Volumen No Útil"],
@@ -56,7 +57,10 @@ const VolumenIngresadoChart = ({ dateRange }) => {
             ? [volumenData.VolumenIngresoMaterial, 0]
             : activeSegment === "inutil"
               ? [0, volumenData.VolumenMInutil]
-              : [volumenData.VolumenIngresoMaterial, volumenData.VolumenMInutil],
+              : [
+                  volumenData.VolumenIngresoMaterial,
+                  volumenData.VolumenMInutil,
+                ],
         backgroundColor: ["#4CAF50", "#F44336"],
         borderColor: "#fff",
         borderWidth: 1,
