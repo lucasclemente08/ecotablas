@@ -52,7 +52,7 @@ namespace WebApi_TrazODS.Controllers
         {
             EmpresaDonante empresaDonante = new EmpresaDonante
             {
-                IdEmpresaDonante = id,
+                Id_empresaDonante = id,
                 CUIT = value.CUIT,
                 Nombre = value.Nombre,
                 Direccion = value.Direccion,

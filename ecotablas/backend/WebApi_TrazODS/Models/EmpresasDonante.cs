@@ -12,7 +12,7 @@ namespace WebApi_TrazODS.Models
         #endregion
 
         #region Propiedades
-        public int IdEmpresaDonante { get; set; } // Cambié el nombre a IdEmpresaDonante siguiendo el formato
+        public int Id_empresaDonante { get; set; } // Cambié el nombre a IdEmpresaDonante siguiendo el formato
         public string CUIT { get; set; }
         public string Nombre { get; set; }
         public string Direccion { get; set; }
@@ -104,7 +104,7 @@ namespace WebApi_TrazODS.Models
                         sqlCom.CommandType = CommandType.StoredProcedure;
 
                         // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@Id", empresaActualizada.IdEmpresaDonante);
+                        sqlCom.Parameters.AddWithValue("@Id_empresaDonante", empresaActualizada.Id_empresaDonante);
                         sqlCom.Parameters.AddWithValue("@CUIT", empresaActualizada.CUIT);
                         sqlCom.Parameters.AddWithValue("@Nombre", empresaActualizada.Nombre);
                         sqlCom.Parameters.AddWithValue("@Direccion", empresaActualizada.Direccion);
