@@ -177,7 +177,7 @@ const EmpresaDonante = () => {
               <TablaHead titles={titles} />
               <tbody>
                 {currentItems.map((item) => (
-                  <tr key={item.idEmpresa}>
+                  <tr key={item.Id_empresaDonante}>
                     <td className="px-4 py-2">{item.Nombre}</td>
                     <td className="px-4 py-2">{item.Direccion}</td>
                     <td className="px-4 py-2">{item.Telefono}</td>
@@ -203,7 +203,7 @@ const EmpresaDonante = () => {
                       <DeleteButton
                         endpoint="http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar"
                         updateList={() => dispatch(fetchEmpresaDonante())}
-                        id={item.IdEmpresaDonante}
+                        id={item.Id_empresaDonante}
                       />
                     </td>
                   </tr>

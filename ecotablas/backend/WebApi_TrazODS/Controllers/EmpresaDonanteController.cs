@@ -52,7 +52,7 @@ namespace WebApi_TrazODS.Controllers
         {
             EmpresaDonante empresaDonante = new EmpresaDonante
             {
-                Id_empresaDonante = id,
+                Id_EmpresaDonante = id,
                 CUIT = value.CUIT,
                 Nombre = value.Nombre,
                 Direccion = value.Direccion,
@@ -72,7 +72,7 @@ namespace WebApi_TrazODS.Controllers
         public void Borrar(int id)
         {
             EmpresaDonante empresaDonante = new EmpresaDonante();
-            empresaDonante.Delete(id);
+            empresaDonante.Delete();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace WebApi_TrazODS.Models
         #endregion
 
         #region Propiedades
-        public int Id_empresaDonante { get; set; } // Cambié el nombre a IdEmpresaDonante siguiendo el formato
+        public int Id_EmpresaDonante { get; set; } 
         public string CUIT { get; set; }
         public string Nombre { get; set; }
         public string Direccion { get; set; }
@@ -104,7 +104,7 @@ namespace WebApi_TrazODS.Models
                         sqlCom.CommandType = CommandType.StoredProcedure;
 
                         // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@Id_empresaDonante", empresaActualizada.Id_empresaDonante);
+                        sqlCom.Parameters.AddWithValue("@Id_EmpresaDonante", empresaActualizada.Id_EmpresaDonante);
                         sqlCom.Parameters.AddWithValue("@CUIT", empresaActualizada.CUIT);
                         sqlCom.Parameters.AddWithValue("@Nombre", empresaActualizada.Nombre);
                         sqlCom.Parameters.AddWithValue("@Direccion", empresaActualizada.Direccion);
@@ -126,28 +126,33 @@ namespace WebApi_TrazODS.Models
         }
 
         // Método para eliminar una empresa donante
-        public void Delete(int id)
+        public void Delete()
         {
-            string sqlSentencia = "SP_EliminarEmpresaDonante"; // Procedimiento almacenado
 
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@Id", id);
+            string sqlSentencia = "SP_EliminarEmpresaDonante";
 
-                        sqlCom.ExecuteNonQuery(); // Ejecutar el comando de eliminación
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
+
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
+
+
+
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+
+            sqlCom.Parameters.Add("@Id_EmpresaDonante", SqlDbType.Int).Value = Id_EmpresaDonante;
+
+
+            sqlCnn.Open();
+
+
+            var res = sqlCom.ExecuteNonQuery();
+
+
+            sqlCnn.Close();
+
+
         }
 
         // Método para verificar si una empresa donante existe

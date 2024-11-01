@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AddButton from "../../components/buttons/addButton";
+import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
@@ -36,9 +36,8 @@ const ClasificacionDeMaterial = () => {
     setDateRange(dates);
   };
 
-  // Estado para la paginación
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Número de elementos por página
+  const [itemsPerPage] = useState(5); 
 
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
@@ -127,10 +126,8 @@ const ClasificacionDeMaterial = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = materials.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Cambiar de página
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Total de páginas
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(materials.length / itemsPerPage);
 
   const title = [
@@ -270,7 +267,7 @@ const ClasificacionDeMaterial = () => {
               ))}
             </tbody>
           </table>
-          {/* Controles de paginación integrados */}
+
           <div className="flex justify-between items-center bg-gray-700">
             <button
               onClick={() => paginate(currentPage - 1)}

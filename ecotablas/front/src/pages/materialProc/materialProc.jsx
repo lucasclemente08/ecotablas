@@ -176,7 +176,7 @@ const MaterialProc = () => {
           data={materials}
           title="Reporte de Materiales procesados"
         />
-        <ReportButton />
+
         {modalAbierto && (
           <AddModal
             title="Agregar Material Procesado"
@@ -249,7 +249,7 @@ const MaterialProc = () => {
               ))}
             </tbody>
           </table>
-          {/* Controles de paginación integrados */}
+  
           <div className="flex justify-between items-center bg-gray-700">
             <button
               onClick={() => paginate(currentPage - 1)}
