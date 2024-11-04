@@ -8,6 +8,7 @@ export const fetchEmpresaDonante = createAsyncThunk(
   "ListarTodo",
   async () => {
     const response = await axios.get("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/ListarTodo");
+ 
     return response.data;
   }
 );

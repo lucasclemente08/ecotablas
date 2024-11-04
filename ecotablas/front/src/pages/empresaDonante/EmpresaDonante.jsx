@@ -18,7 +18,8 @@ import NextButton from "../../components/buttons/NextButton";
 
 const EmpresaDonante = () => {
   const dispatch = useDispatch();
-  const { data, loading, error } = useSelector((state) => state.empresaDonante);
+  const { data,  error } = useSelector((state) => state.empresaDonante);
+  const [loading,setloading] = useState(true)
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [empresaId, setEmpresaId] = useState(null);
@@ -46,6 +47,7 @@ const EmpresaDonante = () => {
   const titles = [...columns.map((col) => col.header), "Acciones"];
 
   useEffect(() => {
+    setloading(false)
     dispatch(fetchEmpresaDonante());
   }, [dispatch]);
 
@@ -117,6 +119,8 @@ const EmpresaDonante = () => {
         <AddModalWithSelect
           title="Agregar Empresa Donante"
           fields={[
+            { name: "CUIT", label: "CUIT", type: "text" },
+
             { name: "Nombre", label: "Nombre", type: "text" },
             { name: "Direccion", label: "Dirección", type: "text" },
             { name: "Telefono", label: "Teléfono", type: "text" },
@@ -132,7 +136,6 @@ const EmpresaDonante = () => {
             },
             { name: "Rubro", label: "Rubro", type: "text" },
             { name: "Web", label: "Web", type: "text" },
-            { name: "CUIT", label: "CUIT", type: "text" },
           ]}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
@@ -168,51 +171,51 @@ const EmpresaDonante = () => {
         />
       )}
 
-      {loading ? (
-        <LoadingTable />
-      ) : (
-        <>
-          <div className="max-h-96 overflow-y-auto border border-gray-300 mt-4">
-            <table className="min-w-full border-collapse border  bg-white rounded-lg shadow-lg">
-              <TablaHead titles={titles} />
-              <tbody>
-                {currentItems.map((item) => (
-                  <tr key={item.Id_empresaDonante}>
-                    <td className="px-4 py-2">{item.Nombre}</td>
-                    <td className="px-4 py-2">{item.Direccion}</td>
-                    <td className="px-4 py-2">{item.Telefono}</td>
-                    <td className="px-4 py-2">{item.Email}</td>
-                    <td className="px-4 py-2">{item.TipoPlastico}</td>
-                    <td className="px-4 py-2">{item.Rubro}</td>
-                    <td className="px-4 py-2">
-                      <a
-                        href={item.Web}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {item.Web}
-                      </a>
-                    </td>
-                    <td className="px-4 py-2 flex">
-                      <NextButton />
-                      <button
-                        onClick={() => abrirModalEdit(item)}
-                        className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        Modificar
-                      </button>
-                      <DeleteButton
-                        endpoint="http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar"
-                        updateList={() => dispatch(fetchEmpresaDonante())}
-                        id={item.Id_empresaDonante}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
+    <table className="min-w-full bg-white rounded-lg shadow-md">
+      <TablaHead titles={titles} />
+      
+{loading ? (
+  <LoadingTable loading={loading} />
+) : (
+  
+      <tbody>
+        {currentItems.map((item) => (
+          <tr key={item.Id_empresaDonante}>
+            <td className="px-4 py-2">{item.Nombre}</td>
+            <td className="px-4 py-2">{item.Direccion}</td>
+            <td className="px-4 py-2">{item.Telefono}</td>
+            <td className="px-4 py-2">{item.Email}</td>
+            <td className="px-4 py-2">{item.TipoPlastico}</td>
+            <td className="px-4 py-2">{item.Rubro}</td>
+            <td className="px-4 py-2">
+              <a
+                href={item.Web}
+                className="text-blue-600 hover:underline"
+              >
+                {item.Web}
+              </a>
+            </td>
+            <td className="px-4 py-2 flex">
+              <NextButton />
+              <button
+                onClick={() => abrirModalEdit(item)}
+                className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+              >
+                Modificar
+              </button>
+              <DeleteButton
+                endpoint="http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar"
+                updateList={() => dispatch(fetchEmpresaDonante())}
+                id={item.Id_EmpresaDonante}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
       )}
+    </table>
+
+
     </SectionLayout>
   );
 };
