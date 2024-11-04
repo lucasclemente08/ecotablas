@@ -14,14 +14,13 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
     setIsModalOpen(false);
   };
 
-
-
   const handleDelete = () => {
     axios
       .delete(`${endpoint}/${id}`)
       .then((response) => {
         setMensaje("Eliminación exitosa");
-        updateList(); // Llama a la función para actualizar la lista
+        updateList();
+        console.log(response);
         closeModal();
       })
       .catch((error) => {

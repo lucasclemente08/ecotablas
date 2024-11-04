@@ -251,7 +251,7 @@ const Empleados = () => {
       setMensaje("El DNI no puede tener más de 8 dígitos");
       return;
     }
-  
+
     axios
       .put(
         `http://www.trazabilidadodsapi.somee.com/api/Empleados/Modificar/${empleadoSeleccionadoId}`,

@@ -8,12 +8,8 @@ namespace WebApi_TrazODS.Models
     public class Tolva
     {
         #region Atributos
-        private readonly string connectionString;
+        string connectionString = @"Data Source=Ecotablas-Db.mssql.somee.com;Initial Catalog=Ecotablas-Db;User ID=lucasclemente08_SQLLogin_1;Password=apqjzszydf";
 
-        public Tolva()
-        {
-            connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-        }
         #endregion
 
         #region Propiedades
@@ -29,140 +25,136 @@ namespace WebApi_TrazODS.Models
         #region Métodos
         public DataTable SelectAll()
         {
-            string sqlSentencia = "sp_GetAllTolva"; // Nombre del procedimiento almacenado
-            DataTable dataTable = new DataTable();
+            string sqlSentencia = "sp_GetAllTolva";
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
 
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
+           
+                sqlCnn.Open();
 
-                        using (SqlDataAdapter da = new SqlDataAdapter(sqlCom))
-                        {
-                            da.Fill(dataTable); // Llenar el DataTable con los resultados
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message); // Manejo de excepciones
-                }
-            }
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
 
-            return dataTable; // Retornar el DataTable con las tolvas
+            DataSet ds = new DataSet();
+
+            SqlDataAdapter da = new SqlDataAdapter();
+            da.SelectCommand = sqlCom;
+            da.Fill(ds);
+
+            sqlCnn.Close();
+
+            return ds.Tables[0];
         }
-
-        public void Insert(Tolva nuevaTolva)
+        public void Insert()
         {
-            string sqlSentencia = "sp_InsertTolva"; // Nombre del procedimiento almacenado
 
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
+            string sqlSentencia = "sp_InsertTolvasPrueba";
 
-                        // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@id_triturado", nuevaTolva.IdTriturado);
-                        sqlCom.Parameters.AddWithValue("@horario_inicio", nuevaTolva.HorarioInicio);
-                        sqlCom.Parameters.AddWithValue("@cantidad_cargada", nuevaTolva.CantidadCargada);
-                        sqlCom.Parameters.AddWithValue("@tipo_plastico", nuevaTolva.TipoPlastico);
-                        sqlCom.Parameters.AddWithValue("@proporcion", nuevaTolva.Proporcion);
-                        sqlCom.Parameters.AddWithValue("@especificaciones", nuevaTolva.Especificaciones);
 
-                        sqlCom.ExecuteNonQuery(); // Ejecutar el comando
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
+
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+
+            sqlCom.Parameters.Add("@IdTriturado", SqlDbType.Int).Value = IdTriturado;
+            sqlCom.Parameters.Add("@HorarioInicio", SqlDbType.DateTime).Value = HorarioInicio;
+            sqlCom.Parameters.Add("@CantidadCargada", SqlDbType.Decimal).Value = CantidadCargada;
+            sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
+            sqlCom.Parameters.Add("@Proporcion", SqlDbType.NVarChar).Value = Proporcion;
+            sqlCom.Parameters.Add("@Especificaciones", SqlDbType.NVarChar).Value = Especificaciones;
+
+            sqlCnn.Open();
+
+
+            var res = sqlCom.ExecuteNonQuery();
+
+            sqlCnn.Close();
+
+
         }
-
-        public void Update(Tolva tolvaActualizada)
+        public void Update()
         {
-            string sqlSentencia = "sp_UpdateTolva"; // Nombre del procedimiento almacenado
 
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
 
-                        // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@idTolva", tolvaActualizada.IdTolva);
-                        sqlCom.Parameters.AddWithValue("@id_triturado", tolvaActualizada.IdTriturado);
-                        sqlCom.Parameters.AddWithValue("@horario_inicio", tolvaActualizada.HorarioInicio);
-                        sqlCom.Parameters.AddWithValue("@cantidad_cargada", tolvaActualizada.CantidadCargada);
-                        sqlCom.Parameters.AddWithValue("@tipo_plastico", tolvaActualizada.TipoPlastico);
-                        sqlCom.Parameters.AddWithValue("@proporcion", tolvaActualizada.Proporcion);
-                        sqlCom.Parameters.AddWithValue("@especificaciones", tolvaActualizada.Especificaciones);
+            string sqlSentencia = "sp_UpdateTolvaPruebas";
 
-                        sqlCom.ExecuteNonQuery(); // Ejecutar el comando
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
+
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
+
+
+
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+
+            sqlCom.Parameters.Add("@IdTolva", SqlDbType.Int).Value = IdTolva;
+            sqlCom.Parameters.Add("@IdTriturado", SqlDbType.Int).Value = IdTriturado;
+            sqlCom.Parameters.Add("@HorarioInicio", SqlDbType.DateTime).Value = HorarioInicio;
+            sqlCom.Parameters.Add("@CantidadCargada", SqlDbType.Decimal).Value = CantidadCargada;
+            sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
+            sqlCom.Parameters.Add("@Proporcion", SqlDbType.NVarChar).Value = Proporcion;
+            sqlCom.Parameters.Add("@Especificaciones", SqlDbType.NVarChar).Value = Especificaciones;
+
+
+
+
+            sqlCnn.Open();
+
+
+            var res = sqlCom.ExecuteNonQuery();
+
+
+            sqlCnn.Close();
+
+
         }
-
-        public void Delete(int idTolva)
+        public void Delete()
         {
-            string sqlSentencia = "sp_DeleteTolva"; // Nombre del procedimiento almacenado
 
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@idTolva", idTolva); // Añadir parámetro
-                        sqlCom.ExecuteNonQuery(); // Ejecutar el comando
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
+            string sqlSentencia = "SP_DeleteTolvasPruebas";
+
+
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
+
+
+
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+
+            sqlCom.Parameters.Add("@IdTolva", SqlDbType.Int).Value = IdTolva;
+
+
+            sqlCnn.Open();
+
+
+            var res = sqlCom.ExecuteNonQuery();
+
+
+            sqlCnn.Close();
+
+
         }
 
-        public bool Exists(int idTolva)
+
+        public bool Exists()
         {
             string sqlSentencia = "sp_ExistsTolva"; // Nombre del procedimiento almacenado
             int count = 0;
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
-                try
+                sqlCnn.Open();
+                using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
                 {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@idTolva", idTolva);
+                    sqlCom.CommandType = CommandType.StoredProcedure;
+                    sqlCom.Parameters.Add("@idTolva", SqlDbType.Int).Value = IdTolva;
 
-                        count = (int)sqlCom.ExecuteScalar(); // Obtener el conteo
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
+                    count = (int)sqlCom.ExecuteScalar(); // Obtener el conteo
                 }
             }
 

@@ -8,14 +8,7 @@ namespace WebApi_TrazODS.Models
     public class TablasProducidas
     {
         #region Atributos
-        private readonly string connectionString;
-
-
-        public TablasProducidas()
-        {
-            connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-
-        }
+        string connectionString = @"Data Source=Ecotablas-Db.mssql.somee.com;Initial Catalog=Ecotablas-Db;User ID=lucasclemente08_SQLLogin_1;Password=apqjzszydf";
         #endregion
 
         #region Propiedades
@@ -28,180 +21,117 @@ namespace WebApi_TrazODS.Models
         #endregion
 
         #region Métodos
+
         public DataTable SelectAll()
         {
-            string sqlSentencia = "SP_ObtenerTablasProducidas"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "SP_ObtenerTablasProducidas";
             DataTable dataTable = new DataTable();
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
-                try
+                sqlCnn.Open();
+                using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
                 {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-
-                        using (SqlDataAdapter da = new SqlDataAdapter(sqlCom))
-                        {
-                            da.Fill(dataTable); // Llenar el DataTable con los resultados
-                        }
-                    }
+                    sqlCom.CommandType = CommandType.StoredProcedure;
+                    SqlDataAdapter da = new SqlDataAdapter(sqlCom);
+                    da.Fill(dataTable);
                 }
-                catch (Exception ex)
-                {
-                    // Manejo de excepciones
-                    Console.WriteLine(ex.Message);
-                }
+                sqlCnn.Close();
             }
 
-            return dataTable; // Retornar el DataTable con las tablas producidas
+            return dataTable;
         }
 
         public DataTable SelectById(int id)
         {
-            string sqlSentencia = "SP_ObtenerTablaProducidaPorId"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "SP_ObtenerTablaProducidaPorId";
             DataTable dataTable = new DataTable();
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
-                try
+                sqlCnn.Open();
+                using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
                 {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@Id_tabla", id); // Añadir parámetro
+                    sqlCom.CommandType = CommandType.StoredProcedure;
+                    sqlCom.Parameters.AddWithValue("@Id_tabla", id);
 
-                        using (SqlDataAdapter da = new SqlDataAdapter(sqlCom))
-                        {
-                            da.Fill(dataTable);
-                        }
-                    }
+                    SqlDataAdapter da = new SqlDataAdapter(sqlCom);
+                    da.Fill(dataTable);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                sqlCnn.Close();
             }
 
             return dataTable; // Retornar el DataTable con la tabla producida por ID
         }
 
-        // Método para insertar una nueva tabla producida
-        public void Insert(TablasProducidas nuevaTabla)
+        public void Insert()
         {
-            string sqlSentencia = "SP_InsertarTablaProducida"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "SP_InsertarTablaProducida";
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
-                try
+                sqlCnn.Open();
+                using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
                 {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
+                    sqlCom.CommandType = CommandType.StoredProcedure;
 
-                        // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@ID_Proceso", nuevaTabla.ID_Proceso);
-                        sqlCom.Parameters.AddWithValue("@FechaProduccion", nuevaTabla.FechaProduccion);
-                        sqlCom.Parameters.AddWithValue("@Dimensiones", nuevaTabla.Dimensiones);
-                        sqlCom.Parameters.AddWithValue("@Peso", nuevaTabla.Peso);
-                        sqlCom.Parameters.AddWithValue("@CodigoIdentificacion", nuevaTabla.CodigoIdentificacion);
+                    sqlCom.Parameters.AddWithValue("@ID_Proceso", ID_Proceso);
+                    sqlCom.Parameters.AddWithValue("@FechaProduccion", FechaProduccion);
+                    sqlCom.Parameters.AddWithValue("@Dimensiones", Dimensiones);
+                    sqlCom.Parameters.AddWithValue("@Peso", Peso);
+                    sqlCom.Parameters.AddWithValue("@CodigoIdentificacion", CodigoIdentificacion);
 
-                        sqlCom.ExecuteNonQuery(); // Ejecutar el comando
-                    }
+                    sqlCom.ExecuteNonQuery();
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                sqlCnn.Close();
             }
         }
 
-        // Método para actualizar una tabla producida
-        public void Update(TablasProducidas tablaActualizada)
+        public void Update()
         {
-            string sqlSentencia = "SP_ActualizarTablaProducida"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "SP_ActualizarTablaProducida";
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
             {
-                try
+                sqlCnn.Open();
+                using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
                 {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
+                    sqlCom.CommandType = CommandType.StoredProcedure;
 
-                        // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@ID_Tabla", tablaActualizada.ID_Tabla);
-                        sqlCom.Parameters.AddWithValue("@ID_Proceso", tablaActualizada.ID_Proceso);
-                        sqlCom.Parameters.AddWithValue("@FechaProduccion", tablaActualizada.FechaProduccion);
-                        sqlCom.Parameters.AddWithValue("@Dimensiones", tablaActualizada.Dimensiones);
-                        sqlCom.Parameters.AddWithValue("@Peso", tablaActualizada.Peso);
-                        sqlCom.Parameters.AddWithValue("@CodigoIdentificacion", tablaActualizada.CodigoIdentificacion);
+                    sqlCom.Parameters.AddWithValue("@ID_Tabla", ID_Tabla);
+                    sqlCom.Parameters.AddWithValue("@ID_Proceso", ID_Proceso);
+                    sqlCom.Parameters.AddWithValue("@FechaProduccion", FechaProduccion);
+                    sqlCom.Parameters.AddWithValue("@Dimensiones", Dimensiones);
+                    sqlCom.Parameters.AddWithValue("@Peso", Peso);
+                    sqlCom.Parameters.AddWithValue("@CodigoIdentificacion", CodigoIdentificacion);
 
-                        sqlCom.ExecuteNonQuery(); // Ejecutar el comando
-                    }
+                    sqlCom.ExecuteNonQuery();
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                sqlCnn.Close();
             }
         }
 
-        // Método para eliminar una tabla producida
-        public void Delete(int id)
+        public void Delete()
         {
-            string sqlSentencia = "SP_EliminarTablaProducida"; // Nombre del procedimiento almacenado
+            string sqlSentencia = "SP_EliminarTablaProducida";
 
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@ID_Tabla", id); // Añadir parámetro
-                        sqlCom.ExecuteNonQuery(); // Ejecutar el comando
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+
+            // Añadir parámetro
+            sqlCom.Parameters.Add("@ID_Tabla", SqlDbType.Int).Value = ID_Tabla;
+
+            sqlCnn.Open();
+
+            var res = sqlCom.ExecuteNonQuery();
+
+            sqlCnn.Close();
         }
 
-        // Método para verificar si existe una tabla producida
-        public bool Exists(int id)
-        {
-            string sqlSentencia = "SP_ExisteTablaProducida"; // Nombre del procedimiento almacenado
-            int count = 0;
 
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-                        sqlCom.Parameters.AddWithValue("@ID_Tabla", id);
-
-                        count = (int)sqlCom.ExecuteScalar(); // Obtener el conteo
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-
-            return count > 0; // Retornar true si existe
-        }
         #endregion
     }
 }

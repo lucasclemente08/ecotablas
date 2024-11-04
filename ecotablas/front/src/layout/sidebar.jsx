@@ -3,7 +3,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import { Link, useNavigate } from "react-router-dom";
 import Links from "../components/LinksBar";
-
+import ReportButton from "../components/buttons/ReportButton";
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
@@ -38,6 +38,9 @@ const Sidebar = () => {
         </div>
 
         <Links />
+        <div className="text-center">
+          <ReportButton />
+        </div>
 
         <div className="mt-60 text-center justify-center mb-5 flex w-full">
           <button

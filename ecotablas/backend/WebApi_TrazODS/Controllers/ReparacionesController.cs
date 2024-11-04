@@ -39,6 +39,20 @@ namespace WebApi_TrazODS.Controllers
 
             return obj;
         }
+        // GET: api/Reparacion/
+        [HttpGet]
+        public Reparacion ListarPorIdMaquinaria(int IdMaquinaria)
+        {
+            Reparacion oReparacion = new Reparacion();
+            oReparacion.IdMaquinaria = IdMaquinaria;
+
+            DataTable dt = oReparacion.SelectIdMaquinaria();
+
+            var listaJson = JsonConvert.SerializeObject(dt);
+            var obj = JsonConvert.DeserializeObject<List<Reparacion>>(listaJson).FirstOrDefault();
+
+            return obj;
+        }
 
         // POST: api/Reparacion
         [HttpPost]

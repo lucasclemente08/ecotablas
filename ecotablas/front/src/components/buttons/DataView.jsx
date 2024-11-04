@@ -1,5 +1,5 @@
-import React from 'react';
-import { BsClipboardDataFill } from 'react-icons/bs';
+import React from "react";
+import { BsClipboardDataFill } from "react-icons/bs";
 
 const DataView = ({ ShowTable }) => {
   return (

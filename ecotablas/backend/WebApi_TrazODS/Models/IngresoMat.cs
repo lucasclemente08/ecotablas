@@ -27,6 +27,8 @@ namespace WebApi_TrazODS.Models
         public int IdTipoPlastico { get; set; }
         public int? VolumenMInutil { get; set; }
 
+        public int Estado { get; set; }
+
 
         #endregion
 
@@ -113,6 +115,7 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@FechaIngresoM", SqlDbType.NVarChar).Value = FechaIngresoM;
             sqlCom.Parameters.Add("@IdTipoPlastico", SqlDbType.Int).Value = IdTipoPlastico;
             sqlCom.Parameters.Add("@VolumenMInutil", SqlDbType.Int).Value = VolumenMInutil;
+            sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
 
 
             sqlCnn.Open();
@@ -148,6 +151,7 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@FechaIngresoM", SqlDbType.NVarChar).Value = FechaIngresoM;
             sqlCom.Parameters.Add("@IdTipoPlastico", SqlDbType.Int).Value = IdTipoPlastico;
             sqlCom.Parameters.Add("@VolumenMInutil", SqlDbType.Int).Value = VolumenMInutil;
+            sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
 
 
             sqlCnn.Open();

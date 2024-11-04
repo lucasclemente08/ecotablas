@@ -3,7 +3,7 @@ function builderApiUrl(params) {
 
   if (!baseUrl) {
     throw new Error(
-      "La URL base para la API no está definida en las variables de entorno."
+      "La URL base para la API no está definida en las variables de entorno.",
     );
   }
 

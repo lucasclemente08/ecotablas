@@ -80,10 +80,10 @@ namespace WebApi_TrazODS.Controllers
         }
         
         [HttpPut]
-        public void CambiarEstado(int id, [FromBody] string nuevoEstado)
+        public void CambiarEstado(int id, [FromBody] int nuevoEstado)
         {
-            Maquinaria maquinaria = new Maquinaria();
-            maquinaria.CambiarEstado(id, nuevoEstado);
+            Maquinaria oMaquinaria = new Maquinaria();
+            oMaquinaria.CambiarEstado(id, nuevoEstado);
         }
     }
 }

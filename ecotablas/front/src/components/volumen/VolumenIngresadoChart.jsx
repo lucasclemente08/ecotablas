@@ -14,7 +14,7 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement, Filler);
 
 const VolumenIngresadoChart = ({ dateRange }) => {
   const [volumenData, setVolumenData] = useState({
-    VolumenIngrsoMaterial: 0,
+    VolumenIngresoMaterial: 0,
     VolumenMInutil: 0,
   });
   const [activeSegment, setActiveSegment] = useState(null);
@@ -44,7 +44,8 @@ const VolumenIngresadoChart = ({ dateRange }) => {
       });
   }, [dateRange]);
 
-  const totalVolumen = volumenData.VolumenIngresoMaterial + volumenData.VolumenMInutil;
+  const totalVolumen =
+    volumenData.VolumenIngresoMaterial + volumenData.VolumenMInutil;
 
   const chartData = {
     labels: ["Volumen Útil", "Volumen No Útil"],
@@ -56,7 +57,10 @@ const VolumenIngresadoChart = ({ dateRange }) => {
             ? [volumenData.VolumenIngresoMaterial, 0]
             : activeSegment === "inutil"
               ? [0, volumenData.VolumenMInutil]
-              : [volumenData.VolumenIngresoMaterial, volumenData.VolumenMInutil],
+              : [
+                  volumenData.VolumenIngresoMaterial,
+                  volumenData.VolumenMInutil,
+                ],
         backgroundColor: ["#4CAF50", "#F44336"],
         borderColor: "#fff",
         borderWidth: 1,

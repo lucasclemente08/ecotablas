@@ -24,8 +24,8 @@ namespace WebApi_TrazODS.Models
         public int IdMaterialClasificado { get; set; }
         public int VolumenUtil { get; set; }
         public int VolumenInutil { get; set; }
-        public int IdMaterialProcesado { get; set; }
         public string FechaC { get; set; }
+        public int IdIngresoMaterial { get; set; }
 
         #endregion
 
@@ -110,8 +110,8 @@ namespace WebApi_TrazODS.Models
 
             sqlCom.Parameters.Add("@VolumenUtil", SqlDbType.Int).Value = VolumenUtil;
             sqlCom.Parameters.Add("@VolumenInutil", SqlDbType.Int).Value = VolumenInutil;
-            sqlCom.Parameters.Add("@IdMaterialProcesado", SqlDbType.Int).Value = IdMaterialProcesado;
             sqlCom.Parameters.Add("FechaC", SqlDbType.NVarChar).Value = FechaC;
+            sqlCom.Parameters.Add("@IdIngresoMaterial", SqlDbType.Int).Value = IdIngresoMaterial;
 
 
             sqlCnn.Open();
@@ -145,8 +145,8 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@IdMaterialClasificado", SqlDbType.Int).Value = IdMaterialClasificado;
             sqlCom.Parameters.Add("@VolumenUtil", SqlDbType.Int).Value = VolumenUtil;
             sqlCom.Parameters.Add("@VolumenInutil", SqlDbType.Int).Value = VolumenInutil;
-            sqlCom.Parameters.Add("@IdMaterialProcesado", SqlDbType.Int).Value = IdMaterialProcesado;
             sqlCom.Parameters.Add("FechaC", SqlDbType.NVarChar).Value = FechaC;
+            sqlCom.Parameters.Add("@IdIngresoMaterial", SqlDbType.Int).Value = IdIngresoMaterial;
 
 
             sqlCnn.Open();

@@ -54,8 +54,8 @@ namespace WebApi_TrazODS.Controllers
             MaterialClas oMaterialClas = new MaterialClas();
             oMaterialClas.VolumenUtil = value.VolumenUtil;
             oMaterialClas.VolumenInutil = value.VolumenInutil;
-            oMaterialClas.IdMaterialProcesado = value.IdMaterialProcesado;
             oMaterialClas.FechaC = value.FechaC;
+            oMaterialClas.IdIngresoMaterial = value.IdIngresoMaterial;
 
 
             oMaterialClas.Insert();
@@ -71,8 +71,8 @@ namespace WebApi_TrazODS.Controllers
             oMaterialClas.IdMaterialClasificado = id;
             oMaterialClas.VolumenUtil = value.VolumenUtil;
             oMaterialClas.VolumenInutil = value.VolumenInutil;
-            oMaterialClas.IdMaterialProcesado = value.IdMaterialProcesado;
             oMaterialClas.FechaC = value.FechaC;
+            oMaterialClas.IdIngresoMaterial = value.IdIngresoMaterial;
 
             oMaterialClas.Update();
 

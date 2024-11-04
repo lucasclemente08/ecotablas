@@ -44,7 +44,8 @@ const VolumenProcesadoChart = ({ dateRange }) => {
       });
   }, [dateRange]);
 
-  const totalVolumen = volumenData.VolumenProcesado + volumenData.VolumenPInutil;
+  const totalVolumen =
+    volumenData.VolumenProcesado + volumenData.VolumenPInutil;
 
   const chartData = {
     labels: ["Volumen Útil", "Volumen No Útil"],
