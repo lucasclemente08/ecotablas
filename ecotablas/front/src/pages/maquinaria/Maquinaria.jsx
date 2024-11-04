@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/buttons/AddButton";
+import AddButton from "../../components/buttons/addButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -429,7 +429,7 @@ const Maquinaria = () => {
                       maquinaria.IdEstado === 2 ? (
                         <button
                           onClick={() => handleChangeState(maquinaria)}
-                          className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700"
+                          className="bg-blue-500 text-white ml-2 py-1 px-3 rounded hover:bg-blue-700"
                         >
                           Cambiar Estado
                         </button>
