@@ -9,17 +9,19 @@ import L from "leaflet";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-
+import fromLatLng  from "react-geocode";
 // Importamos íconos personalizados
 import office from "../../assets/office.png";
 import ecoTruck from "../../assets/ecoTruck.png";
 import individual from "../../assets/individual.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import icon from "leaflet/dist/images/marker-icon.png";
-
+import Toast from "../../components/Toast";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
 const RecoUrbanos = () => {
   const [showMap, setShowMap] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success"); 
   const [locations, setLocations] = useState([]);
   const dispatch = useDispatch();
   const [error, setError] = useState("");
@@ -154,10 +156,11 @@ const RecoUrbanos = () => {
     } catch (error) {
       console.error("Error al eliminar ubicación:", error);
     }
-  };
-
+  };  
   return (
     <SectionLayout title="Recolección de Urbanos">
+ 
+         <Toast message={toastMessage} type={toastType} onClose={() => setToastMessage("")} />
       <div className="overflow-x-auto">
         {modalAbierto && (
           <div className="fixed inset-0 overflow-y-auto">

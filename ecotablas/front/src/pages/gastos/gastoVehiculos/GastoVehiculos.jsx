@@ -11,10 +11,13 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import SectionLayout from "../../../layout/SectionLayout";
 import TablaHead from "../../../components/Thead";
 import LoadingTable from "../../../components/LoadingTable";
-import AddButton from "../../../components/buttons/addButton";
+import AddButton from "../../../components/buttons/AddButton";
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import DataView from "../../../components/buttons/DataView";
@@ -102,26 +105,24 @@ const GastoVehiculos = () => {
     fetchTrucks();
     fetchMaterials();
   }, []);
-
   const handleSubmit = (e) => {
     e.preventDefault();
-
     axios
       .post(
         "http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/CrearGastoVehiculo",
         formValues,
       )
       .then((response) => {
-        setMensaje("Gasto agregado con éxito");
+        toast.success("Gasto agregado con éxito"); // Notificación de éxito
         fetchMaterials();
         cerrarModal();
       })
       .catch((error) => {
         console.error("Error al agregar el gasto:", error);
-        setMensaje("Error al agregar el gasto");
+        toast.error("Error al agregar el gasto"); // Notificación de error
       });
   };
-
+  
   useEffect(() => {
     const calculatePieData = () => {
       const categories = {};
@@ -239,23 +240,21 @@ const GastoVehiculos = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-
     axios
       .put(
-        `http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo`,
+        `http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${id}`,
         formValues,
       )
       .then((response) => {
-        setMensaje("Gasto actualizado con éxito");
-        fetchMaterials(); // Actualiza la lista después de la edición
-        cerrarModalEdit(); // Cierra el modal de edición
+        toast.success("Gasto actualizado con éxito"); // Notificación de éxito
+        fetchMaterials();
+        cerrarModalEdit();
       })
       .catch((error) => {
         console.error("Error al actualizar el gasto:", error);
-        setMensaje("Error al actualizar el gasto");
+        toast.error("Error al actualizar el gasto"); // Notificación de error
       });
   };
-
   const cerrarModalEdit = () => setModalEdit(false);
 
   const titles = [
@@ -272,6 +271,18 @@ const GastoVehiculos = () => {
 
   return (
     <SectionLayout title="Gastos de Vehículos">
+      <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
+
       <div className="flex items-center">
         <AddButton
           abrirModal={() => setModalAbierto(true)}
@@ -344,7 +355,7 @@ const GastoVehiculos = () => {
                   <td className="border-b py-3 px-4">{item.Proveedor}</td>
                   <td className="border-b py-3 px-4">{item.Monto}</td>
                   <td className="border-b py-3 px-4">
-                    {item.Fecha.slice(0, 10)}
+                  {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
                   </td>
                   <td className="border-b py-3 px-4">{item.Descripcion}</td>
                   <td className="border-b py-3 px-4 flex items-center">

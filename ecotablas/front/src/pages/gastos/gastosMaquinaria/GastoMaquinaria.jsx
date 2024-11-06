@@ -10,7 +10,7 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import TablaHead from "../../../components/Thead";
 import LoadingTable from "../../../components/LoadingTable";
-import AddButton from "../../../components/buttons/addButton";
+import AddButton from "../../../components/buttons/AddButton";
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import { FaChartLine, FaChartPie } from "react-icons/fa";
 import DataView from "../../../components/buttons/DataView";
@@ -263,7 +263,7 @@ const GastoMaquinaria = () => {
                   <td className="border-b py-3 px-4">{item.Proveedor}</td>
                   <td className="border-b py-3 px-4">{item.Monto}</td>
                   <td className="border-b py-3 px-4">
-                    {item.Fecha.slice(0, 10)}
+                  {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
                   </td>
                   <td className="border-b py-3 px-4">{item.Descripcion}</td>
                   <td className="border-b py-3 px-4 flex">
