@@ -15,8 +15,8 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
 import NextButton from "../../components/buttons/NextButton";
-import ReportButton from "../../components/buttons/ReportButton";
-import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
 
 const TablasProducidas = () => {
@@ -24,6 +24,7 @@ const TablasProducidas = () => {
   const { data, loading, error } = useSelector(
     (state) => state.tablasProducidas,
   );
+  const [selectedDate, setSelectedDate] = useState("");  // Store the selected date
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
@@ -75,6 +76,7 @@ const TablasProducidas = () => {
     };
 
     await dispatch(addTablaProducida(newFormValues));
+    toast.success("Tabla añadida con éxito!");
     await dispatch(fetchTablasProducidas());
     cerrarModal();
   };
@@ -82,6 +84,7 @@ const TablasProducidas = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     await dispatch(editTablaProducida({ id: tablaId, formValues }));
+    toast.success("Registro editado con éxito!");
     cerrarModalEdit();
   };
 
@@ -125,32 +128,50 @@ const TablasProducidas = () => {
   };
 
   const filterByDate = (e) => {
-    const selectedDate = new Date(e.target.value); // Obtener la fecha seleccionada
+    const selectedDate = new Date(e.target.value); 
     const filteredItems = data.filter((item) => {
-      const itemDate = new Date(item.FechaProduccion); // Convertir la fecha de la tabla a un objeto Date
-      return itemDate.toDateString() === selectedDate.toDateString(); // Comparar solo la parte de la fecha (ignorando la hora)
+      const itemDate = new Date(item.FechaProduccion);
+      // Strip time from both dates to avoid issues with time differences
+      return itemDate.toISOString().slice(0, 10) === selectedDate.toISOString().slice(0, 10);
     });
-    
-    // Actualizar los items actuales con los filtrados
+
     setCurrentItems(filteredItems);
+    if(currentItems.length==0){
+      toast.error("No hay tablas para esta fecha")
+    }
   };
+  
 
 
   return (
     <SectionLayout title="Tablas Producidas">
+      <div className="flex items-center">
+
+
+
       <AddButton abrirModal={abrirModal} title="Añadir tabla" />
-      <input
-  type="date"
-  onChange={filterByDate}
-  className="mb-4 p-2 border border-gray-300 rounded"
-/>
+
 
       <PdfGenerator
         columns={columns}
         data={data}
         title="Reporte de Tablas Producidas"
       />
+      <div className="">
+      <input
+        type="date"
+       onChange={filterByDate}
+        className="mb-2 p-2 border border-gray-300 rounded"
+      />
 
+      <button 
+        onClick={filterByDate}  // Trigger the filter when clicked
+        className="p-2   py-2 ml-2 bg-blue-500 text-white rounded"
+      >
+        Buscar por fecha
+      </button>
+    </div>
+    </div>
       {error && (
         <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">
           Error: {error}
@@ -261,6 +282,7 @@ const TablasProducidas = () => {
           </div>
         </>
       )}
+       <ToastContainer /> 
     </SectionLayout>
   );
 };
