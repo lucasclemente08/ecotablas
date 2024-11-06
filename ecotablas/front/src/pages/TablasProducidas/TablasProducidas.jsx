@@ -127,20 +127,17 @@ const TablasProducidas = () => {
     return `$${size}_${large}_${hours}_${codeUID}`;
   };
 
-  const filterByDate = (e) => {
-    const selectedDate = new Date(e.target.value); 
+  
+  const filterByDate = () => {
+    const selectedDateObj = new Date(selectedDate);
     const filteredItems = data.filter((item) => {
       const itemDate = new Date(item.FechaProduccion);
-      // Strip time from both dates to avoid issues with time differences
-      return itemDate.toISOString().slice(0, 10) === selectedDate.toISOString().slice(0, 10);
+      return itemDate.toISOString().slice(0, 10) === selectedDateObj.toISOString().slice(0, 10);
     });
 
-    setCurrentItems(filteredItems);
-    if(currentItems.length==0){
-      toast.error("No hay tablas para esta fecha")
-    }
+    setCurrentItems(filteredItems);  // Update displayed items
   };
-  
+
 
 
   return (
@@ -157,19 +154,25 @@ const TablasProducidas = () => {
         data={data}
         title="Reporte de Tablas Producidas"
       />
-      <div className="">
+      <div className=" flex items-center justify-center">
       <input
         type="date"
-       onChange={filterByDate}
+        onChange={(e) => setSelectedDate(e.target.value)}  // Update the selected date state
         className="mb-2 p-2 border border-gray-300 rounded"
       />
 
       <button 
         onClick={filterByDate}  // Trigger the filter when clicked
-        className="p-2   py-2 ml-2 bg-blue-500 text-white rounded"
+        className="p-3    ml-2 bg-blue-500 text-white rounded"
       >
         Buscar por fecha
       </button>
+      {/* <button 
+        onClick={setCurrentItems(data)}  // Trigger the filter when clicked
+        className="p-3   ml-2 bg-slate-400 text-white rounded"
+      >
+        Limpiar busqueda
+      </button> */}
     </div>
     </div>
       {error && (
