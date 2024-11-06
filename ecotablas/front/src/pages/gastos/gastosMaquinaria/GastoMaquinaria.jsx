@@ -17,6 +17,9 @@ import DataView from "../../../components/buttons/DataView";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
 
+import { storage } from "../../../firebase/firebase"; 
+
+
 const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
 
 const GastoMaquinaria = () => {
@@ -178,6 +181,8 @@ const GastoMaquinaria = () => {
       required: true,
     },
 
+    { name: "comprobante", label: "Comprobante", type: "file", required: true },
+
     { name: "comprobante", label: "Comprobante", type: "text", required: true },
     { name: "proveedor", label: "Proveedor", type: "text", required: true },
     {
@@ -202,9 +207,44 @@ const GastoMaquinaria = () => {
     setShowPieChart(false);
   };
 
+
+  const uploadFileToDropbox = async (file) => {
+    const token = import.meta.env.VITE_DROPBOX_TOKEN
+    console.log(token)  
+    const url = 'https://content.dropboxapi.com/2/files/upload';
+    
+    const headers = {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/octet-stream",
+      "Dropbox-API-Arg": JSON.stringify({
+        path: `/uploads/${file.name}`,  // Ruta donde guardar el archivo en Dropbox
+        mode: "add",  // Asegura que no sobrescriba el archivo si ya existe
+        autorename: true,  // Si el archivo ya existe, renombrarlo automáticamente
+      }),
+    };
+  
+    const body = file;
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: body,
+      });
+  
+      const result = await response.json();
+      console.log('File uploaded:', result);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
+  
+
   return (
     <SectionLayout title="Gasto de Maquinaria">
       <div className="flex">
+  
+
         <AddButton
           abrirModal={() => setModalAbierto(true)}
           title="Añadir Gasto de Maquinaria"
@@ -242,6 +282,7 @@ const GastoMaquinaria = () => {
         <AddModalWithSelect
           title="Editar Gasto de Maquinaria"
           fields={fields}
+          handleFileChange={handleFileChange}
           handleChange={handleChange}
           handleSubmit={handleEditSubmit}
           cerrarModal={() => setModalEdit(false)}

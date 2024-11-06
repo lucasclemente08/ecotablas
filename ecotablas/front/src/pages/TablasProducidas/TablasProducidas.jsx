@@ -27,6 +27,7 @@ const TablasProducidas = () => {
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
+  const [currentItems, setCurrentItems] = useState([])
   const [tablaId, setTablaId] = useState(null);
   const [formValues, setFormValues] = useState({
     FechaProduccion: "",
@@ -94,9 +95,14 @@ const TablasProducidas = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+
+  useEffect(() => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    setCurrentItems(data.slice(indexOfFirstItem, indexOfLastItem));
+  }, [data, currentPage]);
+
+  
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -118,9 +124,27 @@ const TablasProducidas = () => {
     return `$${size}_${large}_${hours}_${codeUID}`;
   };
 
+  const filterByDate = (e) => {
+    const selectedDate = new Date(e.target.value); // Obtener la fecha seleccionada
+    const filteredItems = data.filter((item) => {
+      const itemDate = new Date(item.FechaProduccion); // Convertir la fecha de la tabla a un objeto Date
+      return itemDate.toDateString() === selectedDate.toDateString(); // Comparar solo la parte de la fecha (ignorando la hora)
+    });
+    
+    // Actualizar los items actuales con los filtrados
+    setCurrentItems(filteredItems);
+  };
+
+
   return (
     <SectionLayout title="Tablas Producidas">
       <AddButton abrirModal={abrirModal} title="Añadir tabla" />
+      <input
+  type="date"
+  onChange={filterByDate}
+  className="mb-4 p-2 border border-gray-300 rounded"
+/>
+
       <PdfGenerator
         columns={columns}
         data={data}
