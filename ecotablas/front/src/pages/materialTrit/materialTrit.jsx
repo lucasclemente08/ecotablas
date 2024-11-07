@@ -248,16 +248,16 @@ const MaterialTrit = () => {
               values={formValues}
             />
           )}
-          {modalEdit && (
-            <ButtonEdit
-              title="Material Triturado"
-              fields={fields}
-              id={materialId}
-              formValues={formValues}
-              handleChange={handleChange}
-              handleEditSubmit={handleEditSubmit}
-              cerrarModalEdit={cerrarModalEdit}
-            />
+            {modalEdit && (
+              <ButtonEdit
+                title="Material Triturado"
+                fields={fields}
+                id={materialId}
+                formValues={formValues}
+                handleChange={handleChange}
+                handleEditSubmit={handleEditSubmit}
+                cerrarModalEdit={cerrarModalEdit}
+              />
           )}
           <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
             <h5>
