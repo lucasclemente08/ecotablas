@@ -18,7 +18,6 @@ import Areas from "./pages/areas/Areas";
 import EmpresaDonante from "./pages/empresaDonante/EmpresaDonante";
 import TablasProducidas from "./pages/TablasProducidas/TablasProducidas";
 import EntradasDeMaterial from "./pages/entradaDeMaterial/EntradasDeMaterial";
-
 import ClasificacionDeMaterial from "./pages/clasificacionDeMaterial/ClasificacionDeMaterial";
 import Maquinarias from "./pages/maquinaria/Maquinaria";
 import Tolva from "./pages/tolva/Tolva";
