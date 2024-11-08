@@ -27,22 +27,40 @@ const ButtonEdit = ({
               Editar {title}
             </h3>
             <div className="mt-2">
-              {/* Agregamos el form con onSubmit */}
               <form onSubmit={handleEditSubmit}>
                 {fields.map((field) => (
-                  <input
-                    key={field.name} // Usamos el nombre del campo como key única
-                    type={field.type}
-                    name={field.name}
-                    placeholder={field.placeholder}
-                    value={formValues[field.name] || ""}
-                    onChange={handleChange}
-                    className="border p-2 w-full mt-2"
-                  />
+                  <div key={field.name} className="mt-2">
+                    {field.type === "select" ? (
+                      <select
+                        name={field.name}
+                        value={formValues[field.name] || ""}
+                        onChange={handleChange}
+                        className="border p-2 w-full"
+                      >
+                        <option value="">Selecciona una opción</option>
+                        {field.options.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={field.type}
+                        name={field.name}
+                        placeholder={field.placeholder}
+                        value={formValues[field.name] || ""}
+                        onChange={handleChange}
+                        className="border p-2 w-full"
+                      />
+                    )}
+                  </div>
                 ))}
                 <div className="mt-5 sm:mt-6">
                   <button
-                    type="submit" // Cambiado a submit
+
+                  onClick={handleEditSubmit}
+             type="button"
                     className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
                   >
                     Guardar

@@ -2,21 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import SectionLayout from "../../layout/SectionLayout";
-import AddButton from "../../components/buttons/AddButton";
-import LoadingTable from "../../components/LoadingTable";
+import { toast } from "react-toastify";
 import TablaHead from "../../components/Thead";
 import L from "leaflet";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import fromLatLng  from "react-geocode";
-// Importamos íconos personalizados
 import office from "../../assets/office.png";
 import ecoTruck from "../../assets/ecoTruck.png";
 import individual from "../../assets/individual.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import icon from "leaflet/dist/images/marker-icon.png";
 import Toast from "../../components/Toast";
+import ButtonEdit from "../../components/buttons/ButtonEdit";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
 const RecoUrbanos = () => {
   const [showMap, setShowMap] = useState(false);
@@ -32,6 +30,8 @@ const RecoUrbanos = () => {
     Long: "",
     TipoDonante: "",
   });
+  const [modalEdit, setModalEdit] = useState(false);
+  const [IdUbicacion, setIdUbicacion] = useState(null);
   const columns = [
     { header: "Nombre", accessor: "Nombre" },
     { header: "Tipo de Donante", accessor: "TipoDonante" },
@@ -74,6 +74,7 @@ const RecoUrbanos = () => {
       return;
     }
 
+    console.log(newUbicacion)
     axios
       .post(
         `http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Insertar`,
@@ -81,16 +82,12 @@ const RecoUrbanos = () => {
       )
       .then((response) => {
         setModalAbierto(false);
-        setMensaje("Inserción exitosa");
+        // setMensaje("Inserción exitosa");
         // Refrescar la lista de ubicaciones después de insertar
-        axios
-          .get(
-            `http://www.trazabilidadodsapi.somee.com/api/UbicacionesMapa/ListarTodo`,
-          )
-          .then((response) => setLocations(response.data))
-          .catch((error) =>
-            console.error("Error al obtener los datos:", error),
-          );
+        toast.success("Registro editado con éxito!");
+        console.log(newUbicacion)
+      
+        fetchLocations()
       })
       .catch((error) => console.error("error al obtener los datos:", error));
   };
@@ -98,7 +95,7 @@ const RecoUrbanos = () => {
   const fetchLocations = async () => {
     try {
       const response = await axios.get(
-        "http://www.trazabilidadodsapi.somee.com/api/UbicacionesMapa/ListarTodo",
+        "http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/ListarTodo",
       );
       setLocations(response.data);
     } catch (error) {
@@ -116,19 +113,19 @@ const RecoUrbanos = () => {
         return L.icon({
           iconUrl: office,
           iconSize: [30, 41],
-          shadowUrl: iconShadow,
+          // shadowUrl: iconShadow,
         });
       case "urbanos":
         return L.icon({
           iconUrl: ecoTruck,
           iconSize: [30, 41],
-          shadowUrl: iconShadow,
+          // shadowUrl: iconShadow,
         });
       case "particular":
         return L.icon({
           iconUrl: individual,
           iconSize: [30, 41],
-          shadowUrl: iconShadow,
+          // shadowUrl: iconShadow,
         });
       default:
         return L.icon({
@@ -139,28 +136,82 @@ const RecoUrbanos = () => {
     }
   };
 
-  // Función para editar una ubicación
-  const handleEdit = (location) => {
-    console.log("Editar:", location);
-    // Aquí podrías abrir un modal de edición o redirigir a una página de edición.
-  };
 
-  // Función para eliminar una ubicación
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(
-        `http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Delete/${id}`,
-      );
-      setLocations(locations.filter((location) => location.id !== id)); // Filtra la ubicación eliminada
-      console.log("Ubicación eliminada");
-    } catch (error) {
-      console.error("Error al eliminar ubicación:", error);
-    }
-  };  
+ 
+    const handleEdit = (location) => {
+      setIdUbicacion(location.IdUbicacion)
+      setNewUbicacion({
+        Nombre: location.Nombre || "",
+        Lat: location.Lat || "",
+        Long: location.Long || "",
+        TipoDonante: location.TipoDonante || ""
+      });
+      setModalEdit(true); 
+    };
+
+    const handleEditSubmit = async (event) => {
+      event.preventDefault(); 
+      try {
+        await axios.put(`http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Modificar/${IdUbicacion}`, newUbicacion);
+        fetchLocations();
+        setModalEdit(false); 
+      } catch (error) {
+        console.error("Error al editar ubicación:", error);
+      }
+    };
+
+    const cerrarModalEdit = () => {
+      setModalEdit(false);
+    };
+
+
+const fields = [
+  {
+    name: "Nombre",
+    label: "Nombre de la Ubicación",
+    type: "text"
+  },
+  {
+    name: "Lat",
+    label: "Latitud",
+    type: "number"
+  },
+  {
+    name: "Long",
+    label: "Longitud",
+    type: "number"
+  },
+  {
+    name: "TipoDonante",
+    label: "Tipo de Donante",
+    type: "select",
+    options: [
+      { value: "Urbanos", label: "Recolección de urbanos" },
+      { value: "Empresa", label: "Empresa donante" },
+      { value: "Particular", label: "Particular" },
+    ],
+  }
+];
+
+
   return (
     <SectionLayout title="Recolección de Urbanos">
  
-         <Toast message={toastMessage} type={toastType} onClose={() => setToastMessage("")} />
+ {modalEdit && (
+            <ButtonEdit
+              title="Recoleccion Urbanos"
+              fields={fields}
+              id={IdUbicacion}
+              formValues={newUbicacion}
+              handleChange={handleChange}
+              handleEditSubmit={handleEditSubmit}
+              cerrarModalEdit={cerrarModalEdit}
+            />
+          )}
+
+
+
+         <Toast message={toastMessage} type={toastType}  />
       <div className="overflow-x-auto">
         {modalAbierto && (
           <div className="fixed inset-0 overflow-y-auto">
@@ -299,27 +350,25 @@ const RecoUrbanos = () => {
         {showMap ? "Ocultar Mapa" : "Mostrar Mapa"}
       </button>
 
+
+      {showMap && !modalAbierto && (
+          <div className="mt-5  rounded-lg overflow-hidden h-[600px]">
+            <MapContainer center={centerPosition} zoom={12} className="w-full h-full">
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              {locations.map((location, index) => (
+                <Marker key={index} position={[location.Lat, location.Long]} icon={handleIcon(location.TipoDonante)}>
+                  <Popup>{location.Nombre} - {location.TipoDonante}</Popup>
+                </Marker>
+              ))}
+            </MapContainer>
+          </div>
+        )}
+     
+
+
       {showMap ? (
-        <div className="flex mt-5">
-          <MapContainer
-            center={[-31.4184, -64.1705]}
-            zoom={12}
-            className="w-full h-96"
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {locations.map((location, index) => (
-              <Marker
-                key={index}
-                position={[location.Lat, location.Long]}
-                icon={handleIcon(location.TipoDonante)}
-              >
-                <Popup>
-                  {location.Nombre} - {location.TipoDonante}
-                </Popup>
-              </Marker>
-            ))}
-          </MapContainer>
-        </div>
+    <>
+    </>
       ) : (
         <table className="table-auto w-full bg-white rounded-lg shadow-lg mt-4">
           <TablaHead titles={titles} />

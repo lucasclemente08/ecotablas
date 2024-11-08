@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/buttons/AddButton";
+import AddButton from "../../components/buttons/addButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -248,16 +248,16 @@ const MaterialTrit = () => {
               values={formValues}
             />
           )}
-          {modalEdit && (
-            <ButtonEdit
-              title="Material Triturado"
-              fields={fields}
-              id={materialId}
-              formValues={formValues}
-              handleChange={handleChange}
-              handleEditSubmit={handleEditSubmit}
-              cerrarModalEdit={cerrarModalEdit}
-            />
+            {modalEdit && (
+              <ButtonEdit
+                title="Material Triturado"
+                fields={fields}
+                id={materialId}
+                formValues={formValues}
+                handleChange={handleChange}
+                handleEditSubmit={handleEditSubmit}
+                cerrarModalEdit={cerrarModalEdit}
+              />
           )}
           <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
             <h5>
