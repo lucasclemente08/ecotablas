@@ -13,7 +13,7 @@ import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
-import ButtonEdit from "../../components/buttons/ButtonEdit";
+import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
 
 const EmpresaDonante = () => {

@@ -5,7 +5,7 @@ import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
-import ButtonEdit from "../../components/buttons/ButtonEdit";
+import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import builderApiUrl from "../../utils/BuilderApi";
 import axios from "axios";
