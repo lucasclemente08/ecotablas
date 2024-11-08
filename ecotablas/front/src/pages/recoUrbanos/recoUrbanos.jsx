@@ -14,7 +14,7 @@ import individual from "../../assets/individual.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import icon from "leaflet/dist/images/marker-icon.png";
 import Toast from "../../components/Toast";
-import ButtonEdit from "../../components/buttons/ButtonEdit";
+import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
 const RecoUrbanos = () => {
   const [showMap, setShowMap] = useState(false);
