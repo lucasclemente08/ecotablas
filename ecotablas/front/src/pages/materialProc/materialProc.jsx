@@ -4,7 +4,7 @@ import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
-import ButtonEdit from "../../components/buttons/ButtonEdit";
+import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 
