@@ -74,7 +74,7 @@ const RecoUrbanos = () => {
       return;
     }
 
-    console.log(newUbicacion)
+ 
     axios
       .post(
         `http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Insertar`,
@@ -85,7 +85,7 @@ const RecoUrbanos = () => {
         // setMensaje("Inserción exitosa");
         // Refrescar la lista de ubicaciones después de insertar
         toast.success("Registro editado con éxito!");
-        console.log(newUbicacion)
+      
       
         fetchLocations()
       })
