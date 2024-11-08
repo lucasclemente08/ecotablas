@@ -15,6 +15,7 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
 import NextButton from "../../components/buttons/NextButton";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 
 const Tolva = () => {
   const dispatch = useDispatch();
@@ -106,7 +107,7 @@ const Tolva = () => {
 
   return (
     <SectionLayout title="Tolva">
-      <AddButton abrirModal={abrirModal} title="Añadir Registro" />
+      <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
       <PdfGenerator columns={columns} data={data} title="Reporte de Tolva" />
 
       {mensaje && (

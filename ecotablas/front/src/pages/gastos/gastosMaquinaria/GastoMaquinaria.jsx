@@ -18,6 +18,7 @@ import DeleteButton from "../../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
 
 import { storage } from "../../../firebase/firebase"; 
+import AddButtonWa from "../../../components/buttons/AddButtonWa";
 
 
 const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
@@ -245,7 +246,7 @@ const GastoMaquinaria = () => {
       <div className="flex">
   
 
-        <AddButton
+        <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
           title="Añadir Gasto de Maquinaria"
         />

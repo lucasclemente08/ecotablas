@@ -7,7 +7,7 @@ import {
   deleteEmpresaDonante,
 } from "../../features/empresaDonanteSlice"; // Debes crear estos thunks en tu slice
 import SectionLayout from "../../layout/SectionLayout";
-import AddButton from "../../components/buttons/AddButton";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
@@ -103,7 +103,7 @@ const EmpresaDonante = () => {
 
   return (
     <SectionLayout title="Empresas Donantes">
-      <AddButton abrirModal={abrirModal} title="Añadir Empresa Donante" />
+      <AddButtonWa abrirModal={abrirModal} title="Añadir Empresa Donante" />
       <PdfGenerator
         columns={columns}
         data={data}

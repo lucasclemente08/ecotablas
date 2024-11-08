@@ -3,10 +3,11 @@ import axios from "axios";
 import { MdExpandMore } from "react-icons/md";
 import { MdExpandLess } from "react-icons/md";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
-import AddButton from "../../components/buttons/addButton";
+
 import DeleteButton from "../../components/buttons/DeleteButton";
 import SectionLayout from "../../layout/SectionLayout";
 import LoadingTable from "../../components/LoadingTable";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 const Empleados = () => {
   const [empleadosData, setEmpleadosData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -315,7 +316,7 @@ const Empleados = () => {
     <>
       <SectionLayout>
         <div className="">
-          <AddButton abrirModal={abrirModal} title={"Añadir empleado"} />
+          <AddButtonWa abrirModal={abrirModal} title={"Añadir empleado"} />
           <PdfGenerator
             columns={columns}
             rows={rows}

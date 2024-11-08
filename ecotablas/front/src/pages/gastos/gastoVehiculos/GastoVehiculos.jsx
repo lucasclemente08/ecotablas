@@ -25,6 +25,7 @@ import { FaChartLine, FaChartPie } from "react-icons/fa";
 import axios from "axios";
 import builderApiUrl from "../../../utils/BuilderApi";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
+import AddButtonWa from "../../../components/buttons/AddButtonWa";
 
 ChartJS.register(
   CategoryScale,
@@ -284,7 +285,7 @@ const GastoVehiculos = () => {
 />
 
       <div className="flex items-center">
-        <AddButton
+        <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
           title="Añadir gastos"
         />
