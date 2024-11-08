@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/buttons/AddButton";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -221,7 +221,7 @@ const MaterialTrit = () => {
           <h2 className="text-2xl font-bold text-white mb-4">
             Materiales Triturado
           </h2>
-          <AddButton
+          <AddButtonWa
             abrirModal={abrirModal}
             title={" Añadir Materiales triturado"}
           />
