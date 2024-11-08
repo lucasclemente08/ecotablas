@@ -76,7 +76,7 @@ const RecoUrbanos = () => {
 
     axios
       .post(
-        `http://www.trazabilidadodsapi.somee.com/api/UbicacionesMapa/Insertar`,
+        `http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Insertar`,
         newUbicacion,
       )
       .then((response) => {

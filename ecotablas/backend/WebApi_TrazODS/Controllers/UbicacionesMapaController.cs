@@ -70,7 +70,7 @@ namespace WebApi_TrazODS.Controllers
             oUbicacionesMapa.Long = value.Long;
             oUbicacionesMapa.TipoDonante= value.TipoDonante;
 
-            oUbicacionesMapa.Insert();
+            oUbicacionesMapa.Update();
         }
 
         // DELETE: api/UbicacionesMapa/5
