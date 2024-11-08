@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/buttons/addButton";
+import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -9,7 +9,7 @@ import ButtonEdit from "../../components/buttons/ButtonEdit";
 import LoadingTable from "../../components/LoadingTable";
 import NextButton from "../../components/buttons/NextButton";
 import NextModal from "../../components/NextModal";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addTolva } from "../../features/tolvaSlice";
 
 import ReportButton from "../../components/buttons/ReportButton";
@@ -125,7 +125,7 @@ const MaterialTrit = () => {
       fetchMaterials();
     } catch (error) {
       setMensaje("Error al modificar el material.");
-      console.error("Error al modificar el material:", error);
+     
     }
   };
 
