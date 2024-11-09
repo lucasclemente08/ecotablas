@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AddButton from "../../components/buttons/AddButton";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
@@ -181,7 +181,7 @@ const ClasificacionDeMaterial = () => {
   return (
     <>
       <SectionLayout title="Materiales Clasificados">
-        <AddButton
+        <AddButtonWa
           abrirModal={abrirModal}
           title={"Añadir Materiales Clasificados"}
         />
