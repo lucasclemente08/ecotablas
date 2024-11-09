@@ -7,13 +7,13 @@ import {
   deleteTolva,
 } from "../../features/tolvaSlice";
 import SectionLayout from "../../layout/SectionLayout";
-import AddButton from "../../components/buttons/AddButton";
+
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
-import ButtonEdit from "../../components/buttons/ButtonEdit";
+import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 
