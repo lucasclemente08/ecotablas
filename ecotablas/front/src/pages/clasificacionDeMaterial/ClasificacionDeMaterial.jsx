@@ -191,7 +191,7 @@ const ClasificacionDeMaterial = () => {
           data={materials}
           title="Reporte de Materiales Clasificados"
         />
-        <ReportButton />
+     
         {modalAbierto && (
           <AddModal
             title="Agregar Material Clasificado"
