@@ -7,7 +7,7 @@ import {
   deleteTablaProducida,
 } from "../../features/tablasProducidasSlice";
 import SectionLayout from "../../layout/SectionLayout";
-import AddButton from "../../components/buttons/AddButton";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
@@ -146,7 +146,7 @@ const TablasProducidas = () => {
 
 
 
-      <AddButton abrirModal={abrirModal} title="Añadir tabla" />
+      <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />
 
 
       <PdfGenerator
