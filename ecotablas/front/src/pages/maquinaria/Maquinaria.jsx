@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/buttons/AddButton";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -318,7 +318,7 @@ const Maquinaria = () => {
         <Home />
         <div className="p-4 w-full">
           <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
-          <AddButton abrirModal={abrirModal} title={" Añadir Maquinaria"} />
+          <AddButtonWa abrirModal={abrirModal} title={" Añadir Maquinaria"} />
           <PdfGenerator
             columns={columns}
             data={maquinarias}
