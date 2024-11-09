@@ -17,7 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import SectionLayout from "../../../layout/SectionLayout";
 import TablaHead from "../../../components/Thead";
 import LoadingTable from "../../../components/LoadingTable";
-import AddButton from "../../../components/buttons/AddButton";
+
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import DataView from "../../../components/buttons/DataView";
