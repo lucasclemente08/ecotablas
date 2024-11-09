@@ -10,7 +10,7 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import TablaHead from "../../../components/Thead";
 import LoadingTable from "../../../components/LoadingTable";
-import AddButton from "../../../components/buttons/AddButton";
+
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import { FaChartLine, FaChartPie } from "react-icons/fa";
 import DataView from "../../../components/buttons/DataView";
