@@ -70,10 +70,11 @@ const GastoVehiculos = () => {
     setLoading(true);
     axios
       .get(
-        "http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ListarTodo",
+        "https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ListarTodo",
       )
       .then((response) => {
         setDataV(response.data);
+     
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
