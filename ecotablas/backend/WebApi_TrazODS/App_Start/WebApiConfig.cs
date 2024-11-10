@@ -13,10 +13,8 @@ namespace WebApi_TrazODS
         {
             // Configuración y servicios de API web
 
-            var cors = new EnableCorsAttribute("http://localhost:5173", "*", "GET,POST,PUT,DELETE");
-            var corsProduction = new EnableCorsAttribute("https://gestiondeecotablas.netlify.app", "*", "GET,POST,PUT,DELETE");
+            var cors = new EnableCorsAttribute("https://localhost:5173", "https://gestiondeecotablas.netlify.app", "*", "GET,POST,PUT,DELETE");
 
-            config.EnableCors(corsProduction);
 
             config.EnableCors(cors);
 

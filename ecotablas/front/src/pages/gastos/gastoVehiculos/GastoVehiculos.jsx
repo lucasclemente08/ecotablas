@@ -74,7 +74,7 @@ const GastoVehiculos = () => {
       )
       .then((response) => {
         setDataV(response.data);
-     
+        console.log(response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -111,7 +111,7 @@ const GastoVehiculos = () => {
     e.preventDefault();
     axios
       .post(
-        "http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/CrearGastoVehiculo",
+        "https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/CrearGastoVehiculo",
         formValues,
       )
       .then((response) => {
@@ -244,7 +244,7 @@ const GastoVehiculos = () => {
     e.preventDefault();
     axios
       .put(
-        `http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${id}`,
+        `https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${id}`,
         formValues,
       )
       .then((response) => {
