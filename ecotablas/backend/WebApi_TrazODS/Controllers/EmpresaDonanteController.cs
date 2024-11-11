@@ -72,6 +72,7 @@ namespace WebApi_TrazODS.Controllers
         public void Borrar(int id)
         {
             EmpresaDonante empresaDonante = new EmpresaDonante();
+            empresaDonante.Id_EmpresaDonante = id;
             empresaDonante.Delete();
         }
     }

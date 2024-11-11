@@ -10,12 +10,16 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import TablaHead from "../../../components/Thead";
 import LoadingTable from "../../../components/LoadingTable";
-import AddButton from "../../../components/buttons/AddButton";
+
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import { FaChartLine, FaChartPie } from "react-icons/fa";
 import DataView from "../../../components/buttons/DataView";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
+
+import { storage } from "../../../firebase/firebase"; 
+import AddButtonWa from "../../../components/buttons/AddButtonWa";
+
 
 const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
 
@@ -126,7 +130,7 @@ const GastoMaquinaria = () => {
 
   const fetchMaquinaria = () => {
     axios
-      .get("http://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo")
+      .get("https://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo")
       .then((response) => {
         setMaquinaria(response.data);
       })
@@ -178,6 +182,8 @@ const GastoMaquinaria = () => {
       required: true,
     },
 
+    { name: "comprobante", label: "Comprobante", type: "file", required: true },
+
     { name: "comprobante", label: "Comprobante", type: "text", required: true },
     { name: "proveedor", label: "Proveedor", type: "text", required: true },
     {
@@ -202,10 +208,45 @@ const GastoMaquinaria = () => {
     setShowPieChart(false);
   };
 
+
+  const uploadFileToDropbox = async (file) => {
+    const token = import.meta.env.VITE_DROPBOX_TOKEN
+    console.log(token)  
+    const url = 'https://content.dropboxapi.com/2/files/upload';
+    
+    const headers = {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/octet-stream",
+      "Dropbox-API-Arg": JSON.stringify({
+        path: `/uploads/${file.name}`,  // Ruta donde guardar el archivo en Dropbox
+        mode: "add",  // Asegura que no sobrescriba el archivo si ya existe
+        autorename: true,  // Si el archivo ya existe, renombrarlo automáticamente
+      }),
+    };
+  
+    const body = file;
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: body,
+      });
+  
+      const result = await response.json();
+      console.log('File uploaded:', result);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
+  
+
   return (
     <SectionLayout title="Gasto de Maquinaria">
       <div className="flex">
-        <AddButton
+  
+
+        <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
           title="Añadir Gasto de Maquinaria"
         />
@@ -242,6 +283,7 @@ const GastoMaquinaria = () => {
         <AddModalWithSelect
           title="Editar Gasto de Maquinaria"
           fields={fields}
+          handleFileChange={handleFileChange}
           handleChange={handleChange}
           handleSubmit={handleEditSubmit}
           cerrarModal={() => setModalEdit(false)}
@@ -263,7 +305,7 @@ const GastoMaquinaria = () => {
                   <td className="border-b py-3 px-4">{item.Proveedor}</td>
                   <td className="border-b py-3 px-4">{item.Monto}</td>
                   <td className="border-b py-3 px-4">
-                    {item.Fecha.slice(0, 10)}
+                  {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
                   </td>
                   <td className="border-b py-3 px-4">{item.Descripcion}</td>
                   <td className="border-b py-3 px-4 flex">

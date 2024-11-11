@@ -7,15 +7,15 @@ import {
   deleteTolva,
 } from "../../features/tolvaSlice";
 import SectionLayout from "../../layout/SectionLayout";
-import AddButton from "../../components/buttons/AddButton";
-import AddButton from "../../components/buttons/AddButton";
+
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
-import ButtonEdit from "../../components/buttons/ButtonEdit";
+import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 
 const Tolva = () => {
   const dispatch = useDispatch();
@@ -32,6 +32,10 @@ const Tolva = () => {
     Especificaciones: "",
   });
   const [dataLoaded, setDataLoaded] = useState(false); // Estado para verificar si los datos han sido cargados
+  const totalPages = Math.ceil(data.length / itemsPerPage); // Total de páginas
+  const [dataLoaded, setDataLoaded] = useState(false); // Estado para verificar si los datos han sido cargados
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Cambié a 5 items por página
   const totalPages = Math.ceil(data.length / itemsPerPage); // Total de páginas
 
   const columns = [
@@ -76,9 +80,9 @@ const Tolva = () => {
     if (!formValues.HorarioInicio || !formValues.CantidadCargada) {
       setMensaje("Por favor completa todos los campos requeridos");
       return;
-      console.log(formValues)
     }
-    await dispatch(addTolva(formValues)); 
+    await dispatch(addTolva(formValues));
+    setMensaje("Registro agregado exitosamente!");
     cerrarModal();
   };
 
@@ -107,11 +111,21 @@ const Tolva = () => {
 
   return (
     <SectionLayout title="Tolva">
-      <AddButton abrirModal={abrirModal} title="Añadir Registro" />
+      <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
       <PdfGenerator columns={columns} data={data} title="Reporte de Tolva" />
-     
 
-      {error && <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">Error: {error}</div>}
+      {mensaje && (
+        <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
+          {mensaje}
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">
+          Error: {error}
+        </div>
+      )}
+
       {modalAbierto && (
         <AddModalWithSelect
           title="Agregar Registro de Tolva"
@@ -145,21 +159,41 @@ const Tolva = () => {
           values={formValues}
         />
       )}
-{modalEdit && (
-  <ButtonEdit
-    title="Editar Registro de Tolva"
-    fields={[
-      { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },
-      { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
-      { name: "Proporcion", label: "Proporción cargada", type: "number", placeholder: "Proporción *" },
-      { name: "Especificaciones", label: "Especificaciones", type: "text", placeholder: "Especificaciones *" },
-    ]}
-    formValues={formValues}
-    handleChange={handleChange}
-    handleEditSubmit={handleEditSubmit}   // Cambiado a handleEditSubmit
-    cerrarModalEdit={cerrarModalEdit}     // Cambiado a cerrarModalEdit
-  />
-)}
+      {modalEdit && (
+        <ButtonEdit
+          title="Editar Registro de Tolva"
+          fields={[
+            {
+              name: "CantidadCargada",
+              label: "Cantidad cargada (kg)",
+              type: "number",
+              placeholder: "Cantidad cargada *",
+            },
+            {
+              name: "TipoPlastico",
+              label: "Tipo de plástico",
+              type: "select",
+              options: optionsTipoPlastico,
+            },
+            {
+              name: "Proporcion",
+              label: "Proporción cargada",
+              type: "number",
+              placeholder: "Proporción *",
+            },
+            {
+              name: "Especificaciones",
+              label: "Especificaciones",
+              type: "text",
+              placeholder: "Especificaciones *",
+            },
+          ]}
+          formValues={formValues}
+          handleChange={handleChange}
+          handleEditSubmit={handleEditSubmit}
+          cerrarModalEdit={cerrarModalEdit}
+        />
+      )}
 
       {loading ? (
         <LoadingTable />
@@ -170,7 +204,9 @@ const Tolva = () => {
             <tbody>
               {currentItems.map((item) => (
                 <tr key={item.IdTolva}>
-                  <td className="px-4 py-2 ">{item.HorarioInicio.slice(0,10)}</td>
+                  <td className="px-4 py-2 ">
+                    {item.HorarioInicio.slice(0, 10)}
+                  </td>
                   <td className="px-4 py-2">{item.CantidadCargada}</td>
                   <td className="px-4 py-2">{item.TipoPlastico}</td>
                   <td className="px-4 py-2">{item.Proporcion}</td>
@@ -185,8 +221,11 @@ const Tolva = () => {
                     </button>
                     <DeleteButton
                       id={item.IdTolva}
-                      endpoint="http://localhost:61274/api/Tolva/Borrar"
-                      updateList={fetchTolva}
+                      endpoint="http://www.gestiondeecotablas.somee.com/api/Tolva/Delete"
+                      updateList={() => {
+                        dispatch(fetchTolva());
+                        setMensaje("Registro eliminado exitosamente!");
+                      }}
                     />
                   </td>
                 </tr>

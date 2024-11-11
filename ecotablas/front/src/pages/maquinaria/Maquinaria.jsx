@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/buttons/AddButton";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
-import ButtonEdit from "../../components/buttons/ButtonEdit";
+import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import builderApiUrl from "../../utils/BuilderApi";
 import axios from "axios";
@@ -183,22 +183,22 @@ const Maquinaria = () => {
 
   const handleSubmitReparacion = async () => {
     if (!validateReparacionForm()) return;
-  
+
     try {
       // Primero, agrega la reparación
       // Primero, agrega la reparación
       await addReparacion(reparacionValues);
       setMensaje("Reparación agregada exitosamente");
-  
+
       // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
       const maquinariaActualizada = {
         ...maquinarias.find((m) => m.Id === maquinariaId),
         IdEstado: 3, // Establecer el estado a 3 (en reparación)
       };
-  
+
       await editMaquinarias(maquinariaId, maquinariaActualizada);
       setMensaje("Estado de maquinaria actualizado a 'En Reparación'");
-  
+
       setModalReparacion(false);
       fetchMaquinarias(); // Refrescar la lista para mostrar cambios
     } catch (error) {
@@ -296,7 +296,10 @@ const Maquinaria = () => {
   const handleChangeState = async (maquinaria) => {
     const nuevoEstado = maquinaria.IdEstado === 1 ? 2 : 1; // Cambiar entre 1 y 2
     try {
-      await editMaquinarias(maquinaria.Id, { ...maquinaria, IdEstado: nuevoEstado });
+      await editMaquinarias(maquinaria.Id, {
+        ...maquinaria,
+        IdEstado: nuevoEstado,
+      });
       setMensaje("Estado cambiado exitosamente");
       await fetchMaquinarias(); // Actualizar la lista
     } catch (error) {
@@ -316,7 +319,7 @@ const Maquinaria = () => {
         <Home />
         <div className="p-4 w-full">
           <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
-          <AddButton abrirModal={abrirModal} title={" Añadir Maquinaria"} />
+          <AddButtonWa abrirModal={abrirModal} title={" Añadir Maquinaria"} />
           <PdfGenerator
             columns={columns}
             data={maquinarias}
@@ -353,10 +356,30 @@ const Maquinaria = () => {
             <AddModal
               title="Agregar Reparación"
               fields={[
-                { name: "Detalle", label: "Detalle", type: "text", placeholder: "Detalle *" },
-                { name: "FechaInicio", label: "Fecha de Inicio", type: "date", placeholder: "Fecha *" },
-                { name: "IdEstadoReparacion", label: "Estado", type: "text", placeholder: "Estado *" },
-                { name: "Costo", label: "Costo", type: "number", placeholder: "Costo *" }
+                {
+                  name: "Detalle",
+                  label: "Detalle",
+                  type: "text",
+                  placeholder: "Detalle *",
+                },
+                {
+                  name: "FechaInicio",
+                  label: "Fecha de Inicio",
+                  type: "date",
+                  placeholder: "Fecha *",
+                },
+                {
+                  name: "IdEstadoReparacion",
+                  label: "Estado",
+                  type: "text",
+                  placeholder: "Estado *",
+                },
+                {
+                  name: "Costo",
+                  label: "Costo",
+                  type: "number",
+                  placeholder: "Costo *",
+                },
               ]}
               handleChange={handleChangeReparacion}
               handleSubmit={handleSubmitReparacion}
@@ -383,11 +406,8 @@ const Maquinaria = () => {
                       {maquinaria.fecha_adquisicion}
                     </td>
                     <td className="border-b py-2 px-4 flex justify-center">
-
-                    {maquinaria.IdEstado === 3? (
-                        <button
-                          className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700"
-                        >
+                      {maquinaria.IdEstado === 3 ? (
+                        <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700">
                           Ver Reparacion
                         </button>
                       ) : null}
@@ -397,18 +417,20 @@ const Maquinaria = () => {
                       >
                         Modificar
                       </button>
-                      {maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2 ? (
-                      <button
-                        onClick={() => abrirModalReparacion(maquinaria.Id)}
-                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        Agregar Reparación
-                      </button>
+                      {maquinaria.IdEstado === 1 ||
+                      maquinaria.IdEstado === 2 ? (
+                        <button
+                          onClick={() => abrirModalReparacion(maquinaria.Id)}
+                          className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        >
+                          Agregar Reparación
+                        </button>
                       ) : null}
-                      {maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2 ? (
+                      {maquinaria.IdEstado === 1 ||
+                      maquinaria.IdEstado === 2 ? (
                         <button
                           onClick={() => handleChangeState(maquinaria)}
-                          className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700"
+                          className="bg-blue-500 text-white ml-2 py-1 px-3 rounded hover:bg-blue-700"
                         >
                           Cambiar Estado
                         </button>

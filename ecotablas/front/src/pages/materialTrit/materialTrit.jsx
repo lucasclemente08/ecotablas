@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/buttons/AddButton";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
-import ButtonEdit from "../../components/buttons/ButtonEdit";
+import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import NextButton from "../../components/buttons/NextButton";
 import NextModal from "../../components/NextModal";
+import { useDispatch } from "react-redux";
+import { addTolva } from "../../features/tolvaSlice";
 import { useSelector, useDispatch } from "react-redux";
 import {addTolva,} from "../../api/TolvaAPI";
 
@@ -22,7 +24,6 @@ import { Await } from "react-router-dom";
 import { Await } from "react-router-dom";
 
 const MaterialTrit = () => {
-
   const dispatch = useDispatch();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -202,7 +203,6 @@ const MaterialTrit = () => {
       ...prevState,
       [name]: value,
     }));
-
   };
 
   const title = ["Volumen Util", "Volumen Inutil", "Fecha de ingreso", "Acciones"];
@@ -239,9 +239,6 @@ const MaterialTrit = () => {
       placeholder: "Material Triturado *",
     },
   ];
-  
-
-
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
@@ -265,11 +262,10 @@ const MaterialTrit = () => {
 
 
   const optionsTipoPlastico = [
-    { value: 'Unico', label: 'Tipo-Único' },
-    { value: 'Mescla', label: 'Tipo-Mezcla' },
+    { value: "Unico", label: "Tipo-Único" },
+    { value: "Mescla", label: "Tipo-Mezcla" },
     // ... otras opciones
   ];
-
 
   return (
     <>
@@ -279,7 +275,7 @@ const MaterialTrit = () => {
           <h2 className="text-2xl font-bold text-white mb-4">
             Materiales Triturado
           </h2>
-          <AddButton
+          <AddButtonWa
             abrirModal={abrirModal}
             title={" Añadir Materiales triturado"}
           />
@@ -297,7 +293,6 @@ const MaterialTrit = () => {
             </div>
           )}
 
-         
           {modalAbierto && (
             <AddModal
               title="Agregar Material Triturado"
@@ -308,16 +303,16 @@ const MaterialTrit = () => {
               values={formValues}
             />
           )}
-          {modalEdit && (
-            <ButtonEdit
-              title="Material Triturado"
-              fields={fields}
-              id={materialId}
-              formValues={formValues}
-              handleChange={handleChange}
-              handleEditSubmit={handleEditSubmit}
-              cerrarModalEdit={cerrarModalEdit}
-            />
+            {modalEdit && (
+              <ButtonEdit
+                title="Material Triturado"
+                fields={fields}
+                id={materialId}
+                formValues={formValues}
+                handleChange={handleChange}
+                handleEditSubmit={handleEditSubmit}
+                cerrarModalEdit={cerrarModalEdit}
+              />
           )}
           <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
             <h5>

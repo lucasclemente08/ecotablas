@@ -20,7 +20,7 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
       .then((response) => {
         setMensaje("Eliminación exitosa");
         updateList();
-        console.log(response);
+
         closeModal();
       })
       .catch((error) => {

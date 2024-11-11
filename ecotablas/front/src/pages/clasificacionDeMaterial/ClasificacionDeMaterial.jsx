@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AddButton from "../../components/buttons/AddButton";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
-import ButtonEdit from "../../components/buttons/ButtonEdit";
+import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 import TablaHead from "../../components/Thead";
@@ -56,9 +56,8 @@ const ClasificacionDeMaterial = () => {
     setDateRange(dates);
   };
 
-  // Estado para la paginación
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Número de elementos por página
+  const [itemsPerPage] = useState(5); 
 
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
@@ -199,13 +198,16 @@ const ClasificacionDeMaterial = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = materials.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Cambiar de página
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Total de páginas
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(materials.length / itemsPerPage);
 
-  const title = ["Volumen Util (kgs)", "Volumen Inutil (kgs)", "Fecha de ingreso", "Acciones"];
+  const title = [
+    "Volumen Util (kgs)",
+    "Volumen Inutil (kgs)",
+    "Fecha de ingreso",
+    "Acciones",
+  ];
   const columns = [
     { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenInutil" },
@@ -244,7 +246,9 @@ const ClasificacionDeMaterial = () => {
 
   const totalVolumen = materials.reduce(
     (acc, material) =>
-      acc + parseFloat(material.VolumenUtil || 0) + parseFloat(material.VolumenInutil || 0),
+      acc +
+      parseFloat(material.VolumenUtil || 0) +
+      parseFloat(material.VolumenInutil || 0),
     0,
   );
   const totalItems = materials.length;
@@ -252,7 +256,7 @@ const ClasificacionDeMaterial = () => {
   return (
     <>
       <SectionLayout title="Materiales Clasificados">
-        <AddButton
+        <AddButtonWa
           abrirModal={abrirModal}
           title={"Añadir Materiales Clasificados"}
         />
@@ -263,7 +267,7 @@ const ClasificacionDeMaterial = () => {
           data={materials}
           title="Reporte de Materiales Clasificados"
         />
-        <ReportButton />
+     
         {modalAbierto && (
           <AddModal
             title="Agregar Material Clasificado"
@@ -358,7 +362,7 @@ const ClasificacionDeMaterial = () => {
               ))}
             </tbody>
           </table>
-          {/* Controles de paginación integrados */}
+
           <div className="flex justify-between items-center bg-gray-700">
             <button
               onClick={() => paginate(currentPage - 1)}

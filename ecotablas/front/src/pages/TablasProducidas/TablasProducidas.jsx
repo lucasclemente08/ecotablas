@@ -7,16 +7,16 @@ import {
   deleteTablaProducida,
 } from "../../features/tablasProducidasSlice";
 import SectionLayout from "../../layout/SectionLayout";
-import AddButton from "../../components/buttons/AddButton";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
-import ButtonEdit from "../../components/buttons/ButtonEdit";
+import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
-import ReportButton from "../../components/buttons/ReportButton";
-import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
 
 const TablasProducidas = () => {
@@ -24,9 +24,11 @@ const TablasProducidas = () => {
   const { data, loading, error } = useSelector(
     (state) => state.tablasProducidas,
   );
+  const [selectedDate, setSelectedDate] = useState("");  // Store the selected date
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
+  const [currentItems, setCurrentItems] = useState([])
   const [tablaId, setTablaId] = useState(null);
   const [formValues, setFormValues] = useState({
     FechaProduccion: "",
@@ -74,6 +76,7 @@ const TablasProducidas = () => {
     };
 
     await dispatch(addTablaProducida(newFormValues));
+    toast.success("Tabla añadida con éxito!");
     await dispatch(fetchTablasProducidas());
     cerrarModal();
   };
@@ -81,6 +84,7 @@ const TablasProducidas = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     await dispatch(editTablaProducida({ id: tablaId, formValues }));
+    toast.success("Registro editado con éxito!");
     cerrarModalEdit();
   };
 
@@ -94,9 +98,14 @@ const TablasProducidas = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+
+  useEffect(() => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    setCurrentItems(data.slice(indexOfFirstItem, indexOfLastItem));
+  }, [data, currentPage]);
+
+  
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -118,15 +127,54 @@ const TablasProducidas = () => {
     return `$${size}_${large}_${hours}_${codeUID}`;
   };
 
+  
+  const filterByDate = () => {
+    const selectedDateObj = new Date(selectedDate);
+    const filteredItems = data.filter((item) => {
+      const itemDate = new Date(item.FechaProduccion);
+      return itemDate.toISOString().slice(0, 10) === selectedDateObj.toISOString().slice(0, 10);
+    });
+
+    setCurrentItems(filteredItems);  // Update displayed items
+  };
+
+
+
   return (
     <SectionLayout title="Tablas Producidas">
-      <AddButton abrirModal={abrirModal} title="Añadir tabla" />
+      <div className="flex items-center">
+
+
+
+      <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />
+
+
       <PdfGenerator
         columns={columns}
         data={data}
         title="Reporte de Tablas Producidas"
       />
+      <div className=" flex items-center justify-center">
+      <input
+        type="date"
+        onChange={(e) => setSelectedDate(e.target.value)}  // Update the selected date state
+        className="mb-2 p-2 border border-gray-300 rounded"
+      />
 
+      <button 
+        onClick={filterByDate}  // Trigger the filter when clicked
+        className="p-3    ml-2 bg-blue-500 text-white rounded"
+      >
+        Buscar por fecha
+      </button>
+      {/* <button 
+        onClick={setCurrentItems(data)}  // Trigger the filter when clicked
+        className="p-3   ml-2 bg-slate-400 text-white rounded"
+      >
+        Limpiar busqueda
+      </button> */}
+    </div>
+    </div>
       {error && (
         <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">
           Error: {error}
@@ -237,6 +285,7 @@ const TablasProducidas = () => {
           </div>
         </>
       )}
+       <ToastContainer /> 
     </SectionLayout>
   );
 };

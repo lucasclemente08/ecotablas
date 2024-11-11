@@ -1,17 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
-import Home from "../home/Home";
+import React, { useEffect, useState} from "react";
 import axios from "axios";
-import { useReactToPrint } from "react-to-print";
-
 import { MdExpandMore } from "react-icons/md";
 import { MdExpandLess } from "react-icons/md";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
-import AddButton from "../../components/buttons/addButton";
+
 import DeleteButton from "../../components/buttons/DeleteButton";
 import SectionLayout from "../../layout/SectionLayout";
-
+import LoadingTable from "../../components/LoadingTable";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 const Empleados = () => {
   const [empleadosData, setEmpleadosData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchFilters, setSearchFilters] = useState({
     DNI: "",
     Nombre: "",
@@ -67,6 +66,7 @@ const Empleados = () => {
       .get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
       .then((response) => {
         setEmpleadosData(response.data);
+        setLoading(false)
         setFilteredEmpleados(response.data);
       })
       .catch((error) => console.error("Error al obtener los datos:", error));
@@ -76,7 +76,7 @@ const Empleados = () => {
     getEmpleados();
   }, []);
 
-  // Manejar filtros de búsqueda
+
   const handleSearch = () => {
     const filtered = empleadosData.filter(
       (empleado) =>
@@ -316,7 +316,7 @@ const Empleados = () => {
     <>
       <SectionLayout>
         <div className="">
-          <AddButton abrirModal={abrirModal} title={"Añadir empleado"} />
+          <AddButtonWa abrirModal={abrirModal} title={"Añadir empleado"} />
           <PdfGenerator
             columns={columns}
             rows={rows}
@@ -796,7 +796,10 @@ const Empleados = () => {
               <th className="w-1/4 py-2">Acciones</th>
             </tr>
           </thead>
-          <tbody className="text-gray-700">
+          {loading ? (
+      <LoadingTable loading={loading} />
+          ): (
+            <tbody className="text-gray-700">
             {filteredEmpleados.map((empleado) => (
               <tr key={empleado.IdEmpleado}>
                 <td className="text-center py-2">{empleado.DNI}</td>
@@ -822,6 +825,9 @@ const Empleados = () => {
               </tr>
             ))}
           </tbody>
+          )
+          }
+         
         </table>
       </SectionLayout>
     </>

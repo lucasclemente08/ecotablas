@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Pie, Line } from "react-chartjs-2";
+import DropboxChooser from "react-dropbox-chooser"
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,10 +12,13 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import SectionLayout from "../../../layout/SectionLayout";
 import TablaHead from "../../../components/Thead";
 import LoadingTable from "../../../components/LoadingTable";
-import AddButton from "../../../components/buttons/AddButton";
+
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import DataView from "../../../components/buttons/DataView";
@@ -22,6 +26,7 @@ import { FaChartLine, FaChartPie } from "react-icons/fa";
 import axios from "axios";
 import builderApiUrl from "../../../utils/BuilderApi";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
+import AddButtonWa from "../../../components/buttons/AddButtonWa";
 
 ChartJS.register(
   CategoryScale,
@@ -51,12 +56,12 @@ const GastoVehiculos = () => {
 
   const [formValues, setFormValues] = useState({
     TipoComprobante: "",
-    Comprobante: "",
+    Comprobante: "comprobante",
     TipoGasto: "",
-    IdVehiculo: "", // ID del vehículo seleccionado
+    IdVehiculo: "",
     Proveedor: "",
     Monto: "",
-    Fecha: "", // Cambiar a un formato de fecha adecuado
+    Fecha: "", 
     Descripcion: "",
   });
 
@@ -66,10 +71,11 @@ const GastoVehiculos = () => {
     setLoading(true);
     axios
       .get(
-        "http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ListarTodo",
+        "https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ListarTodo",
       )
       .then((response) => {
         setDataV(response.data);
+
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -80,13 +86,13 @@ const GastoVehiculos = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: value,
+      [name]: files ? files[0] : value,
     }));
   };
-
+  
   const fetchTrucks = () => {
     axios
       .get(URL_trucks)
@@ -103,25 +109,30 @@ const GastoVehiculos = () => {
     fetchMaterials();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    axios
-      .post(
-        "http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/CrearGastoVehiculo",
-        formValues,
-      )
-      .then((response) => {
-        setMensaje("Gasto agregado con éxito");
-        fetchMaterials();
-        cerrarModal();
-      })
-      .catch((error) => {
-        console.error("Error al agregar el gasto:", error);
-        setMensaje("Error al agregar el gasto");
-      });
+  
+    if (formValues.Comprobante) {
+      const fileId = await uploadToDropbox(formValues.Comprobante);  // Obtiene el ID del archivo
+      if (fileId) {
+        const updatedFormValues = { ...formValues, Comprobante: fileId };  // Usa el ID como Comprobante
+        axios
+          .post("https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/CrearGastoVehiculo", updatedFormValues)
+          .then((response) => {
+            toast.success("Gasto agregado con éxito");
+            fetchMaterials();
+            cerrarModal();
+          })
+          .catch((error) => {
+            console.error("Error al agregar el gasto:", error);
+            toast.error("Error al agregar el gasto");
+          });
+      } else {
+        toast.error("No se pudo subir el archivo a Dropbox");
+      }
+    }
   };
-
+  
   useEffect(() => {
     const calculatePieData = () => {
       const categories = {};
@@ -176,6 +187,7 @@ const GastoVehiculos = () => {
     setShowTable(true);
     setShowPieChart(false);
   };
+  
 
   const fields = [
     {
@@ -187,7 +199,8 @@ const GastoVehiculos = () => {
     {
       name: "Comprobante",
       label: "Comprobante",
-      type: "text",
+      type: "file",
+
       required: true,
     },
     {
@@ -239,23 +252,21 @@ const GastoVehiculos = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-
     axios
       .put(
-        `http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo`,
+        `https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${id}`,
         formValues,
       )
       .then((response) => {
-        setMensaje("Gasto actualizado con éxito");
-        fetchMaterials(); // Actualiza la lista después de la edición
-        cerrarModalEdit(); // Cierra el modal de edición
+        toast.success("Gasto actualizado con éxito"); // Notificación de éxito
+        fetchMaterials();
+        cerrarModalEdit();
       })
       .catch((error) => {
         console.error("Error al actualizar el gasto:", error);
-        setMensaje("Error al actualizar el gasto");
+        toast.error("Error al actualizar el gasto"); // Notificación de error
       });
   };
-
   const cerrarModalEdit = () => setModalEdit(false);
 
   const titles = [
@@ -269,11 +280,67 @@ const GastoVehiculos = () => {
     "Descripción",
     "Acciones",
   ];
+  const dropboxToken = import.meta.env.VITE_API_KEY_DROPBOX;
+
+  const uploadToDropbox = async (file) => {
+    const url = "https://content.dropboxapi.com/2/files/upload";
+  
+    try {
+      const dropboxArgs = JSON.stringify({
+        path: `/${file.name}`,
+        mode: "add",
+        autorename: true,
+        mute: false,
+      });
+  
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${dropboxToken}`,
+          "Content-Type": "application/octet-stream",
+          "Dropbox-API-Arg": dropboxArgs,
+        },
+        body: file,
+      });
+  
+      if (!response.ok) {
+        console.error("Error al subir el archivo a Dropbox:", await response.text());
+        return null;
+      }
+  
+      const data = await response.json();
+      return data.id;  // Retorna el ID del archivo en lugar de la URL
+    } catch (error) {
+      console.error("Error en la solicitud a Dropbox:", error);
+      return null;
+    }
+  };
+
+
+
+
+
+
+
+
+
 
   return (
     <SectionLayout title="Gastos de Vehículos">
+      <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
+
       <div className="flex items-center">
-        <AddButton
+        <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
           title="Añadir gastos"
         />
@@ -285,6 +352,7 @@ const GastoVehiculos = () => {
             {mensaje}
           </div>
         )}
+
 
         <button
           aria-label="Ver gráfico circular"
@@ -306,12 +374,15 @@ const GastoVehiculos = () => {
       </div>
       {ModalAbierto && (
         <AddModalWithSelect
+        
           title="Agregar Gastos vehiculos"
           fields={fields}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
           cerrarModal={cerrarModal}
+        
           values={formValues}
+          dropboxAccessToken={dropboxToken}
         />
       )}
 
@@ -336,7 +407,20 @@ const GastoVehiculos = () => {
               {dataV.map((item, index) => (
                 <tr key={index} className="hover:bg-gray-100 ">
                   <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
-                  <td className="border-b py-3 px-4">{item.Comprobante}</td>
+                                <td className="border-b py-3 px-4">
+                                {item.Comprobante ? (
+          <a
+          href={`https://www.dropbox.com/preview/Apps/Comprobantes%20de%20ecotablas/${item.Comprobante}`}
+
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver Comprobante
+          </a>
+        ) : (
+          "No disponible"
+        )}
+              </td>
                   <td className="border-b py-3 px-4">{item.TipoGasto}</td>
                   <td className="border-b py-3 px-4">
                     {getVehicleById(item.IdVehiculo)}
@@ -344,7 +428,7 @@ const GastoVehiculos = () => {
                   <td className="border-b py-3 px-4">{item.Proveedor}</td>
                   <td className="border-b py-3 px-4">{item.Monto}</td>
                   <td className="border-b py-3 px-4">
-                    {item.Fecha.slice(0, 10)}
+                  {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
                   </td>
                   <td className="border-b py-3 px-4">{item.Descripcion}</td>
                   <td className="border-b py-3 px-4 flex items-center">
@@ -378,7 +462,7 @@ const GastoVehiculos = () => {
         </div>
       ) : (
         <div className="w-full h-96">
-          <Line data={lineData} options={lineOptions} />
+          {/* <Line data={lineData} options={lineOptions} /> */}
         </div>
       )}
     </SectionLayout>

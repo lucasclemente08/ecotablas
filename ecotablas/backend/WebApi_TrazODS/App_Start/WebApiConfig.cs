@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-
 using System.Web.Http.Cors;
 
 
@@ -12,15 +11,12 @@ namespace WebApi_TrazODS
     {
         public static void Register(HttpConfiguration config)
         {
-            // Configuración y servicios de API web
-
-            var cors = new EnableCorsAttribute("http://localhost:5173", "*", "GET,POST,PUT,DELETE");
-            
+            var cors = new EnableCorsAttribute("*", "*", "GET,POST,PUT,DELETE");
             config.EnableCors(cors);
-
-            // Rutas de API web
-            config.MapHttpAttributeRoutes();
-
+            ////una vez terminado el desarrolo pasar a esto
+            //var cors = new EnableCorsAttribute("https://gestiondeecotablas.netlify.app", "*", "GET,POST,PUT,DELETE");
+            //config.EnableCors(cors);
+            // (por seguridad)
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{action}/{id}",
