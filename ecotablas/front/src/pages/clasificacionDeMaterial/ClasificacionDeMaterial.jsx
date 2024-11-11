@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AddButton from "../../components/buttons/addButton";
+import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
@@ -211,10 +211,6 @@ const ClasificacionDeMaterial = () => {
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenInutil" },
     { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
   ];
-    { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
-    { header: "Volumen Inutil (kgs)", dataKey: "VolumenInutil" },
-    { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
-  ];
 
   const fields = [
     {
@@ -256,18 +252,14 @@ const ClasificacionDeMaterial = () => {
   return (
     <>
       <SectionLayout title="Materiales Clasificados">
-      <SectionLayout title="Materiales Clasificados">
         <AddButton
           abrirModal={abrirModal}
-          title={"Añadir Materiales Clasificados"}
           title={"Añadir Materiales Clasificados"}
         />
 
 
         <PdfGenerator
           columns={columns}
-          data={materials}
-          title="Reporte de Materiales Clasificados"
           data={materials}
           title="Reporte de Materiales Clasificados"
         />
