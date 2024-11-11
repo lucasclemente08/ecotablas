@@ -113,12 +113,11 @@ const ReportesPage = () => {
         `http://localhost:61274/api/Reportes/ActualizarReporte/${reporteId}`,
         { Estado: nuevoEstado },
       );
-      fetchReportes(); 
+      fetchReportes();
     } catch (error) {
       console.error("Error al cambiar el estado del reporte:", error);
     }
   };
-
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -128,7 +127,14 @@ const ReportesPage = () => {
 
   const totalPages = Math.ceil(reportes.length / itemsPerPage);
 
-  const title = ["Título", "Descripción", "Área", "Fecha del incidente", "Estado", "Acciones"];
+  const title = [
+    "Título",
+    "Descripción",
+    "Área",
+    "Fecha del incidente",
+    "Estado",
+    "Acciones",
+  ];
   const columns = [
     { header: "Título", dataKey: "Titulo" },
     { header: "Descripción", dataKey: "Descripcion" },
@@ -139,9 +145,19 @@ const ReportesPage = () => {
 
   const fields = [
     { name: "Titulo", label: "Título", type: "text", placeholder: "Título *" },
-    { name: "Descripcion", label: "Descripción", type: "text", placeholder: "Descripción *" },
+    {
+      name: "Descripcion",
+      label: "Descripción",
+      type: "text",
+      placeholder: "Descripción *",
+    },
     { name: "Area", label: "Área", type: "text", placeholder: "Área *" },
-    { name: "FechaIncidente", label: "Fecha del incidente", type: "date", placeholder: "Fecha *" },
+    {
+      name: "FechaIncidente",
+      label: "Fecha del incidente",
+      type: "date",
+      placeholder: "Fecha *",
+    },
     { name: "Estado", label: "Estado", type: "text", placeholder: "Estado *" },
   ];
 
@@ -193,17 +209,17 @@ const ReportesPage = () => {
                     {reporte.FechaIncidente.slice(0, 10)}
                   </td>
                   <td className="border-b py-2 px-4">
-                {reporte.Estado}
-                
-                <button
-                  className="ml-2 flex items-center text-green-600 hover:text-green-800"
-                  onClick={() =>
-                    cambiarEstado(reporte.Id_reporte, "Resuelto")
-                  }
-                >
-                  <FiCheckCircle size={20} />
-                </button>
-              </td>
+                    {reporte.Estado}
+
+                    <button
+                      className="ml-2 flex items-center text-green-600 hover:text-green-800"
+                      onClick={() =>
+                        cambiarEstado(reporte.Id_reporte, "Resuelto")
+                      }
+                    >
+                      <FiCheckCircle size={20} />
+                    </button>
+                  </td>
                   <td className="py-2 px-4 flex justify-center">
                     <button
                       className="bg-yellow-600 ml-2 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"

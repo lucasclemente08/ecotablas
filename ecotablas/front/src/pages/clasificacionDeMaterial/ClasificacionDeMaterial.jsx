@@ -7,6 +7,7 @@ import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
+import TablaHead from "../../components/Thead";
 import ReportButton from "../../components/buttons/ReportButton";
 import NextButton from "../../components/buttons/NextButton";
 import VolumenChart from "../../components/volumen/VolumenChart";
@@ -210,12 +211,18 @@ const ClasificacionDeMaterial = () => {
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenInutil" },
     { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
   ];
+    { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
+    { header: "Volumen Inutil (kgs)", dataKey: "VolumenInutil" },
+    { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
+  ];
 
   const fields = [
     {
       name: "VolumenUtil",
       label: "Volumen Util",
+      label: "Volumen Util",
       type: "text",
+      placeholder: "VolumenUtil *",
       placeholder: "VolumenUtil *",
     },
     {
@@ -235,6 +242,7 @@ const ClasificacionDeMaterial = () => {
       label: "ID Material",
       type: "text",
       placeholder: "ID Material *",
+      placeholder: "ID Material *",
     },
   ];
 
@@ -248,13 +256,18 @@ const ClasificacionDeMaterial = () => {
   return (
     <>
       <SectionLayout title="Materiales Clasificados">
+      <SectionLayout title="Materiales Clasificados">
         <AddButton
           abrirModal={abrirModal}
           title={"Añadir Materiales Clasificados"}
+          title={"Añadir Materiales Clasificados"}
         />
+
 
         <PdfGenerator
           columns={columns}
+          data={materials}
+          title="Reporte de Materiales Clasificados"
           data={materials}
           title="Reporte de Materiales Clasificados"
         />

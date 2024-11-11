@@ -1,10 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-
-// Crear el contexto de autenticación
 const AuthContext = createContext();
-
-// Proveedor de autenticación
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(" ");
   const auth = getAuth();
@@ -22,5 +18,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Hook personalizado para acceder al contexto de autenticación
 export const useAuth = () => useContext(AuthContext);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AddButton from "../../components/buttons/addButton";
+import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
@@ -176,7 +176,7 @@ const MaterialProc = () => {
           data={materials}
           title="Reporte de Materiales procesados"
         />
-        <ReportButton />
+
         {modalAbierto && (
           <AddModal
             title="Agregar Material Procesado"
@@ -249,7 +249,7 @@ const MaterialProc = () => {
               ))}
             </tbody>
           </table>
-          {/* Controles de paginación integrados */}
+  
           <div className="flex justify-between items-center bg-gray-700">
             <button
               onClick={() => paginate(currentPage - 1)}

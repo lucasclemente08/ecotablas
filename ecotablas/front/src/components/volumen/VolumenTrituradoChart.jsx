@@ -44,7 +44,8 @@ const VolumenTrituradoChart = ({ dateRange }) => {
       });
   }, [dateRange]);
 
-  const totalVolumen = volumenData.VolumenTriturado + volumenData.VolumenTInutil;
+  const totalVolumen =
+    volumenData.VolumenTriturado + volumenData.VolumenTInutil;
 
   const chartData = {
     labels: ["Volumen Útil", "Volumen No Útil"],

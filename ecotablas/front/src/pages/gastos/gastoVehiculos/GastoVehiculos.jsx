@@ -1,19 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { Pie, Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import SectionLayout from '../../../layout/SectionLayout';
-import TablaHead from '../../../components/Thead';
-import LoadingTable from '../../../components/LoadingTable';
-import AddButton from '../../../components/buttons/AddButton';
-import PdfGenerator from '../../../components/buttons/PdfGenerator';
-import DeleteButton from '../../../components/buttons/DeleteButton';
-import DataView from '../../../components/buttons/DataView';
+import React, { useState, useEffect } from "react";
+import { Pie, Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+import SectionLayout from "../../../layout/SectionLayout";
+import TablaHead from "../../../components/Thead";
+import LoadingTable from "../../../components/LoadingTable";
+import AddButton from "../../../components/buttons/AddButton";
+import PdfGenerator from "../../../components/buttons/PdfGenerator";
+import DeleteButton from "../../../components/buttons/DeleteButton";
+import DataView from "../../../components/buttons/DataView";
 import { FaChartLine, FaChartPie } from "react-icons/fa";
-import axios from 'axios';
-import builderApiUrl from '../../../utils/BuilderApi';
-import AddModalWithSelect from '../../../components/AddModalWithSelect';
+import axios from "axios";
+import builderApiUrl from "../../../utils/BuilderApi";
+import AddModalWithSelect from "../../../components/AddModalWithSelect";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+);
 
 const GastoVehiculos = () => {
   const [showPieChart, setShowPieChart] = useState(true);
@@ -22,14 +41,13 @@ const GastoVehiculos = () => {
   const [loading, setLoading] = useState(true);
   const [trucks, setTrucks] = useState([]);
   const [pieData, setPieData] = useState({});
-  const [ModalAbierto,setModalAbierto] = useState(false);
+  const [ModalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [mensaje, setMensaje] = useState("");
-
+  const [gastoEdit, setGastoEdit] = useState(null);
 
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
-  
 
   const [formValues, setFormValues] = useState({
     TipoComprobante: "",
@@ -41,18 +59,20 @@ const GastoVehiculos = () => {
     Fecha: "", // Cambiar a un formato de fecha adecuado
     Descripcion: "",
   });
-  
 
   const URL_trucks = builderApiUrl("Vehiculos/ListarTodo");
 
   const fetchMaterials = () => {
     setLoading(true);
-    axios.get("http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ListarTodo")
+    axios
+      .get(
+        "http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ListarTodo",
+      )
       .then((response) => {
         setDataV(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       })
       .finally(() => {
         setLoading(false);
@@ -66,15 +86,15 @@ const GastoVehiculos = () => {
       [name]: value,
     }));
   };
-  
 
   const fetchTrucks = () => {
-    axios.get(URL_trucks)
+    axios
+      .get(URL_trucks)
       .then((response) => {
         setTrucks(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching trucks:', error);
+        console.error("Error fetching trucks:", error);
       });
   };
 
@@ -83,18 +103,21 @@ const GastoVehiculos = () => {
     fetchMaterials();
   }, []);
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post("http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/CrearGastoVehiculo", formValues)
+    axios
+      .post(
+        "http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/CrearGastoVehiculo",
+        formValues,
+      )
       .then((response) => {
         setMensaje("Gasto agregado con éxito");
-        fetchMaterials(); 
-        cerrarModal(); 
+        fetchMaterials();
+        cerrarModal();
       })
       .catch((error) => {
-        console.error('Error al agregar el gasto:', error);
+        console.error("Error al agregar el gasto:", error);
         setMensaje("Error al agregar el gasto");
       });
   };
@@ -103,17 +126,30 @@ const GastoVehiculos = () => {
     const calculatePieData = () => {
       const categories = {};
       dataV.forEach((item) => {
-        categories[item.TipoGasto] = (categories[item.TipoGasto] || 0) + parseFloat(item.Monto);
+        categories[item.TipoGasto] =
+          (categories[item.TipoGasto] || 0) + parseFloat(item.Monto);
       });
-      
+
       setPieData({
         labels: Object.keys(categories),
         datasets: [
           {
-            label: 'Gastos por Categoría',
+            label: "Gastos por Categoría",
             data: Object.values(categories),
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+            backgroundColor: [
+              "#FF6384",
+              "#36A2EB",
+              "#FFCE56",
+              "#4BC0C0",
+              "#9966FF",
+            ],
+            hoverBackgroundColor: [
+              "#FF6384",
+              "#36A2EB",
+              "#FFCE56",
+              "#4BC0C0",
+              "#9966FF",
+            ],
           },
         ],
       });
@@ -124,13 +160,14 @@ const GastoVehiculos = () => {
 
   const getVehicleById = (id) => {
     const vehicle = trucks.find((vehicle) => vehicle.IdVehiculo === id);
-    return vehicle ? `${vehicle.Modelo} (${vehicle.Tipo})` : "Vehículo no disponible";
+    return vehicle
+      ? `${vehicle.Modelo} (${vehicle.Tipo})`
+      : "Vehículo no disponible";
   };
-  
-  
+
   const optionsVehiculo = trucks.map((res) => ({
     value: res.IdVehiculo,
-    label: `${res.Modelo} (${res.Tipo})`
+    label: `${res.Modelo} (${res.Tipo})`,
   }));
 
   const pieOptions = { responsive: true, maintainAspectRatio: false };
@@ -140,7 +177,6 @@ const GastoVehiculos = () => {
     setShowPieChart(false);
   };
 
-  
   const fields = [
     {
       name: "TipoComprobante",
@@ -164,16 +200,15 @@ const GastoVehiculos = () => {
         { value: "Reparacion", label: "Reparación" },
         { value: "Seguro", label: "Seguro" },
         { value: "Otros", label: "Otros" },
-
       ],
       required: true,
     },
     {
       name: "IdVehiculo",
       label: "Vehículo",
-      options:optionsVehiculo,
-      type: "select", 
-      
+      options: optionsVehiculo,
+      type: "select",
+
       required: true,
     },
     {
@@ -202,31 +237,66 @@ const GastoVehiculos = () => {
     },
   ];
 
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
 
+    axios
+      .put(
+        `http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo`,
+        formValues,
+      )
+      .then((response) => {
+        setMensaje("Gasto actualizado con éxito");
+        fetchMaterials(); // Actualiza la lista después de la edición
+        cerrarModalEdit(); // Cierra el modal de edición
+      })
+      .catch((error) => {
+        console.error("Error al actualizar el gasto:", error);
+        setMensaje("Error al actualizar el gasto");
+      });
+  };
 
-  const titles = ['Tipo de comprobante', 'Comprobante', 'Tipo de gasto', 'Vehículo', 'Proveedor', 'Monto ($)', 'Fecha', 'Descripción', 'Acciones'];
+  const cerrarModalEdit = () => setModalEdit(false);
+
+  const titles = [
+    "Tipo de comprobante",
+    "Comprobante",
+    "Tipo de gasto",
+    "Vehículo",
+    "Proveedor",
+    "Monto ($)",
+    "Fecha",
+    "Descripción",
+    "Acciones",
+  ];
 
   return (
     <SectionLayout title="Gastos de Vehículos">
       <div className="flex items-center">
-        <AddButton abrirModal={() => setModalAbierto(true)} title="Añadir gastos" />
+        <AddButton
+          abrirModal={() => setModalAbierto(true)}
+          title="Añadir gastos"
+        />
         <PdfGenerator columns={titles} data={dataV} title="Reporte de gastos" />
         <DataView ShowTable={handleShowTable} />
-    
+
         {mensaje && (
-            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-              {mensaje}
-            </div>
-          )}
+          <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
+            {mensaje}
+          </div>
+        )}
 
         <button
           aria-label="Ver gráfico circular"
-          className={`p-2 ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
-          onClick={() => { setShowPieChart(true); setShowTable(false); }}
+          className={`p-2 ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? "bg-blue-600" : "bg-gray-500"}`}
+          onClick={() => {
+            setShowPieChart(true);
+            setShowTable(false);
+          }}
         >
           Ver Gráfico Circular <FaChartPie className="ml-2" />
         </button>
-{/* 
+        {/* 
         <button
           className={`p-2 mt-2 mb-5 ml-2 font-bold rounded text-white ${!showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
           onClick={() => { setShowPieChart(false); setShowTable(false); }}
@@ -235,16 +305,26 @@ const GastoVehiculos = () => {
         </button> */}
       </div>
       {ModalAbierto && (
-          <AddModalWithSelect
-            title="Agregar Gastos vehiculos"
-            fields={fields}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-            cerrarModal={cerrarModal}
-            values={formValues}
-          />
-        )}
+        <AddModalWithSelect
+          title="Agregar Gastos vehiculos"
+          fields={fields}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          cerrarModal={cerrarModal}
+          values={formValues}
+        />
+      )}
 
+      {modalEdit && (
+        <AddModalWithSelect
+          title="Editar Gasto de Vehículo"
+          fields={fields}
+          handleChange={handleChange}
+          handleSubmit={handleEditSubmit} // Cambia el manejador al de edición
+          cerrarModal={cerrarModalEdit} // Cambia al cierre de modal de edición
+          values={formValues}
+        />
+      )}
 
       {showTable ? (
         loading ? (
@@ -254,17 +334,38 @@ const GastoVehiculos = () => {
             <TablaHead titles={titles} />
             <tbody>
               {dataV.map((item, index) => (
-                <tr key={index} className="hover:bg-gray-100">
+                <tr key={index} className="hover:bg-gray-100 ">
                   <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
                   <td className="border-b py-3 px-4">{item.Comprobante}</td>
                   <td className="border-b py-3 px-4">{item.TipoGasto}</td>
-                  <td className="border-b py-3 px-4">{getVehicleById(item.IdVehiculo)}</td>
+                  <td className="border-b py-3 px-4">
+                    {getVehicleById(item.IdVehiculo)}
+                  </td>
                   <td className="border-b py-3 px-4">{item.Proveedor}</td>
                   <td className="border-b py-3 px-4">{item.Monto}</td>
-                  <td className="border-b py-3 px-4">{item.Fecha.slice(0,10)}</td>
-                  <td className="border-b py-3 px-4">{item.Descripcion}</td>
                   <td className="border-b py-3 px-4">
-                    <DeleteButton endpoint={"http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"} id={item.IdGasto} updateList={fetchMaterials} />
+                    {item.Fecha.slice(0, 10)}
+                  </td>
+                  <td className="border-b py-3 px-4">{item.Descripcion}</td>
+                  <td className="border-b py-3 px-4 flex items-center">
+                    <button
+                      onClick={() => {
+                        setGastoEdit(item); // Almacenar el gasto seleccionado
+                        setFormValues(item); // Rellenar el formulario con los valores del gasto
+                        setModalEdit(true); // Mostrar el modal de edición
+                      }}
+                      className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                      Modificar
+                    </button>
+
+                    <DeleteButton
+                      endpoint={
+                        "http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
+                      }
+                      id={item.IdGasto}
+                      updateList={fetchMaterials}
+                    />
                   </td>
                 </tr>
               ))}

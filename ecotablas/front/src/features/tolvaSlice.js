@@ -12,6 +12,8 @@ export const fetchTolva = createAsyncThunk('http://localhost:61274/api/Tolva/Lis
 export const addTolva = createAsyncThunk('tolva/addTolva', async (formValues) => {
   const response = await axios.post("http://www.gestiondeecotablas.somee.com/api/Tolva/Insertar", formValues);
 
+  const response = await axios.post("http://www.gestiondeecotablas.somee.com/api/Tolva/Insertar", formValues);
+
   return response.data;
 });
 

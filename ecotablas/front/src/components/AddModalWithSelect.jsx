@@ -31,7 +31,9 @@ const AddModalWithSelect = ({
               <form onSubmit={handleSubmit}>
                 {fields.map((field) => (
                   <div key={field.name} className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      {field.label}
+                    </label>
                     {field.type === "select" ? (
                       <select
                         name={field.name}

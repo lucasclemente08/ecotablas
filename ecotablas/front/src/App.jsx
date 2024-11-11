@@ -18,17 +18,16 @@ import Areas from "./pages/areas/Areas";
 import EmpresaDonante from "./pages/empresaDonante/EmpresaDonante";
 import TablasProducidas from "./pages/TablasProducidas/TablasProducidas";
 import EntradasDeMaterial from "./pages/entradaDeMaterial/EntradasDeMaterial";
-import LavadoMaterial from "./pages/lavadoMaterial/LavadoMaterial";
+
 import ClasificacionDeMaterial from "./pages/clasificacionDeMaterial/ClasificacionDeMaterial";
 import Maquinarias from "./pages/maquinaria/Maquinaria";
 import Tolva from "./pages/tolva/Tolva";
 import GastoMaquinaria from "./pages/gastos/gastosMaquinaria/GastoMaquinaria";
 import GastoVehiculos from "./pages/gastos/gastoVehiculos/GastoVehiculos";
-import store from './app/store';
-import { Provider } from 'react-redux'
-import Reportes from './pages/reportes/Reportes'
+import store from "./app/store";
+import { Provider } from "react-redux";
+import Reportes from "./pages/reportes/Reportes";
 import Reparaciones from "./pages/reparaciones/Reparaciones";
-
 
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
@@ -59,41 +58,39 @@ const routesConfig = [
   },
   { path: "/maquinaria", element: <Maquinarias />, protected: true },
   { path: "/tolva", element: <Tolva />, protected: true },
-  { path: "/reparaciones", element: <Reparaciones/>, protected: true},
+  { path: "/reparaciones", element: <Reparaciones />, protected: true },
 
   // { path: "/lavado", element: <LavadoMaterial />, protected: true },
   { path: "/tablas", element: <TablasProducidas />, protected: true },
   { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true },
   { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true },
-
 ];
 
 function App() {
   return (
-      <Provider store={store}>
-        
-    <AuthProvider>
-      <Router>
-        <div className="bg-slate-900 flex flex-col min-h-screen">
-          <Routes>
-            {routesConfig.map(({ path, element, protected: isProtected }) => (
-              <Route
-                key={path}
-                path={path}
-                element={
-                  isProtected ? (
-                    <ProtectedRoute>{element}</ProtectedRoute>
-                  ) : (
-                    element
-                  )
-                }
-              />
-            ))}
-          </Routes>
-        </div>
-      </Router>
-    </AuthProvider>
-      </Provider> 
+    <Provider store={store}>
+      <AuthProvider>
+        <Router>
+          <div className="bg-slate-900 flex flex-col min-h-screen">
+            <Routes>
+              {routesConfig.map(({ path, element, protected: isProtected }) => (
+                <Route
+                  key={path}
+                  path={path}
+                  element={
+                    isProtected ? (
+                      <ProtectedRoute>{element}</ProtectedRoute>
+                    ) : (
+                      element
+                    )
+                  }
+                />
+              ))}
+            </Routes>
+          </div>
+        </Router>
+      </AuthProvider>
+    </Provider>
   );
 }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { GrLinkNext } from "react-icons/gr";
-const NextButton = ({abrirModal}) => {
+const NextButton = ({ abrirModal }) => {
   return (
     <>
       <button

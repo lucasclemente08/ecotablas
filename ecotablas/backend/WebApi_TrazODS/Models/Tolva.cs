@@ -9,6 +9,7 @@ namespace WebApi_TrazODS.Models
     {
         #region Atributos
         string connectionString = @"Data Source=Ecotablas-Db.mssql.somee.com;Initial Catalog=Ecotablas-Db;User ID=lucasclemente08_SQLLogin_1;Password=apqjzszydf";
+        string connectionString = @"Data Source=Ecotablas-Db.mssql.somee.com;Initial Catalog=Ecotablas-Db;User ID=lucasclemente08_SQLLogin_1;Password=apqjzszydf";
 
         #endregion
 
@@ -34,7 +35,27 @@ namespace WebApi_TrazODS.Models
 
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
+            string sqlSentencia = "sp_GetAllTolva";
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
 
+           
+                sqlCnn.Open();
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+
+            DataSet ds = new DataSet();
+
+            SqlDataAdapter da = new SqlDataAdapter();
+            da.SelectCommand = sqlCom;
+            da.Fill(ds);
+
+            sqlCnn.Close();
+
+            return ds.Tables[0];
+        }
+        public void Insert()
             DataSet ds = new DataSet();
 
             SqlDataAdapter da = new SqlDataAdapter();
@@ -51,6 +72,15 @@ namespace WebApi_TrazODS.Models
             string sqlSentencia = "sp_InsertTolvasPrueba";
 
 
+            string sqlSentencia = "sp_InsertTolvasPrueba";
+
+
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
+
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = connectionString;
 
@@ -75,12 +105,34 @@ namespace WebApi_TrazODS.Models
 
         }
         public void Update()
+            sqlCnn.Open();
+
+
+            var res = sqlCom.ExecuteNonQuery();
+
+            sqlCnn.Close();
+
+
+        }
+        public void Update()
         {
 
 
             string sqlSentencia = "sp_UpdateTolvaPruebas";
 
 
+
+            string sqlSentencia = "sp_UpdateTolvaPruebas";
+
+
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
+
+
+
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = connectionString;
 
@@ -117,6 +169,34 @@ namespace WebApi_TrazODS.Models
             string sqlSentencia = "SP_DeleteTolvasPruebas";
 
 
+            string sqlSentencia = "SP_DeleteTolvasPruebas";
+
+
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
+
+
+
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+
+            sqlCom.Parameters.Add("@IdTolva", SqlDbType.Int).Value = IdTolva;
+
+
+            sqlCnn.Open();
+
+
+            var res = sqlCom.ExecuteNonQuery();
+
+
+            sqlCnn.Close();
+
+
+        }
+
+
+        public bool Exists()
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = connectionString;
 
@@ -153,7 +233,14 @@ namespace WebApi_TrazODS.Models
                 {
                     sqlCom.CommandType = CommandType.StoredProcedure;
                     sqlCom.Parameters.Add("@idTolva", SqlDbType.Int).Value = IdTolva;
+            {
+                sqlCnn.Open();
+                using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
+                {
+                    sqlCom.CommandType = CommandType.StoredProcedure;
+                    sqlCom.Parameters.Add("@idTolva", SqlDbType.Int).Value = IdTolva;
 
+                    count = (int)sqlCom.ExecuteScalar(); // Obtener el conteo
                     count = (int)sqlCom.ExecuteScalar(); // Obtener el conteo
                 }
             }

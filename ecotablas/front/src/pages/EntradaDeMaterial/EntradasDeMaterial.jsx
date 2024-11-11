@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import AddButton from "../../components/buttons/addButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEdit";
+import AddModal from "../../components/AddModal";
+import ButtonEdit from "../../components/buttons/ButtonEdit";
 import LoadingTable from "../../components/LoadingTable";
+import TablaHead from "../../components/Thead";
 import TablaHead from "../../components/Thead";
 import ReportButton from "../../components/buttons/ReportButton";
 import NextButton from "../../components/buttons/NextButton";
+import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
@@ -54,6 +60,10 @@ const EntradasDeMaterial = () => {
   const handleFilter = (dates) => {
     setDateRange(dates);
   };
+
+  // Estado para la paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // Número de elementos por página
 
   // Estado para la paginación
   const [currentPage, setCurrentPage] = useState(1);
@@ -208,6 +218,36 @@ const EntradasDeMaterial = () => {
 
   const title = ["Volumen Util (kgs)", "Volumen Inutil (kgs)", "Fecha de ingreso", "Tipo Donante","Vehículo" , "Acciones"];
   const columns = [
+    { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
+    { header: "Volumen Inutil (kgs)", dataKey: "VolumenInutil" },
+    { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
+  ];
+
+  const fields = [
+    {
+      name: "VolumenM",
+      label: "Volumen Util",
+      type: "text",
+      placeholder: "Volumen Util *",
+    },
+    {
+      name: "VolumenMInutil",
+      label: "Volumen Inutil",
+      type: "text",
+      placeholder: "Volumen Inutil *",
+    },
+    {
+      name: "FechaIngresoM",
+      label: "Fecha Ingreso",
+      type: "date",
+      placeholder: "Fecha *",
+    },
+    {
+      name: "IdTipoPlastico",
+      label: "ID Material",
+      type: "text",
+      placeholder: "ID Plastico *",
+    },
     { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenInutil" },
     { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },

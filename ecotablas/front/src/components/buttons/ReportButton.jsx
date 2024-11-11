@@ -3,16 +3,15 @@ import { IoMdAlert } from "react-icons/io";
 import axios from "axios";
 
 const ReportButton = () => {
-  const [modalOpen, setModalOpen] = useState(false); 
+  const [modalOpen, setModalOpen] = useState(false);
   const [report, setReport] = useState({
     Titulo: "",
     Descripcion: "",
     Area: "",
     FechaIncidente: "",
-    Estado: "Pendiente", 
+    Estado: "Pendiente",
   });
   const [message, setMessage] = useState("");
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +24,7 @@ const ReportButton = () => {
   const PostReportes = () => {
     const reporteConFecha = {
       ...report,
-      FechaReporte: new Date().toISOString(), 
+      FechaReporte: new Date().toISOString(),
     };
 
     axios
@@ -33,7 +32,7 @@ const ReportButton = () => {
       .then((response) => {
         console.log("Reporte enviado:", response.data);
         setMessage("¡Reporte enviado con éxito!");
-        setModalOpen(false); 
+        setModalOpen(false);
       })
       .catch((error) => {
         console.error("Error al enviar el reporte:", error);
@@ -44,8 +43,12 @@ const ReportButton = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-
-    if (!report.Titulo || !report.Descripcion || !report.Area || !report.FechaIncidente) {
+    if (
+      !report.Titulo ||
+      !report.Descripcion ||
+      !report.Area ||
+      !report.FechaIncidente
+    ) {
       setMessage("Por favor, completa todos los campos.");
       return;
     }
@@ -59,12 +62,11 @@ const ReportButton = () => {
         className="bg-gradient-to-r mb-1  text-white text-center font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105"
       >
         <div className="flex ">
-          Reportar un problema 
+          Reportar un problema
           <IoMdAlert className="m-1" />
         </div>
       </button>
 
-   
       {modalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75">
           <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96">
@@ -74,7 +76,10 @@ const ReportButton = () => {
             {message && <p className="mb-4 text-red-500">{message}</p>}
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="Titulo">
+                <label
+                  className="block text-sm font-bold mb-2"
+                  htmlFor="Titulo"
+                >
                   Título
                 </label>
                 <input
@@ -104,7 +109,6 @@ const ReportButton = () => {
                 />
               </div>
 
-
               <div className="mb-4">
                 <label className="block text-sm font-bold mb-2" htmlFor="Area">
                   Área del problema
@@ -118,15 +122,21 @@ const ReportButton = () => {
                 >
                   <option value="">Seleccione un área</option>
                   <option value="Lavado">Lavado de material</option>
-                  <option value="materialTriturado">Trituración de material</option>
-                  <option value="materialProcesado">Procesado de material</option>
+                  <option value="materialTriturado">
+                    Trituración de material
+                  </option>
+                  <option value="materialProcesado">
+                    Procesado de material
+                  </option>
                   <option value="CargaMaterial">Carga de material</option>
                 </select>
               </div>
 
- 
               <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="FechaIncidente">
+                <label
+                  className="block text-sm font-bold mb-2"
+                  htmlFor="FechaIncidente"
+                >
                   Fecha del incidente
                 </label>
                 <input

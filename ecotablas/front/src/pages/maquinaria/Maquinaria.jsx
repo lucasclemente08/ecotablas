@@ -26,7 +26,7 @@ const Maquinaria = () => {
   const [maquinariaId, setMaquinariaId] = useState(null);
   const [modalEdit, setModalEdit] = useState(false);
   const [modalReparacion, setModalReparacion] = useState(false);
-  
+
   const [mensaje, setMensaje] = useState("");
 
   const [formValues, setFormValues] = useState({
@@ -123,25 +123,23 @@ const Maquinaria = () => {
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
-  
+
     try {
       const response = await axios.post(`${BASE_URL}/Insertar`, formValues);
       if (response) {
-        await fetchMaquinarias(); 
-
+        await fetchMaquinarias();
 
         setMensaje("Inserción exitosa");
       } else {
         setMensaje("Error: no se recibió un dato válido de la API.");
       }
-  
+
       setModalAbierto(false);
     } catch (error) {
       setMensaje("Error al agregar la maquinaria.");
       console.error("Error al agregar la maquinaria:", error);
     }
   };
-  
 
   const handleEditSubmit = async () => {
     if (!validateForm()) return;
@@ -188,6 +186,7 @@ const Maquinaria = () => {
   
     try {
       // Primero, agrega la reparación
+      // Primero, agrega la reparación
       await addReparacion(reparacionValues);
       setMensaje("Reparación agregada exitosamente");
   
@@ -216,7 +215,14 @@ const Maquinaria = () => {
     }));
   };
 
-  const title = ["Nombre", "Tipo", "Modelo", "Estado", "Fecha de adquisición", "Acciones"];
+  const title = [
+    "Nombre",
+    "Tipo",
+    "Modelo",
+    "Estado",
+    "Fecha de adquisición",
+    "Acciones",
+  ];
 
   const columns = [
     { header: "Nombre", dataKey: "Nombre" },
@@ -281,10 +287,9 @@ const Maquinaria = () => {
       setEstadoMaquinarias(response.data);
     } catch (error) {
       console.error("Error al obtener estados de maquinarias:", error);
-    
     }
   };
-useEffect(() => {
+  useEffect(() => {
     stateMaquinaria();
   }, []);
 
@@ -305,7 +310,6 @@ useEffect(() => {
     return estado ? estado.Nombre : "Estado no disponible";
   };
 
-
   return (
     <>
       <div className="md:flex flex-row bg-slate-900 min-h-screen">
@@ -313,7 +317,11 @@ useEffect(() => {
         <div className="p-4 w-full">
           <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
           <AddButton abrirModal={abrirModal} title={" Añadir Maquinaria"} />
-          <PdfGenerator columns={columns} data={maquinarias} title="Reporte de Maquinarias" />
+          <PdfGenerator
+            columns={columns}
+            data={maquinarias}
+            title="Reporte de Maquinarias"
+          />
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
               {mensaje}
@@ -340,7 +348,7 @@ useEffect(() => {
               cerrarModalEdit={cerrarModalEdit}
             />
           )}
-          
+
           {modalReparacion && (
             <AddModal
               title="Agregar Reparación"
@@ -366,10 +374,14 @@ useEffect(() => {
                     <td className="border-b py-2 px-4">{maquinaria.Nombre}</td>
                     <td className="border-b py-2 px-4">{maquinaria.Tipo}</td>
                     <td className="border-b py-2 px-4">{maquinaria.Modelo}</td>
-                    <td className={`border-b py-2 px-4 ${estadoStyles[maquinaria.IdEstado]}`}>
+                    <td
+                      className={`border-b py-2 px-4 ${estadoStyles[maquinaria.IdEstado]}`}
+                    >
                       {getNombreEstado(maquinaria.IdEstado)}
                     </td>
-                    <td className="border-b py-2 px-4">{maquinaria.fecha_adquisicion}</td>
+                    <td className="border-b py-2 px-4">
+                      {maquinaria.fecha_adquisicion}
+                    </td>
                     <td className="border-b py-2 px-4 flex justify-center">
 
                     {maquinaria.IdEstado === 3? (

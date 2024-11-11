@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/buttons/addButton";
+import AddButton from "../../components/buttons/AddButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -18,6 +18,7 @@ import {
   addMaterialTrit,
   editMaterialTrit,
 } from "../../api/materialTritAPI";
+import { Await } from "react-router-dom";
 import { Await } from "react-router-dom";
 
 const MaterialTrit = () => {
@@ -288,6 +289,7 @@ const MaterialTrit = () => {
             data={materials}
             title="Reporte de Materiales triturado"
           />
+
 
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">

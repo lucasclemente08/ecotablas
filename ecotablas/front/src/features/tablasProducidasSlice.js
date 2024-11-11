@@ -61,7 +61,7 @@ const tablasProducidasSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch TablasProducidas
+
       .addCase(fetchTablasProducidas.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -74,7 +74,7 @@ const tablasProducidasSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // Add TablaProducida
+   
       .addCase(addTablaProducida.pending, (state) => {
         state.loading = true;
         state.error = null;
