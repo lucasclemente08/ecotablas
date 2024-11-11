@@ -4,7 +4,7 @@ import builderApiUrl from '../utils/BuilderApi';
 
 
 export const fetchTolva = createAsyncThunk('http://localhost:61274/api/Tolva/ListarTodo', async () => {
-  const response = await axios.get("http://www.gestiondeecotablas.somee.com/api/Tolva/ListarTodo");
+  const response = await axios.get("http://localhost:61274/api/Tolva/ListarTodo");
 
   return response.data;
 });

@@ -14,7 +14,7 @@ namespace WebApi_TrazODS.Models
 
         #region Propiedades
         public int IdTolva { get; set; } // Identificador único para la tolva
-        public int IdTriturado { get; set; } // Identificador del triturado asociado
+        public int IdMaterialTriturado { get; set; } // Identificador del triturado asociado
         public DateTime HorarioInicio { get; set; } // Hora de inicio
         public decimal CantidadCargada { get; set; } // Cantidad de plástico cargado
         public string TipoPlastico { get; set; } // Tipo de plástico
@@ -58,7 +58,7 @@ namespace WebApi_TrazODS.Models
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
 
-            sqlCom.Parameters.Add("@IdTriturado", SqlDbType.Int).Value = IdTriturado;
+            sqlCom.Parameters.Add("@IdMaterialTriturado", SqlDbType.Int).Value = IdMaterialTriturado;
             sqlCom.Parameters.Add("@HorarioInicio", SqlDbType.DateTime).Value = HorarioInicio;
             sqlCom.Parameters.Add("@CantidadCargada", SqlDbType.Decimal).Value = CantidadCargada;
             sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
@@ -91,7 +91,7 @@ namespace WebApi_TrazODS.Models
             sqlCom.CommandType = CommandType.StoredProcedure;
 
             sqlCom.Parameters.Add("@IdTolva", SqlDbType.Int).Value = IdTolva;
-            sqlCom.Parameters.Add("@IdTriturado", SqlDbType.Int).Value = IdTriturado;
+            sqlCom.Parameters.Add("@IdMaterialTriturado", SqlDbType.Int).Value = IdMaterialTriturado;
             sqlCom.Parameters.Add("@HorarioInicio", SqlDbType.DateTime).Value = HorarioInicio;
             sqlCom.Parameters.Add("@CantidadCargada", SqlDbType.Decimal).Value = CantidadCargada;
             sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;

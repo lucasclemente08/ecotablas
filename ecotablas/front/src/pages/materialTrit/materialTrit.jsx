@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
-import AddButton from "../../components/buttons/AddButton";
+import AddButton from "../../components/buttons/addButton";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -10,13 +10,13 @@ import LoadingTable from "../../components/LoadingTable";
 import NextButton from "../../components/buttons/NextButton";
 import NextModal from "../../components/NextModal";
 import { useSelector, useDispatch } from "react-redux";
-import {addTolva} from "../../features/tolvaSlice";
+import {addTolva,} from "../../api/TolvaAPI";
 
 import ReportButton from "../../components/buttons/ReportButton";
 import {
-  getAllMaterials,
-  addMaterial,
-  editMaterial,
+  getAllMaterialTrit,
+  addMaterialTrit,
+  editMaterialTrit,
 } from "../../api/materialTritAPI";
 import { Await } from "react-router-dom";
 
@@ -29,14 +29,16 @@ const MaterialTrit = () => {
   const [materialId, setMaterialId] = useState(null);
   const [modalEdit, setModalEdit] = useState(false);
   const [mensaje, setMensaje] = useState("");
-  const [modalAbiertoNext,setModalAbiertoNext] = useState(false);
+  const [modalTolva,setModalTolva] = useState(false);
 
   const [formValues, setFormValues] = useState({
     VolumenT: "",
     Fecha: "",
     IdMaterialClasificado: "",
+    VolumenTInutil: "",
+    Estado: 1,
   });
-  const [formValuesTolva, setFormValuesTolva] = useState({
+  const [tolvaValues, setTolvaValues] = useState({
     IdMaterialTriturado:"",
     HorarioInicio: "",
     CantidadCargada: "",
@@ -45,29 +47,59 @@ const MaterialTrit = () => {
     Especificaciones: "",
   });
 
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+  });
+  const handleFilter = (dates) => {
+    setDateRange(dates);
+  };
+
   const abrirModalEdit = (material) => {
     setMaterialId(material.IdMaterialTriturado);
     setFormValues({
       VolumenT: material.VolumenT,
+      VolumenTInutil: material.VolumenTInutil,
       Fecha: material.Fecha,
       IdMaterialClasificado: material.IdMaterialClasificado,
+      Estado: material.Estado,
     });
     setModalEdit(true);
   };
 
   const cerrarModalEdit = () => setModalEdit(false);
 
-  const abrirModalNext = (material) => {
-    setFormValuesTolva((prevState) => ({
-      ...prevState,
-      IdMaterialTriturado: material.IdMaterialTriturado,
-    }));
-    setModalAbiertoNext(true);
+
+  const abrirModalTolva = (id) => {
+    const fechaActual = new Date().toISOString();
+    setMaterialId(id);
+    setTolvaValues({ ...tolvaValues, IdMaterialTriturado: id, HorarioInicio: fechaActual,});
+    setModalTolva(true);
   };
   
-  const cerrarModalNext=()=>{
-    setModalAbiertoNext(false);
-  }
+  const cerrarModalTolva = () => setModalTolva(false);
+
+
+    const validateTolvaForm = () => {
+      let isValid = true;
+      if (!tolvaValues.CantidadCargada) {
+        setMensaje("La cantidad es obligatoria.");
+        isValid = false;
+      } else if (!tolvaValues.TipoPlastico) {
+        setMensaje("El tipo de plástico es obligatorio.");
+        isValid = false;
+      } else if (!tolvaValues.Proporcion) {
+        setMensaje("La proporción es obligatoria.");
+        isValid = false;
+      } else if (!tolvaValues.Especificaciones) {
+        setMensaje("Las especificaciones son obligatorias.");
+        isValid = false;
+      } 
+      return isValid;
+    };
+
+
+
   const abrirModal = () => {
     setModalAbierto(true);
   };
@@ -78,7 +110,7 @@ const MaterialTrit = () => {
   const fetchMaterials = async () => {
     setLoading(true);
     try {
-      const res = await getAllMaterials();
+      const res = await getAllMaterialTrit();
       setMaterials(res.data);
     } catch (error) {
       setMensaje("Error al cargar los materiales.");
@@ -87,7 +119,7 @@ const MaterialTrit = () => {
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     fetchMaterials();
   }, []);
@@ -96,6 +128,9 @@ const MaterialTrit = () => {
     let isValid = true;
     if (!formValues.VolumenT) {
       setMensaje("Volumen es obligatorio.");
+      isValid = false;
+    } else if(!formValues.VolumenTInutil) {
+      setMensaje("Volumen Inutil es obligatorio.");
       isValid = false;
     } else if (!formValues.Fecha) {
       setMensaje("Fecha es obligatoria.");
@@ -107,7 +142,7 @@ const MaterialTrit = () => {
   const handleSubmit = async () => {
     if (!validateForm()) return;
     try {
-      const response = await addMaterial(formValues);
+      const response = await addMaterialTrit(formValues);
       setModalAbierto(false);
       setMensaje("Inserción exitosa");
       setMaterials([...materials, response.data]);
@@ -120,13 +155,35 @@ const MaterialTrit = () => {
   const handleEditSubmit = async () => {
     if (!validateForm()) return;
     try {
-      await editMaterial(materialId, formValues);
+      await editMaterialTrit(materialId, formValues);
       setModalEdit(false);
       setMensaje("Modificación exitosa");
       fetchMaterials();
     } catch (error) {
       setMensaje("Error al modificar el material.");
       console.error("Error al modificar el material:", error);
+    }
+  };
+
+  const handleSubmitTolva = async () => {
+    if (!validateTolvaForm()) return;
+  
+    try {
+      await addTolva(tolvaValues);
+      setMensaje("Lote enviado a tolva");
+  
+      // Luego, actualiza el estado a 2
+      const materialActualizado = {
+        ...materials.find((m) => m.IdMaterialTriturado === materialId),
+        Estado: 2, // Establecer el estado a 2
+      };
+      await editMaterialTrit(materialId, materialActualizado);
+
+      setModalTolva(false);
+      fetchMaterials(); // Refrescar la lista para mostrar cambios
+    } catch (error) {
+      setMensaje("Error al terminar el proceso.");
+      console.error("Error al terminar el proceso:", error);
     }
   };
 
@@ -140,17 +197,18 @@ const MaterialTrit = () => {
 
   const handleChangeTolva = (e) => {
     const { name, value } = e.target;
-    setFormValuesTolva((prevState) => ({
+    setTolvaValues((prevState) => ({
       ...prevState,
       [name]: value,
     }));
 
   };
 
-  const title = ["Volumen", "Fecha de ingreso", "Acciones"];
+  const title = ["Volumen Util", "Volumen Inutil", "Fecha de ingreso", "Acciones"];
 
   const columns = [
     { header: "Volumen (kgs)", dataKey: "VolumenT" },
+    { header: "Volumen Inutil (kgs)", dataKey: "VolumenTInutil" },
     { header: "Fecha", dataKey: "Fecha" },
   ];
 
@@ -163,6 +221,12 @@ const MaterialTrit = () => {
     {
       name: "VolumenT",
       label: "Volumen",
+      type: "text",
+      placeholder: "Volumen *",
+    },
+    {
+      name: "VolumenTInutil",
+      label: "Volumen Inutil",
       type: "text",
       placeholder: "Volumen *",
     },
@@ -192,26 +256,11 @@ const MaterialTrit = () => {
   const totalPages = Math.ceil(materials.length / itemsPerPage);
 
   const totalVolumen = materials.reduce(
-    (acc, material) => acc + parseFloat(material.VolumenT || 0),
+    (acc, material) =>
+      acc + parseFloat(material.VolumenT || 0) + parseFloat(material.VolumenTInutil || 0),
     0,
   );
   const totalItems = materials.length;
-
-  const handleSubmitNext = async (e) => {
-    e.preventDefault(); 
-  
-    if (!formValuesTolva.HorarioInicio || !formValuesTolva.CantidadCargada) {
-      console.error("Por favor completa todos los campos requeridos");
-      return;
-    }
-   
-   await dispatch(addTolva(formValuesTolva)); 
-   
-   cerrarModalNext(); 
-   setMensaje("Material pasado a extrucción/tolva correctamente");
-    
-  };
-  
 
 
   const optionsTipoPlastico = [
@@ -291,33 +340,36 @@ const MaterialTrit = () => {
                     className="hover:bg-gray-100 m-5"
                   >
                     <td className="border-b py-2 px-4">
-                      {material.VolumenT} kgs
+                     Volumen Util: {material.VolumenT} kgs
                     </td>
+                  <td className="border-b py-2 px-4">
+                    Volumen Inutil: {material.VolumenTInutil} kgs
+                  </td>
                     <td className="border-b py-2 px-4">
                       {material.Fecha.slice(0, 10)}
                     </td>
                     <td
                       className={`border-b py-2 px-4 flex justify-center ${modalAbierto ? "hidden" : ""}`}
                     >
-                   <NextButton abrirModal={() => abrirModalNext(material)} />
+                    <button
+                        onClick={() => abrirModalTolva(material.IdMaterialTriturado)}
+                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        Terminado
+                      </button>
 
-                      {modalAbiertoNext &&
-          <NextModal title="Pasar a Extrucción/tolva"
-          id={material.IdMaterialTriturado}
+                      {modalTolva &&
+          <AddModal title="Pasar a Extrucción/tolva"
           fields={[
-           
-            { name: "IdMaterialTriturado", label: "ID Material triturado (Id no modificable)", type: "text", },
-
-            { name: "HorarioInicio", label: "Horario de inicio", type: "datetime-local" },
             { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
             { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
             { name: "Proporcion", label: "Proporción cargada", type: "number" },
             { name: "Especificaciones", label: "Especificaciones", type: "text" },
           ]}
-            handleSubmitNext={handleSubmitNext}
-            handleChangeNext={handleChangeTolva}
-            cerrarModal={cerrarModalNext}
-          values={formValuesTolva}
+            handleChange={handleChangeTolva}
+            handleSubmit={handleSubmitTolva}
+            cerrarModal={cerrarModalTolva}
+          values={tolvaValues}
           />
 
           }

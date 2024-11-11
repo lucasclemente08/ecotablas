@@ -27,7 +27,7 @@ namespace WebApi_TrazODS.Controllers
         public void Insertar([FromBody] Tolva value)
         {
             Tolva oTolva = new Tolva();
-            oTolva.IdTriturado = value.IdTriturado;
+            oTolva.IdMaterialTriturado = value.IdMaterialTriturado;
             oTolva.HorarioInicio = value.HorarioInicio;
             oTolva.CantidadCargada = value.CantidadCargada;
             oTolva.TipoPlastico = value.TipoPlastico;
@@ -43,7 +43,7 @@ namespace WebApi_TrazODS.Controllers
         {
 
             Tolva oTolva = new Tolva();
-            oTolva.IdTriturado = value.IdTriturado;
+            oTolva.IdMaterialTriturado = value.IdMaterialTriturado;
             oTolva.HorarioInicio = value.HorarioInicio;
             oTolva.CantidadCargada = value.CantidadCargada;
             oTolva.TipoPlastico = value.TipoPlastico;

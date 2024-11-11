@@ -12,6 +12,14 @@ import NextButton from "../../components/buttons/NextButton";
 import VolumenChart from "../../components/volumen/VolumenChart";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
+import {
+  getAllMaterialTrit,
+  addMaterialTrit,
+  editMaterialTrit,
+} from "../../api/materialTritAPI";
+import {
+editMaterialClas,
+} from "../../api/MaterialClasAPI";
 const ClasificacionDeMaterial = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -19,12 +27,23 @@ const ClasificacionDeMaterial = () => {
   const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
   const [materialId, setMaterialId] = useState(null);
+  const [modalTriturado, setModalTriturado] = useState(false); 
 
   const [formValues, setFormValues] = useState({
     VolumenUtil: "",
     VolumenInutil: "",
-    IdMaterialProcesado: "1",
+    IdIngresoMaterial: "",
     FechaC: "",
+    Estado: 1,
+  });
+
+
+  const [trituradoValues, setTrituradoValues] = useState({
+    VolumenT: "",
+    Fecha: "",
+    IdMaterialClasificado: "",
+    VolumenTInutil: "",
+    Estado: 1,
   });
 
   const [dateRange, setDateRange] = useState({
@@ -48,19 +67,18 @@ const ClasificacionDeMaterial = () => {
 
     setFormValues({
       VolumenUtil: material.VolumenUtil,
-      VolumenInutil:material.VolumenInutil,
-      IdMaterialProcesado: material.IdMaterialProcesado,
+      VolumenInutil: material.VolumenInutil,
+      IdIngresoMaterial: material.IdIngresoMaterial,
       FechaC: material.FechaC,
     });
     setModalEdit(true);
   };
 
   const cerrarModalEdit = () => setModalEdit(false);
-
   const handleSubmit = () => {
     axios
       .post(
-        "http://www.trazabilidadodsapi.somee.com/api/MaterialClas/Insertar",
+        "http://localhost:61274/api/MaterialClas/Insertar",
         formValues,
       )
       .then(() => {
@@ -70,11 +88,56 @@ const ClasificacionDeMaterial = () => {
       .catch((error) => console.error("Error al agregar el material:", error));
   };
 
+  const abrirModalTriturado = (id) => {
+    const fechaActual = new Date().toISOString();
+    setMaterialId(id);
+    setTrituradoValues({ ...trituradoValues, Fecha: fechaActual, IdMaterialClasificado: id,});
+    setModalTriturado(true);
+  };
+
+  const cerrarModalTriturado = () => setModalTriturado(false);
+
+  const validateTrituradoForm = () => {
+    let isValid = true;
+    if (!trituradoValues.VolumenT) {
+      setMensaje("El volumen util es obligatorio.");
+      isValid = false;
+    } else if (!trituradoValues.VolumenTInutil) {
+      setMensaje("El volumen inutil es obligatorio.");
+      isValid = false;
+    } 
+    return isValid;
+  };
+
+  const handleSubmitTriturado = async () => {
+    if (!validateTrituradoForm()) return;
+  
+    try {
+      await addMaterialTrit(trituradoValues);
+      setMensaje("Lote enviado a trituración");
+  
+      // Luego, actualiza el estado a 2
+      const materialActualizado = {
+        ...materials.find((m) => m.IdMaterialClasificado === materialId),
+        Estado: 2, // Establecer el estado a 2
+      };
+      console.log (materialActualizado)
+      await editMaterialClas(materialId, materialActualizado);
+  
+      setModalTriturado(false);
+      fetchMaterials(); // Refrescar la lista para mostrar cambios
+    } catch (error) {
+      setMensaje("Error al terminar el proceso.");
+      console.error("Error al terminar el proceso:", error);
+    }
+  };
+
+
   const handleEditSubmit = () => {
     if (
       !formValues.VolumenUtil ||
       !formValues.VolumenInutil ||
-      !formValues.IdMaterialProcesado ||
+      !formValues.IdIngresoMaterial ||
       !formValues.FechaC
     ) {
       setMensaje("Todos los campos son obligatorios.");
@@ -83,7 +146,7 @@ const ClasificacionDeMaterial = () => {
 
     axios
       .put(
-        `http://www.trazabilidadodsapi.somee.com/api/MaterialClas/Modificar/${materialId}`,
+        `http://localhost:61274/api/MaterialClas/Modificar/${materialId}`,
         formValues,
       )
       .then(() => {
@@ -104,11 +167,19 @@ const ClasificacionDeMaterial = () => {
     }));
   };
 
+  const handleChangeTriturado = (e) => {
+    const { name, value } = e.target;
+    setTrituradoValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
   const fetchMaterials = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://www.trazabilidadodsapi.somee.com/api/MaterialClas/ListarTodo",
+        "http://localhost:61274/api/MaterialClas/ListarTodo",
       );
       setMaterials(response.data);
     } catch (error) {
@@ -160,7 +231,7 @@ const ClasificacionDeMaterial = () => {
       placeholder: "Fecha *",
     },
     {
-      name: "IdMaterialProcesado",
+      name: "IdIngresoMaterial",
       label: "ID Material",
       type: "text",
       placeholder: "ID Material *",
@@ -210,6 +281,20 @@ const ClasificacionDeMaterial = () => {
             cerrarModalEdit={cerrarModalEdit}
           />
         )}
+               {modalTriturado && (
+            <AddModal
+              title="Enviar lote a trituración"
+              fields={[
+                { name: "VolumenT", label: "Volumen Util", type: "number", placeholder: "Volumen Util *" },
+                { name: "VolumenTInutil", label: "Volumen Inutil", type: "number", placeholder: "Volumen Inutil *" }
+              ]}
+              handleChange={handleChangeTriturado}
+              handleSubmit={handleSubmitTriturado}
+              cerrarModal={cerrarModalTriturado}
+              values={trituradoValues}
+            />
+          )}
+
 
         <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
           <h5>
@@ -246,7 +331,12 @@ const ClasificacionDeMaterial = () => {
                       modalEdit || modalAbierto ? "hidden" : ""
                     }`}
                   >
-                    <NextButton />
+                    <button
+                        onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
+                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        Terminado
+                      </button>
                     <button
                       className="bg-yellow-600 ml-2 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       onClick={() => abrirModalEdit(material)}

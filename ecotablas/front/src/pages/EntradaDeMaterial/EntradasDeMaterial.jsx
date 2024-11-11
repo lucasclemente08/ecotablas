@@ -43,6 +43,7 @@ const EntradasDeMaterial = () => {
     VolumenInutil: "",
     FechaC: "",
     IdIngresoMaterial: "",
+    Estado: 1,
   });
 
   const [dateRange, setDateRange] = useState({
@@ -338,19 +339,19 @@ const EntradasDeMaterial = () => {
                       modalEdit || modalAbierto ? "hidden" : ""
                     }`}
                   >
-                    <NextButton  />
-                    <button
-                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      onClick={() => abrirModalEdit(material)}
-                    >
-                      Modificar
-                    </button>
                     <button
                         onClick={() => abrirModalClasificado(material.IdIngresoMaterial)}
                         className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       >
                         Terminado
                       </button>
+                    <button
+                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      onClick={() => abrirModalEdit(material)}
+                    >
+                      Modificar
+                    </button>
+
                     <DeleteButton
                       id={material.IdIngresoMaterial}
                       endpoint="http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Borrar"
