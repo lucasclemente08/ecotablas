@@ -56,7 +56,7 @@ const GastoVehiculos = () => {
 
   const [formValues, setFormValues] = useState({
     TipoComprobante: "",
-    Comprobante: "",
+    Comprobante: "comprobante",
     TipoGasto: "",
     IdVehiculo: "",
     Proveedor: "",
@@ -86,13 +86,13 @@ const GastoVehiculos = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: value,
+      [name]: files ? files[0] : value,
     }));
   };
-
+  
   const fetchTrucks = () => {
     axios
       .get(URL_trucks)
@@ -112,26 +112,26 @@ const GastoVehiculos = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Subir el archivo a Dropbox y obtener el enlace compartido
-    const link = await uploadToDropbox(formValues.Comprobante);
-    if (link) {
-      const updatedFormValues = { ...formValues, Comprobante: link }; // Añade el enlace al campo
-      axios
-        .post("https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/CrearGastoVehiculo", updatedFormValues)
-        .then((response) => {
-          toast.success("Gasto agregado con éxito");
-          fetchMaterials();
-          cerrarModal();
-        })
-        .catch((error) => {
-          console.error("Error al agregar el gasto:", error);
-          toast.error("Error al agregar el gasto");
-        });
-    } else {
-      toast.error("No se pudo subir el archivo a Dropbox");
+    if (formValues.Comprobante) {
+      const fileId = await uploadToDropbox(formValues.Comprobante);  // Obtiene el ID del archivo
+      if (fileId) {
+        const updatedFormValues = { ...formValues, Comprobante: fileId };  // Usa el ID como Comprobante
+        axios
+          .post("https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/CrearGastoVehiculo", updatedFormValues)
+          .then((response) => {
+            toast.success("Gasto agregado con éxito");
+            fetchMaterials();
+            cerrarModal();
+          })
+          .catch((error) => {
+            console.error("Error al agregar el gasto:", error);
+            toast.error("Error al agregar el gasto");
+          });
+      } else {
+        toast.error("No se pudo subir el archivo a Dropbox");
+      }
     }
   };
-  
   
   useEffect(() => {
     const calculatePieData = () => {
@@ -187,6 +187,7 @@ const GastoVehiculos = () => {
     setShowTable(true);
     setShowPieChart(false);
   };
+  
 
   const fields = [
     {
@@ -279,68 +280,41 @@ const GastoVehiculos = () => {
     "Descripción",
     "Acciones",
   ];
+  const dropboxToken = import.meta.env.VITE_API_KEY_DROPBOX;
 
-  const dropboxToken = import.meta.env.VITE_API_KEY_DROPBOX; 
-  console.log(dropboxToken);
   const uploadToDropbox = async (file) => {
-    const dropboxToken = import.meta.env.VITE_API_KEY_DROPBOX; // Clave de API de Dropbox
     const url = "https://content.dropboxapi.com/2/files/upload";
-    const sharedUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
-    
+  
     try {
+      const dropboxArgs = JSON.stringify({
+        path: `/${file.name}`,
+        mode: "add",
+        autorename: true,
+        mute: false,
+      });
+  
       const response = await fetch(url, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${dropboxToken}`,
           "Content-Type": "application/octet-stream",
-          "Dropbox-API-Arg": JSON.stringify({
-            path: `/${file.name}`,
-            mode: "add",
-            autorename: true,
-            mute: false,
-          }),
+          "Dropbox-API-Arg": dropboxArgs,
         },
         body: file,
       });
   
-      const responseText = await response.text();  // Leemos la respuesta como texto
-      console.log("Respuesta de Dropbox (texto):", responseText);
-  
-      // Intentar parsear la respuesta a JSON
-      try {
-        const data = JSON.parse(responseText); // Intentamos parsear a JSON
-        if (response.ok) {
-          const shareResponse = await fetch(sharedUrl, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${dropboxToken}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              path: data.path_lower,
-              settings: { requested_visibility: "public" },
-            }),
-          });
-  
-          const shareResponseText = await shareResponse.text();
-          console.log("Respuesta de compartir (texto):", shareResponseText);
-          const shareData = JSON.parse(shareResponseText);
-          return shareData.url;
-        } else {
-          console.error("Error al subir el archivo a Dropbox:", data);
-          return null;
-        }
-      } catch (error) {
-        console.error("Error al procesar JSON:", error);
+      if (!response.ok) {
+        console.error("Error al subir el archivo a Dropbox:", await response.text());
         return null;
       }
   
+      const data = await response.json();
+      return data.id;  // Retorna el ID del archivo en lugar de la URL
     } catch (error) {
       console.error("Error en la solicitud a Dropbox:", error);
       return null;
     }
   };
-  
 
 
 
@@ -434,11 +408,18 @@ const GastoVehiculos = () => {
                 <tr key={index} className="hover:bg-gray-100 ">
                   <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
                                 <td className="border-b py-3 px-4">
-                {item.Comprobante ? (
-                  <a href={item.Comprobante} target="_blank" rel="noopener noreferrer">
-                    Ver Comprobante
-                  </a>
-                ) : "No disponible"}
+                                {item.Comprobante ? (
+          <a
+          href={`https://www.dropbox.com/preview/Apps/Comprobantes%20de%20ecotablas/${item.Comprobante}`}
+
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver Comprobante
+          </a>
+        ) : (
+          "No disponible"
+        )}
               </td>
                   <td className="border-b py-3 px-4">{item.TipoGasto}</td>
                   <td className="border-b py-3 px-4">

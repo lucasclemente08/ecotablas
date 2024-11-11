@@ -8,39 +8,13 @@ const AddModalWithSelect = ({
   handleSubmit,
   cerrarModal,
   values,
-  handleFileChange,
+
   submitButtonText = "Guardar",
   cancelButtonText = "Cancelar",
   dropboxAccessToken, // Token de acceso para Dropbox
 }) => {
-  const [fileToUpload, setFileToUpload] = useState(null);
+ 
 
-  const handleDropboxUpload = async () => {
-    if (!fileToUpload) {
-      alert("Por favor, selecciona un archivo para subir.");
-      return;
-    }
-
-    const dbx = new Dropbox({ accessToken: dropboxAccessToken });
-
-    try {
-      const response = await dbx.filesUpload({
-        path: `/${fileToUpload.name}`, // Nombre del archivo en Dropbox
-        contents: fileToUpload,
-      });
-      alert("Archivo subido exitosamente a Dropbox: " + response.path_display);
-    } catch (error) {
-      console.error("Error al subir archivo a Dropbox:", error);
-      alert("Hubo un error al subir el archivo a Dropbox.");
-    }
-  };
-
-  // Esta función maneja el cambio de archivo y llama a handleFileChange para mantener la funcionalidad original
-  const handleFileSelection = (event) => {
-    const selectedFile = event.target.files[0];
-    setFileToUpload(selectedFile); // Almacena el archivo para subirlo a Dropbox
-    handleFileChange(event); // Llama a la función original
-  };
 
   return (
     <div className="fixed inset-0 overflow-y-auto">
@@ -70,13 +44,46 @@ const AddModalWithSelect = ({
                       <input
                         type="file"
                         name={field.name}
-                        onChange={handleFileSelection} // Usa la función para almacenar y manejar el archivo
+                        onChange={handleChange} // Usa la función para almacenar y manejar el archivo
+                        className="border border-gray-300 rounded p-2 w-full"
+                        required={field.required}
+                      />
+                    ) : field.type === "select" ? (
+                      <select
+                        name={field.name}
+                        value={values[field.name]}
+                        onChange={handleChange}
+                        className="border border-gray-300 rounded p-2 w-full"
+                        required={field.required}
+                      >
+                        <option value="">Selecciona una opción</option>
+                        {field.options.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : field.type === "date" ? (
+                      <input
+                        type="date"
+                        name={field.name}
+                        value={values[field.name]}
+                        onChange={handleChange}
+                        className="border border-gray-300 rounded p-2 w-full"
+                        required={field.required}
+                      />
+                    ) : field.type === "number" ? (
+                      <input
+                        type="number"
+                        name={field.name}
+                        value={values[field.name]}
+                        onChange={handleChange}
                         className="border border-gray-300 rounded p-2 w-full"
                         required={field.required}
                       />
                     ) : (
                       <input
-                        type={field.type || "text"}
+                        type="text"
                         name={field.name}
                         value={values[field.name]}
                         onChange={handleChange}
@@ -102,12 +109,7 @@ const AddModalWithSelect = ({
             >
               {cancelButtonText}
             </button>
-            <button
-              onClick={handleDropboxUpload}
-              className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
-            >
-              Subir a Dropbox
-            </button>
+
           </div>
         </div>
       </div>
