@@ -44,7 +44,6 @@ const routesConfig = [
   { path: "/areas", element: <Areas />, protected: true },
   { path: "/empresa", element: <EmpresaDonante />, protected: true },
   { path: "/reportes", element: <Reportes />, protected: true },
-
   {
     path: "/entrada/material",
     element: <EntradasDeMaterial />,
@@ -58,8 +57,6 @@ const routesConfig = [
   { path: "/maquinaria", element: <Maquinarias />, protected: true },
   { path: "/tolva", element: <Tolva />, protected: true },
   { path: "/reparaciones", element: <Reparaciones />, protected: true },
-
-  // { path: "/lavado", element: <LavadoMaterial />, protected: true },
   { path: "/tablas", element: <TablasProducidas />, protected: true },
   { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true },
   { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true },

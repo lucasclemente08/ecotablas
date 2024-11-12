@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 const FilterTable = ({ data, columns, onFilteredDataChange }) => {
   const [filters, setFilters] = useState({});
 
-  // Función para manejar cambios en los filtros
-  const handleFilterChange = (field, filterType, value) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [field]: { filterType, value },
-    }));
+  // Función para aplicar filtros
+  const applyFilter = (field, filterType) => {
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters };
+      updatedFilters[field] = { filterType, value: '' }; // No necesitamos valor por ahora, solo el tipo de filtro
+      return updatedFilters;
+    });
   };
 
   // Filtrar los datos según los filtros aplicados
@@ -17,28 +18,28 @@ const FilterTable = ({ data, columns, onFilteredDataChange }) => {
 
     // Aplicamos los filtros
     Object.keys(filters).forEach((field) => {
-      const { filterType, value } = filters[field];
-      if (!value) return;
+      const { filterType } = filters[field];
+      if (!filterType) return;
 
       filteredData = filteredData.filter((item) => {
         const fieldValue = item[field];
-        
+
         switch (filterType) {
           case 'greaterThan':
-            return Number(fieldValue) > Number(value);
+            return Number(fieldValue) > 100; // Usa el valor adecuado que quieras para el filtro "mayor que"
           case 'lessThan':
-            return Number(fieldValue) < Number(value);
+            return Number(fieldValue) < 100; // Usa el valor adecuado que quieras para el filtro "menor que"
           case 'recent':
-            return new Date(fieldValue) >= new Date(value);
+            return new Date(fieldValue) >= new Date('2023-01-01'); // Ejemplo de fecha reciente
           case 'alphabetical':
-            return fieldValue.toString().toLowerCase().includes(value.toLowerCase());
+            return fieldValue.toString().toLowerCase().includes('a'); // Filtro alfabético de ejemplo
           default:
-            return fieldValue.toString().toLowerCase().includes(value.toLowerCase());
+            return true;
         }
       });
     });
 
-    onFilteredDataChange(filteredData); // Pasamos los datos filtrados
+    onFilteredDataChange(filteredData); // Actualiza los datos filtrados
   }, [filters, data, onFilteredDataChange]);
 
   return (
@@ -49,24 +50,31 @@ const FilterTable = ({ data, columns, onFilteredDataChange }) => {
             {columns.map((col) => (
               <th key={col.field} className="p-4">
                 {col.label}
-                <div className="relative">
-                  <select
-                    onChange={(e) => handleFilterChange(col.field, e.target.value, '')}
-                    className="ml-2"
+                <div className="mt-2 flex gap-2">
+                  <button
+                    onClick={() => applyFilter(col.field, 'greaterThan')}
+                    className="bg-blue-500 text-white p-2 rounded"
                   >
-                    <option value="">Filtrar</option>
-                    <option value="text">Texto</option>
-                    <option value="greaterThan">Mayor que</option>
-                    <option value="lessThan">Menor que</option>
-                    <option value="recent">Más reciente</option>
-                    <option value="alphabetical">Alfabético</option>
-                  </select>
-                  <input
-                    type="text"
-                    className="mt-2"
-                    placeholder="Valor"
-                    onChange={(e) => handleFilterChange(col.field, filters[col.field]?.filterType, e.target.value)}
-                  />
+                    Mayor que
+                  </button>
+                  <button
+                    onClick={() => applyFilter(col.field, 'lessThan')}
+                    className="bg-blue-500 text-white p-2 rounded"
+                  >
+                    Menor que
+                  </button>
+                  <button
+                    onClick={() => applyFilter(col.field, 'recent')}
+                    className="bg-blue-500 text-white p-2 rounded"
+                  >
+                    Más reciente
+                  </button>
+                  <button
+                    onClick={() => applyFilter(col.field, 'alphabetical')}
+                    className="bg-blue-500 text-white p-2 rounded"
+                  >
+                    Alfabético
+                  </button>
                 </div>
               </th>
             ))}
