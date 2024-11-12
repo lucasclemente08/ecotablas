@@ -216,10 +216,10 @@ const ClasificacionDeMaterial = () => {
     {
       name: "VolumenUtil",
       label: "Volumen Util",
-      label: "Volumen Util",
+ 
       type: "text",
       placeholder: "VolumenUtil *",
-      placeholder: "VolumenUtil *",
+   
     },
     {
       name: "VolumenInutil",
@@ -237,7 +237,7 @@ const ClasificacionDeMaterial = () => {
       name: "IdIngresoMaterial",
       label: "ID Material",
       type: "text",
-      placeholder: "ID Material *",
+
       placeholder: "ID Material *",
     },
   ];

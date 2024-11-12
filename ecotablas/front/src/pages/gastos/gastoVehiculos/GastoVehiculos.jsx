@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Pie, Line } from "react-chartjs-2";
 import Pagination from "../../../components/Pagination"
-
+import FilterTable from "../../../components/FilterTable";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -53,6 +53,8 @@ const GastoVehiculos = () => {
   const [gastoEdit, setGastoEdit] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
+
+  const [filteredData, setFilteredData] = useState([]);
 
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
@@ -255,7 +257,12 @@ const GastoVehiculos = () => {
       required: true,
     },
   ];
-
+  const columns = [
+    { field: "TipoComprobante", label: "Tipo de Comprobante" },
+    { field: "Monto", label: "Monto" },
+    { field: "Fecha", label: "Fecha" },
+    { field: "Proveedor", label: "Proveedor" },
+  ];
   const handleEditSubmit = (e) => {
     e.preventDefault();
     axios
@@ -289,65 +296,90 @@ const GastoVehiculos = () => {
  
 
   const dropboxToken = import.meta.env.VITE_API_KEY_DROPBOX;
+  const uploadToDropbox = async (file) => {
+    const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
+  
+    try {
+      const dropboxArgs = JSON.stringify({
+        path: `/${file.name}`,
+        mode: "add",
+        autorename: true,
+        mute: false,
+      });
+  
+      // 1. Subir el archivo a Dropbox
+      const uploadResponse = await fetch(uploadUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${dropboxToken}`,
+          "Content-Type": "application/octet-stream",
+          "Dropbox-API-Arg": dropboxArgs,
+        },
+        body: file,
+      });
+  
+      if (!uploadResponse.ok) {
+        console.error("Error al subir el archivo a Dropbox:", await uploadResponse.text());
+        return null;
+      }
+  
+      const fileData = await uploadResponse.json();
+      const filePath = fileData.path_lower;
+  
+      // 2. Verificar si ya existe un enlace compartido
+      const listLinksUrl = "https://api.dropboxapi.com/2/sharing/list_shared_links";
+      const listResponse = await fetch(listLinksUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${dropboxToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ path: filePath }),
+      });
+  
+      if (listResponse.ok) {
+        const listData = await listResponse.json();
+        if (listData.links && listData.links.length > 0) {
+          // Si ya existe un enlace compartido, usar el primero
+          const existingLink = listData.links[0].url.replace("?dl=0", "?dl=1");
+          return existingLink;
+        }
+      }
+  
+      // 3. Crear un enlace compartido si no existe
+      const shareUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
+      const shareResponse = await fetch(shareUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${dropboxToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          path: filePath,
+          settings: { requested_visibility: "public" }, // Asegura que sea visible públicamente
+        }),
+      });
+  
+      if (!shareResponse.ok) {
+        console.error("Error al crear el enlace compartido:", await shareResponse.text());
+        return null;
+      }
+  
+      const shareData = await shareResponse.json();
+      const baseUrl = "https://www.dropbox.com/scl/fi/";
+      const sharedLink = shareData.url.replace(baseUrl, "").split('?')[0];
+      
 
-const uploadToDropbox = async (file) => {
-  const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
-
-  try {
-    const dropboxArgs = JSON.stringify({
-      path: `/${file.name}`,
-      mode: "add",
-      autorename: true,
-      mute: false,
-    });
-
-    // 1. Subir el archivo a Dropbox
-    const uploadResponse = await fetch(uploadUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${dropboxToken}`,
-        "Content-Type": "application/octet-stream",
-        "Dropbox-API-Arg": dropboxArgs,
-      },
-      body: file,
-    });
-
-    if (!uploadResponse.ok) {
-      console.error("Error al subir el archivo a Dropbox:", await uploadResponse.text());
+      const link = `${sharedLink}?dl=1`;
+      console.log(link);
+      return link;      
+      
+    } catch (error) {
+      console.error("Error en la solicitud a Dropbox:", error);
       return null;
     }
-
-    const fileData = await uploadResponse.json();
-    const filePath = fileData.path_lower;
-
-    // 2. Crear un enlace compartido
-    const shareUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
-    const shareResponse = await fetch(shareUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${dropboxToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        path: filePath,
-        settings: { requested_visibility: "public" }, // Asegura que sea visible públicamente
-      }),
-    });
-
-    if (!shareResponse.ok) {
-      console.error("Error al crear el enlace compartido:", await shareResponse.text());
-      return null;
-    }
-
-    const shareData = await shareResponse.json();
-    const sharedLink = shareData.url.replace("?dl=0", "?dl=1");
-    return sharedLink; 
-    
-  } catch (error) {
-    console.error("Error en la solicitud a Dropbox:", error);
-    return null;
-  }
-};
+  };
+  
 
 
 const indexOfLastItem = currentPage * itemsPerPage;
@@ -371,7 +403,11 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
   draggable
   pauseOnHover
 />
-
+<FilterTable
+        data={dataV}
+        columns={columns}
+        onFilteredDataChange={setFilteredData}
+      />
       <div className="flex items-center">
         <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
@@ -444,7 +480,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
                                 <td className="border-b py-3 px-4">
                                 {item.Comprobante ? (
           <a
-          href={item.Comprobante}
+          href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
             className="text-blue-400"
             target="_blank"
             rel="noopener noreferrer"
