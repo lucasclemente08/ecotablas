@@ -32,10 +32,7 @@ const Tolva = () => {
     Especificaciones: "",
   });
   const [dataLoaded, setDataLoaded] = useState(false); // Estado para verificar si los datos han sido cargados
-  const totalPages = Math.ceil(data.length / itemsPerPage); // Total de páginas
-  const [dataLoaded, setDataLoaded] = useState(false); // Estado para verificar si los datos han sido cargados
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Cambié a 5 items por página
+
   const totalPages = Math.ceil(data.length / itemsPerPage); // Total de páginas
 
   const columns = [

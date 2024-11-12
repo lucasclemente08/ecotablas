@@ -7,20 +7,17 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
-import NextButton from "../../components/buttons/NextButton";
-import NextModal from "../../components/NextModal";
-import { useDispatch } from "react-redux";
-import { addTolva } from "../../features/tolvaSlice";
+// import { addTolva } from "../../features/tolvaSlice";
 import { useSelector, useDispatch } from "react-redux";
-import {addTolva,} from "../../api/TolvaAPI";
+import {addTolva} from "../../api/TolvaAPI";
 
-import ReportButton from "../../components/buttons/ReportButton";
+
 import {
   getAllMaterialTrit,
   addMaterialTrit,
   editMaterialTrit,
 } from "../../api/materialTritAPI";
-import { Await } from "react-router-dom";
+
 import { Await } from "react-router-dom";
 
 const MaterialTrit = () => {
