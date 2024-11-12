@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Pagination from "../../../components/Pagination"
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchGastos,
@@ -31,6 +32,9 @@ const GastoMaquinaria = () => {
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [dataView, setDataView] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+
   const [gastoEdit, setGastoEdit] = useState(null);
   const [showTable, setShowTable] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
@@ -88,9 +92,19 @@ const GastoMaquinaria = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(addGasto(formValues)).then(() => {
+
+    if (formValues.comprobante) {
+  
+      const URL = await uploadToDropbox(formValues.comprobante);  
+      console.log("URL: " + URL);
+      if (URL) {
+    
+        const updatedFormValues = { ...formValues, comprobante: URL };
+      }}
+
+    dispatch(addGasto(updatedFormValues)).then(() => {
       setModalAbierto(false);
       dispatch(fetchGastos());
     });
@@ -208,40 +222,76 @@ const GastoMaquinaria = () => {
     setShowPieChart(false);
   };
 
+  const dropboxToken = import.meta.env.VITE_API_KEY_DROPBOX;
 
-  const uploadFileToDropbox = async (file) => {
-    const token = import.meta.env.VITE_DROPBOX_TOKEN
-    console.log(token)  
-    const url = 'https://content.dropboxapi.com/2/files/upload';
-    
-    const headers = {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/octet-stream",
-      "Dropbox-API-Arg": JSON.stringify({
-        path: `/uploads/${file.name}`,  // Ruta donde guardar el archivo en Dropbox
-        mode: "add",  // Asegura que no sobrescriba el archivo si ya existe
-        autorename: true,  // Si el archivo ya existe, renombrarlo automáticamente
-      }),
-    };
-  
-    const body = file;
-  
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: body,
-      });
-  
-      const result = await response.json();
-      console.log('File uploaded:', result);
-    } catch (error) {
-      console.error('Error uploading file:', error);
+const uploadToDropbox = async (file) => {
+  const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
+
+  try {
+    const dropboxArgs = JSON.stringify({
+      path: `/${file.name}`,
+      mode: "add",
+      autorename: true,
+      mute: false,
+    });
+
+    // 1. Subir el archivo a Dropbox
+    const uploadResponse = await fetch(uploadUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${dropboxToken}`,
+        "Content-Type": "application/octet-stream",
+        "Dropbox-API-Arg": dropboxArgs,
+      },
+      body: file,
+    });
+
+    if (!uploadResponse.ok) {
+      console.error("Error al subir el archivo a Dropbox:", await uploadResponse.text());
+      return null;
     }
-  };
-  
 
-  return (
+    const fileData = await uploadResponse.json();
+    const filePath = fileData.path_lower;
+
+    // 2. Crear un enlace compartido
+    const shareUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
+    const shareResponse = await fetch(shareUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${dropboxToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        path: filePath,
+        settings: { requested_visibility: "public" }, // Asegura que sea visible públicamente
+      }),
+    });
+
+    if (!shareResponse.ok) {
+      console.error("Error al crear el enlace compartido:", await shareResponse.text());
+      return null;
+    }
+
+    const shareData = await shareResponse.json();
+    const sharedLink = shareData.url.replace("?dl=0", "?dl=1");
+    return sharedLink; 
+    
+  } catch (error) {
+    console.error("Error en la solicitud a Dropbox:", error);
+    return null;
+  }
+};
+
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentItems = dataM.slice(indexOfFirstItem, indexOfLastItem);
+
+const totalPages = Math.ceil(dataM.length / itemsPerPage);
+const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  return   (
+<>
     <SectionLayout title="Gasto de Maquinaria">
       <div className="flex">
   
@@ -294,48 +344,60 @@ const GastoMaquinaria = () => {
         loading ? (
           <LoadingTable loading={loading} />
         ) : (
-          <table className="min-w-full bg-white rounded-lg shadow-md">
-            <TablaHead titles={titles} />
-            <tbody>
-              {dataM.map((item) => (
-                <tr key={item.IdGastoMaquinaria} className="hover:bg-gray-100">
-                  <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
-                  <td className="border-b py-3 px-4">{item.Comprobante}</td>
-                  <td className="border-b py-3 px-4">{item.TipoGasto}</td>
-                  <td className="border-b py-3 px-4">{item.Proveedor}</td>
-                  <td className="border-b py-3 px-4">{item.Monto}</td>
-                  <td className="border-b py-3 px-4">
-                  {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
-                  </td>
-                  <td className="border-b py-3 px-4">{item.Descripcion}</td>
-                  <td className="border-b py-3 px-4 flex">
-                    <button
-                      onClick={() => {
-                        setGastoEdit(item);
-                        setFormValues(item);
-                        setModalEdit(true);
-                      }}
-                      className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                    >
-                      Modificar
-                    </button>
-                    <DeleteButton
-                      endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Delete"
-                      id={item.IdGastoMaquinaria}
-                      updateList={() => dispatch(fetchGastos())}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          
+  <div className="">
+    <table className="min-w-full bg-white rounded-lg shadow-md">
+  <TablaHead titles={titles} />
+  <tbody>
+    {dataM.map((item) => (
+      <tr key={item.IdGastoMaquinaria} className="hover:bg-gray-100">
+        <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
+        <td className="border-b py-3 px-4">{item.Comprobante}</td>
+        <td className="border-b py-3 px-4">{item.TipoGasto}</td>
+        <td className="border-b py-3 px-4">{item.Proveedor}</td>
+        <td className="border-b py-3 px-4">{item.Monto}</td>
+        <td className="border-b py-3 px-4">
+          {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
+        </td>
+        <td className="border-b py-3 px-4">{item.Descripcion}</td>
+        <td className="border-b py-3 px-4 flex">
+          <button
+            onClick={() => {
+              setGastoEdit(item);
+              setFormValues(item);
+              setModalEdit(true);
+            }}
+            className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            Modificar
+          </button>
+          <DeleteButton
+            endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Delete"
+            id={item.IdGastoMaquinaria}
+            updateList={() => dispatch(fetchGastos())}
+          />
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+<Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  paginate={paginate}
+/>
+
+  </div>
         )
       ) : showPieChart ? (
         <div className="w-full h-96">
           <Pie data={pieData} options={pieOptions} />
         </div>
-      ) : null}
+
+) : null}
+
     </SectionLayout>
+    </>
   );
 };
 

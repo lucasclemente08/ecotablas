@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Pie, Line } from "react-chartjs-2";
-import DropboxChooser from "react-dropbox-chooser"
+import Pagination from "../../../components/Pagination"
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -50,6 +51,8 @@ const GastoVehiculos = () => {
   const [modalEdit, setModalEdit] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [gastoEdit, setGastoEdit] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
 
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
@@ -111,11 +114,14 @@ const GastoVehiculos = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    
     if (formValues.Comprobante) {
-      const fileId = await uploadToDropbox(formValues.Comprobante);  // Obtiene el ID del archivo
-      if (fileId) {
-        const updatedFormValues = { ...formValues, Comprobante: fileId };  // Usa el ID como Comprobante
+  
+      const URL = await uploadToDropbox(formValues.Comprobante);  
+      console.log("URL: " + URL);
+      if (URL) {
+    
+        const updatedFormValues = { ...formValues, Comprobante: URL };
         axios
           .post("https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/CrearGastoVehiculo", updatedFormValues)
           .then((response) => {
@@ -280,49 +286,76 @@ const GastoVehiculos = () => {
     "Descripción",
     "Acciones",
   ];
+ 
+
   const dropboxToken = import.meta.env.VITE_API_KEY_DROPBOX;
 
-  const uploadToDropbox = async (file) => {
-    const url = "https://content.dropboxapi.com/2/files/upload";
-  
-    try {
-      const dropboxArgs = JSON.stringify({
-        path: `/${file.name}`,
-        mode: "add",
-        autorename: true,
-        mute: false,
-      });
-  
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${dropboxToken}`,
-          "Content-Type": "application/octet-stream",
-          "Dropbox-API-Arg": dropboxArgs,
-        },
-        body: file,
-      });
-  
-      if (!response.ok) {
-        console.error("Error al subir el archivo a Dropbox:", await response.text());
-        return null;
-      }
-  
-      const data = await response.json();
-      return data.id;  // Retorna el ID del archivo en lugar de la URL
-    } catch (error) {
-      console.error("Error en la solicitud a Dropbox:", error);
+const uploadToDropbox = async (file) => {
+  const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
+
+  try {
+    const dropboxArgs = JSON.stringify({
+      path: `/${file.name}`,
+      mode: "add",
+      autorename: true,
+      mute: false,
+    });
+
+    // 1. Subir el archivo a Dropbox
+    const uploadResponse = await fetch(uploadUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${dropboxToken}`,
+        "Content-Type": "application/octet-stream",
+        "Dropbox-API-Arg": dropboxArgs,
+      },
+      body: file,
+    });
+
+    if (!uploadResponse.ok) {
+      console.error("Error al subir el archivo a Dropbox:", await uploadResponse.text());
       return null;
     }
-  };
+
+    const fileData = await uploadResponse.json();
+    const filePath = fileData.path_lower;
+
+    // 2. Crear un enlace compartido
+    const shareUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
+    const shareResponse = await fetch(shareUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${dropboxToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        path: filePath,
+        settings: { requested_visibility: "public" }, // Asegura que sea visible públicamente
+      }),
+    });
+
+    if (!shareResponse.ok) {
+      console.error("Error al crear el enlace compartido:", await shareResponse.text());
+      return null;
+    }
+
+    const shareData = await shareResponse.json();
+    const sharedLink = shareData.url.replace("?dl=0", "?dl=1");
+    return sharedLink; 
+    
+  } catch (error) {
+    console.error("Error en la solicitud a Dropbox:", error);
+    return null;
+  }
+};
 
 
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentItems = dataV.slice(indexOfFirstItem, indexOfLastItem);
 
-
-
-
-
-
+const totalPages = Math.ceil(dataV.length / itemsPerPage);
+const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
   return (
@@ -401,7 +434,8 @@ const GastoVehiculos = () => {
         loading ? (
           <LoadingTable loading={loading} />
         ) : (
-          <table className="min-w-full bg-white rounded-lg shadow-md">
+      <div className="">
+            <table className="min-w-full bg-white rounded-lg shadow-md">
             <TablaHead titles={titles} />
             <tbody>
               {dataV.map((item, index) => (
@@ -410,8 +444,8 @@ const GastoVehiculos = () => {
                                 <td className="border-b py-3 px-4">
                                 {item.Comprobante ? (
           <a
-          href={`https://www.dropbox.com/preview/Apps/Comprobantes%20de%20ecotablas/${item.Comprobante}`}
-
+          href={item.Comprobante}
+            className="text-blue-400"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -455,6 +489,12 @@ const GastoVehiculos = () => {
               ))}
             </tbody>
           </table>
+          <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          paginate={paginate}
+        />
+      </div>
         )
       ) : showPieChart ? (
         <div className="w-full h-96">
