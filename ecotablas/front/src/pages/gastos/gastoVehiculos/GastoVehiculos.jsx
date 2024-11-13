@@ -403,11 +403,11 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
   draggable
   pauseOnHover
 />
-<FilterTable
+{/* <FilterTable
         data={dataV}
         columns={columns}
         onFilteredDataChange={setFilteredData}
-      />
+      /> */}
       <div className="flex items-center">
         <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
@@ -481,7 +481,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
                                 {item.Comprobante ? (
           <a
           href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
-            className="text-blue-400"
+                className="text-blue-400"
             target="_blank"
             rel="noopener noreferrer"
           >

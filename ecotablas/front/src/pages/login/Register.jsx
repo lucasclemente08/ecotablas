@@ -54,7 +54,8 @@ const Register = () => {
 
       // fetchUsuarios();
 
-      navigate("/");
+
+      window.location.replace(`https://www.dropbox.com/oauth2/authorize?client_id=${clientId}&response_type=code&token_access_type=offline&redirect_uri=http://localhost:5173/gastos/vehiculos`); 
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;

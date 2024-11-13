@@ -27,6 +27,7 @@ import store from "./app/store";
 import { Provider } from "react-redux";
 import Reportes from "./pages/reportes/Reportes";
 import Reparaciones from "./pages/reparaciones/Reparaciones";
+import Permisos from "./pages/permisos/Permisos";
 
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
@@ -60,7 +61,11 @@ const routesConfig = [
   { path: "/tablas", element: <TablasProducidas />, protected: true },
   { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true },
   { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true },
+  { path: "/permisos", element: <Permisos />, protected: true },
+
+
 ];
+
 
 function App() {
   return (
