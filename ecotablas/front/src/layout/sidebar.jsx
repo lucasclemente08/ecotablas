@@ -11,6 +11,7 @@ const Sidebar = () => {
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
+        localStorage.clear();
         navigate("/login");
       })
       .catch((error) => {

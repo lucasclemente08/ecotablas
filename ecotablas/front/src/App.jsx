@@ -28,6 +28,7 @@ import { Provider } from "react-redux";
 import Reportes from "./pages/reportes/Reportes";
 import Reparaciones from "./pages/reparaciones/Reparaciones";
 import Permisos from "./pages/permisos/Permisos";
+import PermisosCallback from "./components/PermisosCallback";
 
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
@@ -62,6 +63,7 @@ const routesConfig = [
   { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true },
   { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true },
   { path: "/permisos", element: <Permisos />, protected: true },
+  { path: "/verificacion", element: <PermisosCallback/>, protected: true },
 
 
 ];

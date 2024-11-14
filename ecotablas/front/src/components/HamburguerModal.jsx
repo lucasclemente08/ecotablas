@@ -33,7 +33,7 @@ const HamburgerModal = ({ open, close }) => {
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
-        console.log("Sign out");
+        localStorage.clear();
         navigate("/login"); // Navegar a la página de inicio de sesión
       })
       .catch((error) => {

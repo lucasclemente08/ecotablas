@@ -53,6 +53,8 @@ const GastoVehiculos = () => {
   const [gastoEdit, setGastoEdit] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
+  const [accessToken, setAccessToken] = useState(null);
+
 
   const [filteredData, setFilteredData] = useState([]);
 
@@ -293,10 +295,53 @@ const GastoVehiculos = () => {
     "Descripción",
     "Acciones",
   ];
- 
 
-  const dropboxToken = import.meta.env.VITE_API_KEY_DROPBOX;
+
+  const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
+  const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
+  
+  const getAccessToken = async () => {
+    const refreshToken = localStorage.getItem('dropboxRefreshToken');
+    if (!refreshToken) {
+      console.error("No se encontró el refresh token en el localStorage.");
+      return null;
+    }
+  
+    const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+      }),
+    });
+  
+    if (!response.ok) {
+      console.error("Error al obtener el access token:", await response.text());
+      return null;
+    }
+  
+    const data = await response.json();
+    return data.access_token;
+  };
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getAccessToken();
+      setAccessToken(token);
+    };
+
+    // Llamada inmediata a la función asíncrona
+    fetchToken();
+  }, []);
   const uploadToDropbox = async (file) => {
+    const accessToken = await getAccessToken();
+    if (!accessToken) return;
+  
     const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
   
     try {
@@ -311,7 +356,7 @@ const GastoVehiculos = () => {
       const uploadResponse = await fetch(uploadUrl, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${dropboxToken}`,
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/octet-stream",
           "Dropbox-API-Arg": dropboxArgs,
         },
@@ -331,7 +376,7 @@ const GastoVehiculos = () => {
       const listResponse = await fetch(listLinksUrl, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${dropboxToken}`,
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ path: filePath }),
@@ -351,7 +396,7 @@ const GastoVehiculos = () => {
       const shareResponse = await fetch(shareUrl, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${dropboxToken}`,
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -371,14 +416,15 @@ const GastoVehiculos = () => {
       
 
       const link = `${sharedLink}?dl=1`;
-      console.log(link);
+ 
       return link;      
-      
+  
     } catch (error) {
       console.error("Error en la solicitud a Dropbox:", error);
       return null;
     }
   };
+  
   
 
 
@@ -403,11 +449,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
   draggable
   pauseOnHover
 />
-{/* <FilterTable
-        data={dataV}
-        columns={columns}
-        onFilteredDataChange={setFilteredData}
-      /> */}
+
       <div className="flex items-center">
         <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
@@ -451,7 +493,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
           cerrarModal={cerrarModal}
         
           values={formValues}
-          dropboxAccessToken={dropboxToken}
+          dropboxAccessToken={accessToken}
         />
       )}
 
