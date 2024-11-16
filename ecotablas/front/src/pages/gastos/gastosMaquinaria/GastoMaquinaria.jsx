@@ -42,6 +42,8 @@ const GastoMaquinaria = () => {
   const [mensaje, setMensaje] = useState("");
   const [pieData, setPieData] = useState({});
   const [showPieChart, setShowPieChart] = useState(true);
+  const [accessToken, setAccessToken] = useState(null);
+
 
   const [formValues, setFormValues] = useState({
     tipoGasto: "",
@@ -98,18 +100,18 @@ const GastoMaquinaria = () => {
     if (formValues.comprobante) {
   
       const URL = await uploadToDropbox(formValues.comprobante);  
-      console.log("URL: " + URL);
+console.log(URL);
       if (URL) {
     
         const updatedFormValues = { ...formValues, comprobante: URL };
-      }}
+     
 
     dispatch(addGasto(updatedFormValues)).then(() => {
       setModalAbierto(false);
       dispatch(fetchGastos());
     });
   };
-
+}}
   const handleEditSubmit = (e) => {
     e.preventDefault();
     dispatch(addGasto(gastoEdit))
@@ -222,66 +224,146 @@ const GastoMaquinaria = () => {
     setShowPieChart(false);
   };
 
-  const dropboxToken = import.meta.env.VITE_API_KEY_DROPBOX;
 
-const uploadToDropbox = async (file) => {
-  const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
-
-  try {
-    const dropboxArgs = JSON.stringify({
-      path: `/${file.name}`,
-      mode: "add",
-      autorename: true,
-      mute: false,
-    });
-
-    // 1. Subir el archivo a Dropbox
-    const uploadResponse = await fetch(uploadUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${dropboxToken}`,
-        "Content-Type": "application/octet-stream",
-        "Dropbox-API-Arg": dropboxArgs,
-      },
-      body: file,
-    });
-
-    if (!uploadResponse.ok) {
-      console.error("Error al subir el archivo a Dropbox:", await uploadResponse.text());
+  const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
+  const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
+  
+  const getAccessToken = async () => {
+    const refreshToken = localStorage.getItem('dropboxRefreshToken');
+    if (!refreshToken) {
+      console.error("No se encontró el refresh token en el localStorage.");
       return null;
     }
-
-    const fileData = await uploadResponse.json();
-    const filePath = fileData.path_lower;
-
-    // 2. Crear un enlace compartido
-    const shareUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
-    const shareResponse = await fetch(shareUrl, {
-      method: "POST",
+  
+    const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
+      method: 'POST',
       headers: {
-        Authorization: `Bearer ${dropboxToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify({
-        path: filePath,
-        settings: { requested_visibility: "public" }, // Asegura que sea visible públicamente
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
       }),
     });
-
-    if (!shareResponse.ok) {
-      console.error("Error al crear el enlace compartido:", await shareResponse.text());
+  
+    if (!response.ok) {
+      console.error("Error al obtener el access token:", await response.text());
       return null;
     }
+  
+    const data = await response.json();
+    return data.access_token;
+  };
 
-    const shareData = await shareResponse.json();
-    const sharedLink = shareData.url.replace("?dl=0", "?dl=1");
-    return sharedLink; 
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getAccessToken();
+      setAccessToken(token);
+    };
+
+    // Llamada inmediata a la función asíncrona
+    fetchToken();
+  }, []);
+  const uploadToDropbox = async (file) => {
+    const accessToken = await getAccessToken();
+    if (!accessToken) return;
+  
+    const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
     
-  } catch (error) {
-    console.error("Error en la solicitud a Dropbox:", error);
-    return null;
-  }
-};
+    try {
+      const dropboxArgs = JSON.stringify({
+        path: `/${file.name}`,  // Verifica que file.name esté correctamente definido
+        mode: "add",
+        autorename: true,
+        mute: false,
+      });
+  
+      // 1. Subir el archivo a Dropbox
+      const uploadResponse = await fetch(uploadUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/octet-stream",
+          "Dropbox-API-Arg": dropboxArgs,
+        },
+        body: file,
+      });
+  
+      if (!uploadResponse.ok) {
+        console.error("Error al subir el archivo a Dropbox:", await uploadResponse.text());
+        return null;
+      }
+  
+      const fileData = await uploadResponse.json();
+      const filePath = fileData.path_lower;
+  
+      // Verifica si filePath es correcto
+      console.log("filePath", filePath); 
+  
+      // 2. Verificar si ya existe un enlace compartido
+      const listLinksUrl = "https://api.dropboxapi.com/2/sharing/list_shared_links";
+      const listResponse = await fetch(listLinksUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ path: filePath }),
+      });
+  
+      if (listResponse.ok) {
+        const listData = await listResponse.json();
+        if (listData.links && listData.links.length > 0) {
+          // Si ya existe un enlace compartido, usar el primero
+          const existingLink = listData.links[0].url.replace("?dl=0", "?dl=1");
+          return existingLink;
+        }
+      }
+  
+      // 3. Crear un enlace compartido si no existe
+      const shareUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
+      const shareResponse = await fetch(shareUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          path: filePath,
+          settings: { requested_visibility: "public" },
+        }),
+      });
+  
+      if (!shareResponse.ok) {
+        console.error("Error al crear el enlace compartido:", await shareResponse.text());
+        return null;
+      }
+  
+      const shareData = await shareResponse.json();
+      
+      // Verifica que shareData tenga la propiedad 'url'
+      console.log("shareData", shareData);
+  
+      if (shareData && shareData.url) {
+        const baseUrl = "https://www.dropbox.com/scl/fi/";
+        const sharedLink = shareData.url.replace(baseUrl, "").split('?')[0];
+        const link = `${sharedLink}?dl=1`;
+        return link;
+      } else {
+        console.error("No se recibió un enlace válido en la respuesta:", shareData);
+        return null;
+      }
+      
+    } catch (error) {
+      console.error("Error en la solicitud a Dropbox:", error);
+      return null;
+    }
+  };
+  
+   
+
 
 const indexOfLastItem = currentPage * itemsPerPage;
 const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -352,7 +434,18 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
     {dataM.map((item) => (
       <tr key={item.IdGastoMaquinaria} className="hover:bg-gray-100">
         <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
-        <td className="border-b py-3 px-4">{item.Comprobante}</td>
+        {item.Comprobante ? (
+          <a
+          href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
+                className="text-blue-400"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver Comprobante
+          </a>
+        ) : (
+          "No disponible"
+        )}
         <td className="border-b py-3 px-4">{item.TipoGasto}</td>
         <td className="border-b py-3 px-4">{item.Proveedor}</td>
         <td className="border-b py-3 px-4">{item.Monto}</td>

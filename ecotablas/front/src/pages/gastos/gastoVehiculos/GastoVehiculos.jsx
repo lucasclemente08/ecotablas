@@ -122,7 +122,7 @@ const GastoVehiculos = () => {
     if (formValues.Comprobante) {
   
       const URL = await uploadToDropbox(formValues.Comprobante);  
-      console.log("URL: " + URL);
+
       if (URL) {
     
         const updatedFormValues = { ...formValues, Comprobante: URL };
@@ -450,7 +450,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
   pauseOnHover
 />
 
-      <div className="flex items-center">
+      <div className="flex items-center" >
         <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
           title="Añadir gastos"
@@ -512,7 +512,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
         loading ? (
           <LoadingTable loading={loading} />
         ) : (
-      <div className="">
+      <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
             <TablaHead titles={titles} />
             <tbody>
@@ -543,8 +543,10 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
                   {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
                   </td>
                   <td className="border-b py-3 px-4">{item.Descripcion}</td>
-                  <td className="border-b py-3 px-4 flex items-center">
-                    <button
+                  <td className=" b p-2 flex  mt-8
+                    items-center">
+        <div className="">
+        <button
                       onClick={() => {
                         setGastoEdit(item); // Almacenar el gasto seleccionado
                         setFormValues(item); // Rellenar el formulario con los valores del gasto
@@ -554,20 +556,23 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
                     >
                       Modificar
                     </button>
+        </div>
 
-                    <DeleteButton
+   <div className="">
+   <DeleteButton
                       endpoint={
                         "http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
                       }
                       id={item.IdGasto}
                       updateList={fetchMaterials}
                     />
+   </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <Pagination
+          <Pagination 
           currentPage={currentPage}
           totalPages={totalPages}
           paginate={paginate}
