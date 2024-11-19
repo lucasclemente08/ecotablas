@@ -9,8 +9,6 @@ namespace WebApi_TrazODS.Models
     {
         #region Atributos
         string connectionString = @"Data Source=Ecotablas-Db.mssql.somee.com;Initial Catalog=Ecotablas-Db;User ID=lucasclemente08_SQLLogin_1;Password=apqjzszydf";
-        string connectionString = @"Data Source=Ecotablas-Db.mssql.somee.com;Initial Catalog=Ecotablas-Db;User ID=lucasclemente08_SQLLogin_1;Password=apqjzszydf";
-
         #endregion
 
         #region Propiedades
@@ -21,41 +19,23 @@ namespace WebApi_TrazODS.Models
         public string TipoPlastico { get; set; } // Tipo de plástico
         public string Proporcion { get; set; } // Proporción de mezcla o uso
         public string Especificaciones { get; set; } // Especificaciones adicionales
+        public int Estado { get; set; }
         #endregion
 
         #region Métodos
         public DataTable SelectAll()
         {
             string sqlSentencia = "sp_GetAllTolva";
+           
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = connectionString;
 
            
-                sqlCnn.Open();
-
-            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
-            sqlCom.CommandType = CommandType.StoredProcedure;
-            string sqlSentencia = "sp_GetAllTolva";
-            SqlConnection sqlCnn = new SqlConnection();
-            sqlCnn.ConnectionString = connectionString;
-
-           
-                sqlCnn.Open();
+            sqlCnn.Open();
 
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
 
-            DataSet ds = new DataSet();
-
-            SqlDataAdapter da = new SqlDataAdapter();
-            da.SelectCommand = sqlCom;
-            da.Fill(ds);
-
-            sqlCnn.Close();
-
-            return ds.Tables[0];
-        }
-        public void Insert()
             DataSet ds = new DataSet();
 
             SqlDataAdapter da = new SqlDataAdapter();
@@ -72,15 +52,6 @@ namespace WebApi_TrazODS.Models
             string sqlSentencia = "sp_InsertTolvasPrueba";
 
 
-            string sqlSentencia = "sp_InsertTolvasPrueba";
-
-
-            SqlConnection sqlCnn = new SqlConnection();
-            sqlCnn.ConnectionString = connectionString;
-
-
-            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
-            sqlCom.CommandType = CommandType.StoredProcedure;
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = connectionString;
 
@@ -94,17 +65,8 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
             sqlCom.Parameters.Add("@Proporcion", SqlDbType.NVarChar).Value = Proporcion;
             sqlCom.Parameters.Add("@Especificaciones", SqlDbType.NVarChar).Value = Especificaciones;
+            sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
 
-            sqlCnn.Open();
-
-
-            var res = sqlCom.ExecuteNonQuery();
-
-            sqlCnn.Close();
-
-
-        }
-        public void Update()
             sqlCnn.Open();
 
 
@@ -117,30 +79,15 @@ namespace WebApi_TrazODS.Models
         public void Update()
         {
 
-
-            string sqlSentencia = "sp_UpdateTolvaPruebas";
-
-
-
             string sqlSentencia = "sp_UpdateTolvaPruebas";
 
 
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = connectionString;
 
-
-
-
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
-            SqlConnection sqlCnn = new SqlConnection();
-            sqlCnn.ConnectionString = connectionString;
 
-
-
-
-            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
-            sqlCom.CommandType = CommandType.StoredProcedure;
 
             sqlCom.Parameters.Add("@IdTolva", SqlDbType.Int).Value = IdTolva;
             sqlCom.Parameters.Add("@IdMaterialTriturado", SqlDbType.Int).Value = IdMaterialTriturado;
@@ -149,9 +96,7 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
             sqlCom.Parameters.Add("@Proporcion", SqlDbType.NVarChar).Value = Proporcion;
             sqlCom.Parameters.Add("@Especificaciones", SqlDbType.NVarChar).Value = Especificaciones;
-
-
-
+            sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
 
             sqlCnn.Open();
 
@@ -169,9 +114,6 @@ namespace WebApi_TrazODS.Models
             string sqlSentencia = "SP_DeleteTolvasPruebas";
 
 
-            string sqlSentencia = "SP_DeleteTolvasPruebas";
-
-
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = connectionString;
 
@@ -196,29 +138,6 @@ namespace WebApi_TrazODS.Models
         }
 
 
-        public bool Exists()
-            SqlConnection sqlCnn = new SqlConnection();
-            sqlCnn.ConnectionString = connectionString;
-
-
-
-
-            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
-            sqlCom.CommandType = CommandType.StoredProcedure;
-
-            sqlCom.Parameters.Add("@IdTolva", SqlDbType.Int).Value = IdTolva;
-
-
-            sqlCnn.Open();
-
-
-            var res = sqlCom.ExecuteNonQuery();
-
-
-            sqlCnn.Close();
-
-
-        }
 
 
         public bool Exists()
@@ -227,12 +146,6 @@ namespace WebApi_TrazODS.Models
             int count = 0;
 
             using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                sqlCnn.Open();
-                using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                {
-                    sqlCom.CommandType = CommandType.StoredProcedure;
-                    sqlCom.Parameters.Add("@idTolva", SqlDbType.Int).Value = IdTolva;
             {
                 sqlCnn.Open();
                 using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))

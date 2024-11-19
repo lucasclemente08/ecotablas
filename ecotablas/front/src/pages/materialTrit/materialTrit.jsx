@@ -9,8 +9,6 @@ import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import NextButton from "../../components/buttons/NextButton";
 import NextModal from "../../components/NextModal";
-import { useDispatch } from "react-redux";
-import { addTolva } from "../../features/tolvaSlice";
 import { useSelector, useDispatch } from "react-redux";
 import {addTolva,} from "../../api/TolvaAPI";
 
@@ -20,7 +18,6 @@ import {
   addMaterialTrit,
   editMaterialTrit,
 } from "../../api/materialTritAPI";
-import { Await } from "react-router-dom";
 import { Await } from "react-router-dom";
 
 const MaterialTrit = () => {
@@ -47,6 +44,7 @@ const MaterialTrit = () => {
     TipoPlastico: "",
     Proporcion: "",
     Especificaciones: "",
+    Estado: 1,
   });
 
   const [dateRange, setDateRange] = useState({

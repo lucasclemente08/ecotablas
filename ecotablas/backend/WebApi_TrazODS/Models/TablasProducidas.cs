@@ -13,11 +13,13 @@ namespace WebApi_TrazODS.Models
 
         #region Propiedades
         public int ID_Tabla { get; set; }
-        public int ID_Proceso { get; set; }
+        public int IdTolva { get; set; }
         public DateTime FechaProduccion { get; set; }
         public string Dimensiones { get; set; }
         public double Peso { get; set; }
         public string CodigoIdentificacion { get; set; }
+
+        public int Estado { get; set; }
         #endregion
 
         #region Métodos
@@ -75,11 +77,12 @@ namespace WebApi_TrazODS.Models
                 {
                     sqlCom.CommandType = CommandType.StoredProcedure;
 
-                    sqlCom.Parameters.AddWithValue("@ID_Proceso", ID_Proceso);
+                    sqlCom.Parameters.AddWithValue("@IdTolva", IdTolva);
                     sqlCom.Parameters.AddWithValue("@FechaProduccion", FechaProduccion);
                     sqlCom.Parameters.AddWithValue("@Dimensiones", Dimensiones);
                     sqlCom.Parameters.AddWithValue("@Peso", Peso);
                     sqlCom.Parameters.AddWithValue("@CodigoIdentificacion", CodigoIdentificacion);
+                    sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
 
                     sqlCom.ExecuteNonQuery();
                 }
@@ -99,11 +102,12 @@ namespace WebApi_TrazODS.Models
                     sqlCom.CommandType = CommandType.StoredProcedure;
 
                     sqlCom.Parameters.AddWithValue("@ID_Tabla", ID_Tabla);
-                    sqlCom.Parameters.AddWithValue("@ID_Proceso", ID_Proceso);
+                    sqlCom.Parameters.AddWithValue("@IdTolva", IdTolva);
                     sqlCom.Parameters.AddWithValue("@FechaProduccion", FechaProduccion);
                     sqlCom.Parameters.AddWithValue("@Dimensiones", Dimensiones);
                     sqlCom.Parameters.AddWithValue("@Peso", Peso);
                     sqlCom.Parameters.AddWithValue("@CodigoIdentificacion", CodigoIdentificacion);
+                    sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
 
                     sqlCom.ExecuteNonQuery();
                 }

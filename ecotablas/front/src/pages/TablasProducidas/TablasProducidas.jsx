@@ -17,6 +17,7 @@ import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { editTablas, } from "../../api/TablasProducidaAPI";
 import { v4 as uuidv4 } from "uuid";
 
 const TablasProducidas = () => {
@@ -30,6 +31,7 @@ const TablasProducidas = () => {
   const [modalEdit, setModalEdit] = useState(false);
   const [currentItems, setCurrentItems] = useState([])
   const [tablaId, setTablaId] = useState(null);
+  
   const [formValues, setFormValues] = useState({
     FechaProduccion: "",
     Dimensiones: "",
@@ -126,7 +128,19 @@ const TablasProducidas = () => {
     const codeUID = uuidv4().replace(/-/g, "").slice(0, 8);
     return `$${size}_${large}_${hours}_${codeUID}`;
   };
-
+  const handleChangeState = async (item) => {
+    try {
+      await editTablas(item.ID_Tabla, {
+        ...item,
+        Estado: 2, // Cambiar siempre a 2
+      });
+      setMensaje("Estado cambiado exitosamente");
+      await fetchTablasProducidas(); // Actualizar la lista
+    } catch (error) {
+      setMensaje("Error al cambiar el estado de la maquinaria.");
+      console.error("Error al cambiar el estado:", error);
+    }
+  };
   
   const filterByDate = () => {
     const selectedDateObj = new Date(selectedDate);
@@ -241,7 +255,12 @@ const TablasProducidas = () => {
                   <td className="px-4 py-2">{item.Peso}</td>
                   <td className="px-4 py-2">{item.CodigoIdentificacion}</td>
                   <td className="px-4 py-2 flex">
-                    <NextButton />
+                  <button
+                          onClick={() => handleChangeState(item)}
+                          className="bg-blue-500 text-white ml-2 py-1 px-3 rounded hover:bg-blue-700"
+                        >
+                          Terminado
+                        </button>
                     <button
                       onClick={() => abrirModalEdit(item)}
                       className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"

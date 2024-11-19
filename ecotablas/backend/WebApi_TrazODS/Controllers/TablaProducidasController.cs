@@ -52,10 +52,12 @@ namespace WebApi_TrazODS.Controllers
         [HttpPost]
         public void Insertar([FromBody] TablasProducidas nuevaTabla)
         {
+            _tablasProducidas.IdTolva = nuevaTabla.IdTolva;
             _tablasProducidas.FechaProduccion = nuevaTabla.FechaProduccion;
             _tablasProducidas.Dimensiones = nuevaTabla.Dimensiones;
             _tablasProducidas.Peso = nuevaTabla.Peso;
             _tablasProducidas.CodigoIdentificacion = nuevaTabla.CodigoIdentificacion;
+            _tablasProducidas.Estado = nuevaTabla.Estado;
 
             _tablasProducidas.Insert();
         }
@@ -65,10 +67,12 @@ namespace WebApi_TrazODS.Controllers
         public void Modificar(int id, [FromBody] TablasProducidas tablaActualizada)
         {
             _tablasProducidas.ID_Tabla = id;
+            _tablasProducidas.IdTolva = tablaActualizada.IdTolva;
             _tablasProducidas.FechaProduccion = tablaActualizada.FechaProduccion;
             _tablasProducidas.Dimensiones = tablaActualizada.Dimensiones;
             _tablasProducidas.Peso = tablaActualizada.Peso;
             _tablasProducidas.CodigoIdentificacion = tablaActualizada.CodigoIdentificacion;
+            _tablasProducidas.Estado = tablaActualizada.Estado;
 
             _tablasProducidas.Update();
         }
