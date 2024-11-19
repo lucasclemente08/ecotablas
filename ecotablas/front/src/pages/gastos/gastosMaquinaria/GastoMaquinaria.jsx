@@ -48,7 +48,7 @@ const GastoMaquinaria = () => {
   const [formValues, setFormValues] = useState({
     tipoGasto: "",
     tipoComprobante: "",
-    comprobante: "",
+    Comprobante: "",
     proveedor: "",
     monto: "",
     fecha: "",
@@ -97,13 +97,13 @@ const GastoMaquinaria = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formValues.comprobante) {
+    if (formValues.Comprobante) {
   
-      const URL = await uploadToDropbox(formValues.comprobante);  
+      const URL = await uploadToDropbox(formValues.Comprobante);  
 console.log(URL);
       if (URL) {
     
-        const updatedFormValues = { ...formValues, comprobante: URL };
+        const updatedFormValues = { ...formValues, Comprobante: URL };
      
 
     dispatch(addGasto(updatedFormValues)).then(() => {
@@ -200,7 +200,6 @@ console.log(URL);
 
     { name: "comprobante", label: "Comprobante", type: "file", required: true },
 
-    { name: "comprobante", label: "Comprobante", type: "text", required: true },
     { name: "proveedor", label: "Proveedor", type: "text", required: true },
     {
       name: "Id_Maquinaria",
@@ -266,15 +265,17 @@ console.log(URL);
     // Llamada inmediata a la función asíncrona
     fetchToken();
   }, []);
+
+  
   const uploadToDropbox = async (file) => {
     const accessToken = await getAccessToken();
     if (!accessToken) return;
   
     const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
-    
+  
     try {
       const dropboxArgs = JSON.stringify({
-        path: `/${file.name}`,  // Verifica que file.name esté correctamente definido
+        path: `/${file.name}`,
         mode: "add",
         autorename: true,
         mute: false,
@@ -298,9 +299,6 @@ console.log(URL);
   
       const fileData = await uploadResponse.json();
       const filePath = fileData.path_lower;
-  
-      // Verifica si filePath es correcto
-      console.log("filePath", filePath); 
   
       // 2. Verificar si ya existe un enlace compartido
       const listLinksUrl = "https://api.dropboxapi.com/2/sharing/list_shared_links";
@@ -332,7 +330,7 @@ console.log(URL);
         },
         body: JSON.stringify({
           path: filePath,
-          settings: { requested_visibility: "public" },
+          settings: { requested_visibility: "public" }, // Asegura que sea visible públicamente
         }),
       });
   
@@ -342,20 +340,14 @@ console.log(URL);
       }
   
       const shareData = await shareResponse.json();
+      const baseUrl = "https://www.dropbox.com/scl/fi/";
+      const sharedLink = shareData.url.replace(baseUrl, "").split('?')[0];
       
-      // Verifica que shareData tenga la propiedad 'url'
-      console.log("shareData", shareData);
+
+      const link = `${sharedLink}?dl=0`;
+ 
+      return link;      
   
-      if (shareData && shareData.url) {
-        const baseUrl = "https://www.dropbox.com/scl/fi/";
-        const sharedLink = shareData.url.replace(baseUrl, "").split('?')[0];
-        const link = `${sharedLink}?dl=1`;
-        return link;
-      } else {
-        console.error("No se recibió un enlace válido en la respuesta:", shareData);
-        return null;
-      }
-      
     } catch (error) {
       console.error("Error en la solicitud a Dropbox:", error);
       return null;
@@ -436,12 +428,16 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
         <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
         {item.Comprobante ? (
           <a
-          href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
-                className="text-blue-400"
+          href={`${"https://www.dropbox.com/s/"}${item.Comprobante}`}
+                className="text-blue-400 "
             target="_blank"
             rel="noopener noreferrer"
+        
           >
+            <td className="">
             Ver Comprobante
+            </td>
+            
           </a>
         ) : (
           "No disponible"

@@ -59,9 +59,9 @@ const PermisosCallback = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-indigo-600 to-purple-700 text-white">
+    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-green-700 to-lime-800 text-white">
     <div className="flex items-center space-x-4 animate-pulse">
-      <svg className="w-12 h-12 text-indigo-200 animate-spin" fill="none" viewBox="0 0 24 24">
+      <svg className="w-12 h-12 text-indigo-200 animate-spin overflow-x-hidden" fill="none" viewBox="0 0 24 24">
         <circle
           className="opacity-25"
           cx="12"
