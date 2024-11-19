@@ -44,6 +44,7 @@ const MaterialTrit = () => {
     TipoPlastico: "",
     Proporcion: "",
     Especificaciones: "",
+    Estado: 1,
   });
 
   const [dateRange, setDateRange] = useState({

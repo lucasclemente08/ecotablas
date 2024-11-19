@@ -1,35 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  fetchTolva,
-  addTolva,
-  editTolva,
-  deleteTolva,
-} from "../../features/tolvaSlice";
 import SectionLayout from "../../layout/SectionLayout";
-
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
+import AddModal from "../../components/AddModal";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
-import AddButtonWa from "../../components/buttons/AddButtonWa";
+import ReportButton from "../../components/buttons/ReportButton";
+import { addTablas, } from "../../api/TablasProducidaAPI";
+import { v4 as uuidv4 } from "uuid";
+import {
+  getAllTolva,
+  addTolva,
+  editTolva,
+} from "../../api/TolvaAPI";
 
 const Tolva = () => {
   const dispatch = useDispatch();
-  const { data, loading, error } = useSelector((state) => state.tolva);
+  const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
   const [materialId, setMaterialId] = useState(null);
-  const [mensaje, setMensaje] = useState("");
+  const [modalTabla, setModalTabla] = useState(false);
+
   const [formValues, setFormValues] = useState({
     HorarioInicio: "",
     CantidadCargada: "",
     TipoPlastico: "unico",
     Proporcion: "",
     Especificaciones: "",
+    Estado: 1,
   });
   const [dataLoaded, setDataLoaded] = useState(false); // Estado para verificar si los datos han sido cargados
 
@@ -58,7 +63,6 @@ const Tolva = () => {
 
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
-
   const abrirModalEdit = (material) => {
     setMaterialId(material.idTolva);
     setFormValues({
@@ -67,28 +71,77 @@ const Tolva = () => {
       TipoPlastico: material.tipo_plastico,
       Proporcion: material.proporcion,
       Especificaciones: material.especificaciones,
+      Estado: 1,
     });
     setModalEdit(true);
   };
   const cerrarModalEdit = () => setModalEdit(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formValues.HorarioInicio || !formValues.CantidadCargada) {
-      setMensaje("Por favor completa todos los campos requeridos");
-      return;
+  
+  const fetchMaterials = async () => {
+    setLoading(true);
+    try {
+      const res = await getAllTolva();
+      setMaterials(res.data);
+    } catch (error) {
+      setMensaje("Error al cargar los materiales.");
+      console.error("Error fetching data: ", error);
+    } finally {
+      setLoading(false);
     }
-    await dispatch(addTolva(formValues));
-    setMensaje("Registro agregado exitosamente!");
-    cerrarModal();
+  };
+  
+  useEffect(() => {
+    fetchMaterials();
+  }, []);
+  
+  const abrirModalTabla = (id) => {
+    const fechaActual = new Date().toISOString();
+    setMaterialId(id);
+    setTablaValues({ ...tablaValues, IdTolva: id, FechaProduccion: fechaActual, CodigoIdentificacion: GenerateIdentificationCode(tablaValues.Dimensiones,
+      tablaValues.Peso,), });
+    setModalTabla(true);
+  };
+  
+  const cerrarModalTabla = () => setModalTabla(false); 
+
+  const validateTablaForm = () => {
+    let isValid = true;
+    if (!tablaValues.Dimensiones) {
+      setMensaje("Las dimensiones son obligatoria.");
+      isValid = false;
+    } else if (!tablaValues.Peso) {
+      setMensaje("El peso es obligatorio.");
+      isValid = false;
+    } 
+    return isValid;
   };
 
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    await dispatch(editTolva({ id: materialId, formValues }));
-    setMensaje("Registro editado exitosamente!");
-    cerrarModalEdit();
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+    try {
+      const response = await addTolva(formValues);
+      setModalAbierto(false);
+      setMensaje("Inserción exitosa");
+      setMaterials([...materials, response.data]);
+    } catch (error) {
+      setMensaje("Error al agregar el material.");
+      console.error("Error al agregar el material:", error);
+    }
   };
+
+  const handleEditSubmit = async () => {
+    if (!validateForm()) return;
+    try {
+      await editTolva(materialId, formValues);
+      setModalEdit(false);
+      setMensaje("Modificación exitosa");
+      fetchMaterials();
+    } catch (error) {
+      setMensaje("Error al modificar el material.");
+      console.error("Error al modificar el material:", error);
+    }
+  };
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -98,57 +151,84 @@ const Tolva = () => {
     }));
   };
 
+  const handleSubmitTabla = async () => {
+    if (!validateTablaForm()) return;
+  
+    try {
+      await addTablas(tablaValues);
+      setMensaje("¡Tabla producida!");
+  
+      // Luego, actualiza el estado a 2
+      const materialActualizado = {
+        ...materials.find((m) => m.IdTolva === materialId),
+        Estado: 2, // Establecer el estado a 2
+      };
+      await editTolva(materialId, materialActualizado);
+
+      setModalTabla(false);
+      fetchMaterials(); // Refrescar la lista para mostrar cambios
+    } catch (error) {
+      setMensaje("Error al terminar el proceso.");
+      console.error("Error al terminar el proceso:", error);
+    }
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 30;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
+  const currentItems = materials.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(materials.length / itemsPerPage);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const totalVolumen = materials.reduce(
+    (acc, material) => acc + parseFloat(material.cantidadCargada || 0),
+    0
+  );
+  const totalItems = materials.length;
+
+  const optionsTipoPlastico = [
+    { value: 'Unico', label: 'Tipo-Único' },
+    { value: 'Mescla', label: 'Tipo-Mezcla' },
+    // ... otras opciones
+  ];
+
+  const handleChangeTabla = (e) => {
+    const { name, value } = e.target;
+    setTablaValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+  const rows = materials.map((material) => ({
+    Fecha: material.HorarioInicio.slice(0, 10),
+  }));
+
+  const columns = [
+    { header: "Horario de inicio", accessor: "horario_inicio" },
+    { header: "Cantidad cargada (kg)", accessor: "cantidadCargada" },
+    { header: "Tipo de plástico", accessor: "tipo_plastico" },
+    { header: "Proporción cargada", accessor: "proporcion" },
+    { header: "Especificaciones", accessor: "especificaciones" },
+  ];
+
+  const titles = [...columns.map((col) => col.header), "Acciones"];
   return (
     <SectionLayout title="Tolva">
       <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
-      <PdfGenerator columns={columns} data={data} title="Reporte de Tolva" />
+      <PdfGenerator columns={columns} data={materials} title="Reporte de Tolva" />
+     
 
-      {mensaje && (
-        <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-          {mensaje}
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">
-          Error: {error}
-        </div>
-      )}
 
       {modalAbierto && (
-        <AddModalWithSelect
+        <AddModalWithSelect 
           title="Agregar Registro de Tolva"
           fields={[
-            {
-              name: "HorarioInicio",
-              label: "Horario de inicio",
-              type: "datetime-local",
-            },
-            {
-              name: "CantidadCargada",
-              label: "Cantidad cargada (kg)",
-              type: "number",
-            },
-            {
-              name: "TipoPlastico",
-              label: "Tipo de plástico",
-              type: "select",
-              options: optionsTipoPlastico,
-            },
+            { name: "HorarioInicio", label: "Horario de inicio", type: "datetime-local" },
+            { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
+            { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
             { name: "Proporcion", label: "Proporción cargada", type: "number" },
-            {
-              name: "Especificaciones",
-              label: "Especificaciones",
-              type: "text",
-            },
+            { name: "Especificaciones", label: "Especificaciones", type: "text" },
           ]}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
@@ -156,41 +236,35 @@ const Tolva = () => {
           values={formValues}
         />
       )}
-      {modalEdit && (
-        <ButtonEdit
-          title="Editar Registro de Tolva"
+{modalEdit && (
+  <ButtonEdit
+    title="Editar Registro de Tolva"
+    fields={[
+      { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },
+      { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
+      { name: "Proporcion", label: "Proporción cargada", type: "number", placeholder: "Proporción *" },
+      { name: "Especificaciones", label: "Especificaciones", type: "text", placeholder: "Especificaciones *" },
+    ]}
+    formValues={formValues}
+    handleChange={handleChange}
+    handleEditSubmit={handleEditSubmit}   // Cambiado a handleEditSubmit
+    cerrarModalEdit={cerrarModalEdit}     // Cambiado a cerrarModalEdit
+  />
+)}
+
+{modalTabla &&
+          <AddModal title="Terminar Tablas"
           fields={[
-            {
-              name: "CantidadCargada",
-              label: "Cantidad cargada (kg)",
-              type: "number",
-              placeholder: "Cantidad cargada *",
-            },
-            {
-              name: "TipoPlastico",
-              label: "Tipo de plástico",
-              type: "select",
-              options: optionsTipoPlastico,
-            },
-            {
-              name: "Proporcion",
-              label: "Proporción cargada",
-              type: "number",
-              placeholder: "Proporción *",
-            },
-            {
-              name: "Especificaciones",
-              label: "Especificaciones",
-              type: "text",
-              placeholder: "Especificaciones *",
-            },
+            { name: "Dimensiones", label: "Dimensiones)", type: "number" },
+            { name: "Peso", label: "Peso", type: "number" },
           ]}
-          formValues={formValues}
-          handleChange={handleChange}
-          handleEditSubmit={handleEditSubmit}
-          cerrarModalEdit={cerrarModalEdit}
-        />
-      )}
+            handleChange={handleChangeTabla}
+            handleSubmit={handleSubmitTabla}
+            cerrarModal={cerrarModalTabla}
+          values={tablaValues}
+          />
+
+          }
 
       {loading ? (
         <LoadingTable />
@@ -199,57 +273,46 @@ const Tolva = () => {
           <table className="table-auto w-full bg-white rounded-lg shadow-lg">
             <TablaHead titles={titles} />
             <tbody>
-              {currentItems.map((item) => (
-                <tr key={item.IdTolva}>
-                  <td className="px-4 py-2 ">
-                    {item.HorarioInicio.slice(0, 10)}
-                  </td>
-                  <td className="px-4 py-2">{item.CantidadCargada}</td>
-                  <td className="px-4 py-2">{item.TipoPlastico}</td>
-                  <td className="px-4 py-2">{item.Proporcion}</td>
-                  <td className="px-4 py-2">{item.Especificaciones}</td>
+              {currentItems.map((material) => (
+                <tr key={material.IdTolva}>
+                  <td className="px-4 py-2 ">{material.HorarioInicio.slice(0,10)}</td>
+                  <td className="px-4 py-2">{material.CantidadCargada}</td>
+                  <td className="px-4 py-2">{material.TipoPlastico}</td>
+                  <td className="px-4 py-2">{material.Proporcion}</td>
+                  <td className="px-4 py-2">{material.Especificaciones}</td>
                   <td className="px-4 py-2 flex">
-                    <NextButton />
+                  <button
+                        onClick={() => abrirModalTabla(material.IdTolva)}
+                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        Terminado
+                      </button>
                     <button
-                      onClick={() => abrirModalEdit(item)}
+                      onClick={() => abrirModalEdit(material)}
                       className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                     >
                       Modificar
                     </button>
                     <DeleteButton
-                      id={item.IdTolva}
-                      endpoint="http://www.gestiondeecotablas.somee.com/api/Tolva/Delete"
-                      updateList={() => {
-                        dispatch(fetchTolva());
-                        setMensaje("Registro eliminado exitosamente!");
-                      }}
+                      id={material.IdTolva}
+                      endpoint="http://localhost:61274/api/Tolva/Borrar"
+                      updateList={fetchMaterials}
                     />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="flex justify-between items-center bg-gray-700">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2  ml-2 hover:text-gray-400 text-white rounded-l"
-            >
-              Anterior
-            </button>
-            <span className="text-gray-300">
-              Página {currentPage} de {totalPages}
-            </span>
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage >= totalPages}
-              className="px-4 py-2 hover:text-gray-400  text-white rounded-r"
-            >
-              Siguiente
-            </button>
+          <div className="mt-4 flex justify-center">
+            {/* {Array.from({ length: totalPages }).map((_, index) => (
+              <NextButton key={index} onClick={() => paginate(index + 1)} active={currentPage === index + 1}>
+                {index + 1}
+              </NextButton>
+            ))} */}
           </div>
           <div className="mt-4 text-white">
-            <p>Total de Items: {data.length}</p>
+            <p>Total de Volumen Cargado: {totalVolumen} kg</p>
+            <p>Total de Items: {totalItems}</p>
           </div>
         </>
       )}
