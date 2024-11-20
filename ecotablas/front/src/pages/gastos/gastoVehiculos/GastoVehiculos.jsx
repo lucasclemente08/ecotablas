@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Pie, Line } from "react-chartjs-2";
 import Pagination from "../../../components/Pagination"
 import FilterTable from "../../../components/FilterTable";
+import { HiMiniLink } from "react-icons/hi2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -523,11 +524,12 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
                                 {item.Comprobante ? (
           <a
           href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
-                className="text-blue-400"
+                className="text-blue-400 flex justify-center content-center "
             target="_blank"
             rel="noopener noreferrer"
           >
-            Ver Comprobante
+            Comprobante <HiMiniLink  className="m-1"/>
+           
           </a>
         ) : (
           "No disponible"
@@ -538,7 +540,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
                     {getVehicleById(item.IdVehiculo)}
                   </td>
                   <td className="border-b py-3 px-4">{item.Proveedor}</td>
-                  <td className="border-b py-3 px-4">{item.Monto}</td>
+                  <td className="border-b py-3 px-4">${item.Monto}</td>
                   <td className="border-b py-3 px-4">
                   {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
                   </td>
