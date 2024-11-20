@@ -16,6 +16,23 @@ import icon from "leaflet/dist/images/marker-icon.png";
 import Toast from "../../components/Toast";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import DonantesChart from "../../components/graficos/donantesChart";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+
+
+
 const RecoUrbanos = () => {
   const [showMap, setShowMap] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -38,6 +55,10 @@ const RecoUrbanos = () => {
     { header: "Latitud", accessor: "Lat" },
     { header: "Longitud", accessor: "Long" },
   ];
+  const [chartData, setChartData] = useState(null);
+
+
+
   const titles = [...columns.map((col) => col.header), "Acciones"];
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
@@ -98,6 +119,7 @@ const RecoUrbanos = () => {
         "http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/ListarTodo",
       );
       setLocations(response.data);
+  
     } catch (error) {
       console.error("Error fetching locations:", error);
     }
@@ -192,6 +214,8 @@ const fields = [
     ],
   }
 ];
+
+
 
 
   return (
@@ -337,6 +361,7 @@ const fields = [
       </button>
 
 
+
       {showMap && !modalAbierto && (
           <div className="mt-5  rounded-lg overflow-hidden h-[600px]">
             <MapContainer center={centerPosition} zoom={12} className="w-full h-full">
@@ -385,6 +410,7 @@ const fields = [
           </tbody>
         </table>
       )}
+      {/* <DonantesChart/> */}
     </SectionLayout>
   );
 };
