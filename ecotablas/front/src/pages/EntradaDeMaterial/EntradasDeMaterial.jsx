@@ -12,6 +12,9 @@ import NextButton from "../../components/buttons/NextButton";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import {
   getAllMaterialClas,
   addMaterialClas,
@@ -20,7 +23,7 @@ import {
 import {
 editIngresoMat,
 } from "../../api/IngresoMaterialAPI";
-
+import { useState,useEffect } from "react";
 const EntradasDeMaterial = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -252,14 +255,18 @@ const EntradasDeMaterial = () => {
         <AddButtonWa
           abrirModal={abrirModal}
           title={"Añadir Ingreso de Material"}
-        />
+      
+      
+      
+      />
+
 
         <PdfGenerator
           columns={columns}
           data={materials}
           title="Reporte de Materiales Ingresados"
         />
-        <ReportButton />
+
         {modalAbierto && (
           <AddModal
             title="Agregar Ingreso de Material"
@@ -270,6 +277,17 @@ const EntradasDeMaterial = () => {
             values={formValues}
           />
         )}
+      <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
 
         {modalEdit && (
           <ButtonEdit

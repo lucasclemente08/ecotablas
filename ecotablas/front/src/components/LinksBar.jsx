@@ -20,22 +20,23 @@ const LinksBar = () => {
 
   const urbanMenus = [
     { title: "Recolección Urbanos", link: "/recoleccion" },
-    { title: "Vehículos", link: "/vehiculos" },
+
     { title: "Empresa Donante", link: "/empresa" },
   ];
 
   const materialMenus = [
     { title: "Entrada de material", link: "/Entrada/material" },
     { title: "Clasificacíon de material", link: "/clasificacion" },
-    { title: "Material Procesado", link: "/materialProc" },
+    // { title: "Material Procesado", link: "/materialProc" },
     { title: "Material Triturado", link: "/materialTri" },
-    { title: "Volumen", link: "/volumen" },
+    { title: "Tolva", link: "/Tolva" },
     { title: "Tablas producidas", link: "/tablas" },
+    { title: "Volumen", link: "/volumen" },
   ];
 
   const machinesMenus = [
     { title: "Maquinaria", link: "/maquinaria" },
-    { title: "Tolva", link: "/Tolva" },
+    { title: "Vehículos", link: "/vehiculos" },
     // { title: "Lavado de material", link: "/lavado" },
     { title: "Plásticos", link: "/material" },
   ];

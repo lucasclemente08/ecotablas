@@ -36,30 +36,27 @@ const Tolva = () => {
     Especificaciones: "",
     Estado: 1,
   });
-  const [dataLoaded, setDataLoaded] = useState(false); // Estado para verificar si los datos han sido cargados
+  const GenerateIdentificationCode = (size, large) => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const codeUID = uuidv4().replace(/-/g, "").slice(0, 8);
+    return `$${size}_${large}_${hours}_${codeUID}`;
+  };
+  const [tablaValues, setTablaValues] = useState({
+    FechaProduccion: "",
+    Dimensiones: "",
+    Peso: "",
+    CodigoIdentificacion: "",
+    Estado: 1,
+  });
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+  });
+  const handleFilter = (dates) => {
+    setDateRange(dates);
+  };
 
-  const totalPages = Math.ceil(data.length / itemsPerPage); // Total de páginas
-
-  const columns = [
-    { header: "Horario de inicio", accessor: "horario_inicio" },
-    { header: "Cantidad cargada (kg)", accessor: "cantidadCargada" },
-    { header: "Tipo de plástico", accessor: "tipo_plastico" },
-    { header: "Proporción cargada", accessor: "proporcion" },
-    { header: "Especificaciones", accessor: "especificaciones" },
-  ];
-
-  const titles = [...columns.map((col) => col.header), "Acciones"];
-  const optionsTipoPlastico = [
-    { value: "Unico", label: "Tipo-Único" },
-    { value: "Mescla", label: "Tipo-Mezcla" },
-    // ... otras opciones
-  ];
-  useEffect(() => {
-    if (!dataLoaded) {
-      dispatch(fetchTolva());
-      setDataLoaded(true);
-    }
-  }, [dispatch, dataLoaded]);
 
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
