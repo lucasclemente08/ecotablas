@@ -2,6 +2,8 @@ import React, { useEffect, useState} from "react";
 import axios from "axios";
 import { MdExpandMore } from "react-icons/md";
 import { MdExpandLess } from "react-icons/md";
+import { FaEdit } from 'react-icons/fa';
+
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 
 import { FaSearch, FaList, FaFilter } from 'react-icons/fa';
@@ -813,12 +815,13 @@ const Empleados = () => {
                 <td className="text-center py-2">{empleado.Dpto}</td>
                 <td className="text-center py-2">{empleado.Mail}</td>
                 <td className="text-center py-2 flex p-2">
-                  <button
-                    onClick={() => abrirModalModificar(empleado.IdEmpleado)}
-                    className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded mr-2"
-                  >
-       
-                  </button>
+                <button
+  onClick={() => abrirModalModificar(empleado.IdEmpleado)}
+  className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded mr-2 flex items-center gap-2"
+>
+  <FaEdit className="w-5 h-5" />
+  Modificar
+</button>
                   <DeleteButton
                     id={empleado.IdEmpleado}
                     endpoint="http://www.trazabilidadodsapi.somee.com/api/Empleados/Borrar" // Ajusta el endpoint según sea necesario

@@ -35,8 +35,8 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
         onClick={openModal}
         className="ml-2 bg-red-700 flex hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
       >
-        Eliminar
         <MdDelete  className="m-1 "/>
+        Eliminar
 
       </button>
 
