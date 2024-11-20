@@ -3,6 +3,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import { Link, useNavigate } from "react-router-dom";
 import Links from "../components/LinksBar";
+import { FaSignOutAlt } from "react-icons/fa";
 import ReportButton from "../components/buttons/ReportButton";
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
@@ -57,12 +58,14 @@ const Sidebar = () => {
         </div>
 
         <div className="mt-60 text-center justify-center mb-5 flex w-full">
-          <button
-            onClick={handleSignOut}
-            className="font-semibold text-white hover:text-red-600"
-          >
-            Cerrar sesión
-          </button>
+        <button
+  onClick={handleSignOut}
+  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 bg-[#7F2323] rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+  aria-label="Cerrar sesión"
+>
+  <FaSignOutAlt className="w-5 h-5" />
+  Cerrar sesión
+</button>
         </div>
       </div>
     </div>

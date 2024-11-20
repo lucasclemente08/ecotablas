@@ -3,8 +3,12 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import SectionLayout from "../../layout/SectionLayout";
 import { toast } from "react-toastify";
+
+import { FaMapMarkedAlt } from "react-icons/fa";
 import TablaHead from "../../components/Thead";
+import { MdOutlineEditLocationAlt } from "react-icons/md";
 import L from "leaflet";
+import Pagination from "../../components/Pagination";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -16,7 +20,7 @@ import icon from "leaflet/dist/images/marker-icon.png";
 import Toast from "../../components/Toast";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
-import { Bar } from "react-chartjs-2";
+import { MdOutlineAddLocation } from "react-icons/md";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -40,6 +44,8 @@ const RecoUrbanos = () => {
   const [locations, setLocations] = useState([]);
   const dispatch = useDispatch();
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [newUbicacion, setNewUbicacion] = useState({
     Nombre: "",
@@ -52,8 +58,8 @@ const RecoUrbanos = () => {
   const columns = [
     { header: "Nombre", accessor: "Nombre" },
     { header: "Tipo de Donante", accessor: "TipoDonante" },
-    { header: "Latitud", accessor: "Lat" },
-    { header: "Longitud", accessor: "Long" },
+    // { header: "Latitud", accessor: "Lat" },
+    // { header: "Longitud", accessor: "Long" },
   ];
   const [chartData, setChartData] = useState(null);
 
@@ -217,6 +223,13 @@ const fields = [
 
 
 
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentItems = locations.slice(indexOfFirstItem, indexOfLastItem);
+
+const totalPages = Math.ceil(locations.length / itemsPerPage);
+const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 
   return (
     <SectionLayout title="Recolección de Urbanos">
@@ -347,19 +360,24 @@ const fields = [
 
         )}
       </div>
-      <button
-        onClick={abrirModal}
-        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded"
-      >
-        Agregar ubicación
-      </button>
-      <button
-        onClick={toggleMap}
-        className="px-4 py-2 m-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-200 ease-in-out"
-      >
-        {showMap ? "Ocultar Mapa" : "Mostrar Mapa"}
-      </button>
-
+      <div className="flex items-center space-x-4">
+  <button
+    onClick={abrirModal}
+    className="bg-green-600 flex items-center justify-center hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow-md transition duration-200 ease-in-out"
+    title="Agregar una nueva ubicación"
+  >
+    Agregar ubicación
+    <MdOutlineAddLocation className="text-lg ml-2" />
+  </button>
+  <button
+    onClick={toggleMap}
+    className="p-2 bg-blue-500 flex items-center justify-center hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-200 ease-in-out"
+    title={showMap ? "Ocultar el mapa" : "Mostrar el mapa"}
+  >
+    {showMap ? "Ocultar Mapa" : "Mostrar Mapa"}
+    <FaMapMarkedAlt className="text-lg ml-2" />
+  </button>
+</div>
 
 
       {showMap && !modalAbierto && (
@@ -381,21 +399,24 @@ const fields = [
     <>
     </>
       ) : (
-        <table className="table-auto w-full bg-white rounded-lg shadow-lg mt-4">
-          <TablaHead titles={titles} />
+        <div>
+
+      <table className="table-auto w-full bg-white rounded-lg shadow-lg mt-4">
+          <TablaHead titles={titles}   />
           <tbody>
             {locations.map((location) => (
               <tr key={location.Nombre}>
-                <td className="px-4 py-2">{location.Nombre}</td>
+                <td className="px-4 py-2 ">{location.Nombre}</td>
                 <td className="px-4 py-2">{location.TipoDonante}</td>
-                <td className="px-4 py-2">{location.Lat}</td>
-                <td className="px-4 py-2">{location.Long}</td>
-                <td className="px-4 py-2 flex gap-2">
+                {/* <td className="px-4 py-2">{location.Lat}</td> */}
+          
+                {/* <td className="px-4 py-2">{location.Long}</td> */}
+                <td className="px-4 py-2 flex justify-center content-center items-center">
                   <button
                     onClick={() => handleEdit(location)}
-                    className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                    className="bg-yellow-700 ml-2 flex justify-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                   >
-                    Modificar
+                    Modificar  <MdOutlineEditLocationAlt className="m-1" />
                   </button>
                   <DeleteButton
                     id={location.IdUbicacion}
@@ -408,9 +429,17 @@ const fields = [
               </tr>
             ))}
           </tbody>
+        
         </table>
+        <Pagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        paginate={paginate}
+      />
+              
+      </div>
       )}
-      {/* <DonantesChart/> */}
+    
     </SectionLayout>
   );
 };

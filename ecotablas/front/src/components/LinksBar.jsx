@@ -2,7 +2,10 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MenuSection from "./MenuSection";
+import { ImTruck } from "react-icons/im";
+import { RiTeamFill, RiRecycleFill } from "react-icons/ri";
 
+import { FaTools, FaDollarSign } from "react-icons/fa";
 const LinksBar = () => {
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
@@ -63,11 +66,31 @@ const LinksBar = () => {
 
   return (
     <>
-      <MenuSection title="Empleados" menus={employeeMenus} />
-      <MenuSection title="Recolección Urbanos" menus={urbanMenus} />
-      <MenuSection title="Materiales" menus={materialMenus} />
-      <MenuSection title="Maquinaria" menus={machinesMenus} />
-      <MenuSection title="Gastos" menus={ExpensesMenus} />
+      <MenuSection 
+  title="Empleados" 
+  menus={employeeMenus} 
+  icon={<RiTeamFill />} 
+/>
+<MenuSection 
+  title="Recolección" 
+  menus={urbanMenus} 
+  icon={<ImTruck />} 
+/>
+<MenuSection 
+  title="Materiales" 
+  menus={materialMenus} 
+  icon={<RiRecycleFill />} 
+/>
+<MenuSection 
+  title="Maquinaria" 
+  menus={machinesMenus} 
+  icon={<FaTools />} 
+/>
+<MenuSection 
+  title="Gastos" 
+  menus={ExpensesMenus} 
+  icon={<FaDollarSign />} 
+/>
     </>
   );
 };

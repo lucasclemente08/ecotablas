@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-const MenuSection = ({ title, menus }) => {
+const MenuSection = ({ title, menus,icon }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -17,7 +17,10 @@ const MenuSection = ({ title, menus }) => {
         onClick={toggleMenu}
       >
         <div className="flex items-center justify-items-start w-full">
-          <span className="origin-left duration-200 font-bold">{title}</span>
+          <span className="origin-left flex justify-center duration-200 font-bold">
+          <div className="m-1 mr-4 text-xl">{icon}</div>
+            {title}
+             </span>
           {isOpen ? (
             <FaChevronUp className="ml-2" />
           ) : (
@@ -31,7 +34,7 @@ const MenuSection = ({ title, menus }) => {
         menus.map((menu, index) => (
           <li
             key={index}
-            className="flex rounded-md p-2 cursor-pointer text-left hover:bg-light-white text-gray-300 mt-2"
+            className="flex rounded-md ml-10 p-1.5 cursor-pointer text-left hover:bg-light-white text-gray-300 "
           >
             <Link to={menu.link} className="w-full">
               <span className="origin-left duration-200">{menu.title}</span>
