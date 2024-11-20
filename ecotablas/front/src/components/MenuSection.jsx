@@ -13,18 +13,16 @@ const MenuSection = ({ title, menus }) => {
     <>
       {/* Título principal del menú */}
       <li
-        className="flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2"
+        className="flex rounded-md p-2 cursor-pointer flex-col t justify-center text-left hover:bg-light-white text-gray-200 mt-2"
         onClick={toggleMenu}
       >
-        <div className="flex flex-col flex-nowrap justify-center items-center">
-          <span className="origin-left duration-200 flex font-bold justify-center">
-            {title}{" "}
-            {isOpen ? (
-              <FaChevronUp className="m-1" />
-            ) : (
-              <FaChevronDown className="m-1" />
-            )}
-          </span>
+        <div className="flex items-center justify-items-start w-full">
+          <span className="origin-left duration-200 font-bold">{title}</span>
+          {isOpen ? (
+            <FaChevronUp className="ml-2" />
+          ) : (
+            <FaChevronDown className="ml-2" />
+          )}
         </div>
       </li>
 
@@ -33,12 +31,9 @@ const MenuSection = ({ title, menus }) => {
         menus.map((menu, index) => (
           <li
             key={index}
-            className="flex rounded-md p-2 cursor-pointer justify-center flex-col flex-nowrap text-l hover:bg-light-white text-gray-300 items-center mt-2"
+            className="flex rounded-md p-2 cursor-pointer text-left hover:bg-light-white text-gray-300 mt-2"
           >
-            <Link
-              to={menu.link}
-              className="flex flex-col flex-nowrap justify-center items-center"
-            >
+            <Link to={menu.link} className="w-full">
               <span className="origin-left duration-200">{menu.title}</span>
             </Link>
           </li>

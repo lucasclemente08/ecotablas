@@ -57,15 +57,15 @@ const ReportButton = () => {
 
   return (
     <>
-      <button
-        onClick={() => setModalOpen(true)}
-        className="bg-gradient-to-r mb-1  text-white text-center font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105"
-      >
-        <div className="flex ">
-          Reportar un problema
-          <IoMdAlert className="m-1" />
-        </div>
-      </button>
+<button
+  onClick={() => setModalOpen(true)}
+  className=" text-white text-center font-bold py-2 px-2 rounded-full  "
+>
+  <div className="flex items-center m-2">
+    <span>Reportar un problema</span>
+    <IoMdAlert className="text-lg m-1" />
+  </div>
+</button>
 
       {modalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75">

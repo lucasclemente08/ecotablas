@@ -27,19 +27,32 @@ const Sidebar = () => {
         } bg-sky-600 min-h-screen duration-300 shadow-md`}
       >
         <div className="flex flex-col items-center m-1 p-4">
-          <div className="mt-10">
+          <div className="mt-1">
             <h1
               className={`text-white font-medium text-xl duration-200 ${
                 !open && "scale-0"
               }`}
             >
+               <figure className="text-center font-bold text-3xl">
+          <img
+            width="60"
+            height="60"
+            className="m-auto"
+            src="https://img.icons8.com/external-soft-fill-juicy-fish/60/external-eco-packaging-symbols-soft-fill-soft-fill-juicy-fish.png"
+            alt="external-eco-packaging-symbols-soft-fill-soft-fill-juicy-fish"
+          />
+      
+        </figure>
               Gestión de ecotablas
             </h1>
           </div>
         </div>
-
+        <div className="flex flex-col justify-center ml-4">
         <Links />
-        <div className="text-center">
+
+        </div>
+
+        <div className="text-left">
           <ReportButton />
         </div>
 
