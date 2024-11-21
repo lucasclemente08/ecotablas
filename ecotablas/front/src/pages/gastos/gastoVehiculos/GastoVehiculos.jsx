@@ -437,6 +437,76 @@ const totalPages = Math.ceil(dataV.length / itemsPerPage);
 const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
+const [lineData, setLineData] = useState({});
+
+const calculateLineData = () => {
+  const groupedByDate = {};
+
+  dataV.forEach((item) => {
+    const date = new Date(item.Fecha);
+    const month = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
+    groupedByDate[month] = (groupedByDate[month] || 0) + parseFloat(item.Monto);
+  });
+
+  const sortedKeys = Object.keys(groupedByDate).sort();
+  const labels = sortedKeys;
+  const data = sortedKeys.map((key) => groupedByDate[key]);
+
+  return {
+    labels,
+    datasets: [
+      {
+        label: "Gastos Mensuales",
+        data,
+        fill: false,
+        borderColor: "#7DD3FC", // Color más claro (azul pastel)
+        backgroundColor: "#1D27FF", // Fondo a
+        tension: 0.4,
+      },
+    ],
+  };
+};
+
+useEffect(() => {
+  setLineData(calculateLineData());
+}, [dataV]);
+
+const lineOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: true, // Muestra la leyenda
+      position: "top", // Posición de la leyenda
+    },
+    tooltip: {
+      enabled: true, // Habilita los tooltips
+    },
+    // Configura el fondo del gráfico
+    backgroundColor: {
+      color: "#FFFFFF", // Fondo del gráfico (gris claro)
+    },
+  },
+  scales: {
+    x: {
+      title: {
+        display: true,
+        text: "Meses",
+      },
+    },
+    y: {
+      title: {
+        display: true,
+        text: "Monto ($)",
+      },
+      beginAtZero: true,
+    },
+  },
+};
+const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
+
+
+
   return (
     <SectionLayout title="Gastos de Vehículos">
       <ToastContainer
@@ -459,12 +529,6 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
         <PdfGenerator columns={titles} data={dataV} title="Reporte de gastos" />
         <DataView ShowTable={handleShowTable} />
 
-        {mensaje && (
-          <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-            {mensaje}
-          </div>
-        )}
-
 
         <button
           aria-label="Ver gráfico circular"
@@ -486,13 +550,11 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
       </div>
       {ModalAbierto && (
         <AddModalWithSelect
-        
           title="Agregar Gastos vehiculos"
           fields={fields}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
           cerrarModal={cerrarModal}
-        
           values={formValues}
           dropboxAccessToken={accessToken}
         />
@@ -582,12 +644,19 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
       </div>
         )
       ) : showPieChart ? (
-        <div className="w-full h-96">
-          <Pie data={pieData} options={pieOptions} />
+        <div className="flex flex-col content-center justify-center items-center h-96 ">
+          <div className=" m-10  max-h-72 ">
+
+          <Pie data={pieData} options={pieOptions} className="mt-4" />
+            <p className=" text-centermt-2 text-center text-gray-200 ">Total de gastos: ${total}</p>
+          </div>
+          <div className="   bg-blue-50 shadow-md mt-3  h-full rounded-lg ">
+  <Line data={lineData} options={lineOptions} className="" />
+</div>
         </div>
       ) : (
         <div className="w-full h-96">
-          {/* <Line data={lineData} options={lineOptions} /> */}
+         
         </div>
       )}
     </SectionLayout>
