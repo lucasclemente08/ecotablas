@@ -680,7 +680,7 @@ const Empleados = () => {
             </div>
           )}
 
-          <div className="mt-4">
+          <div className="">
             <input
               type="text"
               placeholder="Buscar por DNI"
