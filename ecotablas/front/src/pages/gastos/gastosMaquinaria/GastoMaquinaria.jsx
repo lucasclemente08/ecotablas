@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../../../components/Pagination"
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchGastos,
@@ -27,7 +29,7 @@ const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
 const GastoMaquinaria = () => {
   const dispatch = useDispatch();
   const { gastos: dataM, loading } = useSelector(
-    (state) => state.gastoMaquinaria,
+    (state) => state.gastoMaquinaria
   );
 
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -39,12 +41,8 @@ const GastoMaquinaria = () => {
   const [showTable, setShowTable] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
   const [maquinaria, setMaquinaria] = useState([]);
-  const [mensaje, setMensaje] = useState("");
   const [pieData, setPieData] = useState({});
-  const [showPieChart, setShowPieChart] = useState(true);
-  const [accessToken, setAccessToken] = useState(null);
-
-
+  const [showPieChart, setShowPieChart] = useState(false);
   const [formValues, setFormValues] = useState({
     tipoGasto: "",
     tipoComprobante: "",
@@ -55,15 +53,32 @@ const GastoMaquinaria = () => {
     descripcion: "",
   });
 
-  const abrirModal = () => setModalAbierto(true);
+  // Variables de entorno
+  const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
+  const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
+
+  // Cerrar Modal
   const cerrarModal = () => setModalAbierto(false);
 
+  // Fetch inicial de datos
   useEffect(() => {
     dispatch(fetchGastos());
+    fetchMaquinaria();
   }, [dispatch]);
 
+  // Fetch maquinaria
+  const fetchMaquinaria = () => {
+    axios
+      .get("https://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo")
+      .then((response) => {
+        setMaquinaria(response.data);
+      })
+      .catch((error) => console.error("Error fetching maquinaria:", error));
+  };
+
+  // Crear datos del gráfico circular
   useEffect(() => {
-    const calculatePieData = () => {
+    if (dataM.length > 0) {
       const categories = {};
       dataM.forEach((item) => {
         categories[item.TipoGasto] =
@@ -81,11 +96,10 @@ const GastoMaquinaria = () => {
           },
         ],
       });
-    };
-
-    calculatePieData();
+    }
   }, [dataM]);
 
+  // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prevValues) => ({
@@ -94,35 +108,167 @@ const GastoMaquinaria = () => {
     }));
   };
 
+  // Obtener opciones para select
+  const optionsMaquinaria = maquinaria.map((machine) => ({
+    value: machine.Id,
+    label: `${machine.Modelo} (${machine.Tipo})`,
+  }));
+
+  const fields = [
+    {
+      name: "tipoGasto",
+      label: "Tipo de Gasto",
+      type: "select",
+      options: [
+        { value: "Combustible", label: "Combustible" },
+        { value: "Mantenimiento", label: "Mantenimiento" },
+        { value: "Reparación", label: "Reparación" },
+        { value: "Seguro", label: "Seguro" },
+        { value: "Otros", label: "Otros" },
+      ],
+      required: true,
+    },
+    {
+      name: "tipoComprobante",
+      label: "Tipo de Comprobante",
+      type: "select",
+      options: [
+        { value: "Factura", label: "Factura" },
+        { value: "Recibo", label: "Recibo" },
+        { value: "Boleta", label: "Boleta" },
+        { value: "Otro", label: "Otro" },
+      ],
+      required: true,
+    },
+    {
+      name: "comprobante",
+      label: "Comprobante",
+      type: "file",
+      required: true,
+    },
+    { name: "proveedor", label: "Proveedor", type: "text", required: true },
+    {
+      name: "Id_Maquinaria",
+      label: "Maquinaria",
+      type: "select",
+      options: optionsMaquinaria,
+      required: true,
+    },
+    { name: "monto", label: "Monto ($)", type: "number", required: true },
+    { name: "fecha", label: "Fecha", type: "date", required: true },
+    {
+      name: "descripcion",
+      label: "Descripción",
+      type: "textarea",
+      required: true,
+    },
+  ];
+
+  // Obtener el token de Dropbox
+  const getAccessToken = async () => {
+    const refreshToken = localStorage.getItem("dropboxRefreshToken");
+    if (!refreshToken) {
+      toast.error("No se obtuvo el token, acceda desde el login correctamente.");
+      return null;
+    }
+
+    try {
+      const response = await fetch("https://api.dropboxapi.com/oauth2/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          grant_type: "refresh_token",
+          refresh_token: refreshToken,
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+        }),
+      });
+
+      if (!response.ok) {
+        toast.error("Error al obtener el access token.");
+        return null;
+      }
+
+      const data = await response.json();
+      return data.access_token;
+    } catch (error) {
+      toast.error("Error al conectar con Dropbox.");
+      return null;
+    }
+  };
+
+  const uploadToDropbox = async (file) => {
+    const accessToken = await getAccessToken();
+    if (!accessToken) return;
+
+    const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
+   
+
+    const dropboxArgs = JSON.stringify({
+      path: `/${file.name}`,
+      mode: "add",
+      autorename: true,
+    });
+    if (!file || !file.name) {
+      toast.error("El archivo no es válido.");
+      return;
+    }
+    try {
+      const uploadResponse = await fetch(uploadUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/octet-stream",
+          "Dropbox-API-Arg": dropboxArgs,
+        },
+        body: file,
+      });
+
+      if (!uploadResponse.ok) {
+        toast.error("Error al subir archivo a Dropbox.");
+        return null;
+      }
+const uploadedFile = await uploadResponse.json();
+console.log(uploadedFile); //
+
+
+
+      const fileData = await uploadResponse.json();
+if (!fileData.path_lower) {
+  toast.error("Error al generar el enlace de Dropbox.");
+  return null;
+}
+    } catch (error) {
+      console.error("Error en Dropbox:", error);
+      return null;
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (formValues.Comprobante) {
-  
-      const URL = await uploadToDropbox(formValues.Comprobante);  
-console.log(URL);
+      const URL = await uploadToDropbox(formValues.Comprobante);
       if (URL) {
-    
         const updatedFormValues = { ...formValues, Comprobante: URL };
-     
-
-    dispatch(addGasto(updatedFormValues)).then(() => {
-      setModalAbierto(false);
-      dispatch(fetchGastos());
-    });
+        axios
+          .post("http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Create", updatedFormValues)
+          .then((response) => {
+            toast.success("Gasto agregado con éxito");
+            fetchMaterials();  // Recargar los datos de la tabla después de la inserción
+            cerrarModal();
+          })
+          .catch((error) => {
+            console.error("Error al agregar el gasto:", error);
+            toast.error("Error al agregar el gasto");
+          });
+      } else {
+        toast.error("No se pudo subir el archivo a Dropbox");
+      }
+    }
   };
-}}
-  const handleEditSubmit = (e) => {
-    e.preventDefault();
-    dispatch(addGasto(gastoEdit))
-      .then(() => {
-        setMensaje("Gasto actualizado con éxito");
-        dispatch(fetchGastos());
-        setModalEdit(false);
-      })
-      .catch((error) => console.error("Error al actualizar:", error));
-  };
-
+  // Paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = dataM.slice(indexOfFirstItem, indexOfLastItem);
   const columns = [
     { header: "Tipo de Gasto", dataKey: "tipoGasto" },
     { header: "Tipo de Comprobante", dataKey: "tipoComprobante" },
@@ -144,229 +290,30 @@ console.log(URL);
     "Acciones",
   ];
 
-  const fetchMaquinaria = () => {
-    axios
-      .get("https://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo")
-      .then((response) => {
-        setMaquinaria(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching trucks:", error);
-      });
-  };
-  useEffect(() => {
-    fetchMaquinaria();
-  }, []);
-  const getMachinesById = (id) => {
-    const machine = maquinaria.find((machine) => machine.Id === id);
-    return machine
-      ? `${machine.Modelo} (${machine.Tipo})`
-      : "Maquinaria no disponible";
-  };
-
-  const optionsMaquinaria = maquinaria.map((machine) => ({
-    value: machine.Id,
-    label: `${machine.Modelo} (${machine.Tipo})`,
-  }));
-
-  const pieOptions = { responsive: true, maintainAspectRatio: false };
-
-  const fields = [
-    {
-      name: "tipoGasto",
-      label: "Tipo de Gasto",
-      type: "select",
-      options: [
-        { value: "Combustible", label: "Combustible" },
-        { value: "Mantenimiento", label: "Mantenimiento" },
-        { value: "Reparacion", label: "Reparación" },
-        { value: "Seguro", label: "Seguro" },
-        { value: "Otros", label: "Otros" },
-      ],
-      required: true,
-    },
-    {
-      name: "tipoComprobante",
-      label: "Tipo de Comprobante",
-      type: "select",
-      options: [
-        { value: "factura", label: "Factura" },
-        { value: "recibo", label: "Recibo" },
-        { value: "boleta", label: "Boleta" },
-        { value: "otro", label: "Otro" },
-      ],
-      required: true,
-    },
-
-    { name: "comprobante", label: "Comprobante", type: "file", required: true },
-
-    { name: "proveedor", label: "Proveedor", type: "text", required: true },
-    {
-      name: "Id_Maquinaria",
-      label: "Maquinaria",
-      type: "select",
-      options: optionsMaquinaria,
-      required: true,
-    },
-    { name: "monto", label: "Monto ($)", type: "number", required: true },
-    { name: "fecha", label: "Fecha", type: "date", required: true },
-    {
-      name: "descripcion",
-      label: "Descripción",
-      type: "textarea",
-      required: true,
-    },
-  ];
-
   const handleShowTable = () => {
     setShowTable(true);
     setShowPieChart(false);
   };
 
-
-  const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
-  const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
-  
-  const getAccessToken = async () => {
-    const refreshToken = localStorage.getItem('dropboxRefreshToken');
-    if (!refreshToken) {
-      console.error("No se encontró el refresh token en el localStorage.");
-      return null;
-    }
-  
-    const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken,
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-      }),
-    });
-  
-    if (!response.ok) {
-      console.error("Error al obtener el access token:", await response.text());
-      return null;
-    }
-  
-    const data = await response.json();
-    return data.access_token;
-  };
-
-  useEffect(() => {
-    const fetchToken = async () => {
-      const token = await getAccessToken();
-      setAccessToken(token);
-    };
-
-    // Llamada inmediata a la función asíncrona
-    fetchToken();
-  }, []);
-
-  
-  const uploadToDropbox = async (file) => {
-    const accessToken = await getAccessToken();
-    if (!accessToken) return;
-  
-    const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
-  
-    try {
-      const dropboxArgs = JSON.stringify({
-        path: `/${file.name}`,
-        mode: "add",
-        autorename: true,
-        mute: false,
-      });
-  
-      // 1. Subir el archivo a Dropbox
-      const uploadResponse = await fetch(uploadUrl, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/octet-stream",
-          "Dropbox-API-Arg": dropboxArgs,
-        },
-        body: file,
-      });
-  
-      if (!uploadResponse.ok) {
-        console.error("Error al subir el archivo a Dropbox:", await uploadResponse.text());
-        return null;
-      }
-  
-      const fileData = await uploadResponse.json();
-      const filePath = fileData.path_lower;
-  
-      // 2. Verificar si ya existe un enlace compartido
-      const listLinksUrl = "https://api.dropboxapi.com/2/sharing/list_shared_links";
-      const listResponse = await fetch(listLinksUrl, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ path: filePath }),
-      });
-  
-      if (listResponse.ok) {
-        const listData = await listResponse.json();
-        if (listData.links && listData.links.length > 0) {
-          // Si ya existe un enlace compartido, usar el primero
-          const existingLink = listData.links[0].url.replace("?dl=0", "?dl=1");
-          return existingLink;
-        }
-      }
-  
-      // 3. Crear un enlace compartido si no existe
-      const shareUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
-      const shareResponse = await fetch(shareUrl, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          path: filePath,
-          settings: { requested_visibility: "public" }, // Asegura que sea visible públicamente
-        }),
-      });
-  
-      if (!shareResponse.ok) {
-        console.error("Error al crear el enlace compartido:", await shareResponse.text());
-        return null;
-      }
-  
-      const shareData = await shareResponse.json();
-      const baseUrl = "https://www.dropbox.com/scl/fi/";
-      const sharedLink = shareData.url.replace(baseUrl, "").split('?')[0];
-      
-
-      const link = `${sharedLink}?dl=0`;
- 
-      return link;      
-  
-    } catch (error) {
-      console.error("Error en la solicitud a Dropbox:", error);
-      return null;
-    }
-  };
-  
-   
-
-
-const indexOfLastItem = currentPage * itemsPerPage;
-const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentItems = dataM.slice(indexOfFirstItem, indexOfLastItem);
-
-const totalPages = Math.ceil(dataM.length / itemsPerPage);
-const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const totalPages = Math.ceil(dataM.length / itemsPerPage);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return   (
 <>
     <SectionLayout title="Gasto de Maquinaria">
+
+    <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
+
       <div className="flex">
   
 

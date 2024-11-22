@@ -75,7 +75,7 @@ const EmpresaDonante = () => {
       console.error("Por favor completa todos los campos requeridos");
       return;
     }
-    await dispatch(addEmpresaDonante(formValues)); // Asegúrate de manejar la respuesta y errores aquí
+    await dispatch(addEmpresaDonante(formValues)); 
     cerrarModal();
   };
 
