@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import Pagination from "../../../components/Pagination"
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { HiMiniLink } from "react-icons/hi2";
+
+import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchGastos,
@@ -13,14 +16,11 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import TablaHead from "../../../components/Thead";
 import LoadingTable from "../../../components/LoadingTable";
-
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import { FaChartLine, FaChartPie } from "react-icons/fa";
 import DataView from "../../../components/buttons/DataView";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
-
-import { storage } from "../../../firebase/firebase"; 
 import AddButtonWa from "../../../components/buttons/AddButtonWa";
 
 
@@ -36,7 +36,7 @@ const GastoMaquinaria = () => {
   const [dataView, setDataView] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-
+  const [accessToken, setAccessToken] = useState(null);
   const [gastoEdit, setGastoEdit] = useState(null);
   const [showTable, setShowTable] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
@@ -52,7 +52,7 @@ const GastoMaquinaria = () => {
     fecha: "",
     descripcion: "",
   });
-
+  const [comprobante, setComprobante] = useState(null);
   // Variables de entorno
   const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
   const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
@@ -99,16 +99,32 @@ const GastoMaquinaria = () => {
     }
   }, [dataM]);
 
-  // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
+    const { name, value, files } = e.target;
 
-  // Obtener opciones para select
+    if (files && files[0]) {
+        // Si se seleccionó un archivo
+        const selectedFile = files[0];
+        console.log("Archivo seleccionado:", selectedFile.name);
+
+        // Guardar el archivo en un estado separado
+        setComprobante(selectedFile);
+
+        // Si necesitas manejar el archivo en formValues:
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: selectedFile.name, // Guarda solo el nombre del archivo
+        }));
+    } else {
+        // Si es un campo de texto u otro tipo de input
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+    }
+};
+
+
   const optionsMaquinaria = maquinaria.map((machine) => ({
     value: machine.Id,
     label: `${machine.Modelo} (${machine.Tipo})`,
@@ -164,7 +180,7 @@ const GastoMaquinaria = () => {
     },
   ];
 
-  // Obtener el token de Dropbox
+
   const getAccessToken = async () => {
     const refreshToken = localStorage.getItem("dropboxRefreshToken");
     if (!refreshToken) {
@@ -196,24 +212,31 @@ const GastoMaquinaria = () => {
       return null;
     }
   };
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getAccessToken();
+      setAccessToken(token);
+    };
+
+    // Llamada inmediata a la función asíncrona
+    fetchToken();
+  }, []);
 
   const uploadToDropbox = async (file) => {
     const accessToken = await getAccessToken();
     if (!accessToken) return;
-
+  
     const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
-   
-
-    const dropboxArgs = JSON.stringify({
-      path: `/${file.name}`,
-      mode: "add",
-      autorename: true,
-    });
-    if (!file || !file.name) {
-      toast.error("El archivo no es válido.");
-      return;
-    }
+  
     try {
+      const dropboxArgs = JSON.stringify({
+        path: `/${file.name}`,
+        mode: "add",
+        autorename: true,
+        mute: false,
+      });
+  
+      // 1. Subir el archivo a Dropbox
       const uploadResponse = await fetch(uploadUrl, {
         method: "POST",
         headers: {
@@ -223,49 +246,106 @@ const GastoMaquinaria = () => {
         },
         body: file,
       });
-
+  
       if (!uploadResponse.ok) {
-        toast.error("Error al subir archivo a Dropbox.");
+        console.error("Error al subir el archivo a Dropbox:", await uploadResponse.text());
         return null;
       }
-const uploadedFile = await uploadResponse.json();
-console.log(uploadedFile); //
-
-
-
+  
       const fileData = await uploadResponse.json();
-if (!fileData.path_lower) {
-  toast.error("Error al generar el enlace de Dropbox.");
-  return null;
-}
+      const filePath = fileData.path_lower;
+  
+      // 2. Verificar si ya existe un enlace compartido
+      const listLinksUrl = "https://api.dropboxapi.com/2/sharing/list_shared_links";
+      const listResponse = await fetch(listLinksUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ path: filePath }),
+      });
+  
+      if (listResponse.ok) {
+        const listData = await listResponse.json();
+        if (listData.links && listData.links.length > 0) {
+          // Si ya existe un enlace compartido, usar el primero
+          const existingLink = listData.links[0].url.replace("?dl=0", "?dl=1");
+          return existingLink;
+        }
+      }
+  
+      // 3. Crear un enlace compartido si no existe
+      const shareUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
+      const shareResponse = await fetch(shareUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          path: filePath,
+          settings: { requested_visibility: "public" }, // Asegura que sea visible públicamente
+        }),
+      });
+  
+      if (!shareResponse.ok) {
+        console.error("Error al crear el enlace compartido:", await shareResponse.text());
+        return null;
+      }
+  
+      const shareData = await shareResponse.json();
+      const baseUrl = "https://www.dropbox.com/scl/fi/";
+
+      
+// Reemplaza la baseUrl, pero conserva el resto de la URL
+const sharedLink = shareData.url.replace(baseUrl, "").split('?')[0];
+
+// Reconstruye la URL con el formato correcto
+const link = `${sharedLink}?dl=1`;
+
+return link;
+
+
     } catch (error) {
-      console.error("Error en Dropbox:", error);
+      console.error("Error en la solicitud a Dropbox:", error);
       return null;
     }
   };
+  
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formValues.Comprobante) {
-      const URL = await uploadToDropbox(formValues.Comprobante);
-      if (URL) {
-        const updatedFormValues = { ...formValues, Comprobante: URL };
+
+    toast.success("Subiendo comprobante a dropbox");
+    const URL = await uploadToDropbox(comprobante );  
+
+    if (URL) {
+  
+      const updatedFormValues = { ...formValues, comprobante: URL };
+
         axios
-          .post("http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Create", updatedFormValues)
-          .then((response) => {
-            toast.success("Gasto agregado con éxito");
-            fetchMaterials();  // Recargar los datos de la tabla después de la inserción
-            cerrarModal();
-          })
-          .catch((error) => {
-            console.error("Error al agregar el gasto:", error);
-            toast.error("Error al agregar el gasto");
-          });
-      } else {
-        toast.error("No se pudo subir el archivo a Dropbox");
-      }
+            .post(
+                "http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Create",
+                updatedFormValues
+            )
+            .then(() => {
+                toast.success("Gasto agregado con éxito");
+                dispatch(fetchGastos()); // Recargar la tabla
+                cerrarModal();
+            })
+            .catch((error) => {
+                console.error("Error al agregar el gasto:", error);
+                toast.error("Error al agregar el gasto.");
+            });
+    } else {
+      console.error("No se pudo subir el archivo a dropbox")
+        toast.error("No se pudo subir el archivo a Dropbox.");
     }
-  };
-  // Paginación
+};
+
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = dataM.slice(indexOfFirstItem, indexOfLastItem);
@@ -297,6 +377,17 @@ if (!fileData.path_lower) {
 
   const totalPages = Math.ceil(dataM.length / itemsPerPage);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
+  const pieOptions = {
+    plugins: {
+      legend: {
+        position: "top",
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+  };
 
   return   (
 <>
@@ -348,6 +439,7 @@ if (!fileData.path_lower) {
           handleSubmit={handleSubmit}
           cerrarModal={cerrarModal}
           values={formValues}
+          dropboxAccessToken={accessToken}
         />
       )}
       {modalEdit && (
@@ -375,16 +467,13 @@ if (!fileData.path_lower) {
         <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
         {item.Comprobante ? (
           <a
-          href={`${"https://www.dropbox.com/s/"}${item.Comprobante}`}
-                className="text-blue-400 "
+          href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
+                className="text-blue-400 flex justify-center content-center "
             target="_blank"
             rel="noopener noreferrer"
         
-          >
-            <td className="">
-            Ver Comprobante
-            </td>
-            
+          >  
+            <HiMiniLink  className="m-1"/>  Comprobante 
           </a>
         ) : (
           "No disponible"
@@ -403,9 +492,12 @@ if (!fileData.path_lower) {
               setFormValues(item);
               setModalEdit(true);
             }}
-            className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+            className="bg-yellow-700 ml-2 flex hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
           >
-            Modificar
+            
+            <FiEdit  className="m-1"/>
+                        Modificar  
+       
           </button>
           <DeleteButton
             endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Delete"

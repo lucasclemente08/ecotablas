@@ -91,11 +91,10 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
     }
   })
   .catch((error) => {
-    // Manejo de errores
     toast.error(`Error en la solicitud: ${error.message}`);
   })
   .finally(() => {
-    // Cerrar el modal después de la solicitud, sin importar si fue exitosa o no
+  
     cerrarModal();
   });
   }
