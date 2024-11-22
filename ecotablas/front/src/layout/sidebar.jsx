@@ -29,6 +29,8 @@ const Sidebar = () => {
       >
         <div className="flex flex-col items-center m-1 p-4">
           <div className="mt-1">
+            <Link to='/' >
+
             <h1
               className={`text-white font-medium text-xl duration-200 ${
                 !open && "scale-0"
@@ -46,6 +48,7 @@ const Sidebar = () => {
         </figure>
               Gestión de ecotablas
             </h1>
+            </Link>
           </div>
         </div>
         <div className="flex flex-col justify-center ml-4">

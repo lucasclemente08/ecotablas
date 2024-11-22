@@ -24,10 +24,10 @@ const DonantesChart = () => {
   const fetchLocations = async () => {
     try {
       const response = await axios.get(
-        "http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/ListarTodo",
+        "http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/ListarTodo"
       );
       setLocations(response.data);
-      processChartData(response.data); // Procesar datos para el gráfico
+      processChartData(response.data);
     } catch (error) {
       console.error("Error fetching locations:", error);
     }
@@ -57,26 +57,41 @@ const DonantesChart = () => {
   };
 
   return (
-    <div>
-      <h2 className="text-center font-bold text-lg mb-4">Gráfico de Donantes</h2>
+    <div className="bg-gray-800 p-4 rounded-md shadow-md w-96 mx-auto">
+      <h2 className="text-center text-gray-50 font-bold text-md mb-3">Gráfico de Donantes</h2>
       {chartData ? (
-        <Bar
-          data={chartData}
-          options={{
-            responsive: true,
-            plugins: {
-              legend: {
-                position: "top",
+        <div className="h-96 p-4 rounded-md">
+          <Bar
+            data={chartData}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "top",
+                  labels: {
+                    font: { size: 15 },
+                  },
+                },
+                title: {
+                  display: true,
+                  text: "Cantidad de Donantes por Tipo",
+                  font: { size: 20 },
+                },
               },
-              title: {
-                display: true,
-                text: "Cantidad de Donantes por Tipo",
+              scales: {
+                x: {
+                  ticks: { font: { size: 15 } },
+                },
+                y: {
+                  ticks: { font: { size: 15 } },
+                },
               },
-            },
-          }}
-        />
+            }}
+          />
+        </div>
       ) : (
-        <p className="text-center">Cargando datos...</p>
+        <p className="text-center text-gray-50">Cargando datos...</p>
       )}
     </div>
   );

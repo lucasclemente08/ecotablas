@@ -10,6 +10,10 @@ import { FaChartPie } from "react-icons/fa";
 import DataView from "../../components/buttons/DataView";
 import LoadingTable from "../../components/LoadingTable";
 import builderApiUrl from "../../utils/BuilderApi";
+import { FiEdit, FiPlus, FiRefreshCw, FiEye } from "react-icons/fi";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -27,8 +31,8 @@ import MaquinariaChart from "../../components/graficos/MaquinariaChart";
 const Maquinaria = () => {
   const [maquinarias, setMaquinarias] = useState([]);
   const [EstadoMaquinarias, setEstadoMaquinarias] = useState([]);
-const [showPieChart, setShowPieChart] = useState(false);
-const [showTable,setShowTable]=useState(false);
+const [showPieChart, setShowPieChart] = useState(true);
+const [showTable,setShowTable]=useState(true);
 
 
   const [loading, setLoading] = useState(true);
@@ -138,15 +142,15 @@ const [showTable,setShowTable]=useState(false);
       const response = await axios.post(`${BASE_URL}/Insertar`, formValues);
       if (response) {
         await fetchMaquinarias();
-
-        setMensaje("Inserción exitosa");
+        
+        toast.success("Inserción exitosa");
       } else {
         setMensaje("Error: no se recibió un dato válido de la API.");
       }
 
       setModalAbierto(false);
     } catch (error) {
-      setMensaje("Error al agregar la maquinaria.");
+      toast.error("Error al agregar la maquinaria.");
       console.error("Error al agregar la maquinaria:", error);
     }
   };
@@ -157,7 +161,7 @@ const [showTable,setShowTable]=useState(false);
     try {
       await editMaquinarias(maquinariaId, formValues);
       setModalEdit(false);
-      setMensaje("Modificación exitosa");
+      toast.success("Modificación exitosa");
       await fetchMaquinarias(); // Actualiza la lista
     } catch (error) {
       setMensaje("Error al modificar la maquinaria.");
@@ -207,12 +211,12 @@ const [showTable,setShowTable]=useState(false);
       };
 
       await editMaquinarias(maquinariaId, maquinariaActualizada);
-      setMensaje("Estado de maquinaria actualizado a 'En Reparación'");
+      toast.success("Estado de maquinaria actualizado a 'En Reparación'");
 
       setModalReparacion(false);
       fetchMaquinarias(); // Refrescar la lista para mostrar cambios
     } catch (error) {
-      setMensaje("Error al agregar la reparación.");
+      toast.error("Error al agregar la reparación.");
       console.error("Error al agregar la reparación:", error);
     }
   };
@@ -310,10 +314,10 @@ const [showTable,setShowTable]=useState(false);
         ...maquinaria,
         IdEstado: nuevoEstado,
       });
-      setMensaje("Estado cambiado exitosamente");
+      toast.success("Estado cambiado exitosamente");
       await fetchMaquinarias(); // Actualizar la lista
     } catch (error) {
-      setMensaje("Error al cambiar el estado de la maquinaria.");
+      toast.success("Error al cambiar el estado de la maquinaria.");
       console.error("Error al cambiar el estado:", error);
     }
   };
@@ -338,6 +342,19 @@ const [showTable,setShowTable]=useState(false);
         <div className="p-4 w-full">
 
           <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
+          <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
+
+
           <div className=" flex">
 
           <AddButtonWa abrirModal={abrirModal} title={" Añadir Maquinaria"} />
@@ -442,35 +459,41 @@ const [showTable,setShowTable]=useState(false);
                      {maquinaria.fecha_adquisicion}
                    </td>
                    <td className="border-b py-2 px-4 flex justify-center">
-                     {maquinaria.IdEstado === 3 ? (
-                       <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700">
-                         Ver Reparacion
-                       </button>
-                     ) : null}
-                     <button
-                       onClick={() => abrirModalEdit(maquinaria)}
-                       className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                     >
-                       Modificar
-                     </button>
-                     {maquinaria.IdEstado === 1 ||
-                     maquinaria.IdEstado === 2 ? (
-                       <button
-                         onClick={() => abrirModalReparacion(maquinaria.Id)}
-                         className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                       >
-                         Agregar Reparación
-                       </button>
-                     ) : null}
-                     {maquinaria.IdEstado === 1 ||
-                     maquinaria.IdEstado === 2 ? (
-                       <button
-                         onClick={() => handleChangeState(maquinaria)}
-                         className="bg-blue-500 text-white ml-2 py-1 px-3 rounded hover:bg-blue-700"
-                       >
-                         Cambiar Estado
-                       </button>
-                     ) : null}
+                
+      {maquinaria.IdEstado === 3 ? (
+        <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700 flex items-center gap-2">
+          <FiEye />
+          Ver Reparación
+        </button>
+      ) : null}
+
+      <button
+        onClick={() => abrirModalEdit(maquinaria)}
+        className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+      >
+        <FiEdit />
+        Modificar
+      </button>
+
+      {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
+        <button
+          onClick={() => abrirModalReparacion(maquinaria.Id)}
+          className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+        >
+          <FiPlus />
+          Agregar Reparación
+        </button>
+      )}
+
+      {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
+        <button
+          onClick={() => handleChangeState(maquinaria)}
+          className="bg-blue-500 text-white ml-2 py-1 px-3 rounded hover:bg-blue-700 flex items-center gap-2"
+        >
+          <FiRefreshCw />
+          Cambiar Estado
+        </button>
+      )}
                      <DeleteButton
                        id={maquinaria.Id}
                        endpoint={`${BASE_URL}/Borrar`}
