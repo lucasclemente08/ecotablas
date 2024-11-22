@@ -17,7 +17,7 @@ import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { FiEdit } from "react-icons/fi";
 import {
   getAllMaterialClas,
   addMaterialClas,
@@ -385,10 +385,11 @@ const EntradasDeMaterial = () => {
                         Terminado
                       </button>
                     <button
-                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       onClick={() => abrirModalEdit(material)}
                     >
-                      Modificar
+                              <FiEdit />
+                              Modificar
                     </button>
 
                     <DeleteButton

@@ -196,7 +196,7 @@ const EmpresaDonante = () => {
               </a>
             </td>
             <td className="px-4 py-2 flex">
-              <NextButton />
+
               <button
                 onClick={() => abrirModalEdit(item)}
                 className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"

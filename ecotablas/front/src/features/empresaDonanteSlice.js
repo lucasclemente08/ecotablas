@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "http://localhost:61274/api/EmpresaDonante";
+const API_URL = "http://www.gestiondeecotablas.somee.com/api/EmpresaDonante";
 
 // Asincronía para obtener empresas donantes
 export const fetchEmpresaDonante = createAsyncThunk(
@@ -17,7 +17,7 @@ export const fetchEmpresaDonante = createAsyncThunk(
 export const addEmpresaDonante = createAsyncThunk(
   "empresaDonante/addEmpresaDonante",
   async (newEmpresa) => {
-    const response = await axios.post(API_URL, newEmpresa);
+    const response = await axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar", newEmpresa);
     return { ...newEmpresa, id: response.data.id };
   }
 );
@@ -26,7 +26,7 @@ export const addEmpresaDonante = createAsyncThunk(
 export const editEmpresaDonante = createAsyncThunk(
   "empresaDonante/editEmpresaDonante",
   async ({ id, empresa }) => {
-    await axios.put(`${API_URL}/${id}`, empresa);
+    await axios.put(`${"http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Modificar"}/${id}`, empresa);
     return { id, empresa };
   }
 );

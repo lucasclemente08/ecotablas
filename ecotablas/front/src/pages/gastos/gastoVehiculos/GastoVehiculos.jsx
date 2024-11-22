@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Pie, Line } from "react-chartjs-2";
 import Pagination from "../../../components/Pagination"
 import FilterTable from "../../../components/FilterTable";
+import { FiEdit } from "react-icons/fi";
 import { HiMiniLink } from "react-icons/hi2";
 import {
   Chart as ChartJS,
@@ -616,9 +617,11 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
                         setFormValues(item); // Rellenar el formulario con los valores del gasto
                         setModalEdit(true); // Mostrar el modal de edición
                       }}
-                      className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      className="bg-yellow-700 ml-2 flex  items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                     >
-                      Modificar
+                        <FiEdit  className="m-1"/>
+                        Modificar  
+       
                     </button>
         </div>
 
