@@ -63,8 +63,8 @@ const DonantesChart = () => {
         <div className="h-96 p-4 rounded-md">
           <Bar
             data={chartData}
-            options={{
-              responsive: true,
+            options={{           responsive: true,
+    
               maintainAspectRatio: false,
               plugins: {
                 legend: {
@@ -77,6 +77,7 @@ const DonantesChart = () => {
                   display: true,
                   text: "Cantidad de Donantes por Tipo",
                   font: { size: 20 },
+                 
                 },
               },
               scales: {
