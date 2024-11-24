@@ -7,16 +7,22 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const MaquinariaChart = () => {
   const [maquinarias, setMaquinarias] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Función para obtener los datos de la API
   const fetchMaquinarias = async () => {
     try {
-      const response = await fetch("http://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo"); // Cambia por tu URL
+      setLoading(true);
+      const response = await fetch(
+        "http://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo"
+      );
       if (!response.ok) throw new Error("Error al obtener las maquinarias");
       const data = await response.json();
       setMaquinarias(data);
+      setError(null);
     } catch (error) {
       console.error(error);
+      setError("No se pudieron cargar los datos. Intenta nuevamente.");
     } finally {
       setLoading(false);
     }
@@ -48,26 +54,31 @@ const MaquinariaChart = () => {
 
   const options = {
     responsive: true,
-    
-  maintainAspectRatio: false,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "bottom",
+        labels: {
+          color: "#FFFFFF", // Texto de la leyenda en blanco
+        },
       },
     },
   };
 
-  // Renderiza el gráfico o un indicador de carga
   return (
-    <div className="w-full max-w-sm mx-auto">
+    <div className="w-full max-w-sm mx-auto p-4 rounded-md shadow-md">
       {loading ? (
-        <p className="text-center text-gray-600">Cargando datos...</p>
+        <p className="text-center text-gray-300">Cargando datos...</p>
+      ) : error ? (
+        <p className="text-center text-red-500">{error}</p>
       ) : (
         <>
           <h3 className="text-xl font-semibold mt-4 text-white text-center mb-4">
             Estados de Maquinarias
           </h3>
-          <Doughnut data={data} options={options}  />
+          <div className="relative h-[300px]">
+            <Doughnut data={data} options={options} />
+          </div>
         </>
       )}
     </div>
