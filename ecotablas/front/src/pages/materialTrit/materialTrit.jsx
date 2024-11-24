@@ -261,7 +261,7 @@ const MaterialTrit = () => {
 
   const optionsTipoPlastico = [
     { value: "Unico", label: "Tipo-Único" },
-    { value: "Mescla", label: "Tipo-Mezcla" },
+    { value: "Mezcla", label: "Tipo-Mezcla" },
     // ... otras opciones
   ];
 

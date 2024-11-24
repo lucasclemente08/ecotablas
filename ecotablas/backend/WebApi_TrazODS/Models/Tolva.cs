@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
 
 namespace WebApi_TrazODS.Models
 {
@@ -50,8 +52,6 @@ namespace WebApi_TrazODS.Models
         {
 
             string sqlSentencia = "sp_InsertTolvasPrueba";
-
-
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = connectionString;
 
@@ -59,44 +59,48 @@ namespace WebApi_TrazODS.Models
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
 
+
             sqlCom.Parameters.Add("@IdMaterialTriturado", SqlDbType.Int).Value = IdMaterialTriturado;
-            sqlCom.Parameters.Add("@HorarioInicio", SqlDbType.DateTime).Value = HorarioInicio;
-            sqlCom.Parameters.Add("@CantidadCargada", SqlDbType.Decimal).Value = CantidadCargada;
-            sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
-            sqlCom.Parameters.Add("@Proporcion", SqlDbType.NVarChar).Value = Proporcion;
-            sqlCom.Parameters.Add("@Especificaciones", SqlDbType.NVarChar).Value = Especificaciones;
-            sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
-
-            sqlCnn.Open();
+                    sqlCom.Parameters.Add("@HorarioInicio", SqlDbType.DateTime).Value = HorarioInicio;
+                    sqlCom.Parameters.Add("@CantidadCargada", SqlDbType.Decimal).Value = CantidadCargada;
+                    sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
+                    sqlCom.Parameters.Add("@Proporcion", SqlDbType.NVarChar).Value = Proporcion;
+                    sqlCom.Parameters.Add("@Especificaciones", SqlDbType.NVarChar).Value = Especificaciones;
+                    sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
 
 
-            var res = sqlCom.ExecuteNonQuery();
 
-            sqlCnn.Close();
+                    sqlCnn.Open();
 
 
-        }
+                    var res = sqlCom.ExecuteNonQuery();
+
+
+                    sqlCnn.Close();
+
+                }
         public void Update()
         {
 
-            string sqlSentencia = "sp_UpdateTolvaPruebas";
-
+            string sqlSentencia = "sp_UpdateTolva";
 
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = connectionString;
 
+
+
+
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
 
-
             sqlCom.Parameters.Add("@IdTolva", SqlDbType.Int).Value = IdTolva;
-            sqlCom.Parameters.Add("@IdMaterialTriturado", SqlDbType.Int).Value = IdMaterialTriturado;
-            sqlCom.Parameters.Add("@HorarioInicio", SqlDbType.DateTime).Value = HorarioInicio;
-            sqlCom.Parameters.Add("@CantidadCargada", SqlDbType.Decimal).Value = CantidadCargada;
-            sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
-            sqlCom.Parameters.Add("@Proporcion", SqlDbType.NVarChar).Value = Proporcion;
-            sqlCom.Parameters.Add("@Especificaciones", SqlDbType.NVarChar).Value = Especificaciones;
-            sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
+                        sqlCom.Parameters.Add("@IdMaterialTriturado", SqlDbType.Int).Value = IdMaterialTriturado;
+                        sqlCom.Parameters.Add("@HorarioInicio", SqlDbType.DateTime).Value = HorarioInicio;
+                        sqlCom.Parameters.Add("@CantidadCargada", SqlDbType.Decimal).Value = CantidadCargada;
+                        sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
+                        sqlCom.Parameters.Add("@Proporcion", SqlDbType.NVarChar).Value = Proporcion;
+                        sqlCom.Parameters.Add("@Especificaciones", SqlDbType.NVarChar).Value = Especificaciones;
+                        sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
 
             sqlCnn.Open();
 
@@ -105,7 +109,6 @@ namespace WebApi_TrazODS.Models
 
 
             sqlCnn.Close();
-
 
         }
         public void Delete()

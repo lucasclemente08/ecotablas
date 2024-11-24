@@ -39,12 +39,12 @@ namespace WebApi_TrazODS.Controllers
 
             return obj;
         }
-        // GET: api/Reparacion/
+        // GET: api/Reparacion/5
         [HttpGet]
-        public Reparacion ListarPorIdMaquinaria(int IdMaquinaria)
+        public Reparacion ListarPorIdMaquinaria(int id)
         {
             Reparacion oReparacion = new Reparacion();
-            oReparacion.IdMaquinaria = IdMaquinaria;
+            oReparacion.IdMaquinaria = id;
 
             DataTable dt = oReparacion.SelectIdMaquinaria();
 

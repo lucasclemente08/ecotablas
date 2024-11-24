@@ -5,6 +5,8 @@ import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import builderApiUrl from "../../utils/BuilderApi";
@@ -15,17 +17,19 @@ import {
   editMaquinarias,
   deleteMaquinarias,
 } from "../../api/MaquinariasAPI";
-import { addReparacion } from "../../api/ReparacionesAPI";
+import { addReparacion, editReparacion, getReparacionByIdMaquinaria, } from "../../api/ReparacionesAPI";
 
 const Maquinaria = () => {
   const [maquinarias, setMaquinarias] = useState([]);
-  const [EstadoMaquinarias, setEstadoMaquinarias] = useState([]);
+  const [EstadoMaquinarias, setEstadoMaquinarias] = useState([]); 
 
   const [loading, setLoading] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [maquinariaId, setMaquinariaId] = useState(null);
   const [modalEdit, setModalEdit] = useState(false);
   const [modalReparacion, setModalReparacion] = useState(false);
+  const [reparaciones, setReparaciones] = useState([]);
+  const [modalReparacionList, setModalReparacionList] = useState(false);
 
   const [mensaje, setMensaje] = useState("");
 
@@ -63,6 +67,27 @@ const Maquinaria = () => {
     setModalEdit(true);
   };
 
+  const fetchReparaciones = async (maquinaria) => {
+    setLoading(true);
+    try {
+      const res = await getReparacionByIdMaquinaria(maquinaria.Id);
+      setReparaciones(res.data);
+    } catch (error) {
+      setMensaje("Error al cargar las reparaciones.");
+      console.error("Error fetching data: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const abrirModalReparacionList = (maquinaria) => {
+    setMaquinariaId(maquinaria.Id);
+    fetchReparaciones(maquinaria.Id);
+    setModalReparacionList(true);
+  };
+  const cerrarModalReparacionList = () => {
+    setModalReparacionList(false);
+    setReparaciones([]);
+  };
   const cerrarModalEdit = () => setModalEdit(false);
 
   const abrirModal = () => {
@@ -206,7 +231,22 @@ const Maquinaria = () => {
       console.error("Error al agregar la reparación:", error);
     }
   };
+  const terminarReparacion = async (reparacionId) => {
+    try {
+      // Editar estado de la reparación a 2 (terminada)
+      await editReparacion(reparacionId, { IdEstadoReparacion: 2 });
 
+      // Cambiar estado de la maquinaria a 1 (operativa)
+      await editMaquinarias(maquinariaId, { IdEstado: 1 });
+
+      setMensaje("Reparación terminada y maquinaria marcada como operativa.");
+      fetchReparaciones(maquinariaId);
+      fetchMaquinarias(); // Refrescar maquinarias
+    } catch (error) {
+      setMensaje("Error al terminar la reparación.");
+      console.error("Error al terminar la reparación: ", error);
+    }
+  };
   const handleChangeReparacion = (e) => {
     const { name, value } = e.target;
     setReparacionValues((prevState) => ({
@@ -300,10 +340,10 @@ const Maquinaria = () => {
         ...maquinaria,
         IdEstado: nuevoEstado,
       });
-      setMensaje("Estado cambiado exitosamente");
+      toast.success("Estado cambiado exitosamente");
       await fetchMaquinarias(); // Actualizar la lista
     } catch (error) {
-      setMensaje("Error al cambiar el estado de la maquinaria.");
+      toast.error("Error al cambiar el estado de la maquinaria.");
       console.error("Error al cambiar el estado:", error);
     }
   };
@@ -319,6 +359,18 @@ const Maquinaria = () => {
         <Home />
         <div className="p-4 w-full">
           <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
+          <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
+
           <AddButtonWa abrirModal={abrirModal} title={" Añadir Maquinaria"} />
           <PdfGenerator
             columns={columns}
@@ -407,7 +459,11 @@ const Maquinaria = () => {
                     </td>
                     <td className="border-b py-2 px-4 flex justify-center">
                       {maquinaria.IdEstado === 3 ? (
-                        <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700">
+                        <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700"
+                        onClick={() =>
+                          abrirModalReparacionList(maquinaria.Id)
+                        }
+                        >
                           Ver Reparacion
                         </button>
                       ) : null}

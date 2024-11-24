@@ -31,6 +31,10 @@ namespace WebApi_TrazODS.Models
         // Nueva propiedad añadida
         public string NumeroPlaca { get; set; }
 
+        public string NumeroIdentificador { get; set; }
+
+        public int IdEstado { get; set; }
+
         #endregion
 
         #region Metodos
@@ -70,14 +74,16 @@ namespace WebApi_TrazODS.Models
         }
         public void Insert()
         {
-            string sqlSentencia = "SP_InsertVehiculo"; 
-            using (SqlConnection sqlCnn = new SqlConnection(conectionString))
-            {
-                SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
-                sqlCom.CommandType = CommandType.StoredProcedure;
+            string sqlSentencia = "SP_InsertVehiculo";
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = conectionString;
 
-                // Ensure these fields (Marca, Modelo, etc.) have values before adding them
-                sqlCom.Parameters.Add("@Marca", SqlDbType.VarChar).Value = Marca;
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+
+            // Ensure these fields (Marca, Modelo, etc.) have values before adding them
+            sqlCom.Parameters.Add("@Marca", SqlDbType.VarChar).Value = Marca;
                 sqlCom.Parameters.Add("@Modelo", SqlDbType.VarChar).Value = Modelo;
                 sqlCom.Parameters.Add("@Año", SqlDbType.Int).Value = Año;
                 sqlCom.Parameters.Add("@Color", SqlDbType.VarChar).Value = Color;
@@ -87,23 +93,25 @@ namespace WebApi_TrazODS.Models
 
                 // New parameter added
                 sqlCom.Parameters.Add("@NumeroPlaca", SqlDbType.VarChar).Value = NumeroPlaca;
-
-                // Open the connection and execute the command
-                sqlCnn.Open();
-                sqlCom.ExecuteNonQuery();
-            }
+                sqlCom.Parameters.Add("@NumeroIdentificador", SqlDbType.VarChar).Value = NumeroIdentificador;
+                sqlCom.Parameters.Add("@IdEstado", SqlDbType.Int).Value = IdEstado;
+            sqlCnn.Open();
+            var res = sqlCom.ExecuteNonQuery();
+            sqlCnn.Close();
         }
 
 
         public void Update()
         {
             string sqlSentencia = "SP_UpdateVehiculo";
-            using (SqlConnection sqlCnn = new SqlConnection(conectionString))
-            {
-                SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
-                sqlCom.CommandType = CommandType.StoredProcedure;
 
-                sqlCom.Parameters.Add("@IdVehiculo", SqlDbType.Int).Value = IdVehiculo;
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = conectionString;
+
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+
+            sqlCom.Parameters.Add("@IdVehiculo", SqlDbType.Int).Value = IdVehiculo;
                 sqlCom.Parameters.Add("@Marca", SqlDbType.VarChar).Value = Marca;
                 sqlCom.Parameters.Add("@Modelo", SqlDbType.VarChar).Value = Modelo;
                 sqlCom.Parameters.Add("@Año", SqlDbType.Int).Value = Año;
@@ -115,10 +123,12 @@ namespace WebApi_TrazODS.Models
 
                 // Nuevo parámetro añadido
                 sqlCom.Parameters.Add("@NumeroPlaca", SqlDbType.VarChar).Value = NumeroPlaca;
+                sqlCom.Parameters.Add("@NumeroIdentificador", SqlDbType.VarChar).Value = NumeroIdentificador;
+                sqlCom.Parameters.Add("@IdEstado", SqlDbType.Int).Value = IdEstado;
 
-                sqlCnn.Open();
-                sqlCom.ExecuteNonQuery();
-            }
+            sqlCnn.Open();
+            var res = sqlCom.ExecuteNonQuery();
+            sqlCnn.Close();
         }
 
 

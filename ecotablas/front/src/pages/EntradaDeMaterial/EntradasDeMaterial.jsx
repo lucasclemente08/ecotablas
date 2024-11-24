@@ -42,6 +42,7 @@ const EntradasDeMaterial = () => {
     FechaIngresoM: "",
     IdTipoPlastico: "",
     Estado: 1,
+    TipoDonante: "",
   });
 
   const [clasificacionValues, setClasificacionValues] = useState({
@@ -76,6 +77,8 @@ const EntradasDeMaterial = () => {
       VolumenInutil:material.VolumenMInutil,
       FechaIngresoM: material.FechaIngresoM,
       IdTipoPlastico: material.IdTipoPlastico,
+      Estado: material.Estado,
+      TipoDonante: material.TipoDonante,
     });
     setModalEdit(true);
   };
@@ -100,7 +103,9 @@ const EntradasDeMaterial = () => {
       !formValues.VolumenM ||
       !formValues.VolumenMInutil ||
       !formValues.FechaIngresoM ||
-      !formValues.IdTipoPlastico
+      !formValues.IdTipoPlastico ||
+      !formValues.Estado ||
+      !formValues.TipoDonante
     ) {
       setMensaje("Todos los campos son obligatorios.");
       return;
@@ -211,11 +216,12 @@ const EntradasDeMaterial = () => {
   // Total de páginas
   const totalPages = Math.ceil(materials.length / itemsPerPage);
 
-  const title = ["Volumen Util (kgs)", "Volumen Inutil (kgs)", "Fecha de ingreso", "Tipo Donante","Vehículo" , "Acciones"];
+  const title = ["Volumen Util (kgs)", "Volumen Inutil (kgs)", "Fecha de ingreso", "Tipo Donante", "Acciones"];
   const columns = [
     { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenMInutil" },
     { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
+    { header: "Tipo Donante", dataKey: "TipoDonante" },
   ];
 
   const fields = [
@@ -242,6 +248,12 @@ const EntradasDeMaterial = () => {
       label: "ID Material",
       type: "text",
       placeholder: "ID Plastico *",
+    },
+    {
+      name: "TipoDonante",
+      label: "Tipo Donante",
+      type: "text",
+      placeholder: "Tipo Donante *",
     },
   ];
 
@@ -334,10 +346,7 @@ const EntradasDeMaterial = () => {
                     {material.FechaIngresoM.slice(0, 10)}
                   </td>
                   <td className="border-b py-2 px-4">
-                    Empresa Recolectora
-                  </td>
-                  <td className="border-b py-2 px-4">
-                    Vehiculo 1
+                  {material.TipoDonante}
                   </td>
                   <td
                     className={` py-2 px-4 flex justify-center ${

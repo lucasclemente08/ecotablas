@@ -56,6 +56,11 @@ namespace WebApi_TrazODS.Controllers
             oVehiculos.Año = value.Año;
             oVehiculos.Color = value.Color;
             oVehiculos.Tipo = value.Tipo;
+            oVehiculos.FechaUltimaInspeccion = value.FechaUltimaInspeccion;
+            oVehiculos.Combustible = value.Combustible;
+            oVehiculos.NumeroPlaca = value.NumeroPlaca;
+            oVehiculos.NumeroIdentificador = value.NumeroIdentificador;
+            oVehiculos.IdEstado = value.IdEstado;
 
             oVehiculos.Insert();
         }
@@ -71,6 +76,11 @@ namespace WebApi_TrazODS.Controllers
             oVehiculos.Año = value.Año;
             oVehiculos.Color = value.Color;
             oVehiculos.Tipo = value.Tipo;
+            oVehiculos.FechaUltimaInspeccion = value.FechaUltimaInspeccion;
+            oVehiculos.Combustible = value.Combustible;
+            oVehiculos.NumeroPlaca = value.NumeroPlaca;
+            oVehiculos.NumeroIdentificador = value.NumeroIdentificador;
+            oVehiculos.IdEstado = value.IdEstado;
 
             oVehiculos.Update();
         }
