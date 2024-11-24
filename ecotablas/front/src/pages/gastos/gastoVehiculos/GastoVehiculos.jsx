@@ -54,7 +54,7 @@ const GastoVehiculos = () => {
   const [modalEdit, setModalEdit] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [gastoEdit, setGastoEdit] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1 );
   const [itemsPerPage] = useState(5);
   const [accessToken, setAccessToken] = useState(null);
 
@@ -523,7 +523,7 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
   pauseOnHover
 />
 
-      <div className="flex items-center" >
+<div className="flex flex-wrap items-center gap-4">
         <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
           title="Añadir gastos"
@@ -577,70 +577,87 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
         loading ? (
           <LoadingTable loading={loading} />
         ) : (
-<div className="overflow-x-auto min-w-full bg-gray-100">
-<table className="min-w-full bg-white rounded-lg shadow-md">
-    {/* Encabezado */}
-    <TablaHead titles={titles} />
+<div className="overflow-x-auto w-full bg-gray-100">
+  <table className="min-w-full bg-white rounded-lg shadow-md">
+  <TablaHead  titles={titles}/>
     <tbody>
       {dataV.map((item, index) => (
         <tr key={index} className="hover:bg-gray-100">
-          <td className="border-b py-3 px-4 text-left">{item.TipoComprobante}</td>
           <td className="border-b py-3 px-4 text-left">
+            <span className="font-semibold lg:hidden">Tipo Comprobante: </span>
+            {item.TipoComprobante}
+          </td>
+          <td className="border-b py-3 px-4 text-left">
+            <span className="font-semibold lg:hidden">Comprobante: </span>
             {item.Comprobante ? (
               <a
                 href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
-                className="text-blue-400 flex justify-center items-center"
+                className="text-blue-400 flex items-center gap-1"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Comprobante <HiMiniLink className="m-1" />
+                <HiMiniLink className="m-1" /> Comprobante
               </a>
             ) : (
               "No disponible"
             )}
           </td>
-          <td className="border-b py-3 px-4 text-left">{item.TipoGasto}</td>
-          <td className="border-b py-3 px-4 text-left ">
+          <td className="border-b py-3 px-4 text-left">
+            <span className="font-semibold lg:hidden">Tipo Gasto: </span>
+            {item.TipoGasto}
+          </td>
+          <td className="border-b py-3 px-4 text-left">
+            <span className="font-semibold lg:hidden">Vehículo: </span>
             {getVehicleById(item.IdVehiculo)}
           </td>
-          <td className="border-b py-3 px-4 text-left">{item.Proveedor}</td>
-          <td className="border-b py-3 px-4 text-right">${item.Monto}</td>
-          <td className="border-b py-3 px-4 text-right ">
+          <td className="border-b py-3 px-4 text-left">
+            <span className="font-semibold lg:hidden">Proveedor: </span>
+            {item.Proveedor}
+          </td>
+          <td className="border-b py-3 px-4 text-right">
+            <span className="font-semibold lg:hidden">Monto: </span>${item.Monto}
+          </td>
+          <td className="border-b py-3 px-4 text-right">
+            <span className="font-semibold lg:hidden">Fecha: </span>
             {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
           </td>
-          <td className="border-b py-3 px-4 text-left hidden ">
+          <td className="border-b py-3 px-4 text-left ">
+            <span className="font-semibold lg:hidden">Descripción: </span>
             {item.Descripcion}
           </td>
-          <td className="border-b p-2 flex flex-col md:flex-row items-center gap-2">
-            <button
-              onClick={() => {
-                setGastoEdit(item);
-                setFormValues(item);
-                setModalEdit(true);
-              }}
-              className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              <FiEdit className="m-1" />
-              Modificar
-            </button>
-            <DeleteButton
-              endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
-              id={item.IdGasto}
-              updateList={fetchMaterials}
-            />
-          </td>
+          
+     <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
+     <button
+       onClick={() => {
+         setGastoEdit(item);
+         setFormValues(item);
+         setModalEdit(true);
+       }}
+       className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+     >
+       <FiEdit className="m-1" />
+       Modificar
+     </button>
+     <DeleteButton
+       endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
+       id={item.IdGasto}
+       updateList={fetchMaterials}
+     />
+   </td>
         </tr>
       ))}
     </tbody>
   </table>
-
-  {/* Paginación */}
-  <Pagination
+    {/* Paginación */}
+    <Pagination
     currentPage={currentPage}
     totalPages={totalPages}
     paginate={paginate}
   />
 </div>
+
+
+
 
         )
       ) : showPieChart ? (
