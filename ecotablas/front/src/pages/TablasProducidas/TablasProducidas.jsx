@@ -26,7 +26,7 @@ const TablasProducidas = () => {
     (state) => state.tablasProducidas,
   );
   const [selectedDate, setSelectedDate] = useState("");  // Store the selected date
-
+  const [mensaje, setMensaje] = useState("");
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [currentItems, setCurrentItems] = useState([])
@@ -134,10 +134,10 @@ const TablasProducidas = () => {
         ...item,
         Estado: 2, // Cambiar siempre a 2
       });
-      setMensaje("Estado cambiado exitosamente");
-      await fetchTablasProducidas(); // Actualizar la lista
+      setMensaje("¡Tabla terminada!");
+      dispatch(fetchTablasProducidas()); // Actualizar la lista
     } catch (error) {
-      setMensaje("Error al cambiar el estado de la maquinaria.");
+      setMensaje("Error al cambiar el estado de las tablas.");
       console.error("Error al cambiar el estado:", error);
     }
   };
@@ -168,12 +168,14 @@ const TablasProducidas = () => {
         data={data}
         title="Reporte de Tablas Producidas"
       />
+
       <div className=" flex items-center justify-center">
       <input
         type="date"
         onChange={(e) => setSelectedDate(e.target.value)}  // Update the selected date state
         className="mb-2 p-2 border border-gray-300 rounded"
       />
+
 
       <button 
         onClick={filterByDate}  // Trigger the filter when clicked
@@ -194,6 +196,13 @@ const TablasProducidas = () => {
           Error: {error}
         </div>
       )}
+
+{mensaje && (
+            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
+              {mensaje}
+            </div>
+          )}
+
       {modalAbierto && (
         <AddModalWithSelect
           title="Agregar Tabla Producida"
@@ -257,7 +266,7 @@ const TablasProducidas = () => {
                   <td className="px-4 py-2 flex">
                   <button
                           onClick={() => handleChangeState(item)}
-                          className="bg-blue-500 text-white ml-2 py-1 px-3 rounded hover:bg-blue-700"
+                          className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                         >
                           Terminado
                         </button>

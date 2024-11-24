@@ -57,6 +57,7 @@ namespace WebApi_TrazODS.Controllers
             oIngresoMat.IdTipoPlastico = value.IdTipoPlastico;
             oIngresoMat.VolumenMInutil = value.VolumenMInutil;
             oIngresoMat.Estado = value.Estado;
+            oIngresoMat.TipoDonante = value.TipoDonante;
 
 
 
@@ -76,6 +77,7 @@ namespace WebApi_TrazODS.Controllers
             oIngresoMat.IdTipoPlastico = value.IdTipoPlastico;
             oIngresoMat.VolumenMInutil = value.VolumenMInutil;
             oIngresoMat.Estado = value.Estado;
+            oIngresoMat.TipoDonante = value.TipoDonante;
 
             oIngresoMat.Update();
 

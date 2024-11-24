@@ -26,6 +26,7 @@ const Tolva = () => {
   const [loading, setLoading] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
   const [materialId, setMaterialId] = useState(null);
+  const [mensaje, setMensaje] = useState("");
   const [modalTabla, setModalTabla] = useState(false);
 
   const [formValues, setFormValues] = useState({
@@ -58,16 +59,20 @@ const Tolva = () => {
   };
 
 
-  const abrirModal = () => setModalAbierto(true);
-  const cerrarModal = () => setModalAbierto(false);
+  const abrirModal = () => {
+    setModalAbierto(true);
+  };
+  const cerrarModal = () => {
+    setModalAbierto(false);
+  };
   const abrirModalEdit = (material) => {
-    setMaterialId(material.idTolva);
+    setMaterialId(material.IdTolva);
     setFormValues({
-      HorarioInicio: material.horario_inicio,
-      CantidadCargada: material.cantidadCargada,
-      TipoPlastico: material.tipo_plastico,
+      HorarioInicio: material.HorarioInicio,
+      CantidadCargada: material.CantidadCargada,
+      TipoPlastico: material.TipoPlastico,
       Proporcion: material.proporcion,
-      Especificaciones: material.especificaciones,
+      Especificaciones: material.Especificaciones,
       Estado: 1,
     });
     setModalEdit(true);
@@ -125,7 +130,27 @@ const Tolva = () => {
       console.error("Error al agregar el material:", error);
     }
   };
-
+  const validateForm = () => {
+    let isValid = true;
+    if (!formValues.formValues.HorarioInicio) {
+      setMensaje("El horario de inicio es obligatorio.");
+      isValid = false;
+    } else if(!formValues.CantidadCargada) {
+      setMensaje("La cantidad es obligatoria.");
+      isValid = false;
+    } else if (!formValues.TipoPlastico) {
+      setMensaje("El tipo de plástico es obligatorio.");
+      isValid = false;
+    } else if (!formValues.Proporcion) {
+      setMensaje("La proporcion es obligatoria.");
+      isValid = false;
+    } else if (!formValues.Especificaciones) {
+      setMensaje("Las especificaciones son obligatorias.");
+      isValid = false;
+    } 
+    
+    return isValid;
+  };
   const handleEditSubmit = async () => {
     if (!validateForm()) return;
     try {
@@ -169,27 +194,6 @@ const Tolva = () => {
       console.error("Error al terminar el proceso:", error);
     }
   };
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 30;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = materials.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(materials.length / itemsPerPage);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const totalVolumen = materials.reduce(
-    (acc, material) => acc + parseFloat(material.cantidadCargada || 0),
-    0
-  );
-  const totalItems = materials.length;
-
-  const optionsTipoPlastico = [
-    { value: 'Unico', label: 'Tipo-Único' },
-    { value: 'Mescla', label: 'Tipo-Mezcla' },
-    // ... otras opciones
-  ];
-
   const handleChangeTabla = (e) => {
     const { name, value } = e.target;
     setTablaValues((prevState) => ({
@@ -197,6 +201,27 @@ const Tolva = () => {
       [name]: value,
     }));
   };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = materials.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(materials.length / itemsPerPage);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const totalVolumen = materials.reduce(
+    (acc, material) => acc + parseFloat(material.CantidadCargada || 0),
+    0
+  );
+  const totalItems = materials.length;
+
+  const optionsTipoPlastico = [
+    { value: 'Unico', label: 'Tipo-Único' },
+    { value: 'Mezcla', label: 'Tipo-Mezcla' },
+    // ... otras opciones
+  ];
+
+
   const rows = materials.map((material) => ({
     Fecha: material.HorarioInicio.slice(0, 10),
   }));
@@ -208,15 +233,23 @@ const Tolva = () => {
     { header: "Proporción cargada", accessor: "proporcion" },
     { header: "Especificaciones", accessor: "especificaciones" },
   ];
+  const dimensionesOptions = [
+    { value: "1,50mts x 10cm", label: "1,50mts x 10cm" },
+    { value: "1,60mts x 10cm", label: "1,60mts x 10cm" },
+  ];
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
   return (
     <SectionLayout title="Tolva">
       <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
       <PdfGenerator columns={columns} data={materials} title="Reporte de Tolva" />
+
+      {mensaje && (
+            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
+              {mensaje}
+            </div>
+          )}
      
-
-
       {modalAbierto && (
         <AddModalWithSelect 
           title="Agregar Registro de Tolva"
@@ -250,9 +283,14 @@ const Tolva = () => {
 )}
 
 {modalTabla &&
-          <AddModal title="Terminar Tablas"
+          <AddModalWithSelect title="Terminar Tablas"
           fields={[
-            { name: "Dimensiones", label: "Dimensiones)", type: "number" },
+            {
+              name: "Dimensiones",
+              label: "Dimensiones",
+              type: "select",
+              options: dimensionesOptions,
+            },
             { name: "Peso", label: "Peso", type: "number" },
           ]}
             handleChange={handleChangeTabla}

@@ -7,10 +7,6 @@ import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-
 
 import VolumenChart from "../../components/volumen/VolumenChart";
 import DateFilter from "../../components/DateFilter";

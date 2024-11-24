@@ -43,6 +43,7 @@ namespace WebApi_TrazODS.Controllers
         {
 
             Tolva oTolva = new Tolva();
+            oTolva.IdTolva = id;
             oTolva.IdMaterialTriturado = value.IdMaterialTriturado;
             oTolva.HorarioInicio = value.HorarioInicio;
             oTolva.CantidadCargada = value.CantidadCargada;

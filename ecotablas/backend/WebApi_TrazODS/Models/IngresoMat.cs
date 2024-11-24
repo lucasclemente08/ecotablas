@@ -29,6 +29,7 @@ namespace WebApi_TrazODS.Models
 
         public int Estado { get; set; }
 
+        public string TipoDonante { get; set; }
 
         #endregion
 
@@ -116,6 +117,8 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@IdTipoPlastico", SqlDbType.Int).Value = IdTipoPlastico;
             sqlCom.Parameters.Add("@VolumenMInutil", SqlDbType.Int).Value = VolumenMInutil;
             sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
+            sqlCom.Parameters.Add("@TipoDonante", SqlDbType.VarChar).Value = TipoDonante;
+
 
 
             sqlCnn.Open();
@@ -152,6 +155,7 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@IdTipoPlastico", SqlDbType.Int).Value = IdTipoPlastico;
             sqlCom.Parameters.Add("@VolumenMInutil", SqlDbType.Int).Value = VolumenMInutil;
             sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
+            sqlCom.Parameters.Add("@TipoDonante", SqlDbType.VarChar).Value = TipoDonante;
 
 
             sqlCnn.Open();

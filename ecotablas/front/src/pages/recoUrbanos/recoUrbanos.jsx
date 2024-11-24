@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Pie, Line } from "react-chartjs-2";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import SectionLayout from "../../layout/SectionLayout";
@@ -8,7 +9,18 @@ import { FaMapMarkedAlt } from "react-icons/fa";
 import TablaHead from "../../components/Thead";
 import { MdOutlineEditLocationAlt } from "react-icons/md";
 import L from "leaflet";
-import Pagination from "../../components/Pagination";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+import { FaChartLine, FaChartPie } from "react-icons/fa";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -20,24 +32,22 @@ import icon from "leaflet/dist/images/marker-icon.png";
 import Toast from "../../components/Toast";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
-import { MdOutlineAddLocation } from "react-icons/md";
-import {
-  Chart as ChartJS,
+
+ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
-import DonantesChart from "../../components/graficos/donantesChart";
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-
-
+  ArcElement,
+);
 
 const RecoUrbanos = () => {
+  const [showPieChart, setShowPieChart] = useState(true);
+  const [showTable, setShowTable] = useState(true);
+  const [pieData, setPieData] = useState({});
   const [showMap, setShowMap] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState("success"); 
@@ -164,7 +174,24 @@ const RecoUrbanos = () => {
     }
   };
 
-
+  useEffect(() => {
+    const tipos = locations.reduce((acc, loc) => {
+      acc[loc.TipoDonante] = (acc[loc.TipoDonante] || 0) + 1;
+      return acc;
+    }, {});
+  
+    setPieData({
+      labels: Object.keys(tipos),
+      datasets: [
+        {
+          label: "Tipos de Donante",
+          data: Object.values(tipos),
+          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+          hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+        },
+      ],
+    });
+  }, [locations]);
  
     const handleEdit = (location) => {
       setIdUbicacion(location.IdUbicacion)
@@ -393,7 +420,24 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
           </div>
         )}
      
-
+     <div style={{ width: '500px', height: '500px', margin: '0 auto' }}>
+  <h3 className="text-xl font-semibold mb-4">
+    Distribución de Tipos de Donantes
+  </h3>
+  {pieData.datasets && (
+    <Pie
+      data={pieData}
+      options={{
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "bottom",
+          },
+        },
+      }}
+    />
+  )}
+</div>
 
       {showMap ? (
     <>

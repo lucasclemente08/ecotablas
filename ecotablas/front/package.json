@@ -15,7 +15,7 @@
     "@midudev/tailwind-animations": "^0.1.0",
     "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.7.7",
-    "chart.js": "^4.4.4",
+    "chart.js": "^4.4.6",
     "dropbox": "^10.34.0",
     "firebase": "^10.11.1",
     "jspdf": "^2.5.1",
