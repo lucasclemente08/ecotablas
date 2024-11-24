@@ -433,10 +433,20 @@ const GastoVehiculos = () => {
 
 const indexOfLastItem = currentPage * itemsPerPage;
 const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentItems = dataV.slice(indexOfFirstItem, indexOfLastItem);
 
-const totalPages = Math.ceil(dataV.length / itemsPerPage);
-const paginate = (pageNumber) => setCurrentPage(pageNumber);
+const currentItems = (filteredData.length > 0 ? filteredData : dataV).slice(
+  indexOfFirstItem,
+  indexOfLastItem
+);
+const totalPages = Math.ceil((filteredData.length > 0 ? filteredData.length : dataV.length) / itemsPerPage);
+
+
+const paginate = (pageNumber) => {
+  if (pageNumber > 0 && pageNumber <= totalPages) {
+    setCurrentPage(pageNumber);
+  }
+};
+
 
 
 const [lineData, setLineData] = useState({});
@@ -581,7 +591,7 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
   <table className="min-w-full bg-white rounded-lg shadow-md">
   <TablaHead  titles={titles}/>
     <tbody>
-      {dataV.map((item, index) => (
+      {currentItems.map((item, index) => (
         <tr key={index} className="hover:bg-gray-100">
           <td className="border-b py-3 px-4 text-left">
             <span className="font-semibold lg:hidden">Tipo Comprobante: </span>
