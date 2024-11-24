@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Pagination from "../../../components/Pagination"
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchGastos,
@@ -31,6 +32,9 @@ const GastoMaquinaria = () => {
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [dataView, setDataView] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+
   const [gastoEdit, setGastoEdit] = useState(null);
   const [showTable, setShowTable] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
@@ -38,11 +42,13 @@ const GastoMaquinaria = () => {
   const [mensaje, setMensaje] = useState("");
   const [pieData, setPieData] = useState({});
   const [showPieChart, setShowPieChart] = useState(true);
+  const [accessToken, setAccessToken] = useState(null);
+
 
   const [formValues, setFormValues] = useState({
     tipoGasto: "",
     tipoComprobante: "",
-    comprobante: "",
+    Comprobante: "",
     proveedor: "",
     monto: "",
     fecha: "",
@@ -88,14 +94,24 @@ const GastoMaquinaria = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(addGasto(formValues)).then(() => {
+
+    if (formValues.Comprobante) {
+  
+      const URL = await uploadToDropbox(formValues.Comprobante);  
+console.log(URL);
+      if (URL) {
+    
+        const updatedFormValues = { ...formValues, Comprobante: URL };
+     
+
+    dispatch(addGasto(updatedFormValues)).then(() => {
       setModalAbierto(false);
       dispatch(fetchGastos());
     });
   };
-
+}}
   const handleEditSubmit = (e) => {
     e.preventDefault();
     dispatch(addGasto(gastoEdit))
@@ -184,7 +200,6 @@ const GastoMaquinaria = () => {
 
     { name: "comprobante", label: "Comprobante", type: "file", required: true },
 
-    { name: "comprobante", label: "Comprobante", type: "text", required: true },
     { name: "proveedor", label: "Proveedor", type: "text", required: true },
     {
       name: "Id_Maquinaria",
@@ -209,39 +224,148 @@ const GastoMaquinaria = () => {
   };
 
 
-  const uploadFileToDropbox = async (file) => {
-    const token = import.meta.env.VITE_DROPBOX_TOKEN
-    console.log(token)  
-    const url = 'https://content.dropboxapi.com/2/files/upload';
-    
-    const headers = {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/octet-stream",
-      "Dropbox-API-Arg": JSON.stringify({
-        path: `/uploads/${file.name}`,  // Ruta donde guardar el archivo en Dropbox
-        mode: "add",  // Asegura que no sobrescriba el archivo si ya existe
-        autorename: true,  // Si el archivo ya existe, renombrarlo automáticamente
-      }),
-    };
+  const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
+  const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
   
-    const body = file;
+  const getAccessToken = async () => {
+    const refreshToken = localStorage.getItem('dropboxRefreshToken');
+    if (!refreshToken) {
+      console.error("No se encontró el refresh token en el localStorage.");
+      return null;
+    }
+  
+    const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+      }),
+    });
+  
+    if (!response.ok) {
+      console.error("Error al obtener el access token:", await response.text());
+      return null;
+    }
+  
+    const data = await response.json();
+    return data.access_token;
+  };
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getAccessToken();
+      setAccessToken(token);
+    };
+
+    // Llamada inmediata a la función asíncrona
+    fetchToken();
+  }, []);
+
+  
+  const uploadToDropbox = async (file) => {
+    const accessToken = await getAccessToken();
+    if (!accessToken) return;
+  
+    const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
   
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: body,
+      const dropboxArgs = JSON.stringify({
+        path: `/${file.name}`,
+        mode: "add",
+        autorename: true,
+        mute: false,
       });
   
-      const result = await response.json();
-      console.log('File uploaded:', result);
+      // 1. Subir el archivo a Dropbox
+      const uploadResponse = await fetch(uploadUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/octet-stream",
+          "Dropbox-API-Arg": dropboxArgs,
+        },
+        body: file,
+      });
+  
+      if (!uploadResponse.ok) {
+        console.error("Error al subir el archivo a Dropbox:", await uploadResponse.text());
+        return null;
+      }
+  
+      const fileData = await uploadResponse.json();
+      const filePath = fileData.path_lower;
+  
+      // 2. Verificar si ya existe un enlace compartido
+      const listLinksUrl = "https://api.dropboxapi.com/2/sharing/list_shared_links";
+      const listResponse = await fetch(listLinksUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ path: filePath }),
+      });
+  
+      if (listResponse.ok) {
+        const listData = await listResponse.json();
+        if (listData.links && listData.links.length > 0) {
+          // Si ya existe un enlace compartido, usar el primero
+          const existingLink = listData.links[0].url.replace("?dl=0", "?dl=1");
+          return existingLink;
+        }
+      }
+  
+      // 3. Crear un enlace compartido si no existe
+      const shareUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
+      const shareResponse = await fetch(shareUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          path: filePath,
+          settings: { requested_visibility: "public" }, // Asegura que sea visible públicamente
+        }),
+      });
+  
+      if (!shareResponse.ok) {
+        console.error("Error al crear el enlace compartido:", await shareResponse.text());
+        return null;
+      }
+  
+      const shareData = await shareResponse.json();
+      const baseUrl = "https://www.dropbox.com/scl/fi/";
+      const sharedLink = shareData.url.replace(baseUrl, "").split('?')[0];
+      
+
+      const link = `${sharedLink}?dl=0`;
+ 
+      return link;      
+  
     } catch (error) {
-      console.error('Error uploading file:', error);
+      console.error("Error en la solicitud a Dropbox:", error);
+      return null;
     }
   };
   
+   
 
-  return (
+
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentItems = dataM.slice(indexOfFirstItem, indexOfLastItem);
+
+const totalPages = Math.ceil(dataM.length / itemsPerPage);
+const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  return   (
+<>
     <SectionLayout title="Gasto de Maquinaria">
       <div className="flex">
   
@@ -294,48 +418,75 @@ const GastoMaquinaria = () => {
         loading ? (
           <LoadingTable loading={loading} />
         ) : (
-          <table className="min-w-full bg-white rounded-lg shadow-md">
-            <TablaHead titles={titles} />
-            <tbody>
-              {dataM.map((item) => (
-                <tr key={item.IdGastoMaquinaria} className="hover:bg-gray-100">
-                  <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
-                  <td className="border-b py-3 px-4">{item.Comprobante}</td>
-                  <td className="border-b py-3 px-4">{item.TipoGasto}</td>
-                  <td className="border-b py-3 px-4">{item.Proveedor}</td>
-                  <td className="border-b py-3 px-4">{item.Monto}</td>
-                  <td className="border-b py-3 px-4">
-                  {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
-                  </td>
-                  <td className="border-b py-3 px-4">{item.Descripcion}</td>
-                  <td className="border-b py-3 px-4 flex">
-                    <button
-                      onClick={() => {
-                        setGastoEdit(item);
-                        setFormValues(item);
-                        setModalEdit(true);
-                      }}
-                      className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                    >
-                      Modificar
-                    </button>
-                    <DeleteButton
-                      endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Delete"
-                      id={item.IdGastoMaquinaria}
-                      updateList={() => dispatch(fetchGastos())}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          
+  <div className="">
+    <table className="min-w-full bg-white rounded-lg shadow-md">
+  <TablaHead titles={titles} />
+  <tbody>
+    {dataM.map((item) => (
+      <tr key={item.IdGastoMaquinaria} className="hover:bg-gray-100">
+        <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
+        {item.Comprobante ? (
+          <a
+          href={`${"https://www.dropbox.com/s/"}${item.Comprobante}`}
+                className="text-blue-400 "
+            target="_blank"
+            rel="noopener noreferrer"
+        
+          >
+            <td className="">
+            Ver Comprobante
+            </td>
+            
+          </a>
+        ) : (
+          "No disponible"
+        )}
+        <td className="border-b py-3 px-4">{item.TipoGasto}</td>
+        <td className="border-b py-3 px-4">{item.Proveedor}</td>
+        <td className="border-b py-3 px-4">{item.Monto}</td>
+        <td className="border-b py-3 px-4">
+          {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
+        </td>
+        <td className="border-b py-3 px-4">{item.Descripcion}</td>
+        <td className="border-b py-3 px-4 flex">
+          <button
+            onClick={() => {
+              setGastoEdit(item);
+              setFormValues(item);
+              setModalEdit(true);
+            }}
+            className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            Modificar
+          </button>
+          <DeleteButton
+            endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Delete"
+            id={item.IdGastoMaquinaria}
+            updateList={() => dispatch(fetchGastos())}
+          />
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+<Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  paginate={paginate}
+/>
+
+  </div>
         )
       ) : showPieChart ? (
         <div className="w-full h-96">
           <Pie data={pieData} options={pieOptions} />
         </div>
-      ) : null}
+
+) : null}
+
     </SectionLayout>
+    </>
   );
 };
 

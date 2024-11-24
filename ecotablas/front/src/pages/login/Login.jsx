@@ -14,7 +14,10 @@ const Login = () => {
     email: "",
   });
 
-  // ...
+const userId=import.meta.env.VITE_DROPBOX_CLIENT_ID;
+const dropboxSecret=import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
+
+
 
   const navigate = useNavigate();
 
@@ -30,7 +33,7 @@ const Login = () => {
             uid: userCredential.user.uid,
             email: userCredential.user.email,
           });
-          navigate("/");
+          navigate("/permisos");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -51,7 +54,7 @@ const Login = () => {
 
         const user = result.user;
 
-        navigate("/");
+        navigate("/permisos");
       })
       .catch((error) => {
         // Handle Errors here.

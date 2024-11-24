@@ -7,8 +7,7 @@ import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
-import ReportButton from "../../components/buttons/ReportButton";
-import NextButton from "../../components/buttons/NextButton";
+
 import VolumenChart from "../../components/volumen/VolumenChart";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
@@ -217,8 +216,10 @@ const ClasificacionDeMaterial = () => {
     {
       name: "VolumenUtil",
       label: "Volumen Util",
+ 
       type: "text",
       placeholder: "VolumenUtil *",
+   
     },
     {
       name: "VolumenInutil",
@@ -236,6 +237,7 @@ const ClasificacionDeMaterial = () => {
       name: "IdIngresoMaterial",
       label: "ID Material",
       type: "text",
+
       placeholder: "ID Material *",
     },
   ];

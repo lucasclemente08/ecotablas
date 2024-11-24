@@ -17,7 +17,7 @@ import Volumen from "./pages/volumen/Volumen";
 import Areas from "./pages/areas/Areas";
 import EmpresaDonante from "./pages/empresaDonante/EmpresaDonante";
 import TablasProducidas from "./pages/TablasProducidas/TablasProducidas";
-import EntradasDeMaterial from "./pages/EntradaDeMaterial/EntradasDeMaterial";
+import EntradasDeMaterial from "./pages/entradaDeMaterial/EntradasDeMaterial"; 
 import ClasificacionDeMaterial from "./pages/clasificacionDeMaterial/ClasificacionDeMaterial";
 import Maquinarias from "./pages/maquinaria/Maquinaria";
 import Tolva from "./pages/tolva/Tolva";
@@ -27,6 +27,8 @@ import store from "./app/store";
 import { Provider } from "react-redux";
 import Reportes from "./pages/reportes/Reportes";
 import Reparaciones from "./pages/reparaciones/Reparaciones";
+import Permisos from "./pages/permisos/Permisos";
+import PermisosCallback from "./components/PermisosCallback";
 
 const routesConfig = [
   { path: "/", element: <Home />, protected: true },
@@ -44,12 +46,11 @@ const routesConfig = [
   { path: "/areas", element: <Areas />, protected: true },
   { path: "/empresa", element: <EmpresaDonante />, protected: true },
   { path: "/reportes", element: <Reportes />, protected: true },
-
- {
-   path: "/entrada/material",
-  element: <EntradasDeMaterial />,
-  protected: true,
- },
+  {
+    path: "/entrada/material",
+    element: <EntradasDeMaterial />,
+    protected: true,
+  },
   {
     path: "/clasificacion",
     element: <ClasificacionDeMaterial />,
@@ -58,12 +59,15 @@ const routesConfig = [
   { path: "/maquinaria", element: <Maquinarias />, protected: true },
   { path: "/tolva", element: <Tolva />, protected: true },
   { path: "/reparaciones", element: <Reparaciones />, protected: true },
-
-  // { path: "/lavado", element: <LavadoMaterial />, protected: true },
   { path: "/tablas", element: <TablasProducidas />, protected: true },
   { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true },
   { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true },
+  { path: "/permisos", element: <Permisos />, protected: true },
+  { path: "/verificacion", element: <PermisosCallback/>, protected: true },
+
+
 ];
+
 
 function App() {
   return (
