@@ -1,22 +1,14 @@
 
 import axios from "axios";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
-import React, { useState, useEffect } from "react";
-
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { MdDateRange } from "react-icons/md";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
-
-
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
-
-import ReportButton from "../../components/buttons/ReportButton";
-
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
-
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 import { ToastContainer, toast } from "react-toastify";
@@ -31,7 +23,7 @@ import {
 editIngresoMat,
 } from "../../api/IngresoMaterialAPI";
 import { useState,useEffect } from "react";
-import { div } from "framer-motion/client";
+
 const EntradasDeMaterial = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
