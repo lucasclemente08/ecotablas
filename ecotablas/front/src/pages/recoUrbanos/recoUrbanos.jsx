@@ -4,10 +4,12 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import SectionLayout from "../../layout/SectionLayout";
 import { toast } from "react-toastify";
-
+import Pagination from "../../components/Pagination";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import TablaHead from "../../components/Thead";
 import { MdOutlineEditLocationAlt } from "react-icons/md";
+import { MdOutlineAddLocation } from "react-icons/md";
+
 import L from "leaflet";
 import {
   Chart as ChartJS,
@@ -419,7 +421,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
             </MapContainer>
           </div>
         )}
-     
+{/*      
      <div style={{ width: '500px', height: '500px', margin: '0 auto' }}>
   <h3 className="text-xl font-semibold mb-4">
     Distribución de Tipos de Donantes
@@ -437,7 +439,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
       }}
     />
   )}
-</div>
+</div> */}
 
       {showMap ? (
     <>
