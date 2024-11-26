@@ -7,6 +7,7 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
+import { BsClipboardDataFill } from "react-icons/bs";
 import TablaHead from "../../components/Thead";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
 import DateFilter from "../../components/DateFilter";
