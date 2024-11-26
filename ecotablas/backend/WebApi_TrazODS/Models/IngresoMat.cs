@@ -24,7 +24,7 @@ namespace WebApi_TrazODS.Models
         public int IdIngresoMaterial { get; set; }
         public int VolumenM { get; set; }
         public string FechaIngresoM { get; set; }
-        public int IdTipoPlastico { get; set; }
+        public string IdTipoPlastico { get; set; }
         public int? VolumenMInutil { get; set; }
 
         public int Estado { get; set; }
@@ -114,7 +114,7 @@ namespace WebApi_TrazODS.Models
 
             sqlCom.Parameters.Add("@VolumenM", SqlDbType.Int).Value = VolumenM;
             sqlCom.Parameters.Add("@FechaIngresoM", SqlDbType.NVarChar).Value = FechaIngresoM;
-            sqlCom.Parameters.Add("@IdTipoPlastico", SqlDbType.Int).Value = IdTipoPlastico;
+            sqlCom.Parameters.Add("@IdTipoPlastico", SqlDbType.VarChar).Value = IdTipoPlastico;
             sqlCom.Parameters.Add("@VolumenMInutil", SqlDbType.Int).Value = VolumenMInutil;
             sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
             sqlCom.Parameters.Add("@TipoDonante", SqlDbType.VarChar).Value = TipoDonante;
@@ -152,7 +152,7 @@ namespace WebApi_TrazODS.Models
             sqlCom.Parameters.Add("@IdIngresoMaterial", SqlDbType.Int).Value = IdIngresoMaterial;
             sqlCom.Parameters.Add("@VolumenM", SqlDbType.Int).Value = VolumenM;
             sqlCom.Parameters.Add("@FechaIngresoM", SqlDbType.NVarChar).Value = FechaIngresoM;
-            sqlCom.Parameters.Add("@IdTipoPlastico", SqlDbType.Int).Value = IdTipoPlastico;
+            sqlCom.Parameters.Add("@IdTipoPlastico", SqlDbType.VarChar).Value = IdTipoPlastico;
             sqlCom.Parameters.Add("@VolumenMInutil", SqlDbType.Int).Value = VolumenMInutil;
             sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
             sqlCom.Parameters.Add("@TipoDonante", SqlDbType.VarChar).Value = TipoDonante;

@@ -4,6 +4,10 @@ import SectionLayout from "../../layout/SectionLayout";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import LoadingTable from "../../components/LoadingTable";
+import { BsClipboardDataFill } from "react-icons/bs";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FiEdit } from "react-icons/fi";
 import TablaHead from "../../components/Thead";
 import AddModal from "../../components/AddModal";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -85,7 +89,7 @@ const Tolva = () => {
       const res = await getAllTolva();
       setMaterials(res.data);
     } catch (error) {
-      setMensaje("Error al cargar los materiales.");
+      toast.error("Error al cargar los materiales.");
       console.error("Error fetching data: ", error);
     } finally {
       setLoading(false);
@@ -115,10 +119,10 @@ const Tolva = () => {
   const validateTablaForm = () => {
     let isValid = true;
     if (!tablaValues.Dimensiones) {
-      setMensaje("Las dimensiones son obligatoria.");
+      toast.error("Las dimensiones son obligatoria.");
       isValid = false;
     } else if (!tablaValues.Peso) {
-      setMensaje("El peso es obligatorio.");
+      toast.error("El peso es obligatorio.");
       isValid = false;
     } 
     return isValid;
@@ -129,29 +133,29 @@ const Tolva = () => {
     try {
       const response = await addTolva(formValues);
       setModalAbierto(false);
-      setMensaje("Inserción exitosa");
+      toast.error("Inserción exitosa");
       setMaterials([...materials, response.data]);
     } catch (error) {
-      setMensaje("Error al agregar el material.");
+      toast.error("Error al agregar el material.");
       console.error("Error al agregar el material:", error);
     }
   };
   const validateForm = () => {
     let isValid = true;
     if (!formValues.formValues.HorarioInicio) {
-      setMensaje("El horario de inicio es obligatorio.");
+      toast.error("El horario de inicio es obligatorio.");
       isValid = false;
     } else if(!formValues.CantidadCargada) {
-      setMensaje("La cantidad es obligatoria.");
+      toast.error("La cantidad es obligatoria.");
       isValid = false;
     } else if (!formValues.TipoPlastico) {
-      setMensaje("El tipo de plástico es obligatorio.");
+      toast.error("El tipo de plástico es obligatorio.");
       isValid = false;
     } else if (!formValues.Proporcion) {
-      setMensaje("La proporcion es obligatoria.");
+      toast.error("La proporcion es obligatoria.");
       isValid = false;
     } else if (!formValues.Especificaciones) {
-      setMensaje("Las especificaciones son obligatorias.");
+      toast.error("Las especificaciones son obligatorias.");
       isValid = false;
     } 
     
@@ -162,10 +166,10 @@ const Tolva = () => {
     try {
       await editTolva(materialId, formValues);
       setModalEdit(false);
-      setMensaje("Modificación exitosa");
+      toast.success("Modificación exitosa");
       fetchMaterials();
     } catch (error) {
-      setMensaje("Error al modificar el material.");
+      toast.error("Error al modificar el material.");
       console.error("Error al modificar el material:", error);
     }
   };
@@ -203,7 +207,7 @@ const Tolva = () => {
       setModalTabla(false);
       fetchMaterials(); // Refrescar la lista para mostrar cambios
     } catch (error) {
-      setMensaje("Error al terminar el proceso.");
+      toast.error("Error al terminar el proceso.");
       console.error("Error al terminar el proceso:", error);
     }
   };
@@ -264,6 +268,18 @@ const Tolva = () => {
               {mensaje}
             </div>
           )}
+
+<ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
      
       {modalAbierto && (
         <AddModalWithSelect 
@@ -324,12 +340,27 @@ const Tolva = () => {
             <tbody>
               {currentItems.map((material) => (
                 <tr key={material.IdTolva}>
-                  <td className="px-4 py-2 ">{material.HorarioInicio.slice(0,10)}</td>
-                  <td className="px-4 py-2">{material.CantidadCargada}</td>
-                  <td className="px-4 py-2">{material.TipoPlastico}</td>
-                  <td className="px-4 py-2">{material.Proporcion}</td>
-                  <td className="px-4 py-2">{material.Especificaciones}</td>
-                  <td className="px-4 py-2 flex">
+  <td className="border-b px-4 py-2 text-right">
+    <span className="font-semibold lg:hidden">Horario de Inicio: </span>
+    {material.HorarioInicio.slice(0, 10)}
+  </td>
+  <td className="border-b px-4 py-2 text-right">
+    <span className="font-semibold lg:hidden">Cantidad Cargada: </span>
+    {material.CantidadCargada}
+  </td>
+  <td className="border-b px-4 py-2 text-left">
+    <span className="font-semibold lg:hidden">Tipo de Plástico: </span>
+    {material.TipoPlastico}
+  </td>
+  <td className="border-b px-4 py-2 text-right">
+    <span className="font-semibold lg:hidden">Proporción: </span>
+    {material.Proporcion}
+  </td>
+  <td className="border-b px-4 py-2 text-left">
+    <span className="font-semibold lg:hidden">Especificaciones: </span>
+    {material.Especificaciones}
+  </td>
+  <td className="border-b px-4 py-2 flex justify-center">
                   <button
                         onClick={() => abrirModalTabla(material.IdTolva)}
                         className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
@@ -338,8 +369,9 @@ const Tolva = () => {
                       </button>
                     <button
                       onClick={() => abrirModalEdit(material)}
-                      className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                     >
+                      <FiEdit />
                       Modificar
                     </button>
                     <DeleteButton

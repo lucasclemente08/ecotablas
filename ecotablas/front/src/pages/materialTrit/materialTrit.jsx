@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
+import { BsClipboardDataFill } from "react-icons/bs";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FiEdit } from "react-icons/fi";
 import LoadingTable from "../../components/LoadingTable";
 // import { addTolva } from "../../features/tolvaSlice";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,6 +23,7 @@ import {
 } from "../../api/materialTritAPI";
 
 import { Await } from "react-router-dom";
+import AddModalWithSelect from "../../components/AddModalWithSelect";
 
 const MaterialTrit = () => {
   const dispatch = useDispatch();
@@ -83,16 +88,16 @@ const MaterialTrit = () => {
     const validateTolvaForm = () => {
       let isValid = true;
       if (!tolvaValues.CantidadCargada) {
-        setMensaje("La cantidad es obligatoria.");
+        toast.error("La cantidad es obligatoria.");
         isValid = false;
       } else if (!tolvaValues.TipoPlastico) {
-        setMensaje("El tipo de plástico es obligatorio.");
+        toast.error("El tipo de plástico es obligatorio.");
         isValid = false;
       } else if (!tolvaValues.Proporcion) {
-        setMensaje("La proporción es obligatoria.");
+        toast.error("La proporción es obligatoria.");
         isValid = false;
       } else if (!tolvaValues.Especificaciones) {
-        setMensaje("Las especificaciones son obligatorias.");
+        toast.error("Las especificaciones son obligatorias.");
         isValid = false;
       } 
       return isValid;
@@ -113,7 +118,7 @@ const MaterialTrit = () => {
       const res = await getAllMaterialTrit();
       setMaterials(res.data);
     } catch (error) {
-      setMensaje("Error al cargar los materiales.");
+      toast.error("Error al cargar los materiales.");
       console.error("Error fetching data: ", error);
     } finally {
       setLoading(false);
@@ -127,13 +132,13 @@ const MaterialTrit = () => {
   const validateForm = () => {
     let isValid = true;
     if (!formValues.VolumenT) {
-      setMensaje("Volumen es obligatorio.");
+      toast.error("Volumen es obligatorio.");
       isValid = false;
     } else if(!formValues.VolumenTInutil) {
-      setMensaje("Volumen Inutil es obligatorio.");
+      toast.error("Volumen Inutil es obligatorio.");
       isValid = false;
     } else if (!formValues.Fecha) {
-      setMensaje("Fecha es obligatoria.");
+      toast.error("Fecha es obligatoria.");
       isValid = false;
     }
     return isValid;
@@ -144,10 +149,10 @@ const MaterialTrit = () => {
     try {
       const response = await addMaterialTrit(formValues);
       setModalAbierto(false);
-      setMensaje("Inserción exitosa");
+      toast.success("Inserción exitosa");
       setMaterials([...materials, response.data]);
     } catch (error) {
-      setMensaje("Error al agregar el material.");
+      toast.error("Error al agregar el material.");
       console.error("Error al agregar el material:", error);
     }
   };
@@ -157,10 +162,10 @@ const MaterialTrit = () => {
     try {
       await editMaterialTrit(materialId, formValues);
       setModalEdit(false);
-      setMensaje("Modificación exitosa");
+      toast.success("Modificación exitosa");
       fetchMaterials();
     } catch (error) {
-      setMensaje("Error al modificar el material.");
+      toast.error("Error al modificar el material.");
       console.error("Error al modificar el material:", error);
     }
   };
@@ -170,7 +175,7 @@ const MaterialTrit = () => {
   
     try {
       await addTolva(tolvaValues);
-      setMensaje("Lote enviado a tolva");
+      toast.success("Lote enviado a tolva");
   
       // Luego, actualiza el estado a 2
       const materialActualizado = {
@@ -182,7 +187,7 @@ const MaterialTrit = () => {
       setModalTolva(false);
       fetchMaterials(); // Refrescar la lista para mostrar cambios
     } catch (error) {
-      setMensaje("Error al terminar el proceso.");
+      toast.error("Error al terminar el proceso.");
       console.error("Error al terminar el proceso:", error);
     }
   };
@@ -284,6 +289,18 @@ const MaterialTrit = () => {
             title="Reporte de Materiales triturado"
           />
 
+<ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
+
 
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
@@ -329,22 +346,27 @@ const MaterialTrit = () => {
               <TablaHead titles={title} />
 
               <tbody>
-                {currentItems.map((material) => (
-                  <tr
-                    key={material.IdMaterialTriturado}
-                    className="hover:bg-gray-100 m-5"
-                  >
-                    <td className="border-b py-2 px-4">
-                     Volumen Util: {material.VolumenT} kgs
-                    </td>
-                  <td className="border-b py-2 px-4">
-                    Volumen Inutil: {material.VolumenTInutil} kgs
-                  </td>
-                    <td className="border-b py-2 px-4">
-                      {material.Fecha.slice(0, 10)}
-                    </td>
-                    <td
-                      className={`border-b py-2 px-4 flex justify-center ${modalAbierto ? "hidden" : ""}`}
+              {currentItems.map((material) => (
+  <tr
+    key={material.IdMaterialTriturado}
+    className="hover:bg-gray-100"
+  >
+    <td className="border-b py-2 px-4 text-right">
+      <span className="font-semibold lg:hidden">Volumen Triturado: </span>
+      {material.VolumenT} kgs
+    </td>
+    <td className="border-b py-2 px-4 text-right">
+      <span className="font-semibold lg:hidden">Volumen Inútil: </span>
+      {material.VolumenTInutil} kgs
+    </td>
+    <td className="border-b py-2 px-4 text-right">
+      <span className="font-semibold lg:hidden">Fecha: </span>
+      {material.Fecha.slice(0, 10)}
+    </td>
+    <td
+      className={`border-b py-2 px-4 flex justify-center ${
+        modalAbierto ? "hidden" : ""
+      }`}
                     >
                     <button
                         onClick={() => abrirModalTolva(material.IdMaterialTriturado)}
@@ -354,7 +376,7 @@ const MaterialTrit = () => {
                       </button>
 
                       {modalTolva &&
-          <AddModal title="Pasar a Extrucción/tolva"
+          <AddModalWithSelect title="Pasar a Extrucción/tolva"
           fields={[
             { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
             { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
@@ -376,8 +398,9 @@ const MaterialTrit = () => {
                       
                       <button
                         onClick={() => abrirModalEdit(material)}
-                        className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       >
+                        <FiEdit />
                         Modificar
                       </button>
                       <DeleteButton

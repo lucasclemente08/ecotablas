@@ -47,7 +47,7 @@ const [showPieChart, setShowPieChart] = useState(false);
     Nombre: "",
     Tipo: "",
     Modelo: "",
-    IdEstado: "",
+    IdEstado: 1,
     fecha_adquisicion: "",
   });
 
@@ -56,7 +56,7 @@ const [showPieChart, setShowPieChart] = useState(false);
     IdVehiculo: "",
     Detalle: "",
     FechaInicio: "",
-    IdEstadoReparacion: "",
+    IdEstadoReparacion: 1,
     Costo: "",
   });
 
@@ -69,7 +69,7 @@ const [showPieChart, setShowPieChart] = useState(false);
       Nombre: maquinaria.Nombre,
       Tipo: maquinaria.Tipo,
       Modelo: maquinaria.Modelo,
-      IdEstado: maquinaria.IdEstado,
+      IdEstado: 1,
       fecha_adquisicion: maquinaria.fecha_adquisicion
         ? maquinaria.fecha_adquisicion.slice(0, 10)
         : "",
@@ -83,7 +83,7 @@ const [showPieChart, setShowPieChart] = useState(false);
       const res = await getReparacionByIdMaquinaria(maquinaria.Id);
       setReparaciones(res.data);
     } catch (error) {
-      setMensaje("Error al cargar las reparaciones.");
+      toast.error("Error al cargar las reparaciones.");
       console.error("Error fetching data: ", error);
     } finally {
       setLoading(false);
@@ -105,7 +105,7 @@ const [showPieChart, setShowPieChart] = useState(false);
       Nombre: "",
       Tipo: "",
       Modelo: "",
-      IdEstado: "",
+      IdEstado: 1,
       fecha_adquisicion: "",
     }); // Reiniciar los valores del formulario
     setModalAbierto(true);
@@ -124,7 +124,7 @@ const [showPieChart, setShowPieChart] = useState(false);
       const res = await getAllMaquinarias(); // Usar la función de API para obtener los datos
       setMaquinarias(res.data); // Actualizar el estado con la respuesta
     } catch (error) {
-      setMensaje("Error al cargar las maquinarias.");
+      toast.error("Error al cargar las maquinarias.");
       console.error("Error fetching data: ", error);
     } finally {
       setLoading(false);
@@ -138,19 +138,16 @@ const [showPieChart, setShowPieChart] = useState(false);
   const validateForm = () => {
     let isValid = true;
     if (!formValues.Nombre) {
-      setMensaje("Nombre es obligatorio.");
+      toast.error("Nombre es obligatorio.");
       isValid = false;
     } else if (!formValues.Tipo) {
-      setMensaje("Tipo es obligatorio.");
+      toast.error("Tipo es obligatorio.");
       isValid = false;
     } else if (!formValues.Modelo) {
-      setMensaje("Modelo es obligatorio.");
-      isValid = false;
-    } else if (!formValues.IdEstado) {
-      setMensaje("Estado es obligatorio.");
+      toast.error("Modelo es obligatorio.");
       isValid = false;
     } else if (!formValues.fecha_adquisicion) {
-      setMensaje("Fecha de adquisición es obligatoria.");
+      toast.error("Fecha de adquisición es obligatoria.");
       isValid = false;
     }
     return isValid;
@@ -166,7 +163,7 @@ const [showPieChart, setShowPieChart] = useState(false);
         
         toast.success("Inserción exitosa");
       } else {
-        setMensaje("Error: no se recibió un dato válido de la API.");
+        toast.error("Error: no se recibió un dato válido de la API.");
       }
 
       setModalAbierto(false);
@@ -185,7 +182,7 @@ const [showPieChart, setShowPieChart] = useState(false);
       toast.success("Modificación exitosa");
       await fetchMaquinarias(); // Actualiza la lista
     } catch (error) {
-      setMensaje("Error al modificar la maquinaria.");
+      toast.error("Error al modificar la maquinaria.");
       console.error("Error al modificar la maquinaria:", error);
     }
   };
@@ -201,16 +198,13 @@ const [showPieChart, setShowPieChart] = useState(false);
   const validateReparacionForm = () => {
     let isValid = true;
     if (!reparacionValues.Detalle) {
-      setMensaje("El detalle es obligatorio.");
+      toast.error("El detalle es obligatorio.");
       isValid = false;
     } else if (!reparacionValues.FechaInicio) {
-      setMensaje("La fecha de inicio es obligatoria.");
+      toast.error("La fecha de inicio es obligatoria.");
       isValid = false;
-    } else if (!reparacionValues.IdEstadoReparacion) {
-      setMensaje("El estado de la reparación es obligatorio.");
-      isValid = false;
-    } else if (!reparacionValues.Costo) {
-      setMensaje("El costo es obligatorio.");
+    }  else if (!reparacionValues.Costo) {
+      toast.error("El costo es obligatorio.");
       isValid = false;
     }
     return isValid;
@@ -248,11 +242,11 @@ const [showPieChart, setShowPieChart] = useState(false);
       // Cambiar estado de la maquinaria a 1 (operativa)
       await editMaquinarias(maquinariaId, { IdEstado: 1 });
 
-      setMensaje("Reparación terminada y maquinaria marcada como operativa.");
+      toast.success("Reparación terminada y maquinaria marcada como operativa.");
       fetchReparaciones(maquinariaId);
       fetchMaquinarias(); // Refrescar maquinarias
     } catch (error) {
-      setMensaje("Error al terminar la reparación.");
+      toast.error("Error al terminar la reparación.");
       console.error("Error al terminar la reparación: ", error);
     }
   };
@@ -309,12 +303,6 @@ const [showPieChart, setShowPieChart] = useState(false);
       label: "Modelo",
       type: "text",
       placeholder: "Modelo *",
-    },
-    {
-      name: "IdEstado",
-      label: "Estado",
-      type: "text",
-      placeholder: "Estado *",
     },
     {
       name: "fecha_adquisicion",

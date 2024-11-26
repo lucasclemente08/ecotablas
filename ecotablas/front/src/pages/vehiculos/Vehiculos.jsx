@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
+import { FiEdit, FiPlus, FiRefreshCw, FiEye } from "react-icons/fi";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import builderApiUrl from "../../utils/BuilderApi";
@@ -39,7 +42,7 @@ const Vehiculos = () => {
     Combustible: "",
     NumeroPlaca: "",
     NumeroIdentificador: "",
-    IdEstado: "",
+    IdEstado: 1,
   });
 
   const [reparacionValues, setReparacionValues] = useState({
@@ -47,7 +50,7 @@ const Vehiculos = () => {
     IdVehiculo: "",
     Detalle: "",
     FechaInicio: "",
-    IdEstadoReparacion: "",
+    IdEstadoReparacion: 1,
     Costo: "",
   });
 
@@ -68,7 +71,7 @@ const Vehiculos = () => {
       Combustible: vehiculo.Combustible,
       NumeroPlaca: vehiculo.NumeroPlaca,
       NumeroIdentificador: vehiculo.NumeroIdentificador,
-      IdEstado: vehiculo.IdEstado,
+      IdEstado: 1,
 
     });
     setModalEdit(true);
@@ -87,7 +90,7 @@ const Vehiculos = () => {
       Combustible: "",
       NumeroPlaca: "",
       NumeroIdentificador: "",
-      IdEstado: "",
+      IdEstado: 1,
     }); // Reiniciar los valores del formulario
     setModalAbierto(true);
   };
@@ -105,7 +108,7 @@ const Vehiculos = () => {
       const res = await getAllVehiculos(); // Usar la función de API para obtener los datos
       setVehiculos(res.data); // Actualizar el estado con la respuesta
     } catch (error) {
-      setMensaje("Error al cargar los vehiculos.");
+      toast.error("Error al cargar los vehiculos.");
       console.error("Error fetching data: ", error);
     } finally {
       setLoading(false);
@@ -119,34 +122,34 @@ const Vehiculos = () => {
   const validateForm = () => {
     let isValid = true;
     if (!formValues.Marca) {
-      setMensaje("La marca es obligatoria.");
+      toast.error("La marca es obligatoria.");
       isValid = false;
     } else if (!formValues.Modelo) {
-      setMensaje("Modelo es obligatorio.");
+      toast.error("Modelo es obligatorio.");
       isValid = false;
     } else if (!formValues.Año) {
-      setMensaje("Año es obligatorio.");
+      toast.error("Año es obligatorio.");
       isValid = false;
     } else if (!formValues.Color) {
-      setMensaje("Color es obligatorio.");
+      toast.error("Color es obligatorio.");
       isValid = false;
     } else if (!formValues.Tipo) {
-      setMensaje("Tipo es obligatorio.");
+      toast.error("Tipo es obligatorio.");
       isValid = false;
     } else if (!formValues.FechaUltimaInspeccion) {
-      setMensaje("Fecha es obligatoria.");
+      toast.error("Fecha es obligatoria.");
       isValid = false;
     } else if (!formValues.Combustible) {
-      setMensaje("Combustible es obligatorio.");
+      toast.error("Combustible es obligatorio.");
       isValid = false;
     } else if (!formValues.NumeroPlaca) {
-      setMensaje("Numero Placa es obligatorio.");
+      toast.error("Numero Placa es obligatorio.");
       isValid = false;
     } else if (!formValues.NumeroIdentificador) {
-      setMensaje("Numero es obligatorio.");
+      toast.error("Numero es obligatorio.");
       isValid = false;
     } else if (!formValues.IdEstado) {
-      setMensaje("Estado es obligatorio.");
+      toast.error("Estado es obligatorio.");
       isValid = false;
     }
     return isValid;
@@ -160,14 +163,14 @@ const Vehiculos = () => {
       if (response) {
         await fetchVehiculos();
 
-        setMensaje("Inserción exitosa");
+        toast.success("Inserción exitosa");
       } else {
-        setMensaje("Error: no se recibió un dato válido de la API.");
+        toast.error("Error: no se recibió un dato válido de la API.");
       }
 
       setModalAbierto(false);
     } catch (error) {
-      setMensaje("Error al agregar el vehículo.");
+      toast.error("Error al agregar el vehículo.");
       console.error("Error al agregar el vehículo:", error);
     }
   };
@@ -178,10 +181,10 @@ const Vehiculos = () => {
     try {
       await editVehiculos(vehiculoId, formValues);
       setModalEdit(false);
-      setMensaje("Modificación exitosa");
+      toast.success("Modificación exitosa");
       await fetchVehiculos(); // Actualiza la lista
     } catch (error) {
-      setMensaje("Error al modificar el vehículo.");
+      toast.error("Error al modificar el vehículo.");
       console.error("Error al modificar el vehículo:", error);
     }
   };
@@ -197,16 +200,16 @@ const Vehiculos = () => {
   const validateReparacionForm = () => {
     let isValid = true;
     if (!reparacionValues.Detalle) {
-      setMensaje("El detalle es obligatorio.");
+      toast.error("El detalle es obligatorio.");
       isValid = false;
     } else if (!reparacionValues.FechaInicio) {
-      setMensaje("La fecha de inicio es obligatoria.");
+      toast.error("La fecha de inicio es obligatoria.");
       isValid = false;
     } else if (!reparacionValues.IdEstadoReparacion) {
-      setMensaje("El estado de la reparación es obligatorio.");
+      toast.error("El estado de la reparación es obligatorio.");
       isValid = false;
     } else if (!reparacionValues.Costo) {
-      setMensaje("El costo es obligatorio.");
+      toast.error("El costo es obligatorio.");
       isValid = false;
     }
     return isValid;
@@ -219,7 +222,7 @@ const Vehiculos = () => {
       // Primero, agrega la reparación
       // Primero, agrega la reparación
       await addReparacion(reparacionValues);
-      setMensaje("Reparación agregada exitosamente");
+      toast.success("Reparación agregada exitosamente");
 
       // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
       const vehiculoActualizado = {
@@ -228,12 +231,12 @@ const Vehiculos = () => {
       };
 
       await editVehiculos(vehiculoId, vehiculoActualizado);
-      setMensaje("Estado de vehiculo actualizado a 'En Reparación'");
+      toast.success("Estado de vehiculo actualizado a 'En Reparación'");
 
       setModalReparacion(false);
       fetchVehiculos(); // Refrescar la lista para mostrar cambios
     } catch (error) {
-      setMensaje("Error al agregar la reparación.");
+      toast.error("Error al agregar la reparación.");
       console.error("Error al agregar la reparación:", error);
     }
   };
@@ -343,12 +346,6 @@ const Vehiculos = () => {
       type: "text",
       placeholder: "Numero identificador *",
     },
-    {
-      name: "IdEstado",
-      label: "Estado",
-      type: "text",
-      placeholder: "Estado *",
-    },
 
   ];
 
@@ -377,10 +374,10 @@ const Vehiculos = () => {
         ...vehiculo,
         IdEstado: nuevoEstado,
       });
-      setMensaje("Estado cambiado exitosamente");
+      toast.success("Estado cambiado exitosamente");
       await fetchVehiculos(); // Actualizar la lista
     } catch (error) {
-      setMensaje("Error al cambiar el estado del vehículo.");
+      toast.error("Error al cambiar el estado del vehículo.");
       console.error("Error al cambiar el estado:", error);
     }
   };
@@ -446,12 +443,6 @@ const Vehiculos = () => {
                   placeholder: "Fecha *",
                 },
                 {
-                  name: "IdEstadoReparacion",
-                  label: "Estado",
-                  type: "text",
-                  placeholder: "Estado *",
-                },
-                {
                   name: "Costo",
                   label: "Costo",
                   type: "number",
@@ -471,40 +462,69 @@ const Vehiculos = () => {
               <tbody>
                 {vehiculos.map((vehiculo) => (
                   <tr key={vehiculo.Id} className="hover:bg-gray-100">
-                    <td className="border-b py-2 px-4">{vehiculo.Marca}</td>
-                    <td className="border-b py-2 px-4">{vehiculo.Modelo}</td>
-                    <td className="border-b py-2 px-4">{vehiculo.Año}</td>
-                    <td className="border-b py-2 px-4">{vehiculo.Color}</td>
-                    <td className="border-b py-2 px-4">{vehiculo.Tipo}</td>
-                    <td className="border-b py-2 px-4">
-                      {vehiculo.FechaUltimaInspeccion}
-                    </td>
-                    <td className="border-b py-2 px-4">{vehiculo.Combustible}</td>
-                    <td className="border-b py-2 px-4">{vehiculo.NumeroPlaca}</td>
-                    <td className="border-b py-2 px-4">{vehiculo.NumeroIdentificador}</td>
-                    <td
-                      className={`border-b py-2 px-4 ${estadoStyles[vehiculo.IdEstado]}`}
-                    >
-                      {getNombreEstado(vehiculo.IdEstado)}
-                    </td>
-                    <td className="border-b py-2 px-4 flex justify-center">
+  <td className="border-b py-2 px-4 text-left">
+    <span className="font-semibold lg:hidden">Marca: </span>
+    {vehiculo.Marca}
+  </td>
+  <td className="border-b py-2 px-4 text-left">
+    <span className="font-semibold lg:hidden">Modelo: </span>
+    {vehiculo.Modelo}
+  </td>
+  <td className="border-b py-2 px-4 text-right">
+    <span className="font-semibold lg:hidden">Año: </span>
+    {vehiculo.Año}
+  </td>
+  <td className="border-b py-2 px-4 text-left">
+    <span className="font-semibold lg:hidden">Color: </span>
+    {vehiculo.Color}
+  </td>
+  <td className="border-b py-2 px-4 text-left">
+    <span className="font-semibold lg:hidden">Tipo: </span>
+    {vehiculo.Tipo}
+  </td>
+  <td className="border-b py-2 px-4 text-right">
+    <span className="font-semibold lg:hidden">Fecha Última Inspección: </span>
+    {vehiculo.FechaUltimaInspeccion}
+  </td>
+  <td className="border-b py-2 px-4 text-left">
+    <span className="font-semibold lg:hidden">Combustible: </span>
+    {vehiculo.Combustible}
+  </td>
+  <td className="border-b py-2 px-4 text-right">
+    <span className="font-semibold lg:hidden">Número de Placa: </span>
+    {vehiculo.NumeroPlaca}
+  </td>
+  <td className="border-b py-2 px-4 text-right">
+    <span className="font-semibold lg:hidden">Número Identificador: </span>
+    {vehiculo.NumeroIdentificador}
+  </td>
+  <td
+    className={`border-b py-2 px-4 text-left ${estadoStyles[vehiculo.IdEstado]}`}
+  >
+    <span className="font-semibold lg:hidden">Estado: </span>
+    {getNombreEstado(vehiculo.IdEstado)}
+  </td>
+  <td className="border-b py-2 px-4 flex justify-center">
                       {vehiculo.IdEstado === 3 ? (
-                        <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700">
+                        <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700 flex items-center gap-2">
+                          <FiEye />
                           Ver Reparacion
                         </button>
                       ) : null}
                       <button
                         onClick={() => abrirModalEdit(vehiculo)}
-                        className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
                       >
+                        <FiEdit />
                         Modificar
                       </button>
                       {vehiculo.IdEstado === 1 ||
                       vehiculo.IdEstado === 2 ? (
                         <button
                           onClick={() => abrirModalReparacion(vehiculo.IdVehiculo)}
-                          className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                          className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
                         >
+                          <FiPlus />
                           Agregar Reparación
                         </button>
                       ) : null}
@@ -512,14 +532,15 @@ const Vehiculos = () => {
                       vehiculo.IdEstado === 2 ? (
                         <button
                           onClick={() => handleChangeState(vehiculo)}
-                          className="bg-blue-500 text-white ml-2 py-1 px-3 rounded hover:bg-blue-700"
+                          className="bg-blue-500 text-white ml-2 py-1 px-3 rounded hover:bg-blue-700 flex items-center gap-2"
                         >
+                          <FiRefreshCw />
                           Cambiar Estado
                         </button>
                       ) : null}
                       <DeleteButton
-                        id={vehiculo.Id}
-                        endpoint={`${BASE_URL}/Borrar`}
+                        id={vehiculo.IdVehiculo}
+                        endpoint={`${BASE_URL}/Delete`}
                         updateList={fetchVehiculos}
                       />
                     </td>
