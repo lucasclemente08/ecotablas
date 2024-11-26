@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FaSearch } from "react-icons/fa";
+
 import {
   fetchTablasProducidas,
   addTablaProducida,
@@ -162,9 +164,8 @@ const TablasProducidas = () => {
 
 
 
+        
       <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />
-
-
       <PdfGenerator
         columns={columns}
         data={data}
@@ -181,9 +182,9 @@ const TablasProducidas = () => {
 
       <button 
         onClick={filterByDate}  // Trigger the filter when clicked
-        className="p-3    ml-2 bg-blue-500 text-white rounded"
+        className="p-3 flex items-center    ml-2 bg-blue-500 text-white rounded"
       >
-        Buscar por fecha
+       <FaSearch className="mr-2" />   Buscar por fecha 
       </button>
       {/* <button 
         onClick={setCurrentItems(data)}  // Trigger the filter when clicked

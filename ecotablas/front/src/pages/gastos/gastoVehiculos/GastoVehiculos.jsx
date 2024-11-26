@@ -536,14 +536,14 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
 
 
         <button
-          aria-label="Ver gráfico circular"
+          aria-label="Ver gráficos"
           className={`p-2 ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? "bg-blue-600" : "bg-gray-500"}`}
           onClick={() => {
             setShowPieChart(true);
             setShowTable(false);
           }}
         >
-          Ver Gráfico Circular <FaChartPie className="ml-2" />
+          Ver Gráficos <FaChartPie className="ml-2" />
         </button>
         {/* 
         <button

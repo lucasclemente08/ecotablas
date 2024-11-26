@@ -303,11 +303,11 @@ const MaterialTrit = () => {
 />
 
 
-          {mensaje && (
+          {/* {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
               {mensaje}
             </div>
-          )}
+          )} */}
 
           {modalAbierto && (
             <AddModal

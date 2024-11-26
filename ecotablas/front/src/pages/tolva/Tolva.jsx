@@ -286,7 +286,7 @@ const Tolva = () => {
         <AddModalWithSelect 
           title="Agregar Registro de Tolva"
           fields={[
-            { name: "HorarioInicio", label: "Horario de inicio", type: "datetime-local" },
+            { name: "HorarioInicio", label: "Horario de inicio", type: "date" },
             { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
             { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
             { name: "Proporcion", label: "Proporción cargada", type: "number" },
