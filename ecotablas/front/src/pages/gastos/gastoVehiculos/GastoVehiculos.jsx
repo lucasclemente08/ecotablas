@@ -526,7 +526,7 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
   pauseOnHover
 />
 
-<div className="flex flex-wrap items-center gap-4">
+<div className="flex flex-wrap items-center gap-1">
         <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
           title="Añadir gastos"
@@ -686,13 +686,23 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
 
         )
       ) : showPieChart ? (
-        <div className="flex flex-row content-center justify-center items-center h-96 ">
-          <div className=" m-10  max-h-72 ">
-
+        <div className="flex flex-row mt-4 content-center justify-center items-center h-96 ">
+          <div className="mr-2  flex-1 min-w-[200px] max-w-[400px] mt-10 p-4 bg-gray-800 shadow-md rounded-md">
+          <div className="h-[370px]">
+            
           <Pie data={pieData} options={pieOptions} className="mt-4" />
+            </div>
             <p className=" text-centermt-2 text-center text-gray-200 ">Total de gastos: ${total}</p>
           </div>
-    <GastoVehiculosChart/>
+ <div className="flex-1 min-w-[200px] max-w-[400px] mt-10 p-4 bg-gray-800 shadow-md rounded-md">
+          <h2 className="text-lg font-medium text-white text-center mb-4">
+            Gastos de Vehículos
+          </h2>
+          <div className="h-[370px]">
+        <GastoVehiculosChart />
+          </div>
+        </div>
+
         </div>
       ) : (
         <div className="w-full h-96">
