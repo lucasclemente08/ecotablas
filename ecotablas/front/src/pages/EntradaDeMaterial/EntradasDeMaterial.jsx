@@ -13,7 +13,9 @@ import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaSearch, FaArrowLeft } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
+import Pagination from "../../components/Pagination";
 import {
   getAllMaterialClas,
   addMaterialClas,
@@ -23,16 +25,22 @@ import {
 editIngresoMat,
 } from "../../api/IngresoMaterialAPI";
 import { useState,useEffect } from "react";
+import FilterButton from "../../components/buttons/FilterButton";
+import AddModalWithSelect from "../../components/AddModalWithSelect";
 
 const EntradasDeMaterial = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
+  const [plasticos, setPlasticos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
+  // const [currentItems,setCurrentItems]=useState([]);
   const [materialId, setMaterialId] = useState(null);
   const [modalClasificado, setModalClasificado] = useState(false); 
-
+  const [selectedDate, setSelectedDate] = useState("");
+  
+  const [filteredMaterials, setFilteredMaterials] = useState([]); // Datos filtrados
   const [formValues, setFormValues] = useState({
     VolumenM: "",
     VolumenMInutil: "",
@@ -104,15 +112,11 @@ const EntradasDeMaterial = () => {
       !formValues.Estado ||
       !formValues.TipoDonante
     ) {
-      setMensaje("Todos los campos son obligatorios.");
+      toast.warn("Todos los campos son obligatorios.");
       return;
     }
 
-    axios
-      .put(
-        `http://localhost:61274/api/IngresoMat/Modificar/${materialId}`,
-        formValues,
-      )
+    axios.put(`http://localhost:61274/api/IngresoMat/Modificar/${materialId}`,formValues,)
       .then(() => {
         setModalEdit(false);
         setMensaje("Modificación exitosa");
@@ -157,7 +161,7 @@ const EntradasDeMaterial = () => {
       };
   
       await editIngresoMat(materialId, materialActualizado);
-      console.log(materialActualizado)
+
       setModalClasificado(false);
       fetchMaterials(); // Refrescar la lista para mostrar cambios
     } catch (error) {
@@ -190,7 +194,7 @@ const EntradasDeMaterial = () => {
       const response = await axios.get(
         "http://localhost:61274/api/IngresoMat/ListarTodo",
       );
-      setMaterials(response.data);
+      setFilteredMaterials(response.data);
     } catch (error) {
       console.error("Error fetching materials:", error);
     } finally {
@@ -202,25 +206,22 @@ const EntradasDeMaterial = () => {
     fetchMaterials();
   }, []);
 
-  // Paginación
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = materials.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Cambiar de página
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // Total de páginas
-  const totalPages = Math.ceil(materials.length / itemsPerPage);
-
-  const title = ["Volumen Util (kgs)", "Volumen Inutil (kgs)", "Fecha de ingreso", "Tipo Donante", "Acciones"];
+  const title = ["Volumen Util (kgs)", "Volumen Inutil (kgs)", "Fecha de ingreso","Tipo de plasticos", "Tipo Donante", "Acciones"];
   const columns = [
     { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenMInutil" },
+    { header: "Tipo de plasticos", dataKey: "IdTipoPlastico" },
+
     { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
     { header: "Tipo Donante", dataKey: "TipoDonante" },
   ];
 
+  const optionsPlasticos = plasticos.map((res) => ({
+    value: res.IdTipoPlastico,   // Assigns the IdTipoPlastico to the value key
+    label: `${res.TipoPlastico}`, // Converts TipoPlastico to a string and assigns it to the label key
+  }));
+  
   const fields = [
     {
       name: "VolumenM",
@@ -242,39 +243,86 @@ const EntradasDeMaterial = () => {
     },
     {
       name: "IdTipoPlastico",
-      label: "ID Material",
-      type: "text",
-      placeholder: "ID Plastico *",
+      label: "Tipo de plasticos",
+      type: "select",
+      options: optionsPlasticos,
+
     },
     {
       name: "TipoDonante",
       label: "Tipo Donante",
-      type: "text",
-      placeholder: "Tipo Donante *",
+      type: "select",
+    options: [
+      { value: "Urbanos", label: "Recolección de urbanos" },
+      { value: "Empresa", label: "Empresa donante" },
+      { value: "Particular", label: "Particular" },
+    ],
     },
   ];
+  const fetchPlasticos = async () => {
+    try {
+      const response = await axios.get(
+        "http://www.trazabilidadodsapi.somee.com/api/TiposPlastico/ListarTodo",
+      );
+      setPlasticos(response.data);
+    } catch (error) {
+      console.error("Error fetching materials:", error);
+    }
+  };
 
-  const totalVolumen = materials.reduce(
+  useEffect(() => {
+    fetchPlasticos();
+  }, []);
+  
+const getPlasticbyId =(id)=>{
+  const plastic = plasticos.find((p) => p.IdTipoPlastico === id);
+    return plastic
+      ? `(${plastic.TipoPlastico})`
+      : "Plastico no disponible";
+}
+  const [showTable, setShowTable] = useState(true); 
+
+  const toggleView = () => {
+    setShowTable(!showTable);  
+  };
+
+ 
+
+  const filterByDate = () => {
+    const filteredItems = filteredMaterials.filter((item) => {
+      const itemDate = new Date(item.FechaIngresoM).toISOString().slice(0, 10); 
+      return itemDate === selectedDate;
+    });
+  
+    setFilteredMaterials(filteredItems);
+    setCurrentPage(1); 
+  };
+
+
+
+
+  
+
+
+  
+  const totalVolumen = filteredMaterials.reduce(
     (acc, material) =>
       acc + parseFloat(material.VolumenM || 0) + parseFloat(material.VolumenMInutil || 0),
     0,
   );
-  const totalItems = materials.length;
+  const totalItems =filteredMaterials.length;
 
-
-  const [showTable, setShowTable] = useState(true);  // Estado para alternar entre tabla y gráfico
-
-  const toggleView = () => {
-    setShowTable(!showTable);  // Cambia el estado al hacer clic
-  };
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredMaterials.slice(indexOfFirstItem, indexOfLastItem);
+  // Cambiar de página
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   
-
-
-
+  const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
   return (
     <>
       <SectionLayout title="Materiales Ingresados">
-<div className="flex ">
+<div className="flex flex-wrap items-center gap-1 ">
 
         <AddButtonWa
           abrirModal={abrirModal}
@@ -285,7 +333,8 @@ const EntradasDeMaterial = () => {
           data={materials}
           title="Reporte de Materiales Ingresados"
           />
-
+   
+ 
 <button
         onClick={toggleView}
         className="bg-blue-600 hover:bg-blue-700 flex justify-center items-center text-white font-bold py-2 mt-2 mb-5 px-4 rounded"
@@ -293,10 +342,18 @@ const EntradasDeMaterial = () => {
   {showTable ? <>Ver grafico <MdDateRange className="m-1" /> </> : <>Ver Tablas <BsClipboardDataFill className="m-1" /></>}
       </button>
 
+      <FilterButton
+        data={filteredMaterials}
+        dateField="FechaIngresoM"
+        onFilter={setFilteredMaterials}
+        onReset={() => setFilteredMaterials(filteredMaterials)}
+        onPageReset={() => setCurrentPage(1)}
+      />
+
         </div>
 
         {modalAbierto && (
-          <AddModal
+          <AddModalWithSelect
             title="Agregar Ingreso de Material"
             fields={fields}
             handleChange={handleChange}
@@ -361,7 +418,7 @@ const EntradasDeMaterial = () => {
             <LoadingTable loading={loading} />
             <TablaHead titles={title} />
             <tbody className="bg-white">
-              {currentItems.map((material) => (
+              {filteredMaterials.map((material) => (
                 <tr
                   key={material.IdMaterialClasificado}
                   className="hover:bg-gray-100"
@@ -371,10 +428,14 @@ const EntradasDeMaterial = () => {
                   </td>
                   <td className="border-b py-2 px-4">
                     Volumen Inutil: {material.VolumenMInutil} kgs
+                  </td>     
+                  <td className="border-b py-2 px-4">
+                    {material.FechaIngresoM ? material.FechaIngresoM.slice(0, 10) : "fecha no disponible"}
                   </td>
                   <td className="border-b py-2 px-4">
-                    {material.FechaIngresoM.slice(0, 10)}
+                     {getPlasticbyId(material.IdTipoPlastico)} 
                   </td>
+
                   <td className="border-b py-2 px-4">
                   {material.TipoDonante}
                   </td>
@@ -409,25 +470,11 @@ const EntradasDeMaterial = () => {
           </table>
           {/* Controles de paginación integrados */}
 
-          <div className="flex justify-between items-center bg-gray-700">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2  ml-2 hover:text-gray-400 text-white rounded-l"
-            >
-              Anterior
-            </button>
-            <span className="text-gray-300">
-              Página {currentPage} de {totalPages}
-            </span>
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage >= totalPages}
-              className="px-4 py-2 hover:text-gray-400  text-white rounded-r"
-            >
-              Siguiente
-            </button>
-          </div>
+          <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    paginate={paginate}
+  />
         </div>    
 
 ):(
