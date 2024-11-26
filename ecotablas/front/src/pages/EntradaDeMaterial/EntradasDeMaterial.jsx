@@ -27,7 +27,7 @@ import {
 editIngresoMat,
 } from "../../api/IngresoMaterialAPI";
 import { useState,useEffect } from "react";
-import { div } from "framer-motion/client";
+import AddModalWithSelect from "../../components/AddModalWithSelect";
 const EntradasDeMaterial = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -108,7 +108,7 @@ const EntradasDeMaterial = () => {
       !formValues.Estado ||
       !formValues.TipoDonante
     ) {
-      setMensaje("Todos los campos son obligatorios.");
+      toast.error("Todos los campos son obligatorios.");
       return;
     }
 
@@ -119,7 +119,7 @@ const EntradasDeMaterial = () => {
       )
       .then(() => {
         setModalEdit(false);
-        setMensaje("Modificación exitosa");
+        toast.success("Modificación exitosa");
         fetchMaterials();
       })
       .catch((error) =>
@@ -217,12 +217,27 @@ const EntradasDeMaterial = () => {
   // Total de páginas
   const totalPages = Math.ceil(materials.length / itemsPerPage);
 
-  const title = ["Volumen Util (kgs)", "Volumen Inutil (kgs)", "Fecha de ingreso", "Tipo Donante", "Acciones"];
+  const title = ["Volumen Util (kgs)", "Volumen Inutil (kgs)", "Material", "Fecha de ingreso", "Tipo Donante", "Acciones"];
   const columns = [
     { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenMInutil" },
+    { header: "Material", dataKey: "IdTipoPlastico" },
     { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
     { header: "Tipo Donante", dataKey: "TipoDonante" },
+  ];
+
+  const optionsTipoDonante = [
+    { value: "Empresa", label: "Empresa" },
+    { value: "Particular", label: "Particular" },
+    { value: "Urbano", label: "Urbano" },
+  ];
+
+  const optionsTipoPlastico = [
+    { value: "PET", label: "PET" },
+    { value: "Polietileno", label: "Polietileno" },
+    { value: "Polipropileno", label: "Polipropileno" },
+    { value: "Poliestireno", label: "Poliestireno" },
+    { value: "PVC", label: "PVC" },
   ];
 
   const fields = [
@@ -239,22 +254,22 @@ const EntradasDeMaterial = () => {
       placeholder: "Volumen Inutil *",
     },
     {
+      name: "IdTipoPlastico",
+      label: "Material",
+      type: "select",
+      options: optionsTipoPlastico
+    },
+    {
       name: "FechaIngresoM",
       label: "Fecha Ingreso",
       type: "date",
       placeholder: "Fecha *",
     },
     {
-      name: "IdTipoPlastico",
-      label: "ID Material",
-      type: "text",
-      placeholder: "ID Plastico *",
-    },
-    {
       name: "TipoDonante",
       label: "Tipo Donante",
-      type: "text",
-      placeholder: "Tipo Donante *",
+      type: "select",
+      options: optionsTipoDonante
     },
   ];
 
@@ -300,7 +315,7 @@ const EntradasDeMaterial = () => {
         </div>
 
         {modalAbierto && (
-          <AddModal
+          <AddModalWithSelect
             title="Agregar Ingreso de Material"
             fields={fields}
             handleChange={handleChange}
@@ -350,38 +365,43 @@ const EntradasDeMaterial = () => {
          
 
 
-        <div className="overflow-x-auto">
-        <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
-          <h5>
-            <span class="text-gray-400">Total de materiales ingresados:</span>
-            <span class="dark:text-white"> {totalItems}</span>
-          </h5>
-          <h5>
-            <span class="text-gray-400">Total volumen: </span>
-            <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
-          </h5>
-        </div>
-          <table className="min-w-full bg-white rounded-lg shadow-md">
-            <LoadingTable loading={loading} />
-            <TablaHead titles={title} />
-            <tbody className="bg-white">
-              {currentItems.map((material) => (
-                <tr
-                  key={material.IdMaterialClasificado}
-                  className="hover:bg-gray-100"
-                >
-                  <td className="border-b py-2 px-4">
-                    Volumen Util: {material.VolumenM} kgs
-                  </td>
-                  <td className="border-b py-2 px-4">
-                    Volumen Inutil: {material.VolumenMInutil} kgs
-                  </td>
-                  <td className="border-b py-2 px-4">
-                    {material.FechaIngresoM.slice(0, 10)}
-                  </td>
-                  <td className="border-b py-2 px-4">
-                  {material.TipoDonante}
-                  </td>
+         <div className="overflow-x-auto">
+         <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
+           <h5>
+             <span class="text-gray-400">Total de materiales ingresados:</span>
+             <span class="dark:text-white"> {totalItems}</span>
+           </h5>
+           <h5>
+             <span class="text-gray-400">Total volumen: </span>
+             <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
+           </h5>
+         </div>
+           <table className="min-w-full bg-white rounded-lg shadow-md">
+             <LoadingTable loading={loading} />
+             <TablaHead titles={title} />
+             <tbody className="bg-white">
+               {currentItems.map((material) => (
+                 <tr key={material.IdMaterialClasificado} className="hover:bg-gray-100">
+   <td className="border-b py-2 px-4 text-right">
+     <span className="font-semibold lg:hidden">Volumen Útil: </span>
+     {material.VolumenM} kgs
+   </td>
+   <td className="border-b py-2 px-4 text-right">
+     <span className="font-semibold lg:hidden">Volumen Inútil: </span>
+     {material.VolumenMInutil} kgs
+   </td>
+   <td className="border-b py-2 px-4 text-left">
+     <span className="font-semibold lg:hidden">Tipo de Plástico: </span>
+     {material.IdTipoPlastico}
+   </td>
+   <td className="border-b py-2 px-4 text-right">
+     <span className="font-semibold lg:hidden">Fecha de Ingreso: </span>
+     {material.FechaIngresoM.slice(0, 10)}
+   </td>
+   <td className="border-b py-2 px-4 text-left">
+     <span className="font-semibold lg:hidden">Tipo de Donante: </span>
+     {material.TipoDonante}
+                   </td>
                   <td
                     className={` py-2 px-4 flex justify-center ${
                       modalEdit || modalAbierto ? "hidden" : ""

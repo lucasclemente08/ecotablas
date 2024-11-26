@@ -14,9 +14,6 @@ import LoadingTable from "../../components/LoadingTable";
 import builderApiUrl from "../../utils/BuilderApi";
 import { FiEdit, FiPlus, FiRefreshCw, FiEye } from "react-icons/fi";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -51,7 +48,7 @@ const [showTable,setShowTable]=useState(true);
     Nombre: "",
     Tipo: "",
     Modelo: "",
-    IdEstado: "",
+    IdEstado: 1,
     fecha_adquisicion: "",
   });
 
@@ -60,7 +57,7 @@ const [showTable,setShowTable]=useState(true);
     IdVehiculo: "",
     Detalle: "",
     FechaInicio: "",
-    IdEstadoReparacion: "",
+    IdEstadoReparacion: 1,
     Costo: "",
   });
 
@@ -73,7 +70,7 @@ const [showTable,setShowTable]=useState(true);
       Nombre: maquinaria.Nombre,
       Tipo: maquinaria.Tipo,
       Modelo: maquinaria.Modelo,
-      IdEstado: maquinaria.IdEstado,
+      IdEstado: 1,
       fecha_adquisicion: maquinaria.fecha_adquisicion
         ? maquinaria.fecha_adquisicion.slice(0, 10)
         : "",
@@ -87,7 +84,7 @@ const [showTable,setShowTable]=useState(true);
       const res = await getReparacionByIdMaquinaria(maquinaria.Id);
       setReparaciones(res.data);
     } catch (error) {
-      setMensaje("Error al cargar las reparaciones.");
+      toast.error("Error al cargar las reparaciones.");
       console.error("Error fetching data: ", error);
     } finally {
       setLoading(false);
@@ -109,7 +106,7 @@ const [showTable,setShowTable]=useState(true);
       Nombre: "",
       Tipo: "",
       Modelo: "",
-      IdEstado: "",
+      IdEstado: 1,
       fecha_adquisicion: "",
     }); // Reiniciar los valores del formulario
     setModalAbierto(true);
@@ -128,7 +125,7 @@ const [showTable,setShowTable]=useState(true);
       const res = await getAllMaquinarias(); // Usar la función de API para obtener los datos
       setMaquinarias(res.data); // Actualizar el estado con la respuesta
     } catch (error) {
-      setMensaje("Error al cargar las maquinarias.");
+      toast.error("Error al cargar las maquinarias.");
       console.error("Error fetching data: ", error);
     } finally {
       setLoading(false);
@@ -142,19 +139,16 @@ const [showTable,setShowTable]=useState(true);
   const validateForm = () => {
     let isValid = true;
     if (!formValues.Nombre) {
-      setMensaje("Nombre es obligatorio.");
+      toast.error("Nombre es obligatorio.");
       isValid = false;
     } else if (!formValues.Tipo) {
-      setMensaje("Tipo es obligatorio.");
+      toast.error("Tipo es obligatorio.");
       isValid = false;
     } else if (!formValues.Modelo) {
-      setMensaje("Modelo es obligatorio.");
-      isValid = false;
-    } else if (!formValues.IdEstado) {
-      setMensaje("Estado es obligatorio.");
+      toast.error("Modelo es obligatorio.");
       isValid = false;
     } else if (!formValues.fecha_adquisicion) {
-      setMensaje("Fecha de adquisición es obligatoria.");
+      toast.error("Fecha de adquisición es obligatoria.");
       isValid = false;
     }
     return isValid;
@@ -170,7 +164,7 @@ const [showTable,setShowTable]=useState(true);
         
         toast.success("Inserción exitosa");
       } else {
-        setMensaje("Error: no se recibió un dato válido de la API.");
+        toast.error("Error: no se recibió un dato válido de la API.");
       }
 
       setModalAbierto(false);
@@ -189,7 +183,7 @@ const [showTable,setShowTable]=useState(true);
       toast.success("Modificación exitosa");
       await fetchMaquinarias(); // Actualiza la lista
     } catch (error) {
-      setMensaje("Error al modificar la maquinaria.");
+      toast.error("Error al modificar la maquinaria.");
       console.error("Error al modificar la maquinaria:", error);
     }
   };
@@ -205,16 +199,13 @@ const [showTable,setShowTable]=useState(true);
   const validateReparacionForm = () => {
     let isValid = true;
     if (!reparacionValues.Detalle) {
-      setMensaje("El detalle es obligatorio.");
+      toast.error("El detalle es obligatorio.");
       isValid = false;
     } else if (!reparacionValues.FechaInicio) {
-      setMensaje("La fecha de inicio es obligatoria.");
+      toast.error("La fecha de inicio es obligatoria.");
       isValid = false;
-    } else if (!reparacionValues.IdEstadoReparacion) {
-      setMensaje("El estado de la reparación es obligatorio.");
-      isValid = false;
-    } else if (!reparacionValues.Costo) {
-      setMensaje("El costo es obligatorio.");
+    }  else if (!reparacionValues.Costo) {
+      toast.error("El costo es obligatorio.");
       isValid = false;
     }
     return isValid;
@@ -227,7 +218,7 @@ const [showTable,setShowTable]=useState(true);
       // Primero, agrega la reparación
       // Primero, agrega la reparación
       await addReparacion(reparacionValues);
-      setMensaje("Reparación agregada exitosamente");
+      toast.success("Reparación agregada exitosamente");
 
       // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
       const maquinariaActualizada = {
@@ -253,11 +244,11 @@ const [showTable,setShowTable]=useState(true);
       // Cambiar estado de la maquinaria a 1 (operativa)
       await editMaquinarias(maquinariaId, { IdEstado: 1 });
 
-      setMensaje("Reparación terminada y maquinaria marcada como operativa.");
+      toast.success("Reparación terminada y maquinaria marcada como operativa.");
       fetchReparaciones(maquinariaId);
       fetchMaquinarias(); // Refrescar maquinarias
     } catch (error) {
-      setMensaje("Error al terminar la reparación.");
+      toast.error("Error al terminar la reparación.");
       console.error("Error al terminar la reparación: ", error);
     }
   };
@@ -314,12 +305,6 @@ const [showTable,setShowTable]=useState(true);
       label: "Modelo",
       type: "text",
       placeholder: "Modelo *",
-    },
-    {
-      name: "IdEstado",
-      label: "Estado",
-      type: "text",
-      placeholder: "Estado *",
     },
     {
       name: "fecha_adquisicion",
@@ -458,12 +443,6 @@ const [showTable,setShowTable]=useState(true);
                   placeholder: "Fecha *",
                 },
                 {
-                  name: "IdEstadoReparacion",
-                  label: "Estado",
-                  type: "text",
-                  placeholder: "Estado *",
-                },
-                {
                   name: "Costo",
                   label: "Costo",
                   type: "number",
@@ -486,19 +465,28 @@ const [showTable,setShowTable]=useState(true);
 
       
                {maquinarias.map((maquinaria) => (
-                 <tr key={maquinaria.Id} className="hover:bg-gray-100">
-                   <td className="border-b py-2 px-4">{maquinaria.Nombre}</td>
-                   <td className="border-b py-2 px-4">{maquinaria.Tipo}</td>
-                   <td className="border-b py-2 px-4">{maquinaria.Modelo}</td>
-                   <td
-                     className={`border-b py-2 px-4 ${estadoStyles[maquinaria.IdEstado]}`}
-                   >
-                     {getNombreEstado(maquinaria.IdEstado)}
-                   </td>
-                   <td className="border-b py-2 px-4">
-                     {maquinaria.fecha_adquisicion}
-                   </td>
-                   <td className="border-b py-2 px-4 flex justify-center">
+<tr key={maquinaria.Id} className="hover:bg-gray-100">
+  <td className="border-b py-2 px-4 text-left">
+    <span className="font-semibold lg:hidden">Nombre: </span>
+    {maquinaria.Nombre}
+  </td>
+  <td className="border-b py-2 px-4 text-left">
+    <span className="font-semibold lg:hidden">Tipo: </span>
+    {maquinaria.Tipo}
+  </td>
+  <td className="border-b py-2 px-4 text-left">
+    <span className="font-semibold lg:hidden">Modelo: </span>
+    {maquinaria.Modelo}
+  </td>
+  <td className={`border-b py-2 px-4 text-left ${estadoStyles[maquinaria.IdEstado]}`}>
+    <span className="font-semibold lg:hidden">Estado: </span>
+    {getNombreEstado(maquinaria.IdEstado)}
+  </td>
+  <td className="border-b py-2 px-4 text-right">
+    <span className="font-semibold lg:hidden">Fecha de Adquisición: </span>
+    {maquinaria.fecha_adquisicion}
+  </td>
+  <td className="border-b py-2 px-4 flex justify-center">
                 
       {maquinaria.IdEstado === 3 ? (
         <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700 flex items-center gap-2">

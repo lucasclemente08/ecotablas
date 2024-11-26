@@ -8,6 +8,8 @@ import {
 } from "../../features/tablasProducidasSlice";
 import SectionLayout from "../../layout/SectionLayout";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
+import { BsClipboardDataFill } from "react-icons/bs";
+import { FiEdit } from "react-icons/fi";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
@@ -134,10 +136,10 @@ const TablasProducidas = () => {
         ...item,
         Estado: 2, // Cambiar siempre a 2
       });
-      setMensaje("¡Tabla terminada!");
+      toast.success("¡Tabla terminada!");
       dispatch(fetchTablasProducidas()); // Actualizar la lista
     } catch (error) {
-      setMensaje("Error al cambiar el estado de las tablas.");
+      toast.error("Error al cambiar el estado de las tablas.");
       console.error("Error al cambiar el estado:", error);
     }
   };
@@ -254,16 +256,13 @@ const TablasProducidas = () => {
             <tbody>
               {currentItems.map((item) => (
                 <tr key={item.ID_Tabla}>
-                  <td className="px-4 py-2">
-                    {" "}
-                    {item.FechaProduccion
-                      ? item.FechaProduccion.slice(0, 10)
-                      : "Fecha no disponible"}
-                  </td>
-                  <td className="px-4 py-2">{item.Dimensiones}</td>
-                  <td className="px-4 py-2">{item.Peso}</td>
-                  <td className="px-4 py-2">{item.CodigoIdentificacion}</td>
-                  <td className="px-4 py-2 flex">
+  <td className="px-4 py-2 text-left">
+    {item.FechaProduccion ? item.FechaProduccion.slice(0, 10) : "Fecha no disponible"}
+  </td>
+  <td className="px-4 py-2 text-left">{item.Dimensiones}</td>
+  <td className="px-4 py-2 text-right">{item.Peso}</td>
+  <td className="px-4 py-2 text-right">{item.CodigoIdentificacion}</td>
+  <td className="px-4 py-2 flex justify-center">
                   <button
                           onClick={() => handleChangeState(item)}
                           className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
@@ -272,8 +271,9 @@ const TablasProducidas = () => {
                         </button>
                     <button
                       onClick={() => abrirModalEdit(item)}
-                      className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                     >
+                      <FiEdit />
                       Modificar
                     </button>
                     <DeleteButton
@@ -313,7 +313,17 @@ const TablasProducidas = () => {
           </div>
         </>
       )}
-       <ToastContainer /> 
+      <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
     </SectionLayout>
   );
 };

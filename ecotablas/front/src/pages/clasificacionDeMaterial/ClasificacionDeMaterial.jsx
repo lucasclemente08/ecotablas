@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
+import { MdDateRange } from "react-icons/md";
 import DeleteButton from "../../components/buttons/DeleteButton";
+import { BsClipboardDataFill } from "react-icons/bs";
+import { FiEdit } from "react-icons/fi";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
@@ -103,10 +106,10 @@ const ClasificacionDeMaterial = () => {
   const validateTrituradoForm = () => {
     let isValid = true;
     if (!trituradoValues.VolumenT) {
-      setMensaje("El volumen util es obligatorio.");
+      toast.error("El volumen util es obligatorio.");
       isValid = false;
     } else if (!trituradoValues.VolumenTInutil) {
-      setMensaje("El volumen inutil es obligatorio.");
+      toast.error("El volumen inutil es obligatorio.");
       isValid = false;
     } 
     return isValid;
@@ -117,7 +120,6 @@ const ClasificacionDeMaterial = () => {
   
     try {
       await addMaterialTrit(trituradoValues);
-      // setMensaje("");
       toast.success("Lote enviado a trituración!");
       // Luego, actualiza el estado a 2
       const materialActualizado = {
@@ -130,7 +132,7 @@ const ClasificacionDeMaterial = () => {
       setModalTriturado(false);
       fetchMaterials(); // Refrescar la lista para mostrar cambios
     } catch (error) {
-      setMensaje("Error al terminar el proceso.");
+      toast.error("Error al terminar el proceso.");
       console.error("Error al terminar el proceso:", error);
     }
   };
@@ -154,7 +156,6 @@ const ClasificacionDeMaterial = () => {
       )
       .then(() => {
         setModalEdit(false);
-        // setMensaje("Modificación exitosa");
         toast.success("Material actualizado!");
         fetchMaterials();
       })
@@ -272,6 +273,7 @@ const ClasificacionDeMaterial = () => {
           data={materials}
           title="Reporte de Materiales Clasificados"
         />
+
           <ToastContainer
   position="top-right"
   autoClose={3000}
@@ -336,24 +338,27 @@ const ClasificacionDeMaterial = () => {
             <LoadingTable loading={loading} />
             <TablaHead titles={title} />
             <tbody className="bg-white">
-              {currentItems.map((material) => (
-                <tr
-                  key={material.IdMaterialClasificado}
-                  className="hover:bg-gray-100"
-                >
-                  <td className="border-b py-2 px-4">
-                    Volumen Util: {material.VolumenUtil} kgs
-                  </td>
-                  <td className="border-b py-2 px-4">
-                    Volumen Inutil: {material.VolumenInutil} kgs
-                  </td>
-                  <td className="border-b py-2 px-4">
-                    {material.FechaC.slice(0, 10)}
-                  </td>
-                  <td
-                    className={` py-2 px-4 flex justify-center ${
-                      modalEdit || modalAbierto ? "hidden" : ""
-                    }`}
+            {currentItems.map((material) => (
+  <tr
+    key={material.IdMaterialClasificado}
+    className="hover:bg-gray-100"
+  >
+    <td className="border-b py-2 px-4 text-right">
+      <span className="font-semibold lg:hidden">Volumen Útil: </span>
+      {material.VolumenUtil} kgs
+    </td>
+    <td className="border-b py-2 px-4 text-right">
+      <span className="font-semibold lg:hidden">Volumen Inútil: </span>
+      {material.VolumenInutil} kgs
+    </td>
+    <td className="border-b py-2 px-4 text-right">
+      <span className="font-semibold lg:hidden">Fecha: </span>
+      {material.FechaC.slice(0, 10)}
+    </td>
+    <td
+      className={`border-b py-2 px-4 flex justify-center ${
+        modalEdit || modalAbierto ? "hidden" : ""
+      }`}
                   >
                     <button
                         onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
@@ -362,9 +367,10 @@ const ClasificacionDeMaterial = () => {
                         Terminado
                       </button>
                     <button
-                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       onClick={() => abrirModalEdit(material)}
                     >
+                      <FiEdit />
                       Modificar
                     </button>
                     <DeleteButton
