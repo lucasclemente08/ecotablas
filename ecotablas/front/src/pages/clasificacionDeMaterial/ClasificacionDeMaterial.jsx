@@ -12,8 +12,7 @@ import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-
+import NextProcess from "../../components/buttons/NextProcess";
 
 import VolumenChart from "../../components/volumen/VolumenChart";
 import DateFilter from "../../components/DateFilter";
@@ -409,6 +408,10 @@ const ClasificacionDeMaterial = () => {
 
           <VolumenChart dateRange={dateRange} />
         </div>
+
+
+        <NextProcess  linkTo="/materialTri"
+  hoverText="Ir al siguiente proceso"/>
       </SectionLayout>
     </>
   );

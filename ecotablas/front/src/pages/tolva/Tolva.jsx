@@ -8,6 +8,7 @@ import { BsClipboardDataFill } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FiEdit } from "react-icons/fi";
+import NextProcess from "../../components/buttons/NextProcess";
 import TablaHead from "../../components/Thead";
 import AddModal from "../../components/AddModal";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -397,6 +398,10 @@ const Tolva = () => {
           </div>
         </>
       )}
+      
+
+      <NextProcess  linkTo="/tablas"
+  hoverText="Ir al siguiente proceso"/>
     </SectionLayout>
   );
 };

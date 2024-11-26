@@ -12,6 +12,7 @@ import TablaHead from "../../components/Thead";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
+import NextProcess from "../../components/buttons/NextProcess";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaSearch, FaArrowLeft } from "react-icons/fa";
@@ -488,7 +489,8 @@ const getPlasticbyId =(id)=>{
      
 )
 }
-
+<NextProcess  linkTo="/clasificacion"
+  hoverText="Ir al siguiente proceso"/>
       </SectionLayout>
     </>
   );

@@ -5,6 +5,7 @@ import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { BsClipboardDataFill } from "react-icons/bs";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
+import NextProcess from "../../components/buttons/NextProcess";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { ToastContainer, toast } from "react-toastify";
@@ -436,6 +437,10 @@ const MaterialTrit = () => {
           </div>
         </div>
       </div>
+      
+
+      <NextProcess  linkTo="/tolva"
+  hoverText="Ir al siguiente proceso"/>
     </>
   );
 };

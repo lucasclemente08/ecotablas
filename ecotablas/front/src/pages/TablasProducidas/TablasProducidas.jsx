@@ -248,7 +248,7 @@ const TablasProducidas = () => {
       )}
 
       {loading ? (
-        <LoadingTable />
+        <LoadingTable loading={loading} />
       ) : (
         <>
           <table className="table-auto w-full bg-white rounded-lg shadow-lg">
