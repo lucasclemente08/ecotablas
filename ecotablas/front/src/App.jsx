@@ -29,9 +29,11 @@ import Reportes from "./pages/reportes/Reportes";
 import Reparaciones from "./pages/reparaciones/Reparaciones";
 import Permisos from "./pages/permisos/Permisos";
 import PermisosCallback from "./components/PermisosCallback";
+import Estadisticas from "./pages/estadisticas/Estadisticas";
+
 
 const routesConfig = [
-  { path: "/", element: <Home />, protected: true },
+  { path: "/", element: <Estadisticas/> , protected: true },
   { path: "/login", element: <Login />, protected: false },
   { path: "/register", element: <Register />, protected: false },
   { path: "/empleados", element: <Empleados />, protected: true },

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Pie, Line } from "react-chartjs-2";
 import Pagination from "../../../components/Pagination"
 import FilterTable from "../../../components/FilterTable";
+import { FiEdit } from "react-icons/fi";
+import { HiMiniLink } from "react-icons/hi2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -28,6 +30,7 @@ import axios from "axios";
 import builderApiUrl from "../../../utils/BuilderApi";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
 import AddButtonWa from "../../../components/buttons/AddButtonWa";
+import GastoVehiculosChart from "../../../components/graficos/GastoVehiculosChart";
 
 ChartJS.register(
   CategoryScale,
@@ -51,7 +54,7 @@ const GastoVehiculos = () => {
   const [modalEdit, setModalEdit] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [gastoEdit, setGastoEdit] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1 );
   const [itemsPerPage] = useState(5);
   const [accessToken, setAccessToken] = useState(null);
 
@@ -436,6 +439,76 @@ const totalPages = Math.ceil(dataV.length / itemsPerPage);
 const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
+const [lineData, setLineData] = useState({});
+
+const calculateLineData = () => {
+  const groupedByDate = {};
+
+  dataV.forEach((item) => {
+    const date = new Date(item.Fecha);
+    const month = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
+    groupedByDate[month] = (groupedByDate[month] || 0) + parseFloat(item.Monto);
+  });
+
+  const sortedKeys = Object.keys(groupedByDate).sort();
+  const labels = sortedKeys;
+  const data = sortedKeys.map((key) => groupedByDate[key]);
+
+  return {
+    labels,
+    datasets: [
+      {
+        label: "Gastos Mensuales",
+        data,
+        fill: false,
+        borderColor: "#7DD3FC", // Color más claro (azul pastel)
+        backgroundColor: "#1D27FF", // Fondo a
+        tension: 0.4,
+      },
+    ],
+  };
+};
+
+useEffect(() => {
+  setLineData(calculateLineData());
+}, [dataV]);
+
+const lineOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: true, // Muestra la leyenda
+      position: "top", // Posición de la leyenda
+    },
+    tooltip: {
+      enabled: true, // Habilita los tooltips
+    },
+    // Configura el fondo del gráfico
+    backgroundColor: {
+      color: "#FFFFFF", // Fondo del gráfico (gris claro)
+    },
+  },
+  scales: {
+    x: {
+      title: {
+        display: true,
+        text: "Meses",
+      },
+    },
+    y: {
+      title: {
+        display: true,
+        text: "Monto ($)",
+      },
+      beginAtZero: true,
+    },
+  },
+};
+const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
+
+
+
   return (
     <SectionLayout title="Gastos de Vehículos">
       <ToastContainer
@@ -450,19 +523,13 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
   pauseOnHover
 />
 
-      <div className="flex items-center" >
+<div className="flex flex-wrap items-center gap-4">
         <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
           title="Añadir gastos"
         />
         <PdfGenerator columns={titles} data={dataV} title="Reporte de gastos" />
         <DataView ShowTable={handleShowTable} />
-
-        {mensaje && (
-          <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-            {mensaje}
-          </div>
-        )}
 
 
         <button
@@ -485,13 +552,11 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
       </div>
       {ModalAbierto && (
         <AddModalWithSelect
-        
           title="Agregar Gastos vehiculos"
           fields={fields}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
           cerrarModal={cerrarModal}
-        
           values={formValues}
           dropboxAccessToken={accessToken}
         />
@@ -512,80 +577,101 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
         loading ? (
           <LoadingTable loading={loading} />
         ) : (
-      <div className="overflow-x-auto">
-            <table className="min-w-full bg-white rounded-lg shadow-md">
-            <TablaHead titles={titles} />
-            <tbody>
-              {dataV.map((item, index) => (
-                <tr key={index} className="hover:bg-gray-100 ">
-                  <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
-                                <td className="border-b py-3 px-4">
-                                {item.Comprobante ? (
-          <a
-          href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
-                className="text-blue-400"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Ver Comprobante
-          </a>
-        ) : (
-          "No disponible"
-        )}
-              </td>
-                  <td className="border-b py-3 px-4">{item.TipoGasto}</td>
-                  <td className="border-b py-3 px-4">
-                    {getVehicleById(item.IdVehiculo)}
-                  </td>
-                  <td className="border-b py-3 px-4">{item.Proveedor}</td>
-                  <td className="border-b py-3 px-4">{item.Monto}</td>
-                  <td className="border-b py-3 px-4">
-                  {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
-                  </td>
-                  <td className="border-b py-3 px-4">{item.Descripcion}</td>
-                  <td className=" b p-2 flex  mt-8
-                    items-center">
-        <div className="">
-        <button
-                      onClick={() => {
-                        setGastoEdit(item); // Almacenar el gasto seleccionado
-                        setFormValues(item); // Rellenar el formulario con los valores del gasto
-                        setModalEdit(true); // Mostrar el modal de edición
-                      }}
-                      className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                    >
-                      Modificar
-                    </button>
-        </div>
+<div className="overflow-x-auto w-full bg-gray-100">
+  <table className="min-w-full bg-white rounded-lg shadow-md">
+  <TablaHead  titles={titles}/>
+    <tbody>
+      {dataV.map((item, index) => (
+        <tr key={index} className="hover:bg-gray-100">
+          <td className="border-b py-3 px-4 text-left">
+            <span className="font-semibold lg:hidden">Tipo Comprobante: </span>
+            {item.TipoComprobante}
+          </td>
+          <td className="border-b py-3 px-4 text-left">
+            <span className="font-semibold lg:hidden">Comprobante: </span>
+            {item.Comprobante ? (
+              <a
+                href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
+                className="text-blue-400 flex items-center gap-1"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <HiMiniLink className="m-1" /> Comprobante
+              </a>
+            ) : (
+              "No disponible"
+            )}
+          </td>
+          <td className="border-b py-3 px-4 text-left">
+            <span className="font-semibold lg:hidden">Tipo Gasto: </span>
+            {item.TipoGasto}
+          </td>
+          <td className="border-b py-3 px-4 text-left">
+            <span className="font-semibold lg:hidden">Vehículo: </span>
+            {getVehicleById(item.IdVehiculo)}
+          </td>
+          <td className="border-b py-3 px-4 text-left">
+            <span className="font-semibold lg:hidden">Proveedor: </span>
+            {item.Proveedor}
+          </td>
+          <td className="border-b py-3 px-4 text-right">
+            <span className="font-semibold lg:hidden">Monto: </span>${item.Monto}
+          </td>
+          <td className="border-b py-3 px-4 text-right">
+            <span className="font-semibold lg:hidden">Fecha: </span>
+            {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
+          </td>
+          <td className="border-b py-3 px-4 text-left ">
+            <span className="font-semibold lg:hidden">Descripción: </span>
+            {item.Descripcion}
+          </td>
+          
+     <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
+     <button
+       onClick={() => {
+         setGastoEdit(item);
+         setFormValues(item);
+         setModalEdit(true);
+       }}
+       className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+     >
+       <FiEdit className="m-1" />
+       Modificar
+     </button>
+     <DeleteButton
+       endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
+       id={item.IdGasto}
+       updateList={fetchMaterials}
+     />
+   </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+    {/* Paginación */}
+    <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    paginate={paginate}
+  />
+</div>
 
-   <div className="">
-   <DeleteButton
-                      endpoint={
-                        "http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
-                      }
-                      id={item.IdGasto}
-                      updateList={fetchMaterials}
-                    />
-   </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <Pagination 
-          currentPage={currentPage}
-          totalPages={totalPages}
-          paginate={paginate}
-        />
-      </div>
+
+
+
         )
       ) : showPieChart ? (
-        <div className="w-full h-96">
-          <Pie data={pieData} options={pieOptions} />
+        <div className="flex flex-row content-center justify-center items-center h-96 ">
+          <div className=" m-10  max-h-72 ">
+
+          <Pie data={pieData} options={pieOptions} className="mt-4" />
+            <p className=" text-centermt-2 text-center text-gray-200 ">Total de gastos: ${total}</p>
+          </div>
+    <GastoVehiculosChart/>
         </div>
       ) : (
         <div className="w-full h-96">
-          {/* <Line data={lineData} options={lineOptions} /> */}
+         
         </div>
       )}
     </SectionLayout>

@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
+
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchEmpresaDonante,
@@ -15,6 +18,8 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
+import axios from "axios";
+
 
 const EmpresaDonante = () => {
   const dispatch = useDispatch();
@@ -75,10 +80,24 @@ const EmpresaDonante = () => {
       console.error("Por favor completa todos los campos requeridos");
       return;
     }
-    await dispatch(addEmpresaDonante(formValues)); // Asegúrate de manejar la respuesta y errores aquí
+axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar", formValues)
+  .then((response) => {
+    // Verificar si la respuesta es exitosa
+    if (response && response.data) {
+      fetchEmpresaDonante();
+      toast.success("Inserción exitosa");
+    } else {
+      toast.error("Error: no se recibió un dato válido de la API.");
+    }
+  })
+  .catch((error) => {
+    toast.error(`Error en la solicitud: ${error.message}`);
+  })
+  .finally(() => {
+  
     cerrarModal();
-  };
-
+  });
+  }
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     await dispatch(editEmpresaDonante({ id: empresaId, formValues }));
@@ -109,12 +128,18 @@ const EmpresaDonante = () => {
         data={data}
         title="Reporte de Empresas Donantes"
       />
+       <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
 
-      {error && (
-        <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">
-          Error: {error}
-        </div>
-      )}
       {modalAbierto && (
         <AddModalWithSelect
           title="Agregar Empresa Donante"
@@ -196,7 +221,7 @@ const EmpresaDonante = () => {
               </a>
             </td>
             <td className="px-4 py-2 flex">
-              <NextButton />
+
               <button
                 onClick={() => abrirModalEdit(item)}
                 className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"

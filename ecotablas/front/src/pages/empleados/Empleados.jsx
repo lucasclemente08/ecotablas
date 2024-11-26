@@ -2,8 +2,11 @@ import React, { useEffect, useState} from "react";
 import axios from "axios";
 import { MdExpandMore } from "react-icons/md";
 import { MdExpandLess } from "react-icons/md";
+import { FaEdit } from 'react-icons/fa';
+
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 
+import { FaSearch, FaList, FaFilter } from 'react-icons/fa';
 import DeleteButton from "../../components/buttons/DeleteButton";
 import SectionLayout from "../../layout/SectionLayout";
 import LoadingTable from "../../components/LoadingTable";
@@ -677,7 +680,7 @@ const Empleados = () => {
             </div>
           )}
 
-          <div className="mt-4">
+          <div className="">
             <input
               type="text"
               placeholder="Buscar por DNI"
@@ -716,27 +719,29 @@ const Empleados = () => {
                 />
               </>
             )}
-
-            <div className="flex items-center mt-2">
-              <button
-                onClick={handleSearch}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Buscar
-              </button>
-              <button
-                onClick={handleMostrarTodos}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-2 rounded"
-              >
-                Mostrar Todos
-              </button>
-              <button
-                onClick={() => setMostrarFiltros(!mostrarFiltros)}
-                className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 ml-2 rounded"
-              >
-                {mostrarFiltros ? "Ocultar Filtros" : "Agregar Filtros"}
-              </button>
-            </div>
+<div className="flex items-center mt-2">
+  <button
+    onClick={handleSearch}
+    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
+  >
+    <FaSearch className="w-5 h-5" />
+    Buscar
+  </button>
+  <button
+    onClick={handleMostrarTodos}
+    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-2 rounded flex items-center gap-2"
+  >
+    <FaList className="w-5 h-5" />
+    Mostrar Todos
+  </button>
+  <button
+    onClick={() => setMostrarFiltros(!mostrarFiltros)}
+    className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 ml-2 rounded flex items-center gap-2"
+  >
+    <FaFilter className="w-5 h-5" />
+    {mostrarFiltros ? "Ocultar Filtros" : "Agregar Filtros"}
+  </button>
+</div>
           </div>
         </div>
 
@@ -810,12 +815,13 @@ const Empleados = () => {
                 <td className="text-center py-2">{empleado.Dpto}</td>
                 <td className="text-center py-2">{empleado.Mail}</td>
                 <td className="text-center py-2 flex p-2">
-                  <button
-                    onClick={() => abrirModalModificar(empleado.IdEmpleado)}
-                    className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded mr-2"
-                  >
-                    Modificar
-                  </button>
+                <button
+  onClick={() => abrirModalModificar(empleado.IdEmpleado)}
+  className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded mr-2 flex items-center gap-2"
+>
+  <FaEdit className="w-5 h-5" />
+  Modificar
+</button>
                   <DeleteButton
                     id={empleado.IdEmpleado}
                     endpoint="http://www.trazabilidadodsapi.somee.com/api/Empleados/Borrar" // Ajusta el endpoint según sea necesario

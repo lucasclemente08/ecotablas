@@ -4,20 +4,12 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import SectionLayout from "../../layout/SectionLayout";
 import { toast } from "react-toastify";
+
+import { FaMapMarkedAlt } from "react-icons/fa";
 import TablaHead from "../../components/Thead";
+import { MdOutlineEditLocationAlt } from "react-icons/md";
 import L from "leaflet";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from "chart.js";
-import { FaChartLine, FaChartPie } from "react-icons/fa";
+import Pagination from "../../components/Pagination";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -29,17 +21,22 @@ import icon from "leaflet/dist/images/marker-icon.png";
 import Toast from "../../components/Toast";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
-
-ChartJS.register(
+import { MdOutlineAddLocation } from "react-icons/md";
+import {
+  Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
-  ArcElement,
-);
+} from "chart.js";
+import DonantesChart from "../../components/graficos/donantesChart";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+
+
 
 const RecoUrbanos = () => {
   const [showPieChart, setShowPieChart] = useState(true);
@@ -51,6 +48,8 @@ const RecoUrbanos = () => {
   const [locations, setLocations] = useState([]);
   const dispatch = useDispatch();
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [newUbicacion, setNewUbicacion] = useState({
     Nombre: "",
@@ -63,9 +62,13 @@ const RecoUrbanos = () => {
   const columns = [
     { header: "Nombre", accessor: "Nombre" },
     { header: "Tipo de Donante", accessor: "TipoDonante" },
-    { header: "Latitud", accessor: "Lat" },
-    { header: "Longitud", accessor: "Long" },
+    // { header: "Latitud", accessor: "Lat" },
+    // { header: "Longitud", accessor: "Long" },
   ];
+  const [chartData, setChartData] = useState(null);
+
+
+
   const titles = [...columns.map((col) => col.header), "Acciones"];
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
@@ -126,6 +129,7 @@ const RecoUrbanos = () => {
         "http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/ListarTodo",
       );
       setLocations(response.data);
+  
     } catch (error) {
       console.error("Error fetching locations:", error);
     }
@@ -239,6 +243,15 @@ const fields = [
 ];
 
 
+
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentItems = locations.slice(indexOfFirstItem, indexOfLastItem);
+
+const totalPages = Math.ceil(locations.length / itemsPerPage);
+const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
   return (
     <SectionLayout title="Recolección de Urbanos">
  
@@ -259,77 +272,59 @@ const fields = [
          <Toast message={toastMessage} type={toastType}  />
       <div className="overflow-x-auto">
         {modalAbierto && (
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex items-center justify-center min-h-screen pt-6 px-4 pb-20 text-center sm:block">
-              <div
-                className="fixed inset-0 transition-opacity"
-                aria-hidden="true"
-              >
-                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-              </div>
-              <span
-                className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                aria-hidden="true"
-              >
-                &#8203;
-              </span>
-              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:align-middle  sm:p-6">
-                <div>
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">
-                    Agregar Ubicacion
-                  </h3>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      name="Nombre"
-                      placeholder="Nombre de la parada *"
-                      value={newUbicacion.Nombre}
-                      onChange={handleChange}
-                      className="border p-2 w-full"
-                    />
-                    <input
-                      type="text"
-                      name="Lat"
-                      placeholder="Latitud *"
-                      value={newUbicacion.Lat}
-                      onChange={handleChange}
-                      className="border p-2 w-full mt-2"
-                    />
-                    <input
-                      type="text"
-                      name="Long"
-                      placeholder="Longitud *"
-                      value={newUbicacion.Long}
-                      onChange={handleChange}
-                      className="border p-2 w-full mt-2"
-                    />
-
-                    <label
-                      htmlFor="TipoDonante"
-                      className="block text-sm font-medium text-gray-700 mt-2"
-                    >
-                      Tipo de donante
-                    </label>
-                    <select
-                      id="TipoDonante"
-                      name="TipoDonante"
-                      value={newUbicacion.TipoDonante}
-                      onChange={handleChange}
-                      className="border p-2 w-full mt-1"
-                    >
-                      <option value="Empresa">Empresa donante</option>
-                      <option value="Urbanos">Recolección de urbanos</option>
-                      <option value="Particular">Particular</option>
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <p className=" mt-1 font-semibold">
-                    Presionar en el mapa para seleccionar la ubicacion.{" "}
-                  </p>
-                </div>
-                <div className="p-2  flex justify-center">
-                  <MapContainer
+      <div className="fixed inset-0 overflow-y-auto">
+  <div className="flex items-center justify-center min-h-screen p-2  text-center sm:block">
+    <div
+      className="fixed inset-0 transition-opacity"
+      aria-hidden="true"
+    >
+      <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+    <span
+      className="hidden sm:inline-block sm:align-middle sm:h-screen"
+      aria-hidden="true"
+    >
+      &#8203;
+    </span>
+    <div className="inline-block align-bottom bg-white rounded-lg px-6 pt-8 pb-6 text-left overflow-hidden shadow-xl transform transition-all sm:align-middle sm:p-8 w-full max-w-2xl">
+      <div>
+        <h3 className="text-lg  leading-6 font-medium text-gray-900">
+          Agregar Ubicación
+        </h3>
+        <div className="mt-1">
+        <label className="block mt-2 text-sm font-medium text-gray-700">
+        Nombre de la parada *
+          </label>
+          <input
+            type="text"
+            name="Nombre"
+            placeholder="Nombre de la parada"
+            value={newUbicacion.Nombre}
+            onChange={handleChange}
+            className="border p-2 w-full"
+          />
+          <label className="block mt-2 text-sm font-medium text-gray-700">
+            Tipo de Donante *
+          </label>
+          <select
+            id="TipoDonante"
+            name="TipoDonante"
+            value={newUbicacion.TipoDonante}
+            onChange={handleChange}
+            className="border p-2 w-full mt-1"
+          >
+            <option value="Empresa">Empresa donante</option>
+            <option value="Urbanos">Recolección de urbanos</option>
+            <option value="Particular">Particular</option>
+          </select>
+        </div>
+        <div>
+          <p className="mt-2 font-semibold">
+            Presionar en el mapa para seleccionar la ubicación.
+          </p>
+        </div>
+        <div className="p-2 flex justify-center">
+        <MapContainer
                     className="overflow-y-auto w-4 "
                     center={centerPosition}
                     zoom={12}
@@ -362,38 +357,48 @@ const fields = [
                       </Marker>
                     ))}
                   </MapContainer>
-                </div>
-                <div className="mt-2 sm:mt-2">
-                  <button
-                    onClick={handleSubmit}
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
-                  >
-                    Guardar
-                  </button>
-                  <button
-                    onClick={cerrarModal}
-                    className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+        </div>
+              <p className="text-center text-sm mb-1 text-gray-500">{`lat:${newUbicacion.Lat} |  long:${newUbicacion.Long}`}</p>
+        <div className="flex justify-end space-x-4 mt-4 ">
+     
+          <button
+            onClick={cerrarModal}
+            className=" inline-flex justify-center w-full rounded-md border border-transparent shadow-sm p-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={handleSubmit}
+            className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
         )}
       </div>
-      <button
-        onClick={abrirModal}
-        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 mt-2 mb-5 px-4 rounded"
-      >
-        Agregar ubicación
-      </button>
-      <button
-        onClick={toggleMap}
-        className="px-4 py-2 m-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-200 ease-in-out"
-      >
-        {showMap ? "Ocultar Mapa" : "Mostrar Mapa"}
-      </button>
+      <div className="flex items-center space-x-4">
+  <button
+    onClick={abrirModal}
+    className="bg-green-600 flex items-center justify-center hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow-md transition duration-200 ease-in-out"
+    title="Agregar una nueva ubicación"
+  >
+    Agregar ubicación
+    <MdOutlineAddLocation className="text-lg ml-2" />
+  </button>
+  <button
+    onClick={toggleMap}
+    className="p-2 bg-blue-500 flex items-center justify-center hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-200 ease-in-out"
+    title={showMap ? "Ocultar el mapa" : "Mostrar el mapa"}
+  >
+    {showMap ? "Ocultar Mapa" : "Mostrar Mapa"}
+    <FaMapMarkedAlt className="text-lg ml-2" />
+  </button>
+</div>
 
 
       {showMap && !modalAbierto && (
@@ -432,21 +437,24 @@ const fields = [
     <>
     </>
       ) : (
-        <table className="table-auto w-full bg-white rounded-lg shadow-lg mt-4">
-          <TablaHead titles={titles} />
+        <div>
+
+      <table className="table-auto w-full bg-white rounded-lg shadow-lg mt-4">
+          <TablaHead titles={titles}   />
           <tbody>
             {locations.map((location) => (
               <tr key={location.Nombre}>
-                <td className="px-4 py-2">{location.Nombre}</td>
+                <td className="px-4 py-2 ">{location.Nombre}</td>
                 <td className="px-4 py-2">{location.TipoDonante}</td>
-                <td className="px-4 py-2">{location.Lat}</td>
-                <td className="px-4 py-2">{location.Long}</td>
-                <td className="px-4 py-2 flex gap-2">
+                {/* <td className="px-4 py-2">{location.Lat}</td> */}
+          
+                {/* <td className="px-4 py-2">{location.Long}</td> */}
+                <td className="px-4 py-2 flex justify-center content-center items-center">
                   <button
                     onClick={() => handleEdit(location)}
-                    className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                    className="bg-yellow-700 ml-2 flex justify-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                   >
-                    Modificar
+                    Modificar  <MdOutlineEditLocationAlt className="m-1" />
                   </button>
                   <DeleteButton
                     id={location.IdUbicacion}
@@ -459,8 +467,17 @@ const fields = [
               </tr>
             ))}
           </tbody>
+        
         </table>
+        <Pagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        paginate={paginate}
+      />
+              
+      </div>
       )}
+    
     </SectionLayout>
   );
 };

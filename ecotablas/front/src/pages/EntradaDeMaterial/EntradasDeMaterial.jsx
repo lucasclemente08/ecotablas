@@ -1,23 +1,23 @@
 
 import axios from "axios";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
-import React, { useState, useEffect } from "react";
-
 import PdfGenerator from "../../components/buttons/PdfGenerator";
+import { MdDateRange } from "react-icons/md";
 import DeleteButton from "../../components/buttons/DeleteButton";
+import { BsClipboardDataFill } from "react-icons/bs";
+import { FaChartLine, FaChartPie } from "react-icons/fa";
 import AddModal from "../../components/AddModal";
-
-
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
-
 import ReportButton from "../../components/buttons/ReportButton";
-
+import NextButton from "../../components/buttons/NextButton";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
-
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FiEdit } from "react-icons/fi";
 import {
   getAllMaterialClas,
   addMaterialClas,
@@ -26,7 +26,8 @@ import {
 import {
 editIngresoMat,
 } from "../../api/IngresoMaterialAPI";
-
+import { useState,useEffect } from "react";
+import { div } from "framer-motion/client";
 const EntradasDeMaterial = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -264,20 +265,40 @@ const EntradasDeMaterial = () => {
   );
   const totalItems = materials.length;
 
+
+  const [showTable, setShowTable] = useState(true);  // Estado para alternar entre tabla y gráfico
+
+  const toggleView = () => {
+    setShowTable(!showTable);  // Cambia el estado al hacer clic
+  };
+  
+
+
+
   return (
     <>
       <SectionLayout title="Materiales Ingresados">
+<div className="flex ">
+
         <AddButtonWa
           abrirModal={abrirModal}
           title={"Añadir Ingreso de Material"}
-        />
-
+          />
         <PdfGenerator
           columns={columns}
           data={materials}
           title="Reporte de Materiales Ingresados"
-        />
-        <ReportButton />
+          />
+
+<button
+        onClick={toggleView}
+        className="bg-blue-600 hover:bg-blue-700 flex justify-center items-center text-white font-bold py-2 mt-2 mb-5 px-4 rounded"
+        >
+  {showTable ? <>Ver grafico <MdDateRange className="m-1" /> </> : <>Ver Tablas <BsClipboardDataFill className="m-1" /></>}
+      </button>
+
+        </div>
+
         {modalAbierto && (
           <AddModal
             title="Agregar Ingreso de Material"
@@ -288,6 +309,17 @@ const EntradasDeMaterial = () => {
             values={formValues}
           />
         )}
+      <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
 
         {modalEdit && (
           <ButtonEdit
@@ -314,7 +346,11 @@ const EntradasDeMaterial = () => {
               values={clasificacionValues}
             />
           )}
+{showTable ? (
+         
 
+
+        <div className="overflow-x-auto">
         <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
           <h5>
             <span class="text-gray-400">Total de materiales ingresados:</span>
@@ -325,8 +361,6 @@ const EntradasDeMaterial = () => {
             <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
           </h5>
         </div>
-
-        <div className="overflow-x-auto">
           <table className="min-w-full bg-white rounded-lg shadow-md">
             <LoadingTable loading={loading} />
             <TablaHead titles={title} />
@@ -360,10 +394,11 @@ const EntradasDeMaterial = () => {
                         Terminado
                       </button>
                     <button
-                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       onClick={() => abrirModalEdit(material)}
                     >
-                      Modificar
+                              <FiEdit />
+                              Modificar
                     </button>
 
                     <DeleteButton
@@ -377,6 +412,7 @@ const EntradasDeMaterial = () => {
             </tbody>
           </table>
           {/* Controles de paginación integrados */}
+
           <div className="flex justify-between items-center bg-gray-700">
             <button
               onClick={() => paginate(currentPage - 1)}
@@ -396,12 +432,19 @@ const EntradasDeMaterial = () => {
               Siguiente
             </button>
           </div>
-        </div>
-        <div className="flex-1 flex flex-col gap-4 p-4">
-          <DateFilter onFilter={handleFilter} />
+        </div>    
 
-          <VolumenIngresadoChart dateRange={dateRange} />
-        </div>
+):(
+
+  <div className="flex-1 flex flex-col gap-4 p-4">
+  <DateFilter onFilter={handleFilter} />
+
+  <VolumenIngresadoChart dateRange={dateRange} />
+</div>
+     
+)
+}
+
       </SectionLayout>
     </>
   );

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import builderApiUrl from "../../utils/BuilderApi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { MdDelete } from "react-icons/md";
 
 const DeleteButton = ({ id, endpoint, updateList }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [mensaje, setMensaje] = useState("");
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -18,14 +19,13 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
     axios
       .delete(`${endpoint}/${id}`)
       .then((response) => {
-        setMensaje("Eliminación exitosa");
+        toast.success("Eliminación exitosa");
         updateList();
-
-        closeModal();
+        closeModal(); // Cerrar el modal después de éxito
       })
       .catch((error) => {
         console.error("Error al eliminar:", error);
-        setMensaje("Error al eliminar");
+        toast.error("Error al eliminar");
       });
   };
 
@@ -33,9 +33,11 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
     <>
       <button
         onClick={openModal}
-        className="ml-2 bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+        className="ml-2 bg-red-700 flex hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
       >
+        <MdDelete  className="m-1 "/>
         Eliminar
+
       </button>
 
       {isModalOpen && (
@@ -45,7 +47,7 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
         >
           <div
             className="bg-white p-6 rounded-lg w-full max-w-md"
-            onClick={(e) => e.stopPropagation()} // Prevent closing modal on clicking inside
+            onClick={(e) => e.stopPropagation()} // Evitar cerrar modal al hacer clic dentro
           >
             <div className="text-right">
               <button
@@ -102,6 +104,9 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
           </div>
         </div>
       )}
+
+      {/* Contenedor de Toast */}
+      <ToastContainer position="bottom-right" autoClose={3000} />
     </>
   );
 };

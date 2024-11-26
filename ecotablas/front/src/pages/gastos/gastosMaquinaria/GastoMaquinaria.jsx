@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../../../components/Pagination"
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { HiMiniLink } from "react-icons/hi2";
+
+import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchGastos,
@@ -11,14 +16,11 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import TablaHead from "../../../components/Thead";
 import LoadingTable from "../../../components/LoadingTable";
-
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import { FaChartLine, FaChartPie } from "react-icons/fa";
 import DataView from "../../../components/buttons/DataView";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
-
-import { storage } from "../../../firebase/firebase"; 
 import AddButtonWa from "../../../components/buttons/AddButtonWa";
 
 
@@ -27,24 +29,20 @@ const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
 const GastoMaquinaria = () => {
   const dispatch = useDispatch();
   const { gastos: dataM, loading } = useSelector(
-    (state) => state.gastoMaquinaria,
+    (state) => state.gastoMaquinaria
   );
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [dataView, setDataView] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-
+  const [accessToken, setAccessToken] = useState(null);
   const [gastoEdit, setGastoEdit] = useState(null);
   const [showTable, setShowTable] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
   const [maquinaria, setMaquinaria] = useState([]);
-  const [mensaje, setMensaje] = useState("");
   const [pieData, setPieData] = useState({});
-  const [showPieChart, setShowPieChart] = useState(true);
-  const [accessToken, setAccessToken] = useState(null);
-
-
+  const [showPieChart, setShowPieChart] = useState(false);
   const [formValues, setFormValues] = useState({
     tipoGasto: "",
     tipoComprobante: "",
@@ -54,16 +52,33 @@ const GastoMaquinaria = () => {
     fecha: "",
     descripcion: "",
   });
+  const [comprobante, setComprobante] = useState(null);
+  // Variables de entorno
+  const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
+  const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
 
-  const abrirModal = () => setModalAbierto(true);
+  // Cerrar Modal
   const cerrarModal = () => setModalAbierto(false);
 
+  // Fetch inicial de datos
   useEffect(() => {
     dispatch(fetchGastos());
+    fetchMaquinaria();
   }, [dispatch]);
 
+  // Fetch maquinaria
+  const fetchMaquinaria = () => {
+    axios
+      .get("https://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo")
+      .then((response) => {
+        setMaquinaria(response.data);
+      })
+      .catch((error) => console.error("Error fetching maquinaria:", error));
+  };
+
+  // Crear datos del gráfico circular
   useEffect(() => {
-    const calculatePieData = () => {
+    if (dataM.length > 0) {
       const categories = {};
       dataM.forEach((item) => {
         categories[item.TipoGasto] =
@@ -81,95 +96,39 @@ const GastoMaquinaria = () => {
           },
         ],
       });
-    };
-
-    calculatePieData();
+    }
   }, [dataM]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
+    const { name, value, files } = e.target;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (files && files[0]) {
+        // Si se seleccionó un archivo
+        const selectedFile = files[0];
+        console.log("Archivo seleccionado:", selectedFile.name);
 
-    if (formValues.Comprobante) {
-  
-      const URL = await uploadToDropbox(formValues.Comprobante);  
-console.log(URL);
-      if (URL) {
-    
-        const updatedFormValues = { ...formValues, Comprobante: URL };
-     
+        // Guardar el archivo en un estado separado
+        setComprobante(selectedFile);
 
-    dispatch(addGasto(updatedFormValues)).then(() => {
-      setModalAbierto(false);
-      dispatch(fetchGastos());
-    });
-  };
-}}
-  const handleEditSubmit = (e) => {
-    e.preventDefault();
-    dispatch(addGasto(gastoEdit))
-      .then(() => {
-        setMensaje("Gasto actualizado con éxito");
-        dispatch(fetchGastos());
-        setModalEdit(false);
-      })
-      .catch((error) => console.error("Error al actualizar:", error));
-  };
+        // Si necesitas manejar el archivo en formValues:
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: selectedFile.name, // Guarda solo el nombre del archivo
+        }));
+    } else {
+        // Si es un campo de texto u otro tipo de input
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+    }
+};
 
-  const columns = [
-    { header: "Tipo de Gasto", dataKey: "tipoGasto" },
-    { header: "Tipo de Comprobante", dataKey: "tipoComprobante" },
-    { header: "Comprobante", dataKey: "comprobante" },
-    { header: "Proveedor", dataKey: "proveedor" },
-    { header: "Monto ($)", dataKey: "monto" },
-    { header: "Fecha", dataKey: "fecha" },
-    { header: "Descripción", dataKey: "descripcion" },
-  ];
-
-  const titles = [
-    "Tipo de comprobante",
-    "Comprobante",
-    "Tipo de gasto",
-    "Proveedor",
-    "Monto ($)",
-    "Fecha",
-    "Descripción",
-    "Acciones",
-  ];
-
-  const fetchMaquinaria = () => {
-    axios
-      .get("https://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo")
-      .then((response) => {
-        setMaquinaria(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching trucks:", error);
-      });
-  };
-  useEffect(() => {
-    fetchMaquinaria();
-  }, []);
-  const getMachinesById = (id) => {
-    const machine = maquinaria.find((machine) => machine.Id === id);
-    return machine
-      ? `${machine.Modelo} (${machine.Tipo})`
-      : "Maquinaria no disponible";
-  };
 
   const optionsMaquinaria = maquinaria.map((machine) => ({
     value: machine.Id,
     label: `${machine.Modelo} (${machine.Tipo})`,
   }));
-
-  const pieOptions = { responsive: true, maintainAspectRatio: false };
 
   const fields = [
     {
@@ -179,7 +138,7 @@ console.log(URL);
       options: [
         { value: "Combustible", label: "Combustible" },
         { value: "Mantenimiento", label: "Mantenimiento" },
-        { value: "Reparacion", label: "Reparación" },
+        { value: "Reparación", label: "Reparación" },
         { value: "Seguro", label: "Seguro" },
         { value: "Otros", label: "Otros" },
       ],
@@ -190,16 +149,19 @@ console.log(URL);
       label: "Tipo de Comprobante",
       type: "select",
       options: [
-        { value: "factura", label: "Factura" },
-        { value: "recibo", label: "Recibo" },
-        { value: "boleta", label: "Boleta" },
-        { value: "otro", label: "Otro" },
+        { value: "Factura", label: "Factura" },
+        { value: "Recibo", label: "Recibo" },
+        { value: "Boleta", label: "Boleta" },
+        { value: "Otro", label: "Otro" },
       ],
       required: true,
     },
-
-    { name: "comprobante", label: "Comprobante", type: "file", required: true },
-
+    {
+      name: "comprobante",
+      label: "Comprobante",
+      type: "file",
+      required: true,
+    },
     { name: "proveedor", label: "Proveedor", type: "text", required: true },
     {
       name: "Id_Maquinaria",
@@ -218,44 +180,38 @@ console.log(URL);
     },
   ];
 
-  const handleShowTable = () => {
-    setShowTable(true);
-    setShowPieChart(false);
-  };
 
-
-  const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
-  const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
-  
   const getAccessToken = async () => {
-    const refreshToken = localStorage.getItem('dropboxRefreshToken');
+    const refreshToken = localStorage.getItem("dropboxRefreshToken");
     if (!refreshToken) {
-      console.error("No se encontró el refresh token en el localStorage.");
+      toast.error("No se obtuvo el token, acceda desde el login correctamente.");
       return null;
     }
-  
-    const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken,
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-      }),
-    });
-  
-    if (!response.ok) {
-      console.error("Error al obtener el access token:", await response.text());
-      return null;
-    }
-  
-    const data = await response.json();
-    return data.access_token;
-  };
 
+    try {
+      const response = await fetch("https://api.dropboxapi.com/oauth2/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          grant_type: "refresh_token",
+          refresh_token: refreshToken,
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+        }),
+      });
+
+      if (!response.ok) {
+        toast.error("Error al obtener el access token.");
+        return null;
+      }
+
+      const data = await response.json();
+      return data.access_token;
+    } catch (error) {
+      toast.error("Error al conectar con Dropbox.");
+      return null;
+    }
+  };
   useEffect(() => {
     const fetchToken = async () => {
       const token = await getAccessToken();
@@ -266,7 +222,6 @@ console.log(URL);
     fetchToken();
   }, []);
 
-  
   const uploadToDropbox = async (file) => {
     const accessToken = await getAccessToken();
     if (!accessToken) return;
@@ -341,32 +296,115 @@ console.log(URL);
   
       const shareData = await shareResponse.json();
       const baseUrl = "https://www.dropbox.com/scl/fi/";
-      const sharedLink = shareData.url.replace(baseUrl, "").split('?')[0];
-      
 
-      const link = `${sharedLink}?dl=0`;
- 
-      return link;      
-  
+      
+// Reemplaza la baseUrl, pero conserva el resto de la URL
+const sharedLink = shareData.url.replace(baseUrl, "").split('?')[0];
+
+// Reconstruye la URL con el formato correcto
+const link = `${sharedLink}?dl=1`;
+
+return link;
+
+
     } catch (error) {
       console.error("Error en la solicitud a Dropbox:", error);
       return null;
     }
   };
   
-   
 
 
-const indexOfLastItem = currentPage * itemsPerPage;
-const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentItems = dataM.slice(indexOfFirstItem, indexOfLastItem);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-const totalPages = Math.ceil(dataM.length / itemsPerPage);
-const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    toast.success("Subiendo comprobante a dropbox");
+    const URL = await uploadToDropbox(comprobante );  
+
+    if (URL) {
+  
+      const updatedFormValues = { ...formValues, comprobante: URL };
+
+        axios
+            .post(
+                "http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Create",
+                updatedFormValues
+            )
+            .then(() => {
+                toast.success("Gasto agregado con éxito");
+                dispatch(fetchGastos()); // Recargar la tabla
+                cerrarModal();
+            })
+            .catch((error) => {
+                console.error("Error al agregar el gasto:", error);
+                toast.error("Error al agregar el gasto.");
+            });
+    } else {
+      console.error("No se pudo subir el archivo a dropbox")
+        toast.error("No se pudo subir el archivo a Dropbox.");
+    }
+};
+
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = dataM.slice(indexOfFirstItem, indexOfLastItem);
+  const columns = [
+    { header: "Tipo de Gasto", dataKey: "tipoGasto" },
+    { header: "Tipo de Comprobante", dataKey: "tipoComprobante" },
+    { header: "Comprobante", dataKey: "comprobante" },
+    { header: "Proveedor", dataKey: "proveedor" },
+    { header: "Monto ($)", dataKey: "monto" },
+    { header: "Fecha", dataKey: "fecha" },
+    { header: "Descripción", dataKey: "descripcion" },
+  ];
+
+  const titles = [
+    "Tipo de comprobante",
+    "Comprobante",
+    "Tipo de gasto",
+    "Proveedor",
+    "Monto ($)",
+    "Fecha",
+    "Descripción",
+    "Acciones",
+  ];
+
+  const handleShowTable = () => {
+    setShowTable(true);
+    setShowPieChart(false);
+  };
+
+  const totalPages = Math.ceil(dataM.length / itemsPerPage);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
+  const pieOptions = {
+    plugins: {
+      legend: {
+        position: "top",
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+  };
 
   return   (
 <>
     <SectionLayout title="Gasto de Maquinaria">
+
+    <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
+
       <div className="flex">
   
 
@@ -401,6 +439,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
           handleSubmit={handleSubmit}
           cerrarModal={cerrarModal}
           values={formValues}
+          dropboxAccessToken={accessToken}
         />
       )}
       {modalEdit && (
@@ -428,16 +467,13 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
         <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
         {item.Comprobante ? (
           <a
-          href={`${"https://www.dropbox.com/s/"}${item.Comprobante}`}
-                className="text-blue-400 "
+          href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
+                className="text-blue-400 flex justify-center content-center "
             target="_blank"
             rel="noopener noreferrer"
         
-          >
-            <td className="">
-            Ver Comprobante
-            </td>
-            
+          >  
+            <HiMiniLink  className="m-1"/>  Comprobante 
           </a>
         ) : (
           "No disponible"
@@ -456,9 +492,12 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
               setFormValues(item);
               setModalEdit(true);
             }}
-            className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+            className="bg-yellow-700 ml-2 flex hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
           >
-            Modificar
+            
+            <FiEdit  className="m-1"/>
+                        Modificar  
+       
           </button>
           <DeleteButton
             endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Delete"

@@ -7,6 +7,10 @@ import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 
 import VolumenChart from "../../components/volumen/VolumenChart";
 import DateFilter from "../../components/DateFilter";
@@ -80,6 +84,7 @@ const ClasificacionDeMaterial = () => {
         formValues,
       )
       .then(() => {
+        toast.success("Material cargado")
         cerrarModal();
         fetchMaterials();
       })
@@ -112,8 +117,8 @@ const ClasificacionDeMaterial = () => {
   
     try {
       await addMaterialTrit(trituradoValues);
-      setMensaje("Lote enviado a trituración");
-  
+      // setMensaje("");
+      toast.success("Lote enviado a trituración!");
       // Luego, actualiza el estado a 2
       const materialActualizado = {
         ...materials.find((m) => m.IdMaterialClasificado === materialId),
@@ -121,7 +126,7 @@ const ClasificacionDeMaterial = () => {
       };
       console.log (materialActualizado)
       await editMaterialClas(materialId, materialActualizado);
-  
+
       setModalTriturado(false);
       fetchMaterials(); // Refrescar la lista para mostrar cambios
     } catch (error) {
@@ -138,7 +143,7 @@ const ClasificacionDeMaterial = () => {
       !formValues.IdIngresoMaterial ||
       !formValues.FechaC
     ) {
-      setMensaje("Todos los campos son obligatorios.");
+      toast.info("Todos los campos son obligatorios.");
       return;
     }
 
@@ -149,7 +154,8 @@ const ClasificacionDeMaterial = () => {
       )
       .then(() => {
         setModalEdit(false);
-        setMensaje("Modificación exitosa");
+        // setMensaje("Modificación exitosa");
+        toast.success("Material actualizado!");
         fetchMaterials();
       })
       .catch((error) =>
@@ -180,6 +186,7 @@ const ClasificacionDeMaterial = () => {
         "http://localhost:61274/api/MaterialClas/ListarTodo",
       );
       setMaterials(response.data);
+      
     } catch (error) {
       console.error("Error fetching materials:", error);
     } finally {
@@ -265,7 +272,17 @@ const ClasificacionDeMaterial = () => {
           data={materials}
           title="Reporte de Materiales Clasificados"
         />
-     
+          <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
         {modalAbierto && (
           <AddModal
             title="Agregar Material Clasificado"
