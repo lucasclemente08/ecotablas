@@ -1,5 +1,9 @@
-const TotalCard = ({ title, value, icon, iconStyle = "" }) => (
-    <div className="flex-1 min-w-[300px] max-w-[500px] p-4 bg-gray-800 shadow-md rounded-md">
+const TotalCard = ({ title, value, icon, iconStyle = "",bgColor = "bg-gray-800"  }) => (
+
+
+    <div
+    className={`${bgColor} flex-1 min-w-[300px] max-w-[500px] p-4 shadow-md rounded-md`}
+  >
       <div className="flex justify-center items-center mb-4">
         {icon && (
           <div className={`mr-2 ${iconStyle}`}>

@@ -6,11 +6,11 @@ import GastoVehiculoChart from "../../components/graficos/GastoVehiculosChart";
 import GastoMaquinariaChart from "../../components/graficos/GastoMaquinariaChart";
 import ChartCard from "../../components/graficos/ChardCard";
 import TotalCard from "../../components/graficos/TotalChart";
-import { FaChartBar } from "react-icons/fa"; // Puedes cambiar este ícono por otro
 
+
+
+import { FaChartBar, FaDollarSign, FaCogs } from "react-icons/fa";
 import { FcShipped } from "react-icons/fc";
-import { FaArrowTrendUp } from "react-icons/fa6";
-import { FaArrowTrendDown } from "react-icons/fa6";
 const Estadisticas = () => {
   const [tablasProducidas, setTablasProducidas] = useState([]);
   const [tablasProducidasHoy, setTablasProducidasHoy] = useState(0);
@@ -58,10 +58,54 @@ const Estadisticas = () => {
   
     setTablasProducidasHoy(producidasHoy.length);
   }, [tablasProducidas]);
-  
+
+  const gastoVehiculosHoy = "$1,200"; // Ejemplo de datos
+  const maquinariaOperativa = 15; // Ejemplo de datos
+
+
 
   return (
     <SectionLayout title="">
+
+<div className="flex flex-wrap justify-center gap-6 mb-8">
+      {/* Total Material Ingresado */}
+      <TotalCard
+        title="Totales Material Ingresado Hoy"
+        value={`${materialIngresado} kgs`}
+        icon={<FcShipped />}
+        iconStyle="text-green-500 text-4xl"
+        bgColor="bg-green-700"
+      />
+
+      {/* Total Tablas Producidas */}
+      <TotalCard
+        title="Totales Tablas Producidas Hoy"
+        value={tablasProducidasHoy}
+        icon={<FaChartBar />}
+        iconStyle="text-blue-300 text-4xl"
+        bgColor="bg-blue-600"
+      />
+
+      {/* Gasto en Vehículos */}
+      <TotalCard
+        title="Gasto Vehículos Hoy"
+        value={21}
+        icon={<FaDollarSign />}
+        iconStyle="text-yellow-400 text-4xl"
+        bgColor="bg-yellow-600"
+      />
+
+      {/* Maquinaria Operativa */}
+      <TotalCard
+        title="Maquinaria Operativa"
+        value={12}
+        icon={<FaCogs />}
+        iconStyle="text-red-400 text-4xl"
+        bgColor="bg-red-600"
+      />
+    </div>
+
+
       <div className="flex flex-wrap justify-center items-start gap-6">
         {/* Maquinaria Chart */}
         <ChartCard title="Maquinaria">
@@ -83,25 +127,10 @@ const Estadisticas = () => {
           <GastoVehiculoChart />
         </ChartCard>
       </div>
+   
 
       {/* Totales */}
-      <div className="flex flex-wrap justify-center gap-6 mt-8">
-        {/* Total Material Ingresado */}
-        <TotalCard
-          title="Totales Material Ingresado Hoy"
-          value={`${materialIngresado} kgs`}
-          icon={<FcShipped />}
-           iconStyle=" text-3xl"
-        />
-
-        {/* Total Tablas Producidas */}
-        <TotalCard
-          title="Totales Tablas Producidas Hoy"
-          value={tablasProducidasHoy}
-          icon={<FaChartBar />}
-          iconStyle="text-green-500 text-3xl" // Estilo personalizado
-        />
-      </div>
+  
     </SectionLayout>
   );
 };
