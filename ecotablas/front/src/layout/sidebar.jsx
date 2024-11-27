@@ -23,7 +23,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex min-h-screen">
       {/* Sidebar */}
       <div
         className={`${
