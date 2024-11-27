@@ -6,7 +6,7 @@ import GastoVehiculoChart from "../../components/graficos/GastoVehiculosChart";
 import GastoMaquinariaChart from "../../components/graficos/GastoMaquinariaChart";
 import ChartCard from "../../components/graficos/ChardCard";
 import TotalCard from "../../components/graficos/TotalChart";
-
+import { FaTruckFront } from "react-icons/fa6";
 
 
 import { FaChartBar, FaDollarSign, FaCogs } from "react-icons/fa";
@@ -88,9 +88,9 @@ const Estadisticas = () => {
 
       {/* Gasto en Vehículos */}
       <TotalCard
-        title="Gasto Vehículos Hoy"
-        value={21}
-        icon={<FaDollarSign />}
+        title="Vehiculos activos"
+        value={5}
+        icon={<FaTruckFront />}
         iconStyle="text-yellow-400 text-4xl"
         bgColor="bg-yellow-600"
       />
@@ -98,7 +98,7 @@ const Estadisticas = () => {
       {/* Maquinaria Operativa */}
       <TotalCard
         title="Maquinaria Operativa"
-        value={12}
+        value={6}
         icon={<FaCogs />}
         iconStyle="text-red-400 text-4xl"
         bgColor="bg-red-600"
