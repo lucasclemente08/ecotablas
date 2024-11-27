@@ -6,15 +6,17 @@ import { MdDateRange } from "react-icons/md";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
+import NextProcess from "../../components/buttons/NextProcess";
+import { GrLinkNext } from "react-icons/gr";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import NextProcess from "../../components/buttons/NextProcess";
-
+import Pagination from "../../components/Pagination";
 import VolumenChart from "../../components/volumen/VolumenChart";
+import FilterButton from "../../components/buttons/FilterButton";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 import {
@@ -33,7 +35,8 @@ const ClasificacionDeMaterial = () => {
   const [mensaje, setMensaje] = useState("");
   const [materialId, setMaterialId] = useState(null);
   const [modalTriturado, setModalTriturado] = useState(false); 
-
+  const [selectedDate, setSelectedDate] = useState("");
+  const [filteredMaterials, setFilteredMaterials] = useState([]);
   const [formValues, setFormValues] = useState({
     VolumenUtil: "",
     VolumenInutil: "",
@@ -185,7 +188,7 @@ const ClasificacionDeMaterial = () => {
       const response = await axios.get(
         "http://localhost:61274/api/MaterialClas/ListarTodo",
       );
-      setMaterials(response.data);
+      setFilteredMaterials(response.data);
       
     } catch (error) {
       console.error("Error fetching materials:", error);
@@ -198,14 +201,32 @@ const ClasificacionDeMaterial = () => {
     fetchMaterials();
   }, []);
 
+  const [showTable, setShowTable] = useState(true); 
+
+  const toggleView = () => {
+    setShowTable(!showTable);  
+  };
+
+
   // Paginación
+  const totalItems =filteredMaterials.length;
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = materials.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredMaterials.slice(indexOfFirstItem, indexOfLastItem);
 
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const totalPages = Math.ceil(materials.length / itemsPerPage);
+
+  const filterByDate = () => {
+    const filteredItems = filteredMaterials.filter((item) => {
+      const itemDate = new Date(item.FechaC).toISOString().slice(0, 10); 
+      return itemDate === selectedDate;
+    });
+  
+    setFilteredMaterials(filteredItems);
+    setCurrentPage(1); 
+  };
+
 
   const title = [
     "Volumen Util (kgs)",
@@ -216,7 +237,7 @@ const ClasificacionDeMaterial = () => {
   const columns = [
     { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenInutil" },
-    { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
+    { header: "Fecha de ingreso", dataKey: "FechaC" },
   ];
 
   const fields = [
@@ -249,18 +270,20 @@ const ClasificacionDeMaterial = () => {
     },
   ];
 
-  const totalVolumen = materials.reduce(
+  const totalVolumen = filteredMaterials.reduce(
     (acc, material) =>
       acc +
       parseFloat(material.VolumenUtil || 0) +
       parseFloat(material.VolumenInutil || 0),
     0,
   );
-  const totalItems = materials.length;
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
 
   return (
     <>
       <SectionLayout title="Materiales Clasificados">
+      <div className="flex flex-wrap items-center gap-1 ">
         <AddButtonWa
           abrirModal={abrirModal}
           title={"Añadir Materiales Clasificados"}
@@ -272,6 +295,23 @@ const ClasificacionDeMaterial = () => {
           data={materials}
           title="Reporte de Materiales Clasificados"
         />
+
+<button
+        onClick={toggleView}
+        className="bg-blue-600 hover:bg-blue-700 flex justify-center items-center text-white font-bold py-2 mt-2 mb-5 px-4 rounded"
+        >
+  {showTable ? <>Ver grafico <MdDateRange className="m-1" /> </> : <>Ver Tablas <BsClipboardDataFill className="m-1" /></>}
+      </button>
+
+      <FilterButton
+        data={filteredMaterials}
+        dateField="FechaC"
+        onFilter={setFilteredMaterials}
+        onReset={() => setFilteredMaterials(filteredMaterials)}
+        onPageReset={() => setCurrentPage(1)}
+      />
+              </div>
+
 
           <ToastContainer
   position="top-right"
@@ -319,101 +359,95 @@ const ClasificacionDeMaterial = () => {
               values={trituradoValues}
             />
           )}
+{showTable ? (
+         
 
 
-        <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
-          <h5>
-            <span class="text-gray-400">Total de materiales:</span>
-            <span class="dark:text-white"> {totalItems}</span>
-          </h5>
-          <h5>
-            <span class="text-gray-400">Total volumen: </span>
-            <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
-          </h5>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg shadow-md">
-            <LoadingTable loading={loading} />
-            <TablaHead titles={title} />
-            <tbody className="bg-white">
-            {currentItems.map((material) => (
-  <tr
-    key={material.IdMaterialClasificado}
-    className="hover:bg-gray-100"
-  >
-    <td className="border-b py-2 px-4 text-right">
-      <span className="font-semibold lg:hidden">Volumen Útil: </span>
-      {material.VolumenUtil} kgs
-    </td>
-    <td className="border-b py-2 px-4 text-right">
-      <span className="font-semibold lg:hidden">Volumen Inútil: </span>
-      {material.VolumenInutil} kgs
-    </td>
-    <td className="border-b py-2 px-4 text-right">
-      <span className="font-semibold lg:hidden">Fecha: </span>
-      {material.FechaC.slice(0, 10)}
-    </td>
-    <td
-      className={`border-b py-2 px-4 flex justify-center ${
-        modalEdit || modalAbierto ? "hidden" : ""
-      }`}
-                  >
-                    <button
-                        onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
-                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        Terminado
-                      </button>
-                    <button
-                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      onClick={() => abrirModalEdit(material)}
+         <div className="overflow-x-auto">
+         <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
+           <h5>
+              <span class="text-gray-400">Total de materiales:</span>
+              <span class="dark:text-white"> {totalItems}</span>
+            </h5>
+            <h5>
+              <span class="text-gray-400">Total volumen: </span>
+              <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
+            </h5>
+            </div>
+              <table className="min-w-full bg-white rounded-lg shadow-md">
+                <LoadingTable loading={loading} />
+                <TablaHead titles={title} />
+                <tbody className="bg-white">
+                  {currentItems.map((material) => (
+                    <tr
+                      key={material.IdMaterialClasificado}
+                      className="hover:bg-gray-100"
                     >
-                      <FiEdit />
-                      Modificar
-                    </button>
-                    <DeleteButton
-                      id={material.IdMaterialClasificado}
-                      endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialClas/Borrar"
-                      updateList={fetchMaterials}
+                      <td className="border-b py-2 px-4 text-right">
+                        <span className="font-semibold lg:hidden">Volumen Útil: </span>
+                        {material.VolumenUtil} kgs
+                      </td>
+                      <td className="border-b py-2 px-4 text-right">
+                        <span className="font-semibold lg:hidden">Volumen Inútil: </span>
+                        {material.VolumenInutil} kgs
+                      </td>
+                      <td className="border-b py-2 px-4 text-right">
+                        <span className="font-semibold lg:hidden">Fecha: </span>
+                        {material.FechaC.slice(0, 10)}
+                      </td>
+                      <td
+  className={`border-b py-2 px-4 flex justify-center ${modalEdit || modalAbierto ? "hidden" : ""}`}
+>
+
+                        <button
+                          onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
+                          className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        >
+                          <GrLinkNext className="mr-2" />
+                          Terminado
+                        </button>
+                        <button
+                          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                          onClick={() => abrirModalEdit(material)}
+                        >
+                          <FiEdit />
+                          Modificar
+                        </button>
+
+                        <DeleteButton
+                          id={material.IdMaterialClasificado}
+                          endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialClas/Borrar"
+                          updateList={fetchMaterials}
                     />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          {/* Controles de paginación integrados */}
 
-          <div className="flex justify-between items-center bg-gray-700">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2  ml-2 hover:text-gray-400 text-white rounded-l"
-            >
-              Anterior
-            </button>
-            <span className="text-gray-300">
-              Página {currentPage} de {totalPages}
-            </span>
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage >= totalPages}
-              className="px-4 py-2 hover:text-gray-400  text-white rounded-r"
-            >
-              Siguiente
-            </button>
-          </div>
-        </div>
-        <div className="flex-1 flex flex-col gap-4 p-4">
-          <DateFilter onFilter={handleFilter} />
+          <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    paginate={paginate}
+  />
+        </div>    
 
-          <VolumenChart dateRange={dateRange} />
-        </div>
+):(
 
+  <div className="flex-1 flex flex-col gap-4 p-4">
+  <DateFilter onFilter={handleFilter} />
 
-        <NextProcess  linkTo="/materialTri"
+  <VolumenChart dateRange={dateRange} />
+</div>
+     
+)
+}
+<NextProcess  linkTo="/materialTri"
   hoverText="Ir al siguiente proceso"/>
-      </SectionLayout>
-    </>
+            </SectionLayout>
+            </>
+
   );
 };
 

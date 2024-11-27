@@ -68,7 +68,7 @@ const DonantesChart = () => {
   };
 
   return (
-    <div className="bg-gray-800 p-4 rounded-md shadow-md w-96 mx-auto">
+    <div className="bg-gray-800 p-4 rounded-md shadow-md mx-auto">
       {/* <h2 className="text-center text-gray-50 font-bold text-md mb-3">
       Cantidad de Donantes por Tipo
       </h2> */}

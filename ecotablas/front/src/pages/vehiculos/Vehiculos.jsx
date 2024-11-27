@@ -255,8 +255,8 @@ const Vehiculos = () => {
     "Año",
     "Color",
     "Tipo",
-    "Fecha de Ultima Inspección",
-    "Combustible",
+    // "Fecha de Ultima Inspección",
+    // "Combustible",
     "Patente",
     "Numero de Identificación",
     "Estado",
@@ -482,19 +482,20 @@ const Vehiculos = () => {
     <span className="font-semibold lg:hidden">Tipo: </span>
     {vehiculo.Tipo}
   </td>
-  <td className="border-b py-2 px-4 text-right">
+  {/* <td className="border-b py-2 px-4 text-right">
     <span className="font-semibold lg:hidden">Fecha Última Inspección: </span>
-    {vehiculo.FechaUltimaInspeccion}
-  </td>
-  <td className="border-b py-2 px-4 text-left">
+    {vehiculo.FechaUltimaInspeccion.slice(0,10)}
+  </td> */}
+  {/* <td className="border-b py-2 px-4 text-left">
     <span className="font-semibold lg:hidden">Combustible: </span>
     {vehiculo.Combustible}
-  </td>
-  <td className="border-b py-2 px-4 text-right">
-    <span className="font-semibold lg:hidden">Número de Placa: </span>
-    {vehiculo.NumeroPlaca}
-  </td>
-  <td className="border-b py-2 px-4 text-right">
+  </td> */}
+<td className="border-b py-2 px-4 text-right whitespace-nowrap">
+  <span className="font-normal"> </span>
+  {vehiculo.NumeroPlaca}
+</td>
+
+  <td className="border-b  py-2 px-4 text-right">
     <span className="font-semibold lg:hidden">Número Identificador: </span>
     {vehiculo.NumeroIdentificador}
   </td>
