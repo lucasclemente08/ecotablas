@@ -19,6 +19,7 @@ import {
   deleteVehiculos,
 } from "../../api/VehiculosAPI";
 import { addReparacion } from "../../api/ReparacionesAPI";
+import SectionLayout from "../../layout/SectionLayout";
 
 const Vehiculos = () => {
   const [vehiculos, setVehiculos] = useState([]);
@@ -389,10 +390,10 @@ const Vehiculos = () => {
 
   return (
     <>
-      <div className="md:flex flex-row bg-slate-900 min-h-screen">
-        <Home />
+    <SectionLayout title="Vehiculos">
+
         <div className="p-4 w-full">
-          <h2 className="text-2xl font-bold text-white mb-4">Vehiculos</h2>
+          
           <AddButtonWa abrirModal={abrirModal} title={" Añadir Vehiculo"} />
           <PdfGenerator
             columns={columns}
@@ -551,7 +552,8 @@ const Vehiculos = () => {
             </table>
           </div>
         </div>
-      </div>
+    
+    </SectionLayout>
     </>
   );
 };

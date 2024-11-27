@@ -27,6 +27,7 @@ import {
   deleteMaquinarias,
 } from "../../api/MaquinariasAPI";
 import { addReparacion, editReparacion, getReparacionByIdMaquinaria, } from "../../api/ReparacionesAPI";
+import SectionLayout from "../../layout/SectionLayout";
 
 const Maquinaria = () => {
   const [maquinarias, setMaquinarias] = useState([]);
@@ -360,8 +361,8 @@ const [showPieChart, setShowPieChart] = useState(false);
 
   return (
     <>
-    <div className="md:flex flex-row bg-slate-900 min-h-screen">
-      <Home />
+    <SectionLayout>
+
       <div className="p-4 w-full">
 
         <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
@@ -559,7 +560,8 @@ pauseOnHover
 
       </div>
       
-    </div>
+    
+    </SectionLayout>
   </>
   );
 };
