@@ -8,9 +8,11 @@ import ChartCard from "../../components/graficos/ChardCard";
 import TotalCard from "../../components/graficos/TotalChart";
 import { FaTruckFront } from "react-icons/fa6";
 
+import { getAllMaquinarias } from "../../api/MaquinariasAPI";
 
 import { FaChartBar, FaDollarSign, FaCogs } from "react-icons/fa";
 import { FcShipped } from "react-icons/fc";
+import ActiveMachine from "../../components/graficos/ActiveMachine";
 const Estadisticas = () => {
   const [tablasProducidas, setTablasProducidas] = useState([]);
   const [tablasProducidasHoy, setTablasProducidasHoy] = useState(0);
@@ -43,10 +45,13 @@ const Estadisticas = () => {
   };
   
 
+
+  
+
   useEffect(() => {
     const hoy = new Date().toISOString().slice(0, 10);
-  
- 
+  const maquinarias=getAllMaquinarias()
+ console.log(maquinarias)
     const producidasHoy = tablasProducidas.filter((item) => {
 
       console.log(item.FechaProduccion)
@@ -76,6 +81,7 @@ const Estadisticas = () => {
         iconStyle="text-green-500 text-4xl"
         bgColor="bg-green-700"
       />
+   
 
       {/* Total Tablas Producidas */}
       <TotalCard
@@ -94,15 +100,9 @@ const Estadisticas = () => {
         iconStyle="text-yellow-400 text-4xl"
         bgColor="bg-yellow-600"
       />
-
+   <ActiveMachine />
       {/* Maquinaria Operativa */}
-      <TotalCard
-        title="Maquinaria Operativa"
-        value={6}
-        icon={<FaCogs />}
-        iconStyle="text-red-400 text-4xl"
-        bgColor="bg-red-600"
-      />
+
     </div>
 
 
