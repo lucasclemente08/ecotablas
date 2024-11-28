@@ -102,12 +102,18 @@ const Tolva = () => {
   
   const abrirModalTabla = (id) => {
     const fechaActual = new Date().toISOString();
-    setMaterialId(id);
-    setTablaValues({ ...tablaValues, IdTolva: id, FechaProduccion: fechaActual, CodigoIdentificacion: GenerateIdentificationCode(tablaValues.Dimensiones,
-      tablaValues.Peso,), });
+
+    setTablaValues({
+      ...tablaValues,
+      IdTolva: id,
+      FechaProduccion: fechaActual,
+
+    });
+
+    setMaterialId(id); 
     setModalTabla(true);
   };
-  
+
   const cerrarModalTabla = () => setModalTabla(false); 
 
   const validateTablaForm = () => {
@@ -176,21 +182,28 @@ const Tolva = () => {
       [name]: value,
     }));
   };
-
   const handleSubmitTabla = async () => {
+    // Generar el código de identificación
+    const code = GenerateIdentificationCode(tablaValues.Peso, tablaValues.Dimensiones);
+  
+    // Validar el formulario antes de proceder
     if (!validateTablaForm()) return;
   
     try {
-      await addTablas(tablaValues);
-      toast.success("¡Tabla producida!");
+      // Asegúrate de pasar correctamente los valores de tablaValues y el nuevo campo CódigoIdentificacion
+      await addTablas({ ...tablaValues, CodigoIdentificacion: code });
   
-      // Luego, actualiza el estado a 2
+      setMensaje("¡Tabla producida!");
+  
+      // Actualizar el estado de la tolva a 2
       const materialActualizado = {
         ...materials.find((m) => m.IdTolva === materialId),
         Estado: 2, // Establecer el estado a 2
       };
+  
+      // Editar el material
       await editTolva(materialId, materialActualizado);
-
+  
       setModalTabla(false);
       fetchMaterials(); // Refrescar la lista para mostrar cambios
     } catch (error) {
@@ -198,8 +211,10 @@ const Tolva = () => {
       console.error("Error al terminar el proceso:", error);
     }
   };
+  
   const handleChangeTabla = (e) => {
     const { name, value } = e.target;
+    
     setTablaValues((prevState) => ({
       ...prevState,
       [name]: value,
@@ -222,9 +237,8 @@ const Tolva = () => {
   const optionsTipoPlastico = [
     { value: 'Unico', label: 'Tipo-Único' },
     { value: 'Mezcla', label: 'Tipo-Mezcla' },
-    // ... otras opciones
-  ];
 
+  ];
 
   const rows = materials.map((material) => ({
     Fecha: material.HorarioInicio.slice(0, 10),
@@ -243,6 +257,7 @@ const Tolva = () => {
   ];
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
+  
   return (
     <SectionLayout title="Tolva">
       <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
@@ -293,8 +308,8 @@ const Tolva = () => {
     ]}
     formValues={formValues}
     handleChange={handleChange}
-    handleEditSubmit={handleEditSubmit}   // Cambiado a handleEditSubmit
-    cerrarModalEdit={cerrarModalEdit}     // Cambiado a cerrarModalEdit
+    handleEditSubmit={handleEditSubmit}   
+    cerrarModalEdit={cerrarModalEdit}     
   />
 )}
 
@@ -314,11 +329,10 @@ const Tolva = () => {
             cerrarModal={cerrarModalTabla}
           values={tablaValues}
           />
-
           }
 
       {loading ? (
-        <LoadingTable />
+        <LoadingTable loading={loading}  />
       ) : (
         <>
           <table className="table-auto w-full bg-white rounded-lg shadow-lg">

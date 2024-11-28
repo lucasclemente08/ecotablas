@@ -24,6 +24,11 @@ import {
   editMaquinarias,
   deleteMaquinarias,
 } from "../../api/MaquinariasAPI";
+import { addReparacion, editReparacion, getReparacionByIdMaquinaria, } from "../../api/ReparacionesAPI";
+
+const Maquinaria = () => {
+  const [maquinarias, setMaquinarias] = useState([]);
+  const [EstadoMaquinarias, setEstadoMaquinarias] = useState([]); 
 import { addReparacion } from "../../api/ReparacionesAPI";
 import MaquinariaChart from "../../components/graficos/MaquinariaChart";
 
@@ -41,8 +46,9 @@ const [showTable,setShowTable]=useState(true);
   const [modalReparacion, setModalReparacion] = useState(false);
   const [reparaciones, setReparaciones] = useState([]);
   const [modalReparacionList, setModalReparacionList] = useState(false);
-
+const [showPieChart, setShowPieChart] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [showTable, setShowTable] = useState(true);
 
   const [formValues, setFormValues] = useState({
     Nombre: "",
@@ -215,15 +221,14 @@ const [showTable,setShowTable]=useState(true);
     if (!validateReparacionForm()) return;
 
     try {
-      // Primero, agrega la reparación
-      // Primero, agrega la reparación
+
       await addReparacion(reparacionValues);
       toast.success("Reparación agregada exitosamente");
 
       // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
       const maquinariaActualizada = {
         ...maquinarias.find((m) => m.Id === maquinariaId),
-        IdEstado: 3, // Establecer el estado a 3 (en reparación)
+        IdEstado: 3, 
       };
 
       await editMaquinarias(maquinariaId, maquinariaActualizada);
@@ -342,6 +347,7 @@ const [showTable,setShowTable]=useState(true);
       toast.success("Estado cambiado exitosamente");
       await fetchMaquinarias(); // Actualizar la lista
     } catch (error) {
+      toast.error("Error al cambiar el estado de la maquinaria.");
       toast.success("Error al cambiar el estado de la maquinaria.");
       console.error("Error al cambiar el estado:", error);
     }
@@ -362,26 +368,32 @@ const [showTable,setShowTable]=useState(true);
 
   return (
     <>
-      <div className="md:flex flex-row bg-slate-900 min-h-screen">
-        <Home />
-        <div className="p-4 w-full">
+    <div className="md:flex flex-row bg-slate-900 min-h-screen">
+      <Home />
+      <div className="p-4 w-full">
 
-          <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
-          <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
+        <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
+        <ToastContainer
+position="top-right"
+autoClose={3000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
 />
 
 
-          <div className=" flex">
+        <div className=" flex">
 
+        <AddButtonWa abrirModal={abrirModal} title={" Añadir Maquinaria"} />
+        <PdfGenerator
+          columns={columns}
+          data={maquinarias}
+          title="Reporte de Maquinarias"
+          />
           <AddButtonWa abrirModal={abrirModal} title={" Añadir Maquinaria"} />
           <PdfGenerator
             columns={columns}

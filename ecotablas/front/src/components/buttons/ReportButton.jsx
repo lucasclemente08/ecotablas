@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IoMdAlert } from "react-icons/io";
 import axios from "axios";
 
-const ReportButton = () => {
+const ReportButton = ({isOpen}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [report, setReport] = useState({
     Titulo: "",
@@ -61,10 +61,19 @@ const ReportButton = () => {
   onClick={() => setModalOpen(true)}
   className=" text-white text-center font-bold py-2 px-2 rounded-full  "
 >
-  <div className="flex items-center m-2">
-    <span>Reportar un problema</span>
-    <IoMdAlert className="text-lg m-1" />
-  </div>
+
+
+  <div className="flex items-center content-center ">
+  <IoMdAlert className=" text-center  text-lg m-1" />
+  {/* Si IsOpen es falso, muestra el texto "Reportar un problema" */}
+  {isOpen && <span>Reportar un problema</span>}
+
+
+
+  {/* Ícono que siempre se muestra */}
+
+</div>
+
 </button>
 
       {modalOpen && (

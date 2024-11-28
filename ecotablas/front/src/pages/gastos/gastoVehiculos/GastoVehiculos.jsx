@@ -427,16 +427,22 @@ const GastoVehiculos = () => {
       return null;
     }
   };
-  
-  
-
-
 const indexOfLastItem = currentPage * itemsPerPage;
 const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentItems = dataV.slice(indexOfFirstItem, indexOfLastItem);
 
-const totalPages = Math.ceil(dataV.length / itemsPerPage);
-const paginate = (pageNumber) => setCurrentPage(pageNumber);
+const currentItems = (filteredData.length > 0 ? filteredData : dataV).slice(
+  indexOfFirstItem,
+  indexOfLastItem
+);
+const totalPages = Math.ceil((filteredData.length > 0 ? filteredData.length : dataV.length) / itemsPerPage);
+
+
+const paginate = (pageNumber) => {
+  if (pageNumber > 0 && pageNumber <= totalPages) {
+    setCurrentPage(pageNumber);
+  }
+};
+
 
 
 const [lineData, setLineData] = useState({});
@@ -506,9 +512,6 @@ const lineOptions = {
   },
 };
 const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
-
-
-
   return (
     <SectionLayout title="Gastos de Vehículos">
       <ToastContainer
@@ -579,20 +582,23 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
         ) : (
 <div className="overflow-x-auto w-full bg-gray-100">
   <table className="min-w-full bg-white rounded-lg shadow-md">
-  <TablaHead  titles={titles}/>
+    <TablaHead titles={titles} />
     <tbody>
-      {dataV.map((item, index) => (
-        <tr key={index} className="hover:bg-gray-100">
+      {currentItems.map((item, index) => (
+        <tr key={index} className="hover:bg-gray-100 text-sm md:text-base">
+          {/* Tipo de Comprobante */}
           <td className="border-b py-3 px-4 text-left">
             <span className="font-semibold lg:hidden">Tipo Comprobante: </span>
             {item.TipoComprobante}
           </td>
+          
+          {/* Comprobante */}
           <td className="border-b py-3 px-4 text-left">
             <span className="font-semibold lg:hidden">Comprobante: </span>
             {item.Comprobante ? (
               <a
                 href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
-                className="text-blue-400 flex items-center gap-1"
+                className="text-blue-500 flex items-center gap-1"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -602,59 +608,78 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
               "No disponible"
             )}
           </td>
+          
+          {/* Tipo de Gasto */}
           <td className="border-b py-3 px-4 text-left">
             <span className="font-semibold lg:hidden">Tipo Gasto: </span>
             {item.TipoGasto}
           </td>
+          
+          {/* Vehículo */}
           <td className="border-b py-3 px-4 text-left">
             <span className="font-semibold lg:hidden">Vehículo: </span>
             {getVehicleById(item.IdVehiculo)}
           </td>
+          
+          {/* Proveedor */}
           <td className="border-b py-3 px-4 text-left">
             <span className="font-semibold lg:hidden">Proveedor: </span>
             {item.Proveedor}
           </td>
+          
+          {/* Monto */}
           <td className="border-b py-3 px-4 text-right">
-            <span className="font-semibold lg:hidden">Monto: </span>${item.Monto}
+            <span className="font-semibold lg:hidden">Monto: </span>
+            ${item.Monto}
           </td>
+          
+          {/* Fecha */}
           <td className="border-b py-3 px-4 text-right">
             <span className="font-semibold lg:hidden">Fecha: </span>
             {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
           </td>
-          <td className="border-b py-3 px-4 text-left ">
+          
+          {/* Descripción */}
+          <td className="border-b py-3 px-4 text-left">
             <span className="font-semibold lg:hidden">Descripción: </span>
             {item.Descripcion}
           </td>
           
-     <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
-     <button
-       onClick={() => {
-         setGastoEdit(item);
-         setFormValues(item);
-         setModalEdit(true);
-       }}
-       className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-     >
-       <FiEdit className="m-1" />
-       Modificar
-     </button>
-     <DeleteButton
-       endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
-       id={item.IdGasto}
-       updateList={fetchMaterials}
-     />
-   </td>
+          {/* Acciones */}
+          <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
+            {/* Modificar */}
+            <button
+              onClick={() => {
+                setGastoEdit(item);
+                setFormValues(item);
+                setModalEdit(true);
+              }}
+              className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+            >
+              <FiEdit className="m-1" />
+              Modificar
+            </button>
+            
+            {/* Borrar */}
+            <DeleteButton
+              endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
+              id={item.IdGasto}
+              updateList={fetchMaterials}
+            />
+          </td>
         </tr>
       ))}
     </tbody>
   </table>
-    {/* Paginación */}
-    <Pagination
+
+  {/* Paginación */}
+  <Pagination
     currentPage={currentPage}
     totalPages={totalPages}
     paginate={paginate}
   />
 </div>
+
 
 
 

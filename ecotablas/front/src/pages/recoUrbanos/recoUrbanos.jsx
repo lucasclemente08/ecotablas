@@ -4,12 +4,25 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import SectionLayout from "../../layout/SectionLayout";
 import { toast } from "react-toastify";
-
+import Pagination from "../../components/Pagination";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import TablaHead from "../../components/Thead";
 import { MdOutlineEditLocationAlt } from "react-icons/md";
+import { MdOutlineAddLocation } from "react-icons/md";
+
 import L from "leaflet";
-import Pagination from "../../components/Pagination";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+import { FaChartLine, FaChartPie } from "react-icons/fa";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -21,22 +34,17 @@ import icon from "leaflet/dist/images/marker-icon.png";
 import Toast from "../../components/Toast";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
-import { MdOutlineAddLocation } from "react-icons/md";
-import {
-  Chart as ChartJS,
+
+ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
-import DonantesChart from "../../components/graficos/donantesChart";
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-
-
+  ArcElement,
+);
 
 const RecoUrbanos = () => {
   const [showPieChart, setShowPieChart] = useState(true);
@@ -413,7 +421,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
             </MapContainer>
           </div>
         )}
-     
+{/*      
      <div style={{ width: '500px', height: '500px', margin: '0 auto' }}>
   <h3 className="text-xl font-semibold mb-4">
     Distribución de Tipos de Donantes
@@ -431,7 +439,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
       }}
     />
   )}
-</div>
+</div> */}
 
       {showMap ? (
     <>
