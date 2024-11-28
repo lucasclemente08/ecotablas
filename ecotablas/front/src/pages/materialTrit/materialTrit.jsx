@@ -3,7 +3,6 @@ import Home from "../home/Home";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { BsClipboardDataFill } from "react-icons/bs";
-import NextProcess from "../../components/buttons/NextProcess";
 import { MdDateRange } from "react-icons/md";
 import { GrLinkNext } from "react-icons/gr";
 import Pagination from "../../components/Pagination";
@@ -190,7 +189,7 @@ const MaterialTrit = () => {
   
       // Luego, actualiza el estado a 2
       const materialActualizado = {
-        ...materials.find((m) => m.IdMaterialTriturado === materialId),
+        ...filteredMaterials.find((m) => m.IdMaterialTriturado === materialId),
         Estado: 2, // Establecer el estado a 2
       };
       await editMaterialTrit(materialId, materialActualizado);
@@ -227,10 +226,10 @@ const MaterialTrit = () => {
     { header: "Fecha", dataKey: "Fecha" },
   ];
 
-  // const rows = materials.map((material) => ({
-  //   VolumenT: ${material.VolumenT} kgs,
-  //   Fecha: material.Fecha.slice(0, 10),
-  // }));
+  const rows = filteredMaterials.map((material) => ({
+    VolumenT: `${material.VolumenT} kgs`,
+    Fecha: material.Fecha.slice(0, 10),
+  }));
 
   const fields = [
     {
@@ -310,7 +309,7 @@ const MaterialTrit = () => {
 
           <PdfGenerator
             columns={columns}
-            data={materials}
+            data={filteredMaterials}
             title="Reporte de Materiales triturado"
           />
 
@@ -415,8 +414,8 @@ const MaterialTrit = () => {
                         onClick={() => abrirModalTolva(material.IdMaterialTriturado)}
                         className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                         >
-                       <GrLinkNext className="mr-2" />
-                       Terminado
+                          <GrLinkNext />
+                          Terminado
                         </button>
 
                       {modalTolva &&
@@ -472,11 +471,7 @@ const MaterialTrit = () => {
 </div>
 )
 }
-
-<NextProcess  linkTo="/tolva"
-  hoverText="Ir al siguiente proceso"/>
   </SectionLayout>
-
 
     </>
   );

@@ -219,7 +219,7 @@ const [showPieChart, setShowPieChart] = useState(false);
       await addReparacion(reparacionValues);
       setMensaje("Reparación agregada exitosamente");
 
-
+      // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
       const maquinariaActualizada = {
         ...maquinarias.find((m) => m.Id === maquinariaId),
         IdEstado: 3, 
