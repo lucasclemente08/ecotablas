@@ -8,7 +8,7 @@ const SectionLayout = ({ title, children }) => {
   return (
     <div className="bg-slate-900 min-h-screen flex">
       {/* Navbar móvil */}
-      <div className="block md:hidden">
+      <div className="block  md:hidden">
         <Navbar />
       </div>
 
@@ -23,7 +23,7 @@ const SectionLayout = ({ title, children }) => {
 
       {/* Contenido principal */}
       <div
-  className="flex-1 p-4 transition-all duration-300"
+  className="flex-1 p-4 bg-slate-900 transition-all duration-300"
   style={{
     marginLeft: isSidebarOpen ? "250px" : "80px",  // Aplica el margen dinámicamente
   }}

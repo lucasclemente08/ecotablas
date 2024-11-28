@@ -1,27 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import TotalCard from "./TotalChart";
 import { FaCogs } from "react-icons/fa";
+import { useState } from "react";
 const ActiveMachine = () => {
   const [maquinarias, setMaquinarias] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+
 
   // Función para obtener los datos de la API
   const fetchMaquinarias = async () => {
     try {
-      setLoading(true);
       const response = await fetch(
         "http://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo"
       );
       if (!response.ok) throw new Error("Error al obtener las maquinarias");
       const data = await response.json();
       setMaquinarias(data);
-      setError(null);
     } catch (error) {
       console.error(error);
-      setError("No se pudieron cargar los datos. Intenta nuevamente.");
+
     } finally {
-      setLoading(false);
+   
     }
   };
 
@@ -34,13 +32,8 @@ const ActiveMachine = () => {
     operativa: maquinarias.filter((m) => m.IdEstado === 1).length,
   };
 
-  if (loading) {
-    return <p>Cargando...</p>;
-  }
 
-  if (error) {
-    return <p>{error}</p>;
-  }
+
 
   return (
     <div>

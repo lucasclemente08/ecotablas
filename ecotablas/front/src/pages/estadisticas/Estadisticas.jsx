@@ -13,6 +13,7 @@ import { getAllMaquinarias } from "../../api/MaquinariasAPI";
 import { FaChartBar, FaDollarSign, FaCogs } from "react-icons/fa";
 import { FcShipped } from "react-icons/fc";
 import ActiveMachine from "../../components/graficos/ActiveMachine";
+import ActiveCars from "../../components/graficos/ActiveCars";
 const Estadisticas = () => {
   const [tablasProducidas, setTablasProducidas] = useState([]);
   const [tablasProducidasHoy, setTablasProducidasHoy] = useState(0);
@@ -43,11 +44,7 @@ const Estadisticas = () => {
     const [day, month, year] = fecha.split("/");
     return `${year}-${month}-${day}`;
   };
-  
-
-
-  
-
+    
   useEffect(() => {
     const hoy = new Date().toISOString().slice(0, 10);
   const maquinarias=getAllMaquinarias()
@@ -64,8 +61,6 @@ const Estadisticas = () => {
     setTablasProducidasHoy(producidasHoy.length);
   }, [tablasProducidas]);
 
-  const gastoVehiculosHoy = "$1,200"; // Ejemplo de datos
-  const maquinariaOperativa = 15; // Ejemplo de datos
 
 
 
@@ -93,13 +88,9 @@ const Estadisticas = () => {
       />
 
       {/* Gasto en Vehículos */}
-      <TotalCard
-        title="Vehiculos activos"
-        value={5}
-        icon={<FaTruckFront />}
-        iconStyle="text-yellow-400 text-4xl"
-        bgColor="bg-yellow-600"
-      />
+    
+    <ActiveCars />
+
    <ActiveMachine />
       {/* Maquinaria Operativa */}
 
