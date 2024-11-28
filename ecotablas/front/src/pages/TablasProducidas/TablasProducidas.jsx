@@ -13,6 +13,7 @@ import { FiEdit } from "react-icons/fi";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
+import { GrLinkNext } from "react-icons/gr";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
@@ -265,8 +266,10 @@ const TablasProducidas = () => {
   <td className="px-4 py-2 flex justify-center">
                   <button
                           onClick={() => handleChangeState(item)}
-                          className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                          className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                         >
+
+                        <GrLinkNext />
                           Terminado
                         </button>
                     <button

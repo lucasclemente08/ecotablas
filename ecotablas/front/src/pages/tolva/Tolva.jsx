@@ -3,12 +3,17 @@ import { useSelector, useDispatch } from "react-redux";
 import SectionLayout from "../../layout/SectionLayout";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
+import { MdDateRange } from "react-icons/md";
 import LoadingTable from "../../components/LoadingTable";
+import { GrLinkNext } from "react-icons/gr";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FiEdit } from "react-icons/fi";
+import Pagination from "../../components/Pagination";
 import TablaHead from "../../components/Thead";
+import DateFilter from "../../components/DateFilter";
+import FilterButton from "../../components/buttons/FilterButton";
 import AddModal from "../../components/AddModal";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
@@ -31,6 +36,8 @@ const Tolva = () => {
   const [modalEdit, setModalEdit] = useState(false);
   const [materialId, setMaterialId] = useState(null);
   const [mensaje, setMensaje] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [filteredMaterials, setFilteredMaterials] = useState([]);
   const [modalTabla, setModalTabla] = useState(false);
 
   const [formValues, setFormValues] = useState({
@@ -87,7 +94,7 @@ const Tolva = () => {
     setLoading(true);
     try {
       const res = await getAllTolva();
-      setMaterials(res.data);
+      setFilteredMaterials(res.data);
     } catch (error) {
       toast.error("Error al cargar los materiales.");
       console.error("Error fetching data: ", error);
@@ -197,7 +204,7 @@ const Tolva = () => {
   
       // Actualizar el estado de la tolva a 2
       const materialActualizado = {
-        ...materials.find((m) => m.IdTolva === materialId),
+        ...filteredMaterials.find((m) => m.IdTolva === materialId),
         Estado: 2, // Establecer el estado a 2
       };
   
@@ -222,17 +229,29 @@ const Tolva = () => {
   };
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
+  const totalItems =filteredMaterials.length;
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = materials.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(materials.length / itemsPerPage);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const currentItems = filteredMaterials.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalVolumen = materials.reduce(
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
+
+  const filterByDate = () => {
+    const filteredItems = filteredMaterials.filter((item) => {
+      const itemDate = new Date(item.HorarioInicio).toISOString().slice(0, 10); 
+      return itemDate === selectedDate;
+    });
+  
+    setFilteredMaterials(filteredItems);
+    setCurrentPage(1); 
+  };
+
+  const totalVolumen = filteredMaterials.reduce(
     (acc, material) => acc + parseFloat(material.CantidadCargada || 0),
     0
   );
-  const totalItems = materials.length;
 
   const optionsTipoPlastico = [
     { value: 'Unico', label: 'Tipo-Único' },
@@ -260,8 +279,19 @@ const Tolva = () => {
   
   return (
     <SectionLayout title="Tolva">
+       <div className="flex flex-wrap items-center gap-1 ">
       <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
-      <PdfGenerator columns={columns} data={materials} title="Reporte de Tolva" />
+      <PdfGenerator columns={columns} data={filteredMaterials} title="Reporte de Tolva" />
+
+      <FilterButton
+        data={filteredMaterials}
+        dateField="HorarioInicio"
+        onFilter={setFilteredMaterials}
+        onReset={() => setFilteredMaterials(filteredMaterials)}
+        onPageReset={() => setCurrentPage(1)}
+      />
+
+</div>
 
       {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
@@ -363,8 +393,9 @@ const Tolva = () => {
   <td className="border-b px-4 py-2 flex justify-center">
                   <button
                         onClick={() => abrirModalTabla(material.IdTolva)}
-                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       >
+                        <GrLinkNext />
                         Terminado
                       </button>
                     <button
@@ -384,13 +415,12 @@ const Tolva = () => {
               ))}
             </tbody>
           </table>
-          <div className="mt-4 flex justify-center">
-            {/* {Array.from({ length: totalPages }).map((_, index) => (
-              <NextButton key={index} onClick={() => paginate(index + 1)} active={currentPage === index + 1}>
-                {index + 1}
-              </NextButton>
-            ))} */}
-          </div>
+
+          <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    paginate={paginate}
+  /> 
           <div className="mt-4 text-white">
             <p>Total de Volumen Cargado: {totalVolumen} kg</p>
             <p>Total de Items: {totalItems}</p>

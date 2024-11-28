@@ -3,12 +3,19 @@ import Home from "../home/Home";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { BsClipboardDataFill } from "react-icons/bs";
+import { MdDateRange } from "react-icons/md";
+import { GrLinkNext } from "react-icons/gr";
+import Pagination from "../../components/Pagination";
+import FilterButton from "../../components/buttons/FilterButton";
+import DateFilter from "../../components/DateFilter";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { ToastContainer, toast } from "react-toastify";
+import VolumenTrituradoChart from "../../components/volumen/VolumenTrituradoChart";
 import "react-toastify/dist/ReactToastify.css";
+import SectionLayout from "../../layout/SectionLayout";
 import { FiEdit } from "react-icons/fi";
 import LoadingTable from "../../components/LoadingTable";
 // import { addTolva } from "../../features/tolvaSlice";
@@ -24,6 +31,7 @@ import {
 
 import { Await } from "react-router-dom";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
+import VolumenChart from "../../components/volumen/VolumenChart";
 
 const MaterialTrit = () => {
   const dispatch = useDispatch();
@@ -33,6 +41,8 @@ const MaterialTrit = () => {
   const [materialId, setMaterialId] = useState(null);
   const [modalEdit, setModalEdit] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [filteredMaterials, setFilteredMaterials] = useState([]);
   const [modalTolva,setModalTolva] = useState(false);
 
   const [formValues, setFormValues] = useState({
@@ -116,7 +126,7 @@ const MaterialTrit = () => {
     setLoading(true);
     try {
       const res = await getAllMaterialTrit();
-      setMaterials(res.data);
+      setFilteredMaterials(res.data);
     } catch (error) {
       toast.error("Error al cargar los materiales.");
       console.error("Error fetching data: ", error);
@@ -179,7 +189,7 @@ const MaterialTrit = () => {
   
       // Luego, actualiza el estado a 2
       const materialActualizado = {
-        ...materials.find((m) => m.IdMaterialTriturado === materialId),
+        ...filteredMaterials.find((m) => m.IdMaterialTriturado === materialId),
         Estado: 2, // Establecer el estado a 2
       };
       await editMaterialTrit(materialId, materialActualizado);
@@ -216,7 +226,7 @@ const MaterialTrit = () => {
     { header: "Fecha", dataKey: "Fecha" },
   ];
 
-  const rows = materials.map((material) => ({
+  const rows = filteredMaterials.map((material) => ({
     VolumenT: `${material.VolumenT} kgs`,
     Fecha: material.Fecha.slice(0, 10),
   }));
@@ -245,23 +255,41 @@ const MaterialTrit = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
+
+  const [showTable, setShowTable] = useState(true); 
+
+  const toggleView = () => {
+    setShowTable(!showTable);  
+  };
+
   // Paginación
+  const totalItems =filteredMaterials.length;
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = materials.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredMaterials.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Cambiar de página
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Total de páginas
-  const totalPages = Math.ceil(materials.length / itemsPerPage);
 
-  const totalVolumen = materials.reduce(
+  const filterByDate = () => {
+    const filteredItems = filteredMaterials.filter((item) => {
+      const itemDate = new Date(item.Fecha).toISOString().slice(0, 10); 
+      return itemDate === selectedDate;
+    });
+  
+    setFilteredMaterials(filteredItems);
+    setCurrentPage(1); 
+  };
+
+
+  const totalVolumen = filteredMaterials.reduce(
     (acc, material) =>
       acc + parseFloat(material.VolumenT || 0) + parseFloat(material.VolumenTInutil || 0),
     0,
   );
-  const totalItems = materials.length;
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
 
 
   const optionsTipoPlastico = [
@@ -272,12 +300,8 @@ const MaterialTrit = () => {
 
   return (
     <>
-      <div className="md:flex flex-row bg-slate-900 min-h-screen">
-        <Home />
-        <div className="p-4 w-full">
-          <h2 className="text-2xl font-bold text-white mb-4">
-            Materiales Triturado
-          </h2>
+          <SectionLayout title="Materiales Triturados">
+          <div className="flex flex-wrap items-center gap-1 ">
           <AddButtonWa
             abrirModal={abrirModal}
             title={" Añadir Materiales triturado"}
@@ -285,7 +309,7 @@ const MaterialTrit = () => {
 
           <PdfGenerator
             columns={columns}
-            data={materials}
+            data={filteredMaterials}
             title="Reporte de Materiales triturado"
           />
 
@@ -300,7 +324,21 @@ const MaterialTrit = () => {
   draggable
   pauseOnHover
 />
+<button
+        onClick={toggleView}
+        className="bg-blue-600 hover:bg-blue-700 flex justify-center items-center text-white font-bold py-2 mt-2 mb-5 px-4 rounded"
+        >
+  {showTable ? <>Ver grafico <MdDateRange className="m-1" /> </> : <>Ver Tablas <BsClipboardDataFill className="m-1" /></>}
+      </button>
 
+      <FilterButton
+        data={filteredMaterials}
+        dateField="Fecha"
+        onFilter={setFilteredMaterials}
+        onReset={() => setFilteredMaterials(filteredMaterials)}
+        onPageReset={() => setCurrentPage(1)}
+      />
+              </div>
 
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
@@ -329,6 +367,12 @@ const MaterialTrit = () => {
                 cerrarModalEdit={cerrarModalEdit}
               />
           )}
+
+{showTable ? (
+         
+
+
+         <div className="overflow-x-auto">
           <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
             <h5>
               <span class="text-gray-400">Total de materiales:</span>
@@ -339,8 +383,6 @@ const MaterialTrit = () => {
               <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
             </h5>
           </div>
-
-          <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
               <LoadingTable loading={loading} />
               <TablaHead titles={title} />
@@ -370,10 +412,11 @@ const MaterialTrit = () => {
                     >
                     <button
                         onClick={() => abrirModalTolva(material.IdMaterialTriturado)}
-                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        Terminado
-                      </button>
+                        className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        >
+                          <GrLinkNext />
+                          Terminado
+                        </button>
 
                       {modalTolva &&
           <AddModalWithSelect title="Pasar a Extrucción/tolva"
@@ -414,28 +457,22 @@ const MaterialTrit = () => {
               </tbody>
             </table>
             {/* Controles de paginación integrados */}
-            <div className="flex justify-between items-center bg-gray-700">
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-4 py-2  ml-2 hover:text-gray-400 text-white rounded-l"
-              >
-                Anterior
-              </button>
-              <span className="text-gray-300">
-                Página {currentPage} de {totalPages}
-              </span>
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage >= totalPages}
-                className="px-4 py-2 hover:text-gray-400  text-white rounded-r"
-              >
-                Siguiente
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+            <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    paginate={paginate}
+  />
+        </div>   
+):(           
+  <div className="flex-1 flex flex-col gap-4 p-4">
+  <DateFilter onFilter={handleFilter} />
+
+  <VolumenTrituradoChart dateRange={dateRange} />
+</div>
+)
+}
+  </SectionLayout>
+
     </>
   );
 };

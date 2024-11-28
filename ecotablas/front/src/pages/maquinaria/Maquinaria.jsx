@@ -26,19 +26,11 @@ import {
 } from "../../api/MaquinariasAPI";
 import { addReparacion, editReparacion, getReparacionByIdMaquinaria, } from "../../api/ReparacionesAPI";
 
-const Maquinaria = () => {
-  const [maquinarias, setMaquinarias] = useState([]);
-  const [EstadoMaquinarias, setEstadoMaquinarias] = useState([]); 
-import { addReparacion } from "../../api/ReparacionesAPI";
 import MaquinariaChart from "../../components/graficos/MaquinariaChart";
 
 const Maquinaria = () => {
   const [maquinarias, setMaquinarias] = useState([]);
   const [EstadoMaquinarias, setEstadoMaquinarias] = useState([]);
-const [showPieChart, setShowPieChart] = useState(true);
-const [showTable,setShowTable]=useState(true);
-
-
   const [loading, setLoading] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [maquinariaId, setMaquinariaId] = useState(null);

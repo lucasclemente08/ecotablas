@@ -8,10 +8,12 @@ import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
+import { GrLinkNext } from "react-icons/gr";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 import { ToastContainer, toast } from "react-toastify";
+import { BsClipboardDataFill } from "react-icons/bs";
 import "react-toastify/dist/ReactToastify.css";
 import { FaSearch, FaArrowLeft } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
@@ -156,7 +158,7 @@ const EntradasDeMaterial = () => {
       setMensaje("Lote enviado a clasificación");
   
       const materialActualizado = {
-        ...materials.find((m) => m.IdIngresoMaterial === materialId),
+        ...filteredMaterials.find((m) => m.IdIngresoMaterial === materialId),
         Estado: 2, 
       };
   
@@ -213,14 +215,17 @@ const EntradasDeMaterial = () => {
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenMInutil" },
     { header: "Tipo de plasticos", dataKey: "IdTipoPlastico" },
 
-    { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
+    { header: "Fecha de ingreso", dataKey: "FechaIngresoM" },
     { header: "Tipo Donante", dataKey: "TipoDonante" },
   ];
 
-  const optionsPlasticos = plasticos.map((res) => ({
-    value: res.IdTipoPlastico,   // Assigns the IdTipoPlastico to the value key
-    label: `${res.TipoPlastico}`, // Converts TipoPlastico to a string and assigns it to the label key
-  }));
+  const optionsTipoPlastico = [
+    { value: "PET", label: "PET" },
+    { value: "Polietileno", label: "Polietileno" },
+    { value: "Polipropileno", label: "Polipropileno" },
+    { value: "Poliestireno", label: "Poliestireno" },
+    { value: "PVC", label: "PVC" },
+  ];
   
   const fields = [
     {
@@ -246,13 +251,6 @@ const EntradasDeMaterial = () => {
       label: "Fecha Ingreso",
       type: "date",
       placeholder: "Fecha *",
-    },
-    {
-      name: "IdTipoPlastico",
-      label: "Tipo de plasticos",
-      type: "select",
-      options: optionsPlasticos,
-
     },
     {
       name: "TipoDonante",
@@ -336,7 +334,7 @@ const getPlasticbyId =(id)=>{
           />
         <PdfGenerator
           columns={columns}
-          data={materials}
+          data={filteredMaterials}
           title="Reporte de Materiales Ingresados"
           />
    
@@ -453,8 +451,9 @@ const getPlasticbyId =(id)=>{
                   >
                     <button
                         onClick={() => abrirModalClasificado(material.IdIngresoMaterial)}
-                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
+                        className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        >
+                          <GrLinkNext />
                         Terminado
                       </button>
                     <button
