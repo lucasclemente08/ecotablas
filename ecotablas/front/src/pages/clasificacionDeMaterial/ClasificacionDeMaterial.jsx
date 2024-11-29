@@ -17,6 +17,7 @@ import Pagination from "../../components/Pagination";
 import VolumenChart from "../../components/volumen/VolumenChart";
 import FilterButton from "../../components/buttons/FilterButton";
 import DateFilter from "../../components/DateFilter";
+import NextProcess from "../../components/buttons/NextProcess";
 import SectionLayout from "../../layout/SectionLayout";
 import {
   getAllMaterialTrit,

@@ -15,10 +15,10 @@ import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 import NextProcess from "../../components/buttons/NextProcess";
 import { ToastContainer, toast } from "react-toastify";
-import { BsClipboardDataFill } from "react-icons/bs";
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css"; 
+
 import { FaSearch, FaArrowLeft } from "react-icons/fa";
-import { FiEdit } from "react-icons/fi";
+
 import Pagination from "../../components/Pagination";
 import {
   getAllMaterialClas,
@@ -252,7 +252,7 @@ const EntradasDeMaterial = () => {
       name: "IdTipoPlastico",
       label: "Tipo de plasticos",
       type: "select",
-      options: optionsPlasticos,
+      options: optionsTipoPlastico,
 
     },
     {

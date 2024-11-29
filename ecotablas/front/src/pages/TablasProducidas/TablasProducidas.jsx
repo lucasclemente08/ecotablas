@@ -9,6 +9,9 @@ import {
   deleteTablaProducida,
 } from "../../features/tablasProducidasSlice";
 import SectionLayout from "../../layout/SectionLayout";
+
+import NextProcess from "../../components/buttons/NextProcess";
+
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
@@ -328,6 +331,8 @@ const TablasProducidas = () => {
   draggable
   pauseOnHover
 />
+
+
     </SectionLayout>
   );
 };
