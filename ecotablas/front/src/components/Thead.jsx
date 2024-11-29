@@ -10,7 +10,7 @@ const TablaHead = ({ titles = [] }) => {
       {titles.map((title, key) => (
           <th
             key={key}
-            className={`border-b-2 py-3 items-center bg-gray-700 px-4 text-left text-white ${
+            className={`border-b-2 py-3 items-center  bg-gray-700 px-4 text-center text-white ${
               isFewColumns ? "text-center w-1/3" : "text-left"
             }`}
           >
