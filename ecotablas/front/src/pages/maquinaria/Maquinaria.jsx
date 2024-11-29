@@ -415,7 +415,7 @@ pauseOnHover
           />
         )}
         {modalEdit && (
-          <ButtonEdit
+          <AddModalWithSelect
             title="Modificar Maquinaria"
             fields={fields}
             id={maquinariaId}

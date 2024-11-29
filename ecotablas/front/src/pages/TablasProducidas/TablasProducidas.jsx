@@ -198,18 +198,7 @@ const TablasProducidas = () => {
       </button> */}
     </div>
     </div>
-      {error && (
-        <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">
-          Error: {error}
-        </div>
-      )}
-
-{mensaje && (
-            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-              {mensaje}
-            </div>
-          )}
-
+  
       {modalAbierto && (
         <AddModalWithSelect
           title="Agregar Tabla Producida"
@@ -234,7 +223,7 @@ const TablasProducidas = () => {
         />
       )}
       {modalEdit && (
-        <ButtonEdit
+        <AddModalWithSelect
           title="Editar Tabla Producida"
           fields={[
             {

@@ -1,20 +1,21 @@
-import React, { useState } from "react";
-import { Dropbox } from "dropbox";
+import React, { useEffect } from "react";
 
-const AddModalWithSelect = ({
+const ButtonEdit = ({
   title,
   fields,
+  id,
+  formValues,
   handleChange,
-  handleSubmit,
-  cerrarModal,
-  values,
-
-  submitButtonText = "Guardar",
-  cancelButtonText = "Cancelar",
-  dropboxAccessToken, // Token de acceso para Dropbox
+  handleEditSubmit,
+  cerrarModalEdit,
 }) => {
- 
-
+  // Bloqueo de scroll al mostrar el modal
+  useEffect(() => {
+    document.body.style.overflow = "hidden"; // Bloquea el scroll
+    return () => {
+      document.body.style.overflow = "auto"; // Restaura el scroll al cerrar
+    };
+  }, []);
 
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -31,30 +32,18 @@ const AddModalWithSelect = ({
         <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
           <div>
             <h3 className="text-lg leading-6 font-medium text-gray-900">
-              {title}
+              Editar {title}
             </h3>
             <div className="mt-2">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleEditSubmit}>
                 {fields.map((field) => (
-                  <div key={field.name} className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      {field.label}
-                    </label>
-                    {field.type === "file" ? (
-                      <input
-                        type="file"
-                        name={field.name}
-                        onChange={handleChange} // Usa la función para almacenar y manejar el archivo
-                        className="border border-gray-300 rounded p-2 w-full"
-                        required={field.required}
-                      />
-                    ) : field.type === "select" ? (
+                  <div key={field.name} className="mt-2">
+                    {field.type === "select" ? (
                       <select
                         name={field.name}
-                        value={values[field.name]}
+                        value={formValues[field.name] || ""}
                         onChange={handleChange}
-                        className="border border-gray-300 rounded p-2 w-full"
-                        required={field.required}
+                        className="border p-2 w-full"
                       >
                         <option value="">Selecciona una opción</option>
                         {field.options.map((option) => (
@@ -63,53 +52,38 @@ const AddModalWithSelect = ({
                           </option>
                         ))}
                       </select>
-                    ) : field.type === "date" ? (
-                      <input
-                        type="date"
-                        name={field.name}
-                        value={values[field.name]}
-                        onChange={handleChange}
-                        className="border border-gray-300 rounded p-2 w-full"
-                        required={field.required}
-                      />
-                    ) : field.type === "number" ? (
-                      <input
-                        type="number"
-                        name={field.name}
-                        value={values[field.name]}
-                        onChange={handleChange}
-                        className="border border-gray-300 rounded p-2 w-full"
-                        required={field.required}
-                      />
                     ) : (
                       <input
-                        type="text"
+                        type={field.type}
                         name={field.name}
-                        value={values[field.name]}
+                        placeholder={field.placeholder}
+                        value={formValues[field.name] || ""}
                         onChange={handleChange}
-                        className="border border-gray-300 rounded p-2 w-full"
-                        required={field.required}
+                        className="border p-2 w-full"
                       />
                     )}
                   </div>
                 ))}
+                <div className="mt-5 sm:mt-6">
+                  <button
+                    onClick={handleEditSubmit}
+                    type="button"
+                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
+                  >
+                    Guardar
+                  </button>
+                </div>
               </form>
+              <div className="mt-2">
+                <button
+                  type="button"
+                  onClick={cerrarModalEdit}
+                  className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="mt-5 sm:mt-6">
-            <button
-              onClick={handleSubmit}
-              className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
-            >
-              {submitButtonText}
-            </button>
-            <button
-              onClick={cerrarModal}
-              className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
-            >
-              {cancelButtonText}
-            </button>
-
           </div>
         </div>
       </div>
@@ -117,4 +91,4 @@ const AddModalWithSelect = ({
   );
 };
 
-export default AddModalWithSelect;
+export default ButtonEdit;

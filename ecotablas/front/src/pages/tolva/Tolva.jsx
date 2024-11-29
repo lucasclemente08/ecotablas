@@ -296,11 +296,6 @@ const GenerateIdentificationCode = (size, large) => {
 
 </div>
 
-      {mensaje && (
-            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-              {mensaje}
-            </div>
-          )}
 
 <ToastContainer
   position="top-right"
@@ -331,7 +326,7 @@ const GenerateIdentificationCode = (size, large) => {
         />
       )}
 {modalEdit && (
-  <ButtonEdit
+  <AddModalWithSelect
     title="Editar Registro de Tolva"
     fields={[
       { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },

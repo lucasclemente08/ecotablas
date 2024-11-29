@@ -348,7 +348,7 @@ const MaterialTrit = () => {
           )}
 
           {modalAbierto && (
-            <AddModal
+            <AddModalWithSelect
               title="Agregar Material Triturado"
               fields={fields}
               handleChange={handleChange}
@@ -358,7 +358,7 @@ const MaterialTrit = () => {
             />
           )}
             {modalEdit && (
-              <ButtonEdit
+              <AddModalWithSelect
                 title="Material Triturado"
                 fields={fields}
                 id={materialId}

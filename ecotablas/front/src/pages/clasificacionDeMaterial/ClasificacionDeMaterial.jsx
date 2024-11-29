@@ -337,7 +337,7 @@ const ClasificacionDeMaterial = () => {
         )}
 
         {modalEdit && (
-          <ButtonEdit
+          <AddModalWithSelect
             title="Material"
             fields={fields}
             id={materialId}
