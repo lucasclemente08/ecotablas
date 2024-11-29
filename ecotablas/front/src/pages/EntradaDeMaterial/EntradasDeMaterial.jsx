@@ -394,7 +394,7 @@ const getPlasticbyId =(id)=>{
         )}
 
         {modalClasificado && (
-            <AddModal
+            <AddModalWithSelect
               title="Enviar lote a clasificación"
               fields={[
                 { name: "VolumenUtil", label: "Volumen Util", type: "number", placeholder: "Volumen Util *" },

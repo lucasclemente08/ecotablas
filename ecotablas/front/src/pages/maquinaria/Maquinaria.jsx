@@ -28,6 +28,7 @@ import {
 } from "../../api/MaquinariasAPI";
 import { addReparacion, editReparacion, getReparacionByIdMaquinaria, } from "../../api/ReparacionesAPI";
 import SectionLayout from "../../layout/SectionLayout";
+import AddModalWithSelect from "../../components/AddModalWithSelect";
 
 const Maquinaria = () => {
   const [maquinarias, setMaquinarias] = useState([]);
@@ -404,7 +405,7 @@ pauseOnHover
           </div>
 
         {modalAbierto && (
-          <AddModal
+          <AddModalWithSelect
             title="Agregar Maquinaria"
             fields={fields}
             handleChange={handleChange}
@@ -426,7 +427,7 @@ pauseOnHover
         )}
 
         {modalReparacion && (
-          <AddModal
+          <AddModalWithSelect
             title="Agregar Reparación"
             fields={[
               {

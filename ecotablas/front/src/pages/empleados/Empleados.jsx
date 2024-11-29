@@ -345,35 +345,7 @@ const Empleados = () => {
                 </span>
                 <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                   <div>
-                    <div></div>
-
-                    <div className=" ">
-                      {mensaje && (
-                        <div className="bg-red-700 text-white p-4 rounded-lg flex items-center space-x-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M18.364 5.636a9 9 0 11-12.728 0 9 9 0 0112.728 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M12 9v2m0 4h.01"
-                            />
-                          </svg>
-                          <span>{mensaje}</span>
-                        </div>
-                      )}
-                    </div>
+               
 
                     <div className="mt-3 text-center sm:mt-5">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">
