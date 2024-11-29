@@ -19,6 +19,8 @@ import {
   deleteVehiculos,
 } from "../../api/VehiculosAPI";
 import { addReparacion } from "../../api/ReparacionesAPI";
+import SectionLayout from "../../layout/SectionLayout";
+import AddModalWithSelect from "../../components/AddModalWithSelect";
 
 const Vehiculos = () => {
   const [vehiculos, setVehiculos] = useState([]);
@@ -255,8 +257,8 @@ const Vehiculos = () => {
     "Año",
     "Color",
     "Tipo",
-    "Fecha de Ultima Inspección",
-    "Combustible",
+    // "Fecha de Ultima Inspección",
+    // "Combustible",
     "Patente",
     "Numero de Identificación",
     "Estado",
@@ -389,10 +391,10 @@ const Vehiculos = () => {
 
   return (
     <>
-      <div className="md:flex flex-row bg-slate-900 min-h-screen">
-        <Home />
+    <SectionLayout title="Vehiculos">
+
         <div className="p-4 w-full">
-          <h2 className="text-2xl font-bold text-white mb-4">Vehiculos</h2>
+          
           <AddButtonWa abrirModal={abrirModal} title={" Añadir Vehiculo"} />
           <PdfGenerator
             columns={columns}
@@ -405,7 +407,7 @@ const Vehiculos = () => {
             </div>
           )}
           {modalAbierto && (
-            <AddModal
+            <AddModalWithSelect
               title="Agregar Vehiculo"
               fields={fields}
               handleChange={handleChange}
@@ -427,7 +429,7 @@ const Vehiculos = () => {
           )}
 
           {modalReparacion && (
-            <AddModal
+            <AddModalWithSelect
               title="Agregar Reparación"
               fields={[
                 {
@@ -482,19 +484,20 @@ const Vehiculos = () => {
     <span className="font-semibold lg:hidden">Tipo: </span>
     {vehiculo.Tipo}
   </td>
-  <td className="border-b py-2 px-4 text-right">
+  {/* <td className="border-b py-2 px-4 text-right">
     <span className="font-semibold lg:hidden">Fecha Última Inspección: </span>
-    {vehiculo.FechaUltimaInspeccion}
-  </td>
-  <td className="border-b py-2 px-4 text-left">
+    {vehiculo.FechaUltimaInspeccion.slice(0,10)}
+  </td> */}
+  {/* <td className="border-b py-2 px-4 text-left">
     <span className="font-semibold lg:hidden">Combustible: </span>
     {vehiculo.Combustible}
-  </td>
-  <td className="border-b py-2 px-4 text-right">
-    <span className="font-semibold lg:hidden">Número de Placa: </span>
-    {vehiculo.NumeroPlaca}
-  </td>
-  <td className="border-b py-2 px-4 text-right">
+  </td> */}
+<td className="border-b py-2 px-4 text-right whitespace-nowrap">
+  <span className="font-normal"> </span>
+  {vehiculo.NumeroPlaca}
+</td>
+
+  <td className="border-b  py-2 px-4 text-right">
     <span className="font-semibold lg:hidden">Número Identificador: </span>
     {vehiculo.NumeroIdentificador}
   </td>
@@ -550,7 +553,8 @@ const Vehiculos = () => {
             </table>
           </div>
         </div>
-      </div>
+    
+    </SectionLayout>
     </>
   );
 };

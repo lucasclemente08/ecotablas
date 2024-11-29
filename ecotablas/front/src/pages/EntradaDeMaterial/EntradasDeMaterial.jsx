@@ -7,16 +7,18 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
+import { BsClipboardDataFill } from "react-icons/bs";
 import TablaHead from "../../components/Thead";
 import { GrLinkNext } from "react-icons/gr";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
+import NextProcess from "../../components/buttons/NextProcess";
 import { ToastContainer, toast } from "react-toastify";
-import { BsClipboardDataFill } from "react-icons/bs";
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css"; 
+
 import { FaSearch, FaArrowLeft } from "react-icons/fa";
-import { FiEdit } from "react-icons/fi";
+
 import Pagination from "../../components/Pagination";
 import {
   getAllMaterialClas,
@@ -121,7 +123,7 @@ const EntradasDeMaterial = () => {
     axios.put(`http://localhost:61274/api/IngresoMat/Modificar/${materialId}`,formValues,)
       .then(() => {
         setModalEdit(false);
-        toast.success("Modificación exitosa");
+        setMensaje("Modificación exitosa");
         fetchMaterials();
       })
       .catch((error) =>
@@ -241,16 +243,17 @@ const EntradasDeMaterial = () => {
       placeholder: "Volumen Inutil *",
     },
     {
-      name: "IdTipoPlastico",
-      label: "Material",
-      type: "select",
-      options: optionsTipoPlastico
-    },
-    {
       name: "FechaIngresoM",
       label: "Fecha Ingreso",
       type: "date",
       placeholder: "Fecha *",
+    },
+    {
+      name: "IdTipoPlastico",
+      label: "Tipo de plasticos",
+      type: "select",
+      options: optionsTipoPlastico,
+
     },
     {
       name: "TipoDonante",
@@ -379,7 +382,7 @@ const getPlasticbyId =(id)=>{
 />
 
         {modalEdit && (
-          <ButtonEdit
+          <AddModalWithSelect
             title="Material"
             fields={fields}
             id={materialId}
@@ -391,7 +394,7 @@ const getPlasticbyId =(id)=>{
         )}
 
         {modalClasificado && (
-            <AddModal
+            <AddModalWithSelect
               title="Enviar lote a clasificación"
               fields={[
                 { name: "VolumenUtil", label: "Volumen Util", type: "number", placeholder: "Volumen Util *" },
@@ -493,7 +496,8 @@ const getPlasticbyId =(id)=>{
      
 )
 }
-
+<NextProcess  linkTo="/clasificacion"
+  hoverText="Ir al siguiente proceso"/>
       </SectionLayout>
     </>
   );

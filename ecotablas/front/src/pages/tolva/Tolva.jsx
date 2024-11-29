@@ -5,6 +5,7 @@ import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { MdDateRange } from "react-icons/md";
 import LoadingTable from "../../components/LoadingTable";
+import NextProcess from "../../components/buttons/NextProcess";
 import { GrLinkNext } from "react-icons/gr";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
@@ -49,12 +50,14 @@ const Tolva = () => {
     Estado: 1,
     IdMaterialTriturado: "",
   });
-  const GenerateIdentificationCode = (size, large) => {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, "0");
-    const codeUID = uuidv4().replace(/-/g, "").slice(0, 8);
-    return `$${size}_${large}_${hours}_${codeUID}`;
-  };
+  
+const GenerateIdentificationCode = (size, large) => {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, "0");
+  const codeUID = uuidv4().replace(/-/g, "").slice(0, 8);
+  return `${size}_${large}_${hours}_${codeUID}`;
+};
+
   const [tablaValues, setTablaValues] = useState({
     FechaProduccion: "",
     Dimensiones: "",
@@ -216,7 +219,7 @@ const Tolva = () => {
   
       // Actualizar el estado de la tolva a 2
       const materialActualizado = {
-        ...filteredMaterials.find((m) => m.IdTolva === materialId),
+        ...materials.find((m) => m.IdTolva === materialId),
         Estado: 2, // Establecer el estado a 2
       };
   
@@ -293,7 +296,7 @@ const Tolva = () => {
     <SectionLayout title="Tolva">
        <div className="flex flex-wrap items-center gap-1 ">
       <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
-      <PdfGenerator columns={columns} data={filteredMaterials} title="Reporte de Tolva" />
+      <PdfGenerator columns={columns} data={materials} title="Reporte de Tolva" />
 
       <FilterButton
         data={filteredMaterials}
@@ -305,11 +308,6 @@ const Tolva = () => {
 
 </div>
 
-      {mensaje && (
-            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-              {mensaje}
-            </div>
-          )}
 
 <ToastContainer
   position="top-right"
@@ -341,7 +339,7 @@ const Tolva = () => {
         />
       )}
 {modalEdit && (
-  <ButtonEdit
+  <AddModalWithSelect
     title="Editar Registro de Tolva"
     fields={[
       { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },
@@ -414,7 +412,7 @@ const Tolva = () => {
                         onClick={() => abrirModalTabla(material.IdTolva)}
                         className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                       >
-                        <GrLinkNext />
+                        <GrLinkNext className="mr-2" />
                         Terminado
                       </button>
                     <button
@@ -446,6 +444,9 @@ const Tolva = () => {
           </div>
         </>
       )}
+
+<NextProcess  linkTo="/tablas"
+  hoverText="Ir al siguiente proceso"/>
     </SectionLayout>
   );
 };

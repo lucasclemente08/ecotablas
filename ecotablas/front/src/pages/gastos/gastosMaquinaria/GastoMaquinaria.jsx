@@ -22,6 +22,8 @@ import DataView from "../../../components/buttons/DataView";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
 import AddButtonWa from "../../../components/buttons/AddButtonWa";
+import GastoMaquinariaChart from "../../../components/graficos/GastoMaquinariaChart";
+import GastoMaquinariaDatePicker from "../../../components/graficos/GastoMaquinariaDatePicker";
 
 
 const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
@@ -388,7 +390,7 @@ return link;
     responsive: true,
     maintainAspectRatio: false,
   };
-
+  const total=dataM.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
   return   (
 <>
     <SectionLayout title="Gasto de Maquinaria">
@@ -420,14 +422,14 @@ return link;
         <DataView ShowTable={handleShowTable} f />
 
         <button
-          aria-label="Ver gráfico circular"
+          aria-label="Ver gráficos"
           className={`p-2 ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? "bg-blue-600" : "bg-gray-500"}`}
           onClick={() => {
             setShowPieChart(true);
             setShowTable(false);
           }}
         >
-          Ver Gráfico Circular <FaChartPie className="ml-2" />
+          Ver Gráficos <FaChartPie className="ml-2" />
         </button>
       </div>
 
@@ -518,9 +520,34 @@ return link;
   </div>
         )
       ) : showPieChart ? (
-        <div className="w-full h-96">
+
+  <div className="flex flex-row mt-4 content-center justify-center items-center h-96 ">
+          {/* <div className="mr-2  flex-1 min-w-[200px] max-w-[400px] mt-10 p-4 bg-gray-800 shadow-md rounded-md">
+          <div className="h-[370px]">
+            
           <Pie data={pieData} options={pieOptions} />
+            </div>
+            <p className=" text-centermt-2 text-center text-gray-200 ">Total de gastos: ${total} </p>
+          </div> */}
+ <div className="flex-1 min-w-[800px] max-w-[800px] mt-10 p-4  shadow-md rounded-md">
+      
+          <div className="h-[400px]">
+          <GastoMaquinariaDatePicker />
+          </div>
         </div>
+
+          </div>
+
+
+
+
+
+
+
+
+
+
+
 
 ) : null}
 

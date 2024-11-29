@@ -10,7 +10,7 @@ const Home = () => {
           <Navbar />
         </div>
 
-        <div className="hidden md:flex flex-1 flex-row">
+        <div className="hidden md:block fixed top-0 left-0 h-full w-[250px]">
           <Sidebar className="" />
         </div>
       </div>

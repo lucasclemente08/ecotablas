@@ -10,7 +10,7 @@ const Navbar = () => {
 
   return (
     <div className="  ">
-      <nav className="flex  items-end content-end justify-end  py-2 px-2  bg-sky-600 font-aeonik">
+      <nav className="flex  items-end content-end justify-end  py-2 px-2  font-aeonik">
         <div className="flex gap-10 items-center">
           {/* <Link to="/"> */}
           {/* <img src={logo} alt="Aventura Compartida Logo" width={100} height={50} /> */}

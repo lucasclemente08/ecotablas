@@ -18,14 +18,17 @@ const MenuSection = ({ title, menus, icon, isOpen }) => {
         }`}
         onClick={toggleMenu}
       >
-        <div className="flex items-center">
-          <div className="m-1 text-xl">{icon}</div>
-          {isOpen && (
-            <span className="ml-4 font-bold origin-left duration-200">
-              {title}
-            </span>
-          )}
-   
+        <div className="flex items-center ">
+        <div className="flex items-center content-center  text-left justify-center m-1 text-lg">
+  <div>{icon}</div>
+  {isOpen && (
+    <span className="ml-4 font-bold origin-left duration-200">
+      {title}
+    </span>
+  )}
+</div>
+
+
         {isOpen && (
           <div className="ml-2">
             {isOpenMenu ? <FaChevronUp /> : <FaChevronDown />}

@@ -13,6 +13,7 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { ToastContainer, toast } from "react-toastify";
+import NextProcess from "../../components/buttons/NextProcess";
 import VolumenTrituradoChart from "../../components/volumen/VolumenTrituradoChart";
 import "react-toastify/dist/ReactToastify.css";
 import SectionLayout from "../../layout/SectionLayout";
@@ -347,7 +348,7 @@ const MaterialTrit = () => {
           )}
 
           {modalAbierto && (
-            <AddModal
+            <AddModalWithSelect
               title="Agregar Material Triturado"
               fields={fields}
               handleChange={handleChange}
@@ -357,7 +358,7 @@ const MaterialTrit = () => {
             />
           )}
             {modalEdit && (
-              <ButtonEdit
+              <AddModalWithSelect
                 title="Material Triturado"
                 fields={fields}
                 id={materialId}
@@ -471,6 +472,9 @@ const MaterialTrit = () => {
 </div>
 )
 }
+
+<NextProcess  linkTo="/tolva"
+  hoverText="Ir al siguiente proceso"/>
   </SectionLayout>
 
     </>

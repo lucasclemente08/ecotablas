@@ -17,6 +17,7 @@ import Pagination from "../../components/Pagination";
 import VolumenChart from "../../components/volumen/VolumenChart";
 import FilterButton from "../../components/buttons/FilterButton";
 import DateFilter from "../../components/DateFilter";
+import NextProcess from "../../components/buttons/NextProcess";
 import SectionLayout from "../../layout/SectionLayout";
 import {
   getAllMaterialTrit,
@@ -26,6 +27,7 @@ import {
 import {
 editMaterialClas,
 } from "../../api/MaterialClasAPI";
+import AddModalWithSelect from "../../components/AddModalWithSelect";
 const ClasificacionDeMaterial = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -324,7 +326,7 @@ const ClasificacionDeMaterial = () => {
   pauseOnHover
 />
         {modalAbierto && (
-          <AddModal
+          <AddModalWithSelect
             title="Agregar Material Clasificado"
             fields={fields}
             handleChange={handleChange}
@@ -335,7 +337,7 @@ const ClasificacionDeMaterial = () => {
         )}
 
         {modalEdit && (
-          <ButtonEdit
+          <AddModalWithSelect
             title="Material"
             fields={fields}
             id={materialId}
@@ -346,7 +348,7 @@ const ClasificacionDeMaterial = () => {
           />
         )}
                {modalTriturado && (
-            <AddModal
+            <AddModalWithSelect
               title="Enviar lote a trituración"
               fields={[
                 { name: "VolumenT", label: "Volumen Util", type: "number", placeholder: "Volumen Util *" },
@@ -395,7 +397,7 @@ const ClasificacionDeMaterial = () => {
                         {material.FechaC.slice(0, 10)}
                       </td>
                       <td
-                        className={`border-b py-2 px-4 flex justify-center ${modalEdit || modalAbierto ? "hidden" : ""}`}
+                        className={`border-b py-2 px-4 flex justify-center `}
                       >
                         <button
                           onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
@@ -441,6 +443,8 @@ const ClasificacionDeMaterial = () => {
      
 )
 }
+<NextProcess  linkTo="/materialTri"
+  hoverText="Ir al siguiente proceso"/>
             </SectionLayout>
             </>
 

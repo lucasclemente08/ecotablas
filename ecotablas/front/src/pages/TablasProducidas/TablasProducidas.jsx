@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FaSearch } from "react-icons/fa";
+
 import {
   fetchTablasProducidas,
   addTablaProducida,
@@ -7,6 +9,9 @@ import {
   deleteTablaProducida,
 } from "../../features/tablasProducidasSlice";
 import SectionLayout from "../../layout/SectionLayout";
+
+import NextProcess from "../../components/buttons/NextProcess";
+
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
@@ -167,9 +172,8 @@ const TablasProducidas = () => {
 
 
 
+        
       <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />
-
-
       <PdfGenerator
         columns={columns}
         data={data}
@@ -186,9 +190,9 @@ const TablasProducidas = () => {
 
       <button 
         onClick={filterByDate}  // Trigger the filter when clicked
-        className="p-3    ml-2 bg-blue-500 text-white rounded"
+        className="p-2.5 flex items-center mb-2   ml-2 bg-blue-500 text-white rounded"
       >
-        Buscar por fecha
+       <FaSearch className="mr-2 " />   Buscar por fecha 
       </button>
       {/* <button 
         onClick={setCurrentItems(data)}  // Trigger the filter when clicked
@@ -198,18 +202,7 @@ const TablasProducidas = () => {
       </button> */}
     </div>
     </div>
-      {error && (
-        <div className="bg-red-600 text-white py-2 px-4 rounded mb-4">
-          Error: {error}
-        </div>
-      )}
-
-{mensaje && (
-            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-              {mensaje}
-            </div>
-          )}
-
+  
       {modalAbierto && (
         <AddModalWithSelect
           title="Agregar Tabla Producida"
@@ -235,7 +228,7 @@ const TablasProducidas = () => {
         />
       )}
       {modalEdit && (
-        <ButtonEdit
+        <AddModalWithSelect
           title="Editar Tabla Producida"
           fields={[
             {
@@ -254,7 +247,7 @@ const TablasProducidas = () => {
       )}
 
       {loading ? (
-        <LoadingTable />
+        <LoadingTable loading={loading} />
       ) : (
         <>
           <table className="table-auto w-full bg-white rounded-lg shadow-lg">
@@ -269,19 +262,19 @@ const TablasProducidas = () => {
   <td className="px-4 py-2 text-right">{item.Peso}</td>
   <td className="px-4 py-2 text-right">{item.CodigoIdentificacion}</td>
   <td className="px-4 py-2 flex justify-center">
-                  <button
+                  {/* <button
                           onClick={() => handleChangeState(item)}
                           className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                         >
 
                         <GrLinkNext />
                           Terminado
-                        </button>
+                        </button> */}
                     <button
                       onClick={() => abrirModalEdit(item)}
                       className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                     >
-                      <FiEdit />
+                      <FiEdit  className="mr-2"/>
                       Modificar
                     </button>
                     <DeleteButton
@@ -332,6 +325,8 @@ const TablasProducidas = () => {
   draggable
   pauseOnHover
 />
+
+
     </SectionLayout>
   );
 };

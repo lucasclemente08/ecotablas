@@ -31,6 +31,7 @@ import builderApiUrl from "../../../utils/BuilderApi";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
 import AddButtonWa from "../../../components/buttons/AddButtonWa";
 import GastoVehiculosChart from "../../../components/graficos/GastoVehiculosChart";
+import GastoVehiculosDataPicker from "../../../components/graficos/GastoVehiculoDataPicker";
 
 ChartJS.register(
   CategoryScale,
@@ -526,7 +527,7 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
   pauseOnHover
 />
 
-<div className="flex flex-wrap items-center gap-4">
+<div className="flex flex-wrap items-center gap-1">
         <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
           title="Añadir gastos"
@@ -536,14 +537,14 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
 
 
         <button
-          aria-label="Ver gráfico circular"
+          aria-label="Ver gráficos"
           className={`p-2 ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? "bg-blue-600" : "bg-gray-500"}`}
           onClick={() => {
             setShowPieChart(true);
             setShowTable(false);
           }}
         >
-          Ver Gráfico Circular <FaChartPie className="ml-2" />
+          Ver Gráficos <FaChartPie className="ml-2" />
         </button>
         {/* 
         <button
@@ -621,33 +622,30 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
             {getVehicleById(item.IdVehiculo)}
           </td>
           
-          {/* Proveedor */}
+
           <td className="border-b py-3 px-4 text-left">
             <span className="font-semibold lg:hidden">Proveedor: </span>
             {item.Proveedor}
           </td>
-          
-          {/* Monto */}
+        
           <td className="border-b py-3 px-4 text-right">
             <span className="font-semibold lg:hidden">Monto: </span>
             ${item.Monto}
           </td>
           
-          {/* Fecha */}
+
           <td className="border-b py-3 px-4 text-right">
             <span className="font-semibold lg:hidden">Fecha: </span>
             {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
           </td>
-          
-          {/* Descripción */}
+ 
           <td className="border-b py-3 px-4 text-left">
             <span className="font-semibold lg:hidden">Descripción: </span>
             {item.Descripcion}
           </td>
-          
-          {/* Acciones */}
+      
           <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
-            {/* Modificar */}
+         
             <button
               onClick={() => {
                 setGastoEdit(item);
@@ -686,13 +684,23 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
 
         )
       ) : showPieChart ? (
-        <div className="flex flex-row content-center justify-center items-center h-96 ">
-          <div className=" m-10  max-h-72 ">
-
+        <div className="flex flex-row mt-20 content-center justify-center items-center h-96 ">
+          {/* <div className="mr-2  flex-1 min-w-[200px] max-w-[400px] mt-10 p-4 bg-gray-800 shadow-md rounded-md">
+          <div className="h-[370px]">
+            
           <Pie data={pieData} options={pieOptions} className="mt-4" />
+            </div>
             <p className=" text-centermt-2 text-center text-gray-200 ">Total de gastos: ${total}</p>
+          </div> */}
+ <div className="flex-1 min-w-[700px] max-w-[00px]  p-4  shadow-md rounded-md">
+          {/* <h2 className="text-lg font-medium text-white text-center mb-4">
+            Gastos de Vehículos
+          </h2> */}
+          <div className="h-[500px]  mb-4">
+        <GastoVehiculosDataPicker />
           </div>
-    <GastoVehiculosChart/>
+        </div>
+
         </div>
       ) : (
         <div className="w-full h-96">

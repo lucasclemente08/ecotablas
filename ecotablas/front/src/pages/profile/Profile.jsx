@@ -46,7 +46,7 @@ const Profile = () => {
     return () => unsubscribe();
   }, [auth, db]);
 
-  if (loading) return <p className="text-center text-white">Cargando perfil...</p>;
+  if (loading) return <SectionLayout className="text-center text-white " title="Cargando Perfil" ></SectionLayout>;
   if (!userProfile) return <p className="text-center text-white">No se encontró el perfil del usuario.</p>;
 
   return (
