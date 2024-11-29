@@ -18,7 +18,7 @@ export const addTablaProducida = createAsyncThunk(
   'tablasProducidas/addTablaProducida',
   async (newTabla, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://www.gestiondeecotablas.somee.com/api/TablaProducidas/Insertar', newTabla);
+      const response = await axios.post('http://localhost:61274/api/TablaProducidas/Insertar', newTabla);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

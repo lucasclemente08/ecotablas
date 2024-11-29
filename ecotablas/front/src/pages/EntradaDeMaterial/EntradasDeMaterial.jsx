@@ -466,7 +466,7 @@ const getPlasticbyId =(id)=>{
 
                     <DeleteButton
                       id={material.IdIngresoMaterial}
-                      endpoint="http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Borrar"
+                      endpoint="http://localhost:61274/api/IngresoMat/Borrar"
                       updateList={fetchMaterials}
                     />
                   </td>

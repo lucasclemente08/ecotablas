@@ -47,6 +47,7 @@ const Tolva = () => {
     Proporcion: "",
     Especificaciones: "",
     Estado: 1,
+    IdMaterialTriturado: "",
   });
   const GenerateIdentificationCode = (size, large) => {
     const now = new Date();
@@ -71,6 +72,13 @@ const Tolva = () => {
 
 
   const abrirModal = () => {
+    const fechaActual = new Date().toISOString();
+
+    setFormValues({
+      ...formValues,
+      HorarioInicio: fechaActual,
+
+    });
     setModalAbierto(true);
   };
   const cerrarModal = () => {
@@ -82,9 +90,10 @@ const Tolva = () => {
       HorarioInicio: material.HorarioInicio,
       CantidadCargada: material.CantidadCargada,
       TipoPlastico: material.TipoPlastico,
-      Proporcion: material.proporcion,
+      Proporcion: material.Proporcion,
       Especificaciones: material.Especificaciones,
       Estado: 1,
+      IdMaterialTriturado: material.IdMaterialTriturado,
     });
     setModalEdit(true);
   };
@@ -140,8 +149,8 @@ const Tolva = () => {
     try {
       const response = await addTolva(formValues);
       setModalAbierto(false);
-      toast.error("Inserción exitosa");
-      setMaterials([...materials, response.data]);
+      toast.success("Inserción exitosa");
+      setMaterials([...filteredMaterials, response.data]);
     } catch (error) {
       toast.error("Error al agregar el material.");
       console.error("Error al agregar el material:", error);
@@ -149,7 +158,7 @@ const Tolva = () => {
   };
   const validateForm = () => {
     let isValid = true;
-    if (!formValues.formValues.HorarioInicio) {
+    if (!formValues.HorarioInicio) {
       toast.error("El horario de inicio es obligatorio.");
       isValid = false;
     } else if(!formValues.CantidadCargada) {
@@ -164,7 +173,10 @@ const Tolva = () => {
     } else if (!formValues.Especificaciones) {
       toast.error("Las especificaciones son obligatorias.");
       isValid = false;
-    } 
+    } else if (!formValues.IdMaterialTriturado) {
+      toast.error("El ID del material triturado es obligatorio.");
+      isValid = false;
+    }
     
     return isValid;
   };
@@ -259,12 +271,12 @@ const Tolva = () => {
 
   ];
 
-  const rows = materials.map((material) => ({
+  const rows = filteredMaterials.map((material) => ({
     Fecha: material.HorarioInicio.slice(0, 10),
   }));
 
   const columns = [
-    { header: "Horario de inicio", accessor: "horario_inicio" },
+    { header: "Horario de inicio", accessor: "HorarioInicio" },
     { header: "Cantidad cargada (kg)", accessor: "cantidadCargada" },
     { header: "Tipo de plástico", accessor: "tipo_plastico" },
     { header: "Proporción cargada", accessor: "proporcion" },
@@ -320,6 +332,7 @@ const Tolva = () => {
             { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
             { name: "Proporcion", label: "Proporción cargada", type: "number" },
             { name: "Especificaciones", label: "Especificaciones", type: "text" },
+            { name: "IdMaterialTriturado", label: "IdMaterialTriturado", type: "text" },
           ]}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
@@ -370,10 +383,16 @@ const Tolva = () => {
             <tbody>
               {currentItems.map((material) => (
                 <tr key={material.IdTolva}>
-  <td className="border-b px-4 py-2 text-right">
-    <span className="font-semibold lg:hidden">Horario de Inicio: </span>
-    {material.HorarioInicio.slice(0, 10)}
-  </td>
+<td className="border-b px-4 py-2 text-right">
+  <span className="font-semibold lg:hidden">Horario de Inicio: </span>
+  {new Date(material.HorarioInicio).toLocaleString("es-AR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  })}
+</td>
   <td className="border-b px-4 py-2 text-right">
     <span className="font-semibold lg:hidden">Cantidad Cargada: </span>
     {material.CantidadCargada}
@@ -407,7 +426,7 @@ const Tolva = () => {
                     </button>
                     <DeleteButton
                       id={material.IdTolva}
-                      endpoint="http://localhost:61274/api/Tolva/Borrar"
+                      endpoint="http://localhost:61274/api/Tolva/Delete"
                       updateList={fetchMaterials}
                     />
                   </td>
