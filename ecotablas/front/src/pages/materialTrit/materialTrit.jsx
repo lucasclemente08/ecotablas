@@ -477,7 +477,6 @@ const MaterialTrit = () => {
   hoverText="Ir al siguiente proceso"/>
   </SectionLayout>
 
-
     </>
   );
 };
