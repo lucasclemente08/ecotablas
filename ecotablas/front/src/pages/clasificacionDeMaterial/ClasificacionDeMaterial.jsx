@@ -6,7 +6,10 @@ import { MdDateRange } from "react-icons/md";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
+<<<<<<< HEAD
 import NextProcess from "../../components/buttons/NextProcess";
+=======
+>>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
 import { GrLinkNext } from "react-icons/gr";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
@@ -18,6 +21,7 @@ import Pagination from "../../components/Pagination";
 import VolumenChart from "../../components/volumen/VolumenChart";
 import FilterButton from "../../components/buttons/FilterButton";
 import DateFilter from "../../components/DateFilter";
+import NextProcess from "../../components/buttons/NextProcess";
 import SectionLayout from "../../layout/SectionLayout";
 import {
   getAllMaterialTrit,
@@ -27,6 +31,7 @@ import {
 import {
 editMaterialClas,
 } from "../../api/MaterialClasAPI";
+import AddModalWithSelect from "../../components/AddModalWithSelect";
 const ClasificacionDeMaterial = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -325,7 +330,7 @@ const ClasificacionDeMaterial = () => {
   pauseOnHover
 />
         {modalAbierto && (
-          <AddModal
+          <AddModalWithSelect
             title="Agregar Material Clasificado"
             fields={fields}
             handleChange={handleChange}
@@ -336,7 +341,7 @@ const ClasificacionDeMaterial = () => {
         )}
 
         {modalEdit && (
-          <ButtonEdit
+          <AddModalWithSelect
             title="Material"
             fields={fields}
             id={materialId}
@@ -347,7 +352,7 @@ const ClasificacionDeMaterial = () => {
           />
         )}
                {modalTriturado && (
-            <AddModal
+            <AddModalWithSelect
               title="Enviar lote a trituración"
               fields={[
                 { name: "VolumenT", label: "Volumen Util", type: "number", placeholder: "Volumen Util *" },
@@ -396,14 +401,23 @@ const ClasificacionDeMaterial = () => {
                         {material.FechaC.slice(0, 10)}
                       </td>
                       <td
+<<<<<<< HEAD
   className={`border-b py-2 px-4 flex justify-center ${modalEdit || modalAbierto ? "hidden" : ""}`}
 >
 
+=======
+                        className={`border-b py-2 px-4 flex justify-center `}
+                      >
+>>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
                         <button
                           onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
                           className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                         >
+<<<<<<< HEAD
                           <GrLinkNext className="mr-2" />
+=======
+                          <GrLinkNext />
+>>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
                           Terminado
                         </button>
                         <button

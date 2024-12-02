@@ -28,6 +28,7 @@ import {
 } from "../../api/MaquinariasAPI";
 import { addReparacion, editReparacion, getReparacionByIdMaquinaria, } from "../../api/ReparacionesAPI";
 import SectionLayout from "../../layout/SectionLayout";
+import AddModalWithSelect from "../../components/AddModalWithSelect";
 
 const Maquinaria = () => {
   const [maquinarias, setMaquinarias] = useState([]);
@@ -404,7 +405,11 @@ pauseOnHover
           </div>
 
         {modalAbierto && (
+<<<<<<< HEAD
           <AddModal
+=======
+          <AddModalWithSelect
+>>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
             title="Agregar Maquinaria"
             fields={fields}
             handleChange={handleChange}
@@ -414,7 +419,11 @@ pauseOnHover
           />
         )}
         {modalEdit && (
+<<<<<<< HEAD
           <ButtonEdit
+=======
+          <AddModalWithSelect
+>>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
             title="Modificar Maquinaria"
             fields={fields}
             id={maquinariaId}
@@ -426,7 +435,11 @@ pauseOnHover
         )}
 
         {modalReparacion && (
+<<<<<<< HEAD
           <AddModal
+=======
+          <AddModalWithSelect
+>>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
             title="Agregar Reparación"
             fields={[
               {

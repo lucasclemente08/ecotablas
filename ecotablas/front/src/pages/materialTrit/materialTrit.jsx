@@ -3,7 +3,10 @@ import Home from "../home/Home";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { BsClipboardDataFill } from "react-icons/bs";
+<<<<<<< HEAD
 import NextProcess from "../../components/buttons/NextProcess";
+=======
+>>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
 import { MdDateRange } from "react-icons/md";
 import { GrLinkNext } from "react-icons/gr";
 import Pagination from "../../components/Pagination";
@@ -14,6 +17,7 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { ToastContainer, toast } from "react-toastify";
+import NextProcess from "../../components/buttons/NextProcess";
 import VolumenTrituradoChart from "../../components/volumen/VolumenTrituradoChart";
 import "react-toastify/dist/ReactToastify.css";
 import SectionLayout from "../../layout/SectionLayout";
@@ -227,10 +231,17 @@ const MaterialTrit = () => {
     { header: "Fecha", dataKey: "Fecha" },
   ];
 
+<<<<<<< HEAD
   // const rows = materials.map((material) => ({
   //   VolumenT: ${material.VolumenT} kgs,
   //   Fecha: material.Fecha.slice(0, 10),
   // }));
+=======
+  const rows = filteredMaterials.map((material) => ({
+    VolumenT: `${material.VolumenT} kgs`,
+    Fecha: material.Fecha.slice(0, 10),
+  }));
+>>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
 
   const fields = [
     {
@@ -348,7 +359,7 @@ const MaterialTrit = () => {
           )}
 
           {modalAbierto && (
-            <AddModal
+            <AddModalWithSelect
               title="Agregar Material Triturado"
               fields={fields}
               handleChange={handleChange}
@@ -358,7 +369,7 @@ const MaterialTrit = () => {
             />
           )}
             {modalEdit && (
-              <ButtonEdit
+              <AddModalWithSelect
                 title="Material Triturado"
                 fields={fields}
                 id={materialId}
@@ -415,8 +426,13 @@ const MaterialTrit = () => {
                         onClick={() => abrirModalTolva(material.IdMaterialTriturado)}
                         className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                         >
+<<<<<<< HEAD
                        <GrLinkNext className="mr-2" />
                        Terminado
+=======
+                          <GrLinkNext />
+                          Terminado
+>>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
                         </button>
 
                       {modalTolva &&

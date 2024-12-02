@@ -285,6 +285,8 @@ const GenerateIdentificationCode = (size, large) => {
        <div className="flex flex-wrap items-center gap-1 ">
       <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
       <PdfGenerator columns={columns} data={materials} title="Reporte de Tolva" />
+<<<<<<< HEAD
+=======
 
       <FilterButton
         data={filteredMaterials}
@@ -295,12 +297,8 @@ const GenerateIdentificationCode = (size, large) => {
       />
 
 </div>
+>>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
 
-      {mensaje && (
-            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-              {mensaje}
-            </div>
-          )}
 
 <ToastContainer
   position="top-right"
@@ -331,7 +329,7 @@ const GenerateIdentificationCode = (size, large) => {
         />
       )}
 {modalEdit && (
-  <ButtonEdit
+  <AddModalWithSelect
     title="Editar Registro de Tolva"
     fields={[
       { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },

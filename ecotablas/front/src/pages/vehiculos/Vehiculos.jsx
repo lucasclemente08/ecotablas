@@ -20,6 +20,7 @@ import {
 } from "../../api/VehiculosAPI";
 import { addReparacion } from "../../api/ReparacionesAPI";
 import SectionLayout from "../../layout/SectionLayout";
+import AddModalWithSelect from "../../components/AddModalWithSelect";
 
 const Vehiculos = () => {
   const [vehiculos, setVehiculos] = useState([]);
@@ -406,7 +407,7 @@ const Vehiculos = () => {
             </div>
           )}
           {modalAbierto && (
-            <AddModal
+            <AddModalWithSelect
               title="Agregar Vehiculo"
               fields={fields}
               handleChange={handleChange}
@@ -428,7 +429,7 @@ const Vehiculos = () => {
           )}
 
           {modalReparacion && (
-            <AddModal
+            <AddModalWithSelect
               title="Agregar Reparación"
               fields={[
                 {
