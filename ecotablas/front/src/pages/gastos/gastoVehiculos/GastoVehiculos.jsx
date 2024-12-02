@@ -58,7 +58,7 @@ const GastoVehiculos = () => {
   const [currentPage, setCurrentPage] = useState(1 );
   const [itemsPerPage] = useState(5);
   const [accessToken, setAccessToken] = useState(null);
-
+  const [sortedData, setSortedData] = useState([]);
 
   const [filteredData, setFilteredData] = useState([]);
 
@@ -583,11 +583,15 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
         ) : (
 <div className="overflow-x-auto w-full bg-gray-100">
   <table className="min-w-full bg-white rounded-lg shadow-md">
-    <TablaHead titles={titles} />
+  <TablaHead
+        titles={titles}
+        data={currentItems}
+        onSortedData={(sorted) => setSortedData(sorted)}
+      />
     <tbody>
-      {currentItems.map((item, index) => (
+      {sortedData.map((item, index) => (
         <tr key={index} className="hover:bg-gray-100 text-sm md:text-base">
-          {/* Tipo de Comprobante */}
+
           <td className="border-b py-3 px-4 text-left">
             <span className="font-semibold lg:hidden">Tipo Comprobante: </span>
             {item.TipoComprobante}

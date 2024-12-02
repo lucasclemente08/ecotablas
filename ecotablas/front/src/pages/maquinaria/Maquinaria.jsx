@@ -220,7 +220,7 @@ const [showPieChart, setShowPieChart] = useState(false);
       await addReparacion(reparacionValues);
       setMensaje("Reparación agregada exitosamente");
 
-
+      // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
       const maquinariaActualizada = {
         ...maquinarias.find((m) => m.Id === maquinariaId),
         IdEstado: 3, 
@@ -405,11 +405,7 @@ pauseOnHover
           </div>
 
         {modalAbierto && (
-<<<<<<< HEAD
-          <AddModal
-=======
           <AddModalWithSelect
->>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
             title="Agregar Maquinaria"
             fields={fields}
             handleChange={handleChange}
@@ -419,11 +415,7 @@ pauseOnHover
           />
         )}
         {modalEdit && (
-<<<<<<< HEAD
-          <ButtonEdit
-=======
           <AddModalWithSelect
->>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
             title="Modificar Maquinaria"
             fields={fields}
             id={maquinariaId}
@@ -435,11 +427,7 @@ pauseOnHover
         )}
 
         {modalReparacion && (
-<<<<<<< HEAD
-          <AddModal
-=======
           <AddModalWithSelect
->>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
             title="Agregar Reparación"
             fields={[
               {

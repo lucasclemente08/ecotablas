@@ -285,8 +285,6 @@ const GenerateIdentificationCode = (size, large) => {
        <div className="flex flex-wrap items-center gap-1 ">
       <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
       <PdfGenerator columns={columns} data={materials} title="Reporte de Tolva" />
-<<<<<<< HEAD
-=======
 
       <FilterButton
         data={filteredMaterials}
@@ -297,7 +295,6 @@ const GenerateIdentificationCode = (size, large) => {
       />
 
 </div>
->>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
 
 
 <ToastContainer

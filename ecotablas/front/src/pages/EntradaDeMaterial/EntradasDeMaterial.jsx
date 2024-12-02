@@ -9,17 +9,14 @@ import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import { BsClipboardDataFill } from "react-icons/bs";
 import TablaHead from "../../components/Thead";
+import { GrLinkNext } from "react-icons/gr";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 import NextProcess from "../../components/buttons/NextProcess";
 import { ToastContainer, toast } from "react-toastify";
-<<<<<<< HEAD
-import "react-toastify/dist/ReactToastify.css";
-=======
 import "react-toastify/dist/ReactToastify.css"; 
 
->>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
 import { FaSearch, FaArrowLeft } from "react-icons/fa";
 
 import Pagination from "../../components/Pagination";
@@ -163,7 +160,7 @@ const EntradasDeMaterial = () => {
       setMensaje("Lote enviado a clasificación");
   
       const materialActualizado = {
-        ...materials.find((m) => m.IdIngresoMaterial === materialId),
+        ...filteredMaterials.find((m) => m.IdIngresoMaterial === materialId),
         Estado: 2, 
       };
   
@@ -220,16 +217,6 @@ const EntradasDeMaterial = () => {
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenMInutil" },
     { header: "Tipo de plasticos", dataKey: "IdTipoPlastico" },
 
-<<<<<<< HEAD
-    { header: "Fecha de ingreso", dataKey: "FechaIngresoP" },
-    { header: "Tipo Donante", dataKey: "TipoDonante" },
-  ];
-
-  const optionsPlasticos = plasticos.map((res) => ({
-    value: res.IdTipoPlastico,   // Assigns the IdTipoPlastico to the value key
-    label: `${res.TipoPlastico}`, // Converts TipoPlastico to a string and assigns it to the label key
-  }));
-=======
     { header: "Fecha de ingreso", dataKey: "FechaIngresoM" },
     { header: "Tipo Donante", dataKey: "TipoDonante" },
   ];
@@ -241,7 +228,6 @@ const EntradasDeMaterial = () => {
     { value: "Poliestireno", label: "Poliestireno" },
     { value: "PVC", label: "PVC" },
   ];
->>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
   
   const fields = [
     {
@@ -351,7 +337,7 @@ const getPlasticbyId =(id)=>{
           />
         <PdfGenerator
           columns={columns}
-          data={materials}
+          data={filteredMaterials}
           title="Reporte de Materiales Ingresados"
           />
    
@@ -424,44 +410,6 @@ const getPlasticbyId =(id)=>{
          
 
 
-<<<<<<< HEAD
-        <div className="overflow-x-auto">
-        <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
-          <h5>
-            <span class="text-gray-400">Total de materiales ingresados:</span>
-            <span class="dark:text-white"> {totalItems}</span>
-          </h5>
-          <h5>
-            <span class="text-gray-400">Total volumen: </span>
-            <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
-          </h5>
-        </div>
-          <table className="min-w-full bg-white rounded-lg shadow-md">
-            <LoadingTable loading={loading} />
-            <TablaHead titles={title} />
-            <tbody className="bg-white">
-              {filteredMaterials.map((material) => (
-                <tr
-                  key={material.IdMaterialClasificado}
-                  className="hover:bg-gray-100"
-                >
-                  <td className="border-b py-2 px-4">
-                    Volumen Util: {material.VolumenM} kgs
-                  </td>
-                  <td className="border-b py-2 px-4">
-                    Volumen Inutil: {material.VolumenMInutil} kgs
-                  </td>     
-                  <td className="border-b py-2 px-4">
-                    {material.FechaIngresoM ? material.FechaIngresoM.slice(0, 10) : "fecha no disponible"}
-                  </td>
-                  <td className="border-b py-2 px-4">
-                     {getPlasticbyId(material.IdTipoPlastico)} 
-                  </td>
-
-                  <td className="border-b py-2 px-4">
-                  {material.TipoDonante}
-                  </td>
-=======
          <div className="overflow-x-auto">
          <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
            <h5>
@@ -499,7 +447,6 @@ const getPlasticbyId =(id)=>{
      <span className="font-semibold lg:hidden">Tipo de Donante: </span>
      {material.TipoDonante}
                    </td>
->>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
                   <td
                     className={` py-2 px-4 flex justify-center ${
                       modalEdit || modalAbierto ? "hidden" : ""
@@ -507,8 +454,9 @@ const getPlasticbyId =(id)=>{
                   >
                     <button
                         onClick={() => abrirModalClasificado(material.IdIngresoMaterial)}
-                        className="bg-green-700 ml-2 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
+                        className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        >
+                          <GrLinkNext />
                         Terminado
                       </button>
                     <button

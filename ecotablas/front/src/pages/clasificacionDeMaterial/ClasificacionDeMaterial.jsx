@@ -6,10 +6,6 @@ import { MdDateRange } from "react-icons/md";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
-<<<<<<< HEAD
-import NextProcess from "../../components/buttons/NextProcess";
-=======
->>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
 import { GrLinkNext } from "react-icons/gr";
 import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
@@ -130,7 +126,7 @@ const ClasificacionDeMaterial = () => {
       toast.success("Lote enviado a trituración!");
       // Luego, actualiza el estado a 2
       const materialActualizado = {
-        ...materials.find((m) => m.IdMaterialClasificado === materialId),
+        ...filteredMaterials.find((m) => m.IdMaterialClasificado === materialId),
         Estado: 2, // Establecer el estado a 2
       };
       console.log (materialActualizado)
@@ -297,7 +293,7 @@ const ClasificacionDeMaterial = () => {
 
         <PdfGenerator
           columns={columns}
-          data={materials}
+          data={filteredMaterials}
           title="Reporte de Materiales Clasificados"
         />
 
@@ -401,23 +397,13 @@ const ClasificacionDeMaterial = () => {
                         {material.FechaC.slice(0, 10)}
                       </td>
                       <td
-<<<<<<< HEAD
-  className={`border-b py-2 px-4 flex justify-center ${modalEdit || modalAbierto ? "hidden" : ""}`}
->
-
-=======
                         className={`border-b py-2 px-4 flex justify-center `}
                       >
->>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
                         <button
                           onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
                           className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                         >
-<<<<<<< HEAD
-                          <GrLinkNext className="mr-2" />
-=======
                           <GrLinkNext />
->>>>>>> 0d9f77ffe479716b38ef1e8e8628aa167fc3b77d
                           Terminado
                         </button>
                         <button

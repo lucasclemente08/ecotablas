@@ -7,13 +7,14 @@ import GastoMaquinariaChart from "../../components/graficos/GastoMaquinariaChart
 import ChartCard from "../../components/graficos/ChardCard";
 import TotalCard from "../../components/graficos/TotalChart";
 import { FaTruckFront } from "react-icons/fa6";
-
+import TotalTableDevelop from "../../components/graficos/totalTableDevelop";
 import { getAllMaquinarias } from "../../api/MaquinariasAPI";
 
 import { FaChartBar, FaDollarSign, FaCogs } from "react-icons/fa";
 import { FcShipped } from "react-icons/fc";
 import ActiveMachine from "../../components/graficos/ActiveMachine";
 import ActiveCars from "../../components/graficos/ActiveCars";
+import TotalIncomeMaterial from "../../components/graficos/TotalncomeMaterial";
 const Estadisticas = () => {
   const [tablasProducidas, setTablasProducidas] = useState([]);
   const [tablasProducidasHoy, setTablasProducidasHoy] = useState(0);
@@ -28,14 +29,7 @@ const Estadisticas = () => {
         console.error("Error al obtener tablas producidas:", error)
       );
 
-    // // Obtener datos de material ingresado
-    // fetch("/api/material-ingresado")
-    //   .then((response) => response.json())
-    //   .then((data) => setMaterialIngresado(data.total || 0))
-    //   .catch((error) =>
-    //     console.error("Error al obtener material ingresado:", error)
-    //   );
-
+   
 
     
   }, []);
@@ -48,10 +42,8 @@ const Estadisticas = () => {
   useEffect(() => {
     const hoy = new Date().toISOString().slice(0, 10);
   const maquinarias=getAllMaquinarias()
- console.log(maquinarias)
-    const producidasHoy = tablasProducidas.filter((item) => {
 
-      console.log(item.FechaProduccion)
+    const producidasHoy = tablasProducidas.filter((item) => {
       const fechaItem = parseFecha(item.FechaProduccion);
       return fechaItem === hoy;
     });
@@ -69,25 +61,12 @@ const Estadisticas = () => {
 
 <div className="flex flex-wrap justify-center gap-6 mb-8">
       {/* Total Material Ingresado */}
-      <TotalCard
-        title="Totales Material Ingresado Hoy"
-        value={`${materialIngresado} kgs`}
-        icon={<FcShipped />}
-        iconStyle="text-green-500 text-4xl"
-        bgColor="bg-green-700"
-      />
+    <TotalIncomeMaterial />
    
+<TotalTableDevelop/>
+ 
 
-      {/* Total Tablas Producidas */}
-      <TotalCard
-        title="Totales Tablas Producidas Hoy"
-        value={tablasProducidasHoy}
-        icon={<FaChartBar />}
-        iconStyle="text-blue-300 text-4xl"
-        bgColor="bg-blue-600"
-      />
 
-      {/* Gasto en Vehículos */}
     
     <ActiveCars />
 
