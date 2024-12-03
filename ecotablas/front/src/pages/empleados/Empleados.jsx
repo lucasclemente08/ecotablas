@@ -333,7 +333,7 @@ const Empleados = () => {
 
 
   const campos = [
-    { name: "DNI", placeholder: "DNI *" },
+    { name: "DNI", placeholder: "DNI *" ,  },
     { name: "Nombre", placeholder: "Nombre *" },
     { name: "Apellido", placeholder: "Apellido *" },
     { name: "Calle", placeholder: "Calle *" },

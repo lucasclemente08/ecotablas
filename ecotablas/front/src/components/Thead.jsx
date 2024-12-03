@@ -1,11 +1,16 @@
 import React, { useState } from "react";
+import { MdExpandLess, MdExpandMore } from "react-icons/md";
 
-const TablaHead = ({ titles = [], data = [], onSortedData }) => {
+const TablaHead = ({ 
+  titles = [], 
+  data = [], 
+  rowsPerPage = 5, 
+  currentPage = 0, 
+  onSortedAndPaginatedData 
+}) => {
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
 
-  const isFewColumns = titles.length <= 3;
-
-  const handleSort = (campo) => {
+  const handleSort = (campo, type) => {
     let direction = "asc";
 
     if (sortConfig.campo === campo && sortConfig.direction === "asc") {
@@ -13,39 +18,54 @@ const TablaHead = ({ titles = [], data = [], onSortedData }) => {
     }
 
     const sortedData = [...data].sort((a, b) => {
-      const valA = a[campo]?.toString().toLowerCase() || "";
-      const valB = b[campo]?.toString().toLowerCase() || "";
+      const valA = a[campo];
+      const valB = b[campo];
 
-      if (valA < valB) return direction === "asc" ? -1 : 1;
-      if (valA > valB) return direction === "asc" ? 1 : -1;
-      return 0;
+      if (type === "number") {
+        return direction === "asc" ? valA - valB : valB - valA;
+      } else if (type === "date") {
+        return direction === "asc"
+          ? new Date(valA) - new Date(valB)
+          : new Date(valB) - new Date(valA);
+      } else {
+        const strA = (valA ?? "").toString().toLowerCase();
+        const strB = (valB ?? "").toString().toLowerCase();
+        if (strA < strB) return direction === "asc" ? -1 : 1;
+        if (strA > strB) return direction === "asc" ? 1 : -1;
+        return 0;
+      }
     });
 
+    // Paginate sorted data
+    const startIndex = currentPage * rowsPerPage;
+    const paginatedData = sortedData.slice(startIndex, startIndex + rowsPerPage);
+
     setSortConfig({ campo, direction });
-    if (onSortedData) {
-      onSortedData(sortedData);
+
+    if (onSortedAndPaginatedData) {
+      onSortedAndPaginatedData(paginatedData);
     }
   };
 
   return (
-    <thead>
+    <thead className="bg-gray-800 text-white">
       <tr>
-        {titles.map((title, index) => (
+        {titles.map((title) => (
           <th
-            key={index}
-            onClick={() => handleSort(title.key || title)}
-            className={`border-b-2 py-3 bg-gray-700 px-4 text-white ${
-              isFewColumns ? "text-center w-1/3" : "text-left"
-            } cursor-pointer`}
+            key={title.key}
+            className="w-1/4 py-2 cursor-pointer"
+            onClick={() => handleSort(title.key, title.type)}
           >
-            <span className="flex items-center justify-between">
-              {title.label || title}
-              {sortConfig.campo === (title.key || title) && (
-                <span className="text-sm ml-2">
-                  {sortConfig.direction === "asc" ? "▲" : "▼"}
-                </span>
-              )}
-            </span>
+            {title.label}
+            {sortConfig.campo === title.key && (
+              <span className="ml-2">
+                {sortConfig.direction === "asc" ? (
+                  <MdExpandLess />
+                ) : (
+                  <MdExpandMore />
+                )}
+              </span>
+            )}
           </th>
         ))}
       </tr>
