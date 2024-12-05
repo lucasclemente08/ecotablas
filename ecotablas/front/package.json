@@ -17,6 +17,7 @@
     "@midudev/tailwind-animations": "^0.1.0",
     "@mui/icons-material": "^6.1.10",
     "@mui/material": "^6.1.10",
+    "@mui/x-data-grid": "^7.23.0",
     "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.7.7",
     "chart.js": "^4.4.6",
