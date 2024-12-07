@@ -3,7 +3,7 @@ import Pagination from "../../../components/Pagination"
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { HiMiniLink } from "react-icons/hi2";
-
+import TableComponent from "../../../components/TableComponent";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -314,10 +314,7 @@ return link;
       return null;
     }
   };
-  
-
-
-  const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
     e.preventDefault();
 
     toast.success("Subiendo comprobante a dropbox");
@@ -346,11 +343,6 @@ return link;
         toast.error("No se pudo subir el archivo a Dropbox.");
     }
 };
-
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = dataM.slice(indexOfFirstItem, indexOfLastItem);
   const columns = [
     { header: "Tipo de Gasto", dataKey: "tipoGasto" },
     { header: "Tipo de Comprobante", dataKey: "tipoComprobante" },
@@ -377,8 +369,54 @@ return link;
     setShowPieChart(false);
   };
 
-  const totalPages = Math.ceil(dataM.length / itemsPerPage);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
+  const titlesT = [
+    { key: "TipoComprobante", label: "Tipo de Comprobante" },
+    {
+      key: "Comprobante",
+      label: "Comprobante",
+      render: (value) =>
+        value ? (
+          <a
+            href={`https://www.dropbox.com/scl/fi/${value}`}
+            className="text-blue-500 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver Comprobante
+          </a>
+        ) : (
+          "No disponible"
+        ),
+    },
+    { key: "TipoGasto", label: "Tipo de Gasto" },
+    { key: "Proveedor", label: "Proveedor" },
+    { key: "Monto", label: "Monto", type: "number" },
+    { key: "Fecha", label: "Fecha", type: "date" },
+    { key: "Descripcion", label: "Descripción",hasActions: true  },
+
+  ];
+  const actions = [
+    {
+      render: (item) => (
+        <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
+          <button
+            onClick={() => console.log("Editar:", item)}
+            className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FiEdit className="m-1" />
+            Modificar
+          </button>
+          <DeleteButton
+            endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
+            id={item.Id}
+            updateList={() => console.log("Actualizar lista")}
+          />
+        </td>
+      ),
+    },
+  ];
 
 
   const pieOptions = {
@@ -391,6 +429,39 @@ return link;
     maintainAspectRatio: false,
   };
   const total=dataM.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
+  
+  const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [data, setData] = useState(dataM);
+ 
+  useEffect(() => {
+    setData(dataM);
+  }, [dataM]);
+
+
+  const handleSort = (campo) => {
+ 
+    let direction = "asc";
+    if (sortConfig.campo === campo && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    const sortedData = [...dataM].sort((a, b) => {
+      if (a[campo] < b[campo]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[campo] > b[campo]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  
+    setData(sortedData);
+    setSortConfig({ campo, direction });
+  };
+  
+
+  
+  
   return   (
 <>
     <SectionLayout title="Gasto de Maquinaria">
@@ -408,8 +479,6 @@ return link;
 />
 
       <div className="flex">
-  
-
         <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
           title="Añadir Gasto de Maquinaria"
@@ -459,65 +528,14 @@ return link;
         loading ? (
           <LoadingTable loading={loading} />
         ) : (
-          
-  <div className="">
-    <table className="min-w-full bg-white rounded-lg shadow-md">
-  <TablaHead titles={titles} />
-  <tbody>
-    {dataM.map((item) => (
-      <tr key={item.IdGastoMaquinaria} className="hover:bg-gray-100">
-        <td className="border-b py-3 px-4">{item.TipoComprobante}</td>
-        {item.Comprobante ? (
-          <a
-          href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
-                className="text-blue-400 flex justify-center content-center "
-            target="_blank"
-            rel="noopener noreferrer"
-        
-          >  
-            <HiMiniLink  className="m-1"/>  Comprobante 
-          </a>
-        ) : (
-          "No disponible"
-        )}
-        <td className="border-b py-3 px-4">{item.TipoGasto}</td>
-        <td className="border-b py-3 px-4">{item.Proveedor}</td>
-        <td className="border-b py-3 px-4">{item.Monto}</td>
-        <td className="border-b py-3 px-4">
-          {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
-        </td>
-        <td className="border-b py-3 px-4">{item.Descripcion}</td>
-        <td className="border-b py-3 px-4 flex">
-          <button
-            onClick={() => {
-              setGastoEdit(item);
-              setFormValues(item);
-              setModalEdit(true);
-            }}
-            className="bg-yellow-700 ml-2 flex hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            
-            <FiEdit  className="m-1"/>
-                        Modificar  
-       
-          </button>
-          <DeleteButton
-            endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Delete"
-            id={item.IdGastoMaquinaria}
-            updateList={() => dispatch(fetchGastos())}
-          />
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-<Pagination
-  currentPage={currentPage}
-  totalPages={totalPages}
-  paginate={paginate}
-/>
+ <TableComponent
+      data={data}
+      titles={titlesT}
+      sortConfig={sortConfig}
+      onSort={handleSort}
+      actions={actions}
+    />
 
-  </div>
         )
       ) : showPieChart ? (
 

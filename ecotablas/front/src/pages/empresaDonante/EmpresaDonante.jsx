@@ -19,11 +19,15 @@ import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
 import axios from "axios";
+import TableComponent from "../../components/TableComponent"
 
 
 const EmpresaDonante = () => {
   const dispatch = useDispatch();
-  const { data,  error } = useSelector((state) => state.empresaDonante);
+  const { data:data,  error } = useSelector((state) => state.empresaDonante);
+
+
+
   const [loading,setloading] = useState(true)
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
@@ -112,14 +116,84 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
     }));
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const titlesT = [
+    { key: "Nombre", label: "Nombre" },
+    { key: "Direccion", label: "Dirección" },
+    { key: "Telefono", label: "Teléfono" },
+    { key: "Email", label: "Email" },
+    { key: "TipoPlastico", label: "Tipo de Plástico" },
+    { key: "Rubro", label: "Rubro" },
+    { key: "Web", label: "Web",
+      render: (value) =>(
+        value ? (
+      <td className=" font-normal px-4 py-2">
+              <a
+                href={value}
+                className="text-blue-600 font-normal hover:underline"
+              >
+                {value}
+              </a>
+            </td>
+       ):
+      "No disponible"
+      ),
+      hasActions: true },
 
+  ];
+  
+  const actions = [
+    {
+      render: (item) => (
+        <td className="px-4 py-2 flex">
+
+        <button
+          onClick={() => abrirModalEdit(item)}
+          className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+        >
+          Modificar
+        </button>
+        <DeleteButton
+          endpoint="http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar"
+          updateList={() => dispatch(fetchEmpresaDonante())}
+          id={item.Id_EmpresaDonante}
+        />
+      </td>
+      ),
+    },
+  ];
+
+
+  const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [dataE, setDataE] = useState(data);
+ 
+  useEffect(() => {
+    setDataE(data);
+  }, [data]);
+
+
+  const handleSort = (campo) => {
+ 
+    let direction = "asc";
+    if (sortConfig.campo === campo && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    const sortedData = [...dataE].sort((a, b) => {
+      if (a[campo] < b[campo]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[campo] > b[campo]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  console.log(sortedData)
+    setDataE(sortedData);
+
+    setSortConfig({ campo, direction });
+  };
+
+ 
   return (
     <SectionLayout title="Empresas Donantes">
       <AddButtonWa abrirModal={abrirModal} title="Añadir Empresa Donante" />
@@ -195,15 +269,15 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
           cerrarModal={cerrarModalEdit}
         />
       )}
+      <TableComponent
+      data={dataE}
+      titles={titlesT}
+      sortConfig={sortConfig}
+      onSort={handleSort}
+      actions={actions}
+    />
 
-    <table className="min-w-full bg-white rounded-lg shadow-md">
-      <TablaHead titles={titles} />
-      
-{loading ? (
-  <LoadingTable loading={loading} />
-) : (
-  
-      <tbody>
+      {/* <tbody>
         {currentItems.map((item) => (
           <tr key={item.Id_empresaDonante}>
             <td className="px-4 py-2">{item.Nombre}</td>
@@ -220,25 +294,12 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
                 {item.Web}
               </a>
             </td>
-            <td className="px-4 py-2 flex">
-
-              <button
-                onClick={() => abrirModalEdit(item)}
-                className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-              >
-                Modificar
-              </button>
-              <DeleteButton
-                endpoint="http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar"
-                updateList={() => dispatch(fetchEmpresaDonante())}
-                id={item.Id_EmpresaDonante}
-              />
-            </td>
+            
           </tr>
         ))}
-      </tbody>
-      )}
-    </table>
+      </tbody> */}
+     
+    
 
 
     </SectionLayout>

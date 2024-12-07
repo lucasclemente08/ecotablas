@@ -299,7 +299,17 @@ const GastoVehiculos = () => {
     "Descripción",
     "Acciones",
   ];
+  const titlesT = [
+    { key: "TipoComprobante", label: "Tipo de comprobante" },
+    { key: "Comprobante", label: "Comprobante" },
+    { key: "TipoGasto", label: "Tipo de gasto" },
+    { key: "Proveedor", label: "Proveedor" },
+    { key: "Monto", label: "Monto ($)" },
+    { key: "Fecha", label: "Fecha" },
+    { key: "Descripcion", label: "Descripción" },
+    { key: "acciones", label: "Acciones" },
 
+  ];;
 
   const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
   const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
@@ -584,7 +594,7 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
 <div className="overflow-x-auto w-full bg-gray-100">
   <table className="min-w-full bg-white rounded-lg shadow-md">
   <TablaHead
-        titles={titles}
+        titles={titlesT}
         data={currentItems}
         onSortedData={(sorted) => setSortedData(sorted)}
       />
