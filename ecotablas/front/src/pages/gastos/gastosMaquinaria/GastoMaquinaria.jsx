@@ -10,6 +10,7 @@ import {
   fetchGastos,
   deleteGasto,
   addGasto,
+  updateGasto,
 } from "../../../features/gastoMaquinariaSlice";
 import SectionLayout from "../../../layout/SectionLayout";
 import { Pie } from "react-chartjs-2";
@@ -24,6 +25,7 @@ import AddModalWithSelect from "../../../components/AddModalWithSelect";
 import AddButtonWa from "../../../components/buttons/AddButtonWa";
 import GastoMaquinariaChart from "../../../components/graficos/GastoMaquinariaChart";
 import GastoMaquinariaDatePicker from "../../../components/graficos/GastoMaquinariaDatePicker";
+import ButtonEdit from "../../../components/buttons/ButtonEditPr";
 
 
 const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
@@ -43,6 +45,7 @@ const GastoMaquinaria = () => {
   const [showTable, setShowTable] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
   const [maquinaria, setMaquinaria] = useState([]);
+  const[gastoId,setGastoid]=useState([])
   const [pieData, setPieData] = useState({});
   const [showPieChart, setShowPieChart] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -61,7 +64,26 @@ const GastoMaquinaria = () => {
 
   // Cerrar Modal
   const cerrarModal = () => setModalAbierto(false);
-
+  const abrirModalEdit = (gasto) => {
+    const gastoSeguro = gasto || {}; // Evita errores si gasto es null/undefined
+    console.log(gasto); // Verifica los datos recibidos en la consola
+  
+    setGastoid(gastoSeguro.IdGastoMaquinaria || ""); // IdGastoMaquinaria coincide con el JSON
+    setFormValues({
+      tipoGasto: gastoSeguro.TipoGasto || "",        // Nota las mayúsculas
+      tipoComprobante: gastoSeguro.TipoComprobante || "",
+      Comprobante: gastoSeguro.Comprobante || "",
+      proveedor: gastoSeguro.Proveedor || "",
+      monto: gastoSeguro.Monto || "",
+      fecha: gastoSeguro.Fecha || "",
+      descripcion: gastoSeguro.Descripcion || "",
+    });
+  
+    setModalEdit(true);
+  };
+  
+  
+  const cerrarModalEdit = () => setModalEdit(false);
   // Fetch inicial de datos
   useEffect(() => {
     dispatch(fetchGastos());
@@ -77,6 +99,19 @@ const GastoMaquinaria = () => {
       })
       .catch((error) => console.error("Error fetching maquinaria:", error));
   };
+
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault(); // Previene el comportamiento por defecto del formulario
+    try {
+      await dispatch(updateGasto({ id: gastoId, ...formValues }));
+      cerrarModalEdit(); // Cierra el modal después de guardar
+    } catch (error) {
+      console.error("Error al actualizar el gasto:", error);
+    }
+  };
+  
+
 
   // Crear datos del gráfico circular
   useEffect(() => {
@@ -401,23 +436,22 @@ return link;
     {
       render: (item) => (
         <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
-          <button
-            onClick={() => console.log("Editar:", item)}
-            className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            <FiEdit className="m-1" />
-            Modificar
-          </button>
+            <button
+                        onClick={() => abrirModalEdit(item)}
+                        className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        <FiEdit />
+                        Modificar
+                      </button>
           <DeleteButton
             endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
             id={item.Id}
-            updateList={() => console.log("Actualizar lista")}
+            updateList={fetchGastos}
           />
         </td>
       ),
     },
   ];
-
 
   const pieOptions = {
     plugins: {
@@ -478,6 +512,8 @@ return link;
   pauseOnHover
 />
 
+
+
       <div className="flex">
         <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
@@ -514,14 +550,13 @@ return link;
         />
       )}
       {modalEdit && (
-        <AddModalWithSelect
-          title="Editar Gasto de Maquinaria"
+        <ButtonEdit
+          title="Gasto de Maquinaria"
           fields={fields}
-          handleFileChange={handleFileChange}
+          formValues={formValues}
           handleChange={handleChange}
-          handleSubmit={handleEditSubmit}
-          cerrarModal={() => setModalEdit(false)}
-          values={formValues}
+          handleEditSubmit={handleEditSubmit}
+          cerrarModalEdit={cerrarModalEdit}
         />
       )}
       {showTable ? (

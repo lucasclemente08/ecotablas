@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
-
+import { FiEdit } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchEmpresaDonante,
@@ -37,7 +37,7 @@ const EmpresaDonante = () => {
     Direccion: "",
     Telefono: "",
     Email: "",
-    TipoPlastico: "unico",
+    TipoPlastico: "",
     Rubro: "",
     Web: "",
     CUIT: "",
@@ -59,25 +59,26 @@ const EmpresaDonante = () => {
     setloading(false)
     dispatch(fetchEmpresaDonante());
   }, [dispatch]);
-
+  
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
   const abrirModalEdit = (empresa) => {
     setEmpresaId(empresa.idEmpresa);
     setFormValues({
-      Nombre: empresa.nombre,
-      Direccion: empresa.direccion,
-      Telefono: empresa.telefono,
-      Email: empresa.email,
-      TipoPlastico: empresa.tipo_plastico,
-      Rubro: empresa.rubro,
-      Web: empresa.web,
-      CUIT: empresa.cuit,
+      Nombre: empresa.Nombre,
+      Direccion: empresa.Direccion,
+      Telefono: empresa.Telefono,
+      Email: empresa.Email,
+      TipoPlastico: empresa.Tipo_plastico,
+      Rubro: empresa.Rubro,
+      Web: empresa.Web,
+      CUIT: empresa.Cuit,
     });
     setModalEdit(true);
   };
-  const cerrarModalEdit = () => setModalEdit(false);
-
+  const cerrarModalEdit = () => {
+    setModalEdit(false);
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formValues.Nombre || !formValues.Direccion || !formValues.Telefono) {
@@ -107,7 +108,6 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
     await dispatch(editEmpresaDonante({ id: empresaId, formValues }));
     cerrarModalEdit();
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prevState) => ({
@@ -115,7 +115,6 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
       [name]: value,
     }));
   };
-
   const titlesT = [
     { key: "Nombre", label: "Nombre" },
     { key: "Direccion", label: "Dirección" },
@@ -139,8 +138,7 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
       ),
       hasActions: true },
 
-  ];
-  
+  ];  
   const actions = [
     {
       render: (item) => (
@@ -148,8 +146,8 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
 
         <button
           onClick={() => abrirModalEdit(item)}
-          className="bg-yellow-700 ml-2 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-        >
+          className="bg-yellow-700 ml-2 flex justify-center items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105">
+              <FiEdit  className="mr-1"/>
           Modificar
         </button>
         <DeleteButton
@@ -161,15 +159,11 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
       ),
     },
   ];
-
-
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   const [dataE, setDataE] = useState(data);
- 
   useEffect(() => {
     setDataE(data);
   }, [data]);
-
 
   const handleSort = (campo) => {
  
@@ -192,8 +186,6 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
 
     setSortConfig({ campo, direction });
   };
-
- 
   return (
     <SectionLayout title="Empresas Donantes">
       <AddButtonWa abrirModal={abrirModal} title="Añadir Empresa Donante" />
@@ -265,8 +257,8 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
           ]}
           formValues={formValues}
           handleChange={handleChange}
-          handleSubmit={handleEditSubmit}
-          cerrarModal={cerrarModalEdit}
+          handleEditSubmit={handleEditSubmit}
+          cerrarModalEdit={cerrarModalEdit}
         />
       )}
       <TableComponent
