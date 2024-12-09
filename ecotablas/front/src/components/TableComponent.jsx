@@ -8,7 +8,7 @@ const TableComponent = ({
   sortConfig, 
   onSort, 
   actions,
-  itemsPerPage = 5,  // Puedes definir el número de items por página
+  itemsPerPage = 3,  // Puedes definir el número de items por página
   isLoading = false, // Propiedad para controlar el estado de carga
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
