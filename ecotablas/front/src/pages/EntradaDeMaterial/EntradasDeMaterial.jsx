@@ -76,18 +76,21 @@ const EntradasDeMaterial = () => {
   const cerrarModal = () => setModalAbierto(false);
 
   const abrirModalEdit = (material) => {
-    setMaterialId(material.IdIngresoMaterial);
-
+    const MaterialSeguro = material || {};
+  
+    setMaterialId(MaterialSeguro.IdIngresoMaterial);
+  
     setFormValues({
-      VolumenUtil: material.volumenM,
-      VolumenInutil:material.VolumenMInutil,
-      FechaIngresoM: material.FechaIngresoM,
-      IdTipoPlastico: material.IdTipoPlastico,
-      Estado: material.Estado,
-      TipoDonante: material.TipoDonante,
+      VolumenM: MaterialSeguro.VolumenM || "", // Asegúrate de que coincide con la estructura de `formValues`
+      VolumenMInutil: MaterialSeguro.VolumenMInutil || "",
+      FechaIngresoM: MaterialSeguro.FechaIngresoM || "",
+      IdTipoPlastico: MaterialSeguro.IdTipoPlastico || "",
+      Estado: MaterialSeguro.Estado || 1, // Valor por defecto si está vacío
+      TipoDonante: MaterialSeguro.TipoDonante || "",
     });
     setModalEdit(true);
   };
+  
 
   const cerrarModalEdit = () => setModalEdit(false);
 
@@ -350,14 +353,14 @@ const getPlasticbyId =(id)=>{
 
   const actions = [
     {
-      render: (item) => (
+      render: (material) => (
         <td
         className={` py-2 px-4 flex justify-center 
          
         `}
       >
         <button
-            onClick={() => abrirModalClasificado(item.IdIngresoMaterial)}
+            onClick={() => abrirModalClasificado(material.IdIngresoMaterial)}
             className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
             >
               <GrLinkNext />
@@ -365,14 +368,14 @@ const getPlasticbyId =(id)=>{
           </button>
         <button
           className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-          onClick={() => abrirModalEdit(item)}
+          onClick={() => abrirModalEdit(material)}
         >
                   <FiEdit />
                   Modificar
         </button>
 
         <DeleteButton
-          id={item.IdIngresoMaterial}
+          id={material.IdIngresoMaterial}
           endpoint="http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Borrar"
           updateList={fetchMaterials}
         />
@@ -461,9 +464,7 @@ const getPlasticbyId =(id)=>{
             />
           )}
 {showTable ? (
-         
-
-
+        
          <div className="overflow-x-auto">
          <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
            <h5>
@@ -475,7 +476,6 @@ const getPlasticbyId =(id)=>{
              <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
            </h5>
          </div>
-
          <TableComponent
       data={data}
       titles={titlesT}
@@ -483,73 +483,6 @@ const getPlasticbyId =(id)=>{
       onSort={handleSort}
       actions={actions}
     />
-
-
-
-
-           {/* <table className="min-w-full bg-white rounded-lg shadow-md">
-             <LoadingTable loading={loading} />
-             <TablaHead titles={title} />
-             <tbody className="bg-white">
-               {currentItems.map((material) => (
-                 <tr key={material.IdMaterialClasificado} className="hover:bg-gray-100">
-   <td className="border-b py-2 px-4 text-right">
-     <span className="font-semibold lg:hidden">Volumen Útil: </span>
-     {material.VolumenM} kgs
-   </td>
-   <td className="border-b py-2 px-4 text-right">
-     <span className="font-semibold lg:hidden">Volumen Inútil: </span>
-     {material.VolumenMInutil} kgs
-   </td>
-   <td className="border-b py-2 px-4 text-left">
-     <span className="font-semibold lg:hidden">Tipo de Plástico: </span>
-     {material.IdTipoPlastico}
-   </td>
-   <td className="border-b py-2 px-4 text-right">
-     <span className="font-semibold lg:hidden">Fecha de Ingreso: </span>
-     {material.FechaIngresoM.slice(0, 10)}
-   </td>
-   <td className="border-b py-2 px-4 text-left">
-     <span className="font-semibold lg:hidden">Tipo de Donante: </span>
-     {material.TipoDonante}
-                   </td>
-                  <td
-                    className={` py-2 px-4 flex justify-center ${
-                      modalEdit || modalAbierto ? "hidden" : ""
-                    }`}
-                  >
-                    <button
-                        onClick={() => abrirModalClasificado(material.IdIngresoMaterial)}
-                        className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                        >
-                          <GrLinkNext />
-                        Terminado
-                      </button>
-                    <button
-                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      onClick={() => abrirModalEdit(material)}
-                    >
-                              <FiEdit />
-                              Modificar
-                    </button>
-
-                    <DeleteButton
-                      id={material.IdIngresoMaterial}
-                      endpoint="http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Borrar"
-                      updateList={fetchMaterials}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table> */}
-          {/* Controles de paginación integrados */}
-
-          {/* <Pagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    paginate={paginate}
-  /> */}
         </div>    
 
 ):(
