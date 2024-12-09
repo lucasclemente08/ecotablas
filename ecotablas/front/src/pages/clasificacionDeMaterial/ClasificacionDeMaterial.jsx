@@ -437,7 +437,7 @@ const ClasificacionDeMaterial = () => {
 
 
          <div className="overflow-x-auto">
-         <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
+         <div class="flex  p-2  items-center   shadow-md bg-gray-800 text-white flex-1 space-x-4">
            <h5>
               <span class="text-gray-400">Total de materiales:</span>
               <span class="dark:text-white"> {totalItems}</span>
@@ -456,40 +456,6 @@ const ClasificacionDeMaterial = () => {
       actions={actions}
     />
 
-
-              {/* <table className="min-w-full bg-white rounded-lg shadow-md">
-                <LoadingTable loading={loading} />
-                <TablaHead titles={title} />
-                <tbody className="bg-white">
-                  {currentItems.map((material) => (
-                    <tr
-                      key={material.IdMaterialClasificado}
-                      className="hover:bg-gray-100"
-                    >
-                      <td className="border-b py-2 px-4 text-right">
-                        <span className="font-semibold lg:hidden">Volumen Útil: </span>
-                        {material.VolumenUtil} kgs
-                      </td>
-                      <td className="border-b py-2 px-4 text-right">
-                        <span className="font-semibold lg:hidden">Volumen Inútil: </span>
-                        {material.VolumenInutil} kgs
-                      </td>
-                      <td className="border-b py-2 px-4 text-right">
-                        <span className="font-semibold lg:hidden">Fecha: </span>
-                        {material.FechaC.slice(0, 10)}
-                      </td>
-                     
-                </tr>
-              ))}
-            </tbody>
-          </table> */}
-          {/* Controles de paginación integrados */}
-{/* 
-          <Pagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    paginate={paginate}
-  /> */}
         </div>    
 
 ):(
