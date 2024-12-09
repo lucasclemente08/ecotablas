@@ -8,6 +8,7 @@ import LoadingTable from "../../components/LoadingTable";
 import NextProcess from "../../components/buttons/NextProcess";
 import { GrLinkNext } from "react-icons/gr";
 import { BsClipboardDataFill } from "react-icons/bs";
+import TableComponent from "../../components/TableComponent";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FiEdit } from "react-icons/fi";
@@ -280,6 +281,73 @@ const GenerateIdentificationCode = (size, large) => {
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
   
+  const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [data, setData] = useState(filteredMaterials);
+ 
+  useEffect(() => {
+    setData(filteredMaterials);
+  }, [filteredMaterials]);
+
+
+  const handleSort = (campo) => {
+ 
+    let direction = "asc";
+    if (sortConfig.campo === campo && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    const sortedData = [...filteredMaterials].sort((a, b) => {
+      if (a[campo] < b[campo]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[campo] > b[campo]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  
+    setData(sortedData);
+    setSortConfig({ campo, direction });
+  };
+  const titlesT = [
+    { label: "Horario Inicio", key: "HorarioInicio", type: "datetime" },
+    { label: "Cantidad Cargada (kg)", key: "CantidadCargada", type: "number" },
+    { label: "Tipo de Plástico", key: "TipoPlastico", type: "text" },
+    { label: "Proporción (%)", key: "Proporcion", type: "number" },
+    { label: "Especificaciones", key: "Especificaciones", type: "text",hasActions:true},
+   
+  ];
+  
+  const actions = [
+    {
+      render: (material) => (
+        <td className="border-b px-4 py-2 flex justify-center">
+        <button
+              onClick={() => abrirModalTabla(material.IdTolva)}
+              className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+            >
+              <GrLinkNext className="mr-2" />
+              Terminado
+            </button>
+          <button
+            onClick={() => abrirModalEdit(material)}
+            className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FiEdit />
+            Modificar
+          </button>
+          <DeleteButton
+            id={material.IdTolva}
+            endpoint="http://localhost:61274/api/Tolva/Borrar"
+            updateList={fetchMaterials}
+          />
+        </td>
+      ),
+    },
+  ];
+
+
+
   return (
     <SectionLayout title="Tolva">
        <div className="flex flex-wrap items-center gap-1 ">
@@ -363,6 +431,15 @@ const GenerateIdentificationCode = (size, large) => {
         <LoadingTable loading={loading}  />
       ) : (
         <>
+ <TableComponent
+      data={data}
+      titles={titlesT}
+      sortConfig={sortConfig}
+      onSort={handleSort}
+      actions={actions}
+    />
+
+{/*         
           <table className="table-auto w-full bg-white rounded-lg shadow-lg">
             <TablaHead titles={titles} />
             <tbody>
@@ -388,37 +465,13 @@ const GenerateIdentificationCode = (size, large) => {
     <span className="font-semibold lg:hidden">Especificaciones: </span>
     {material.Especificaciones}
   </td>
-  <td className="border-b px-4 py-2 flex justify-center">
-                  <button
-                        onClick={() => abrirModalTabla(material.IdTolva)}
-                        className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        <GrLinkNext className="mr-2" />
-                        Terminado
-                      </button>
-                    <button
-                      onClick={() => abrirModalEdit(material)}
-                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                    >
-                      <FiEdit />
-                      Modificar
-                    </button>
-                    <DeleteButton
-                      id={material.IdTolva}
-                      endpoint="http://localhost:61274/api/Tolva/Borrar"
-                      updateList={fetchMaterials}
-                    />
-                  </td>
+ 
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table> */}
 
-          <Pagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    paginate={paginate}
-  /> 
+ 
           <div className="mt-4 text-white">
             <p>Total de Volumen Cargado: {totalVolumen} kg</p>
             <p>Total de Items: {totalItems}</p>
