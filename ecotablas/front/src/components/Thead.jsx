@@ -1,4 +1,4 @@
-import { thead } from "framer-motion/client";
+
 
 const TablaHead = ({ titles, onSort, sortConfig }) => {
   return (

@@ -37,11 +37,11 @@ const GastoMaquinaria = () => {
   );
 
   const [modalAbierto, setModalAbierto] = useState(false);
-  const [dataView, setDataView] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  // const [dataView, setDataView] = useState(false);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [itemsPerPage] = useState(5);
   const [accessToken, setAccessToken] = useState(null);
-  const [gastoEdit, setGastoEdit] = useState(null);
+  // const [gastoEdit, setGastoEdit] = useState(null);
   const [showTable, setShowTable] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
   const [maquinaria, setMaquinaria] = useState([]);
@@ -66,8 +66,7 @@ const GastoMaquinaria = () => {
   const cerrarModal = () => setModalAbierto(false);
   const abrirModalEdit = (gasto) => {
     const gastoSeguro = gasto || {}; // Evita errores si gasto es null/undefined
-    console.log(gasto); // Verifica los datos recibidos en la consola
-  
+    
     setGastoid(gastoSeguro.IdGastoMaquinaria || ""); // IdGastoMaquinaria coincide con el JSON
     setFormValues({
       tipoGasto: gastoSeguro.TipoGasto || "",        // Nota las mayúsculas

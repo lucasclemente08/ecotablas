@@ -41,7 +41,7 @@ const TableComponent = ({
                   {titles.map((title) => (
                     <td key={title.key} className="border-b py-3 px-4">
                       {/* Verificar si la columna es de tipo "Fecha" */}
-                      {title.key === "Fecha" ? (
+                      {title.type === "date" ? (
                         item[title.key] ? item[title.key].slice(0, 10) : "Fecha no disponible"
                       ) : title.render ? (
                         title.render(item[title.key], item)

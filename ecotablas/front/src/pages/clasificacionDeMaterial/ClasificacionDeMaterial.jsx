@@ -281,6 +281,39 @@ const ClasificacionDeMaterial = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
 
+  
+  const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [data, setData] = useState(dataM);
+ 
+  useEffect(() => {
+    setData(dataM);
+  }, [dataM]);
+
+
+  const handleSort = (campo) => {
+ 
+    let direction = "asc";
+    if (sortConfig.campo === campo && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    const sortedData = [...dataM].sort((a, b) => {
+      if (a[campo] < b[campo]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[campo] > b[campo]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  
+    setData(sortedData);
+    setSortConfig({ campo, direction });
+  };
+  
+
+
+
   return (
     <>
       <SectionLayout title="Materiales Clasificados">
