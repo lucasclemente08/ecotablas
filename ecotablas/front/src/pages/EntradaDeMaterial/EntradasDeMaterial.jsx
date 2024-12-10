@@ -43,12 +43,12 @@ const EntradasDeMaterial = () => {
   
   const [filteredMaterials, setFilteredMaterials] = useState([]); // Datos filtrados
   const [formValues, setFormValues] = useState({
-    VolumenM: "" ,
-    VolumenMInutil: "",
-    FechaIngresoM: "",
-    IdTipoPlastico: "",
+    VolumenM: "" || undefined,
+    VolumenMInutil: "" || undefined,
+    FechaIngresoM: "" || undefined ,
+    IdTipoPlastico: "" || undefined ,
     Estado: 1,
-    TipoDonante: "",
+    TipoDonante: ""  || undefined,
   });
 
   const [clasificacionValues, setClasificacionValues] = useState({

@@ -35,7 +35,7 @@ const AddModalWithSelect = ({
             </h3>
             <div className="mt-2">
               <form onSubmit={handleSubmit}>
-                {fields.map((field) => (
+                {fields?.map((field) => (
                   <div key={field.name} className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       {field.label}
@@ -51,7 +51,7 @@ const AddModalWithSelect = ({
                     ) : field.type === "select" ? (
                       <select
                         name={field.name}
-                        value={values[field.name]}
+                        value={values?.[field.name] || ""}
                         onChange={handleChange}
                         className="border border-gray-300 rounded p-2 w-full"
                         required={field.required}
@@ -67,7 +67,7 @@ const AddModalWithSelect = ({
                       <input
                         type="date"
                         name={field.name}
-                        value={values[field.name]}
+                        value={values?.[field.name] || ""}
                         onChange={handleChange}
                         className="border border-gray-300 rounded p-2 w-full"
                         required={field.required}
@@ -85,7 +85,7 @@ const AddModalWithSelect = ({
                       <input
                         type="text"
                         name={field.name}
-                        value={values[field.name]}
+                        value={values?.[field.name] || ""}
                         onChange={handleChange}
                         className="border border-gray-300 rounded p-2 w-full"
                         required={field.required}
