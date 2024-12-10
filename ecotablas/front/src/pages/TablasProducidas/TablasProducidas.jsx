@@ -45,6 +45,8 @@ const TablasProducidas = () => {
     Dimensiones: "",
     Peso: "",
     CodigoIdentificacion: "",
+    Estado: 1,
+    IdTolva: "",
   });
 
   const columns = [
@@ -70,6 +72,8 @@ const TablasProducidas = () => {
       Dimensiones: tabla.Dimensiones,
       Peso: tabla.Peso,
       CodigoIdentificacion: tabla.CodigoIdentificacion,
+      Estado: 1,
+      IdTolva: tabla.IdTolva,
     });
     setModalEdit(true);
   };
@@ -93,7 +97,7 @@ const TablasProducidas = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    await dispatch(editTablaProducida({ id: tablaId, formValues }));
+    await editTablas({ tablaId, formValues });
     toast.success("Registro editado con éxito!");
     cerrarModalEdit();
   };
@@ -312,6 +316,7 @@ const TablasProducidas = () => {
               options: dimensionesOptions,
             },
             { name: "Peso", label: "Peso (kgs)", type: "number" },
+            { name: "IdTolva", label: "IdTolva", type: "number" },
           ]}
           handleChange={handleChange}
           handleSubmit={handleSubmit}

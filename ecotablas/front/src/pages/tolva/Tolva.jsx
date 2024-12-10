@@ -49,6 +49,7 @@ const Tolva = () => {
     Proporcion: "",
     Especificaciones: "",
     Estado: 1,
+    IdMaterialTriturado: "",
   });
   
 const GenerateIdentificationCode = (size, large) => {
@@ -75,6 +76,13 @@ const GenerateIdentificationCode = (size, large) => {
 
 
   const abrirModal = () => {
+    const fechaActual = new Date().toISOString();
+
+    setFormValues({
+      ...formValues,
+      HorarioInicio: fechaActual,
+
+    });
     setModalAbierto(true);
   };
   const cerrarModal = () => {
@@ -89,6 +97,7 @@ const GenerateIdentificationCode = (size, large) => {
       Proporcion: material.Proporcion,
       Especificaciones: material.Especificaciones,
       Estado: 1,
+      IdMaterialTriturado: material.IdMaterialTriturado,
     });
     setModalEdit(true);
   };
@@ -144,8 +153,8 @@ const GenerateIdentificationCode = (size, large) => {
     try {
       const response = await addTolva(formValues);
       setModalAbierto(false);
-      toast.error("Inserción exitosa");
-      setMaterials([...materials, response.data]);
+      toast.success("Inserción exitosa");
+      setMaterials([...filteredMaterials, response.data]);
     } catch (error) {
       toast.error("Error al agregar el material.");
       console.error("Error al agregar el material:", error);
@@ -153,7 +162,7 @@ const GenerateIdentificationCode = (size, large) => {
   };
   const validateForm = () => {
     let isValid = true;
-    if (!formValues.formValues.HorarioInicio) {
+    if (!formValues.HorarioInicio) {
       toast.error("El horario de inicio es obligatorio.");
       isValid = false;
     } else if(!formValues.CantidadCargada) {
@@ -168,7 +177,10 @@ const GenerateIdentificationCode = (size, large) => {
     } else if (!formValues.Especificaciones) {
       toast.error("Las especificaciones son obligatorias.");
       isValid = false;
-    } 
+    } else if (!formValues.IdMaterialTriturado) {
+      toast.error("El ID del material triturado es obligatorio.");
+      isValid = false;
+    }
     
     return isValid;
   };
@@ -263,12 +275,12 @@ const GenerateIdentificationCode = (size, large) => {
 
   ];
 
-  const rows = materials.map((material) => ({
+  const rows = filteredMaterials.map((material) => ({
     Fecha: material.HorarioInicio.slice(0, 10),
   }));
 
   const columns = [
-    { header: "Horario de inicio", accessor: "horario_inicio" },
+    { header: "Horario de inicio", accessor: "HorarioInicio" },
     { header: "Cantidad cargada (kg)", accessor: "cantidadCargada" },
     { header: "Tipo de plástico", accessor: "tipo_plastico" },
     { header: "Proporción cargada", accessor: "proporcion" },
@@ -393,6 +405,7 @@ const GenerateIdentificationCode = (size, large) => {
             { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
             { name: "Proporcion", label: "Proporción cargada", type: "number" },
             { name: "Especificaciones", label: "Especificaciones", type: "text" },
+            { name: "IdMaterialTriturado", label: "IdMaterialTriturado", type: "text" },
           ]}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
