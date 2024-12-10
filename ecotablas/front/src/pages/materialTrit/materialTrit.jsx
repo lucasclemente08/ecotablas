@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
+import axios from "axios";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { MdDateRange } from "react-icons/md";
@@ -155,19 +156,19 @@ const MaterialTrit = () => {
     return isValid;
   };
 
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-    try {
-      const response = await addMaterialTrit(formValues);
-      setModalAbierto(false);
-      toast.success("Inserción exitosa");
-      setMaterials([...materials, response.data]);
-    } catch (error) {
-      toast.error("Error al agregar el material.");
-      console.error("Error al agregar el material:", error);
-    }
+  const handleSubmit = () => {
+    axios
+      .post(
+        "http://localhost:61274/api/MaterialTrit/Insertar",
+        formValues,
+      )
+      .then(() => {
+        toast.success("Material cargado")
+        cerrarModal();
+        fetchMaterials();
+      })
+      .catch((error) => console.error("Error al agregar el material:", error));
   };
-
   const handleEditSubmit = async () => {
     if (!validateForm()) return;
     try {
@@ -348,7 +349,7 @@ const MaterialTrit = () => {
           )}
 
           {modalAbierto && (
-            <AddModalWithSelect
+            <AddModal
               title="Agregar Material Triturado"
               fields={fields}
               handleChange={handleChange}

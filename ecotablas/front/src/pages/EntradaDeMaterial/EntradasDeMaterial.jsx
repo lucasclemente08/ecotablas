@@ -233,13 +233,13 @@ const EntradasDeMaterial = () => {
     {
       name: "VolumenM",
       label: "Volumen Util",
-      type: "text",
+      type: "number",
       placeholder: "Volumen Util *",
     },
     {
       name: "VolumenMInutil",
       label: "Volumen Inutil",
-      type: "text",
+      type: "number",
       placeholder: "Volumen Inutil *",
     },
     {
@@ -366,7 +366,7 @@ const getPlasticbyId =(id)=>{
             handleChange={handleChange}
             handleSubmit={handleSubmit}
             cerrarModal={cerrarModal}
-            values={formValues}
+            formValues={formValues}
           />
         )}
       <ToastContainer

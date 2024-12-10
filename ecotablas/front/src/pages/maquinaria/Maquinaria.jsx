@@ -40,10 +40,10 @@ const Maquinaria = () => {
   const [modalEdit, setModalEdit] = useState(false);
   const [modalReparacion, setModalReparacion] = useState(false);
   const [reparaciones, setReparaciones] = useState([]);
-  const [modalReparacionList, setModalReparacionList] = useState(false);
 const [showPieChart, setShowPieChart] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [showTable, setShowTable] = useState(true);
+  const [modalDetallesReparacion, setModalDetallesReparacion] = useState(false);
 
   const [formValues, setFormValues] = useState({
     Nombre: "",
@@ -78,28 +78,27 @@ const [showPieChart, setShowPieChart] = useState(false);
     });
     setModalEdit(true);
   };
-
-  const fetchReparaciones = async (maquinaria) => {
-    setLoading(true);
+ 
+  const abrirModalDetallesReparacion = async (id) => {
+    setMaquinariaId(id); // Guardar el ID de la maquinaria seleccionada
     try {
-      const res = await getReparacionByIdMaquinaria(maquinaria.Id);
-      setReparaciones(res.data);
+      setLoading(true);
+      const res = await getReparacionByIdMaquinaria(id);
+      setReparaciones(res.data); // Guardar las reparaciones en el estado
+      setModalDetallesReparacion(true); // Mostrar el modal
     } catch (error) {
-      toast.error("Error al cargar las reparaciones.");
-      console.error("Error fetching data: ", error);
+      toast.error("Error al cargar los detalles de las reparaciones.");
+      console.error("Error al cargar reparaciones: ", error);
     } finally {
       setLoading(false);
     }
   };
-  const abrirModalReparacionList = (maquinaria) => {
-    setMaquinariaId(maquinaria.Id);
-    fetchReparaciones(maquinaria.Id);
-    setModalReparacionList(true);
+  
+  const cerrarModalDetallesReparacion = () => {
+    setModalDetallesReparacion(false);
+    setReparaciones([]); // Limpiar los datos al cerrar el modal
   };
-  const cerrarModalReparacionList = () => {
-    setModalReparacionList(false);
-    setReparaciones([]);
-  };
+
   const cerrarModalEdit = () => setModalEdit(false);
 
   const abrirModal = () => {
@@ -136,7 +135,6 @@ const [showPieChart, setShowPieChart] = useState(false);
   useEffect(() => {
     fetchMaquinarias();
   }, []);
-
   const validateForm = () => {
     let isValid = true;
     if (!formValues.Nombre) {
@@ -234,22 +232,6 @@ const [showPieChart, setShowPieChart] = useState(false);
     } catch (error) {
       toast.error("Error al agregar la reparación.");
       console.error("Error al agregar la reparación:", error);
-    }
-  };
-  const terminarReparacion = async (reparacionId) => {
-    try {
-      // Editar estado de la reparación a 2 (terminada)
-      await editReparacion(reparacionId, { IdEstadoReparacion: 2 });
-
-      // Cambiar estado de la maquinaria a 1 (operativa)
-      await editMaquinarias(maquinariaId, { IdEstado: 1 });
-
-      toast.success("Reparación terminada y maquinaria marcada como operativa.");
-      fetchReparaciones(maquinariaId);
-      fetchMaquinarias(); // Refrescar maquinarias
-    } catch (error) {
-      toast.error("Error al terminar la reparación.");
-      console.error("Error al terminar la reparación: ", error);
     }
   };
   const handleChangeReparacion = (e) => {
@@ -405,7 +387,7 @@ pauseOnHover
           </div>
 
         {modalAbierto && (
-          <AddModalWithSelect
+          <AddModal
             title="Agregar Maquinaria"
             fields={fields}
             handleChange={handleChange}
@@ -427,7 +409,7 @@ pauseOnHover
         )}
 
         {modalReparacion && (
-          <AddModalWithSelect
+          <AddModal
             title="Agregar Reparación"
             fields={[
               {
@@ -461,6 +443,25 @@ pauseOnHover
             values={reparacionValues}
           />
         )}
+
+{modalDetallesReparacion && (
+  <AddModal
+    title="Detalles de Reparación"
+    content={
+      reparacionValues.Detalle ? (
+        <div>
+          <p><strong>Detalle:</strong> {reparacionValues.Detalle}</p>
+          <p><strong>Fecha de Inicio:</strong> {reparacionValues.FechaInicio}</p>
+          <p><strong>Estado:</strong> {reparacionValues.IdEstadoReparacion}</p>
+          <p><strong>Costo:</strong> {reparacionValues.Costo}</p>
+        </div>
+      ) : (
+        <p>No hay información disponible sobre esta reparación.</p>
+      )
+    }
+    cerrarModal={cerrarModalDetallesReparacion}
+  />
+)}
       <div className="overflow-x-auto">
   {showTable ? (
     <table className="min-w-full bg-white rounded-lg shadow-md">
@@ -504,10 +505,12 @@ pauseOnHover
             <td className="border-b py-2 px-4 flex flex-wrap justify-center gap-2">
               {/* Ver Reparación */}
               {maquinaria.IdEstado === 3 && (
-                <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700 flex items-center gap-2">
-                  <FiEye />
-                  Ver Reparación
-                </button>
+                <button
+  className="bg-blue-500 text-white p-2 rounded"
+  onClick={() => abrirModalDetallesReparacion(maquinaria.Id)}
+>
+  Ver Reparaciones
+</button>
               )}
               
               {/* Modificar */}
