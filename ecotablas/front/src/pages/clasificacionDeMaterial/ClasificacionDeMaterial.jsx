@@ -5,6 +5,7 @@ import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { MdDateRange } from "react-icons/md";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import { BsClipboardDataFill } from "react-icons/bs";
+import TableComponent from "../../components/TableComponent";
 import { FiEdit } from "react-icons/fi";
 import { GrLinkNext } from "react-icons/gr";
 import AddModal from "../../components/AddModal";
@@ -76,8 +77,8 @@ const ClasificacionDeMaterial = () => {
     setFormValues({
       VolumenUtil: material.VolumenUtil,
       VolumenInutil: material.VolumenInutil,
-      IdIngresoMaterial: material.IdIngresoMaterial,
-      FechaC: material.FechaC,
+      // IdIngresoMaterial: material.IdIngresoMaterial,
+      FechaC: material.Fecha,
     });
     setModalEdit(true);
   };
@@ -187,7 +188,7 @@ const ClasificacionDeMaterial = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:61274/api/MaterialClas/ListarTodo",
+        "http://www.trazabilidadodsapi.somee.com/api/MaterialClas/ListarTodo",
       );
       setFilteredMaterials(response.data);
       
@@ -262,13 +263,13 @@ const ClasificacionDeMaterial = () => {
       type: "date",
       placeholder: "Fecha *",
     },
-    {
-      name: "IdIngresoMaterial",
-      label: "ID Material",
-      type: "text",
+    // {
+    //   name: "IdIngresoMaterial",
+    //   label: "ID Material",
+    //   type: "text",
 
-      placeholder: "ID Material *",
-    },
+    //   placeholder: "ID Material *",
+    // },
   ];
 
   const totalVolumen = filteredMaterials.reduce(
@@ -280,6 +281,77 @@ const ClasificacionDeMaterial = () => {
   );
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
+
+  
+  const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [data, setData] = useState(filteredMaterials);
+ 
+  useEffect(() => {
+    setData(filteredMaterials);
+  }, [filteredMaterials]);
+
+
+  const handleSort = (campo) => {
+ 
+    let direction = "asc";
+    if (sortConfig.campo === campo && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    const sortedData = [...filteredMaterials].sort((a, b) => {
+      if (a[campo] < b[campo]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[campo] > b[campo]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  
+    setData(sortedData);
+    setSortConfig({ campo, direction });
+  };
+  
+  const titlesT = [
+    { key: "VolumenUtil", label: "Volumen Útil", type: "number" },
+    { key: "VolumenInutil", label: "Volumen Inútil", type: "number" },
+   
+    { key: "FechaC", label: "Fecha de Creación", type: "date", hasActions:true },
+  
+  ];
+  
+  
+
+  const actions = [
+    {
+      render: (material) => (
+        <td
+        className={`border-b py-2 px-4 flex justify-center `}
+      >
+        <button
+          onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
+          className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+        >
+          <GrLinkNext />
+          Terminado
+        </button>
+        <button
+          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          onClick={() => abrirModalEdit(material)}
+        >
+          <FiEdit />
+          Modificar
+        </button>
+
+        <DeleteButton
+          id={material.IdMaterialClasificado}
+          endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialClas/Borrar"
+          updateList={fetchMaterials}
+    />
+  </td>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -337,7 +409,7 @@ const ClasificacionDeMaterial = () => {
         )}
 
         {modalEdit && (
-          <AddModalWithSelect
+          <ButtonEdit
             title="Material"
             fields={fields}
             id={materialId}
@@ -365,7 +437,7 @@ const ClasificacionDeMaterial = () => {
 
 
          <div className="overflow-x-auto">
-         <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
+         <div class="flex  p-2  items-center   shadow-md bg-gray-800 text-white flex-1 space-x-4">
            <h5>
               <span class="text-gray-400">Total de materiales:</span>
               <span class="dark:text-white"> {totalItems}</span>
@@ -375,62 +447,15 @@ const ClasificacionDeMaterial = () => {
               <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
             </h5>
             </div>
-              <table className="min-w-full bg-white rounded-lg shadow-md">
-                <LoadingTable loading={loading} />
-                <TablaHead titles={title} />
-                <tbody className="bg-white">
-                  {currentItems.map((material) => (
-                    <tr
-                      key={material.IdMaterialClasificado}
-                      className="hover:bg-gray-100"
-                    >
-                      <td className="border-b py-2 px-4 text-right">
-                        <span className="font-semibold lg:hidden">Volumen Útil: </span>
-                        {material.VolumenUtil} kgs
-                      </td>
-                      <td className="border-b py-2 px-4 text-right">
-                        <span className="font-semibold lg:hidden">Volumen Inútil: </span>
-                        {material.VolumenInutil} kgs
-                      </td>
-                      <td className="border-b py-2 px-4 text-right">
-                        <span className="font-semibold lg:hidden">Fecha: </span>
-                        {material.FechaC.slice(0, 10)}
-                      </td>
-                      <td
-                        className={`border-b py-2 px-4 flex justify-center `}
-                      >
-                        <button
-                          onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
-                          className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                        >
-                          <GrLinkNext />
-                          Terminado
-                        </button>
-                        <button
-                          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                          onClick={() => abrirModalEdit(material)}
-                        >
-                          <FiEdit />
-                          Modificar
-                        </button>
 
-                        <DeleteButton
-                          id={material.IdMaterialClasificado}
-                          endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialClas/Borrar"
-                          updateList={fetchMaterials}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {/* Controles de paginación integrados */}
+            <TableComponent
+      data={data}
+      titles={titlesT}
+      sortConfig={sortConfig}
+      onSort={handleSort}
+      actions={actions}
+    />
 
-          <Pagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    paginate={paginate}
-  />
         </div>    
 
 ):(

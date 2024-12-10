@@ -10,15 +10,14 @@ import {
 } from "../../features/tablasProducidasSlice";
 import SectionLayout from "../../layout/SectionLayout";
 
-import NextProcess from "../../components/buttons/NextProcess";
 
+import TableComponent from "../../components/TableComponent";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
-import { GrLinkNext } from "react-icons/gr";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
@@ -30,7 +29,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const TablasProducidas = () => {
   const dispatch = useDispatch();
-  const { data, loading, error } = useSelector(
+  const {tablas: data, loading, error } = useSelector(
     (state) => state.tablasProducidas,
   );
   const [selectedDate, setSelectedDate] = useState("");  // Store the selected date
@@ -39,6 +38,7 @@ const TablasProducidas = () => {
   const [modalEdit, setModalEdit] = useState(false);
   const [currentItems, setCurrentItems] = useState([])
   const [tablaId, setTablaId] = useState(null);
+  const [filteredMaterials, setFilteredMaterials] = useState([]);
   
   const [formValues, setFormValues] = useState({
     FechaProduccion: "",
@@ -110,24 +110,15 @@ const TablasProducidas = () => {
     }));
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-
-  useEffect(() => {
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    setCurrentItems(data.slice(indexOfFirstItem, indexOfLastItem));
-  }, [data, currentPage]);
-
   
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // const totalPages = Math.ceil(data.length / itemsPerPage);
+  // const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const totalPeso = data.reduce(
-    (acc, tabla) => acc + parseFloat(tabla.Peso || 0),
-    0,
-  );
-  const totalItems = data.length;
+  // const totalPeso = data.reduce(
+  //   (acc, tabla) => acc + parseFloat(tabla.Peso || 0),
+  //   0,
+  // );
+  // const totalItems = data.length;
 
   const dimensionesOptions = [
     { value: "1,50mts x 10cm", label: "1,50mts x 10cm" },
@@ -163,16 +154,122 @@ const TablasProducidas = () => {
 
     setCurrentItems(filteredItems);  // Update displayed items
   };
+ 
+  const fetchMaterials = async () => {
+    try {
+      const response = await fetch("http://www.trazabilidadodsapi.somee.com/api/TablaProducidas/ListarTodo"); // Reemplaza "URL_DEL_ENDPOINT" con la URL de tu API
+      if (!response.ok) {
+        throw new Error("Error al obtener los datos.");
+      }
+      const data = await response.json();
+      setFilteredMaterials(data);
+      console.log(data);
+    } catch (error) {
+      toast.error("Error al cargar los materiales.");
+      console.error("Error fetching data: ", error);
+    } finally {
+      // Opcional: acciones después de completar la solicitud
+    }
+  };
+  
+  useEffect(() => {
+    fetchMaterials();
+  }, []);
+  
+  
+  const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [dataT, setDataT] = useState(filteredMaterials);
+ 
+ 
+
+
+
+  useEffect(() => {
+
+    setDataT(filteredMaterials);
+  }, [filteredMaterials]);
+
+
+  const handleSort = (campo) => {
+ 
+    let direction = "asc";
+    if (sortConfig.campo === campo && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    const sortedData = [...filteredMaterials].sort((a, b) => {
+      if (a[campo] < b[campo]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[campo] > b[campo]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  
+    setDataT(sortedData);
+    setSortConfig({ campo, direction });
+  };
+
+
+  const titlesT = [
+    { label: "Fecha de Producción", key: "FechaProduccion", 
+      
+       
+      render: (value) => (
+        <td className="px-4 py-2 text-left">
+        {value ? value.slice(0, 10) : "Fecha no disponible"}
+      </td>
+        )
+    },
+    { label: "Dimensiones", key: "Dimensiones", type: "text" },
+    { label: "Peso", key: "Peso", type: "number" },
+    { label: "Código de Identificación", key: "CodigoIdentificacion", type: "text",hasActions:true},
+  ];
+  
+
+
+  const actions = [
+    {
+      render: (item) => (
+        <td className="px-4 py-2 flex justify-center">
+             
+        <button
+          onClick={() => abrirModalEdit(item)}
+          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+        >
+          <FiEdit  className="mr-2"/>
+          Modificar
+        </button>
+        <DeleteButton
+          id={item.ID_Tabla}
+          endpoint={
+            "http://www.gestiondeecotablas.somee.com/api/TablaProducidas/Borrar"
+          }
+          updateList={() => dispatch(fetchTablasProducidas())}
+        />
+      </td>
+      ),
+    },
+  ];
 
 
 
   return (
     <SectionLayout title="Tablas Producidas">
-      <div className="flex items-center">
+            <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
 
-
-
-        
+      <div className="flex items-center">        
       <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />
       <PdfGenerator
         columns={columns}
@@ -228,7 +325,7 @@ const TablasProducidas = () => {
         />
       )}
       {modalEdit && (
-        <AddModalWithSelect
+        <ButtonEdit
           title="Editar Tabla Producida"
           fields={[
             {
@@ -241,8 +338,8 @@ const TablasProducidas = () => {
           ]}
           formValues={formValues}
           handleChange={handleChange}
-          handleSubmit={handleEditSubmit}
-          cerrarModal={cerrarModalEdit}
+          handleEditSubmit={handleEditSubmit}
+          cerrarModalEdit={cerrarModalEdit}
         />
       )}
 
@@ -250,81 +347,37 @@ const TablasProducidas = () => {
         <LoadingTable loading={loading} />
       ) : (
         <>
-          <table className="table-auto w-full bg-white rounded-lg shadow-lg">
+
+<TableComponent
+      data={dataT}
+      titles={titlesT}
+      sortConfig={sortConfig}
+      onSort={handleSort}
+      actions={actions}
+    />
+
+
+          {/* <table className="table-auto w-full bg-white rounded-lg shadow-lg">
             <TablaHead titles={titles} />
             <tbody>
               {currentItems.map((item) => (
                 <tr key={item.ID_Tabla}>
-  <td className="px-4 py-2 text-left">
-    {item.FechaProduccion ? item.FechaProduccion.slice(0, 10) : "Fecha no disponible"}
-  </td>
+ 
   <td className="px-4 py-2 text-left">{item.Dimensiones}</td>
   <td className="px-4 py-2 text-right">{item.Peso}</td>
   <td className="px-4 py-2 text-right">{item.CodigoIdentificacion}</td>
-  <td className="px-4 py-2 flex justify-center">
-                  {/* <button
-                          onClick={() => handleChangeState(item)}
-                          className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                        >
 
-                        <GrLinkNext />
-                          Terminado
-                        </button> */}
-                    <button
-                      onClick={() => abrirModalEdit(item)}
-                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                    >
-                      <FiEdit  className="mr-2"/>
-                      Modificar
-                    </button>
-                    <DeleteButton
-                      id={item.ID_Tabla}
-                      endpoint={
-                        "http://www.gestiondeecotablas.somee.com/api/TablaProducidas/Borrar"
-                      }
-                      updateList={() => dispatch(fetchTablasProducidas())}
-                    />
-                  </td>
                 </tr>
               ))}
             </tbody>
-          </table>
-          <div className="flex justify-between items-center bg-gray-700">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2  ml-2 hover:text-gray-400 text-white rounded-l"
-            >
-              Anterior
-            </button>
-            <span className="text-gray-300">
-              Página {currentPage} de {totalPages}
-            </span>
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage >= totalPages}
-              className="px-4 py-2 hover:text-gray-400  text-white rounded-r"
-            >
-              Siguiente
-            </button>
-          </div>
+          </table> */}
+{/*          
           <div className="mt-4 text-white">
             <p>Total Peso: {totalPeso} kg</p>
             <p>Total de Items: {totalItems}</p>
-          </div>
+          </div> */}
         </>
       )}
-      <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
 
 
     </SectionLayout>

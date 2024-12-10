@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
-import axios from "axios";
+import TableComponent from "../../components/TableComponent";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { MdDateRange } from "react-icons/md";
@@ -300,6 +300,99 @@ const MaterialTrit = () => {
     // ... otras opciones
   ];
 
+
+  
+  const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [data, setData] = useState(filteredMaterials);
+ 
+  useEffect(() => {
+    setData(filteredMaterials);
+  }, [filteredMaterials]);
+
+
+  const handleSort = (campo) => {
+ 
+    let direction = "asc";
+    if (sortConfig.campo === campo && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    const sortedData = [...filteredMaterials].sort((a, b) => {
+      if (a[campo] < b[campo]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[campo] > b[campo]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  
+    setData(sortedData);
+    setSortConfig({ campo, direction });
+  };
+  const titlesT = [
+    { label: "Volumen (kgs)", key: "VolumenT", type: "number" },
+    { label: "Volumen Inutil (kgs)", key: "VolumenTInutil", type: "number" },
+    { label: "Fecha", key: "Fecha", type: "date" ,hasActions: true },
+  
+  ];
+
+
+  
+  const actions = [
+    {
+      render: (material) => (
+        <td
+        className={`border-b py-2 px-4 flex justify-center ${
+          modalAbierto ? "hidden" : ""
+        }`}
+                      >
+                      <button
+                          onClick={() => abrirModalTolva(material.IdMaterialTriturado)}
+                          className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                          >
+                            <GrLinkNext />
+                            Terminado
+                          </button>
+  
+                        {modalTolva &&
+            <AddModalWithSelect title="Pasar a Extrucción/tolva"
+            fields={[
+              { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
+              { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
+              { name: "Proporcion", label: "Proporción cargada", type: "number" },
+              { name: "Especificaciones", label: "Especificaciones", type: "text" },
+            ]}
+              handleChange={handleChangeTolva}
+              handleSubmit={handleSubmitTolva}
+              cerrarModal={cerrarModalTolva}
+            values={tolvaValues}
+            />
+  
+            }
+  
+  
+  
+  
+  
+                        
+                        <button
+                          onClick={() => abrirModalEdit(material)}
+                          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                        >
+                          <FiEdit />
+                          Modificar
+                        </button>
+                        <DeleteButton
+                          id={material.IdMaterialTriturado}
+                          endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Borrar"
+                          updateList={fetchMaterials}
+                        />
+                      </td>
+      ),
+    },
+  ];
+
   return (
     <>
           <SectionLayout title="Materiales Triturados">
@@ -359,7 +452,7 @@ const MaterialTrit = () => {
             />
           )}
             {modalEdit && (
-              <AddModalWithSelect
+              <ButtonEdit
                 title="Material Triturado"
                 fields={fields}
                 id={materialId}
@@ -385,85 +478,15 @@ const MaterialTrit = () => {
               <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
             </h5>
           </div>
-            <table className="min-w-full bg-white rounded-lg shadow-md">
-              <LoadingTable loading={loading} />
-              <TablaHead titles={title} />
 
-              <tbody>
-              {currentItems.map((material) => (
-  <tr
-    key={material.IdMaterialTriturado}
-    className="hover:bg-gray-100"
-  >
-    <td className="border-b py-2 px-4 text-right">
-      <span className="font-semibold lg:hidden">Volumen Triturado: </span>
-      {material.VolumenT} kgs
-    </td>
-    <td className="border-b py-2 px-4 text-right">
-      <span className="font-semibold lg:hidden">Volumen Inútil: </span>
-      {material.VolumenTInutil} kgs
-    </td>
-    <td className="border-b py-2 px-4 text-right">
-      <span className="font-semibold lg:hidden">Fecha: </span>
-      {material.Fecha.slice(0, 10)}
-    </td>
-    <td
-      className={`border-b py-2 px-4 flex justify-center ${
-        modalAbierto ? "hidden" : ""
-      }`}
-                    >
-                    <button
-                        onClick={() => abrirModalTolva(material.IdMaterialTriturado)}
-                        className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                        >
-                          <GrLinkNext />
-                          Terminado
-                        </button>
+          <TableComponent
+      data={data}
+      titles={titlesT}
+      sortConfig={sortConfig}
+      onSort={handleSort}
+      actions={actions}
+    />
 
-                      {modalTolva &&
-          <AddModalWithSelect title="Pasar a Extrucción/tolva"
-          fields={[
-            { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
-            { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
-            { name: "Proporcion", label: "Proporción cargada", type: "number" },
-            { name: "Especificaciones", label: "Especificaciones", type: "text" },
-          ]}
-            handleChange={handleChangeTolva}
-            handleSubmit={handleSubmitTolva}
-            cerrarModal={cerrarModalTolva}
-          values={tolvaValues}
-          />
-
-          }
-
-
-
-
-
-                      
-                      <button
-                        onClick={() => abrirModalEdit(material)}
-                        className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        <FiEdit />
-                        Modificar
-                      </button>
-                      <DeleteButton
-                        id={material.IdMaterialTriturado}
-                        endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Borrar"
-                        updateList={fetchMaterials}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {/* Controles de paginación integrados */}
-            <Pagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    paginate={paginate}
-  />
         </div>   
 ):(           
   <div className="flex-1 flex flex-col gap-4 p-4">

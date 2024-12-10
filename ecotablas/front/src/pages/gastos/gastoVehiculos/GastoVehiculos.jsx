@@ -58,7 +58,7 @@ const GastoVehiculos = () => {
   const [currentPage, setCurrentPage] = useState(1 );
   const [itemsPerPage] = useState(5);
   const [accessToken, setAccessToken] = useState(null);
-
+  const [sortedData, setSortedData] = useState([]);
 
   const [filteredData, setFilteredData] = useState([]);
 
@@ -299,7 +299,17 @@ const GastoVehiculos = () => {
     "Descripción",
     "Acciones",
   ];
+  const titlesT = [
+    { key: "TipoComprobante", label: "Tipo de comprobante" },
+    { key: "Comprobante", label: "Comprobante" },
+    { key: "TipoGasto", label: "Tipo de gasto" },
+    { key: "Proveedor", label: "Proveedor" },
+    { key: "Monto", label: "Monto ($)" },
+    { key: "Fecha", label: "Fecha" },
+    { key: "Descripcion", label: "Descripción" },
+    { key: "acciones", label: "Acciones" },
 
+  ];;
 
   const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
   const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
@@ -583,11 +593,15 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
         ) : (
 <div className="overflow-x-auto w-full bg-gray-100">
   <table className="min-w-full bg-white rounded-lg shadow-md">
-    <TablaHead titles={titles} />
+  <TablaHead
+        titles={titlesT}
+        data={currentItems}
+        onSortedData={(sorted) => setSortedData(sorted)}
+      />
     <tbody>
-      {currentItems.map((item, index) => (
+      {sortedData.map((item, index) => (
         <tr key={index} className="hover:bg-gray-100 text-sm md:text-base">
-          {/* Tipo de Comprobante */}
+
           <td className="border-b py-3 px-4 text-left">
             <span className="font-semibold lg:hidden">Tipo Comprobante: </span>
             {item.TipoComprobante}

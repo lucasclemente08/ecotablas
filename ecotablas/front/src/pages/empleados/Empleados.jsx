@@ -113,10 +113,34 @@ const Empleados = () => {
     setModalAbierto(true);
   };
 
-  const abrirModalModificar = (idEmpleado) => {
-    setModalAbiertoMod(true);
-    setEmpleadoSeleccionadoId(idEmpleado);
+  const abrirModalModificar = async (idEmpleado) => {
+    try {
+      const response = await axios.get(`URL_API/empleados/${idEmpleado}`);
+      const empleado = response.data;
+  
+      setEmpleadoSeleccionado({
+        Nombre: empleado.Nombre || "",
+        Apellido: empleado.Apellido || "",
+        DNI: empleado.DNI || "",
+        Calle: empleado.Calle || "",
+        Numero: empleado.Numero || "",
+        Piso: empleado.Piso || "",
+        Dpto: empleado.Dpto || "",
+        CodPostal: empleado.CodPostal || "",
+        IdLocalidad: empleado.IdLocalidad || "1",
+        FechaIngreso: empleado.FechaIngreso || "",
+        Telefono: empleado.Telefono || "",
+        Mail: empleado.Mail || "",
+        IdArea: empleado.IdArea || "1",
+      });
+      setEmpleadoSeleccionadoId(idEmpleado);
+      setModalAbiertoMod(true);
+    } catch (error) {
+      console.error("Error al obtener los datos del empleado:", error);
+    }
   };
+  
+  
 
   const cerrarModal = () => {
     setModalAbierto(false);
@@ -128,19 +152,18 @@ const Empleados = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNuevoEmpleado((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
 
+    setNuevoEmpleado((prev) => ({ ...prev, [name]: value }));
+  };
+  
   const handleChangeEmpleado = (e) => {
     const { name, value } = e.target;
-    setEmpleadoSeleccionado((prevState) => ({
-      ...prevState,
-      [name]: value,
+    setEmpleadoSeleccionado((prev) => ({
+      ...prev,
+      [name]: value, // Actualiza el campo correspondiente
     }));
   };
+  
 
   // Verificar si existe un empleado con el mismo DNI
   const verificarDNIExistente = () => {
@@ -148,11 +171,12 @@ const Empleados = () => {
   };
 
   const handleSubmit = () => {
+    console.log("HandleSubmit ejecutado");
     if (verificarDNIExistente()) {
       setMensaje("Ya existe un empleado con el mismo DNI");
       return;
     }
-
+  
     if (
       !nuevoEmpleado.Nombre ||
       !nuevoEmpleado.Apellido ||
@@ -168,29 +192,18 @@ const Empleados = () => {
       setMensaje("Todos los campos requeridos deben ser completados");
       return;
     }
-
-    if (nuevoEmpleado.DNI.length > 8) {
-      setMensaje("El DNI no puede tener más de 8 dígitos");
-      return;
-    }
-
-    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(nuevoEmpleado.FechaIngreso)) {
-      setMensaje("La fecha debe tener el formato dd/mm/aaaa");
-      return;
-    }
-
+  
     axios
       .post(
         `http://www.trazabilidadodsapi.somee.com/api/Empleados/Insertar`,
         nuevoEmpleado,
       )
       .then((response) => {
+        console.log("Empleado agregado correctamente", response);
         setModalAbierto(false);
-        setMensaje("Inserción exitosa");
+  
         axios
-          .get(
-            `http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`,
-          )
+          .get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
           .then((response) => {
             setEmpleadosData(response.data);
             setFilteredEmpleados(response.data);
@@ -201,6 +214,9 @@ const Empleados = () => {
       })
       .catch((error) => console.error("Error al agregar el empleado:", error));
   };
+  
+
+  
 
   const handleEliminarEmpleado = (idEmpleado) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
@@ -315,6 +331,22 @@ const Empleados = () => {
     Mail: empleado.Mail,
   }));
 
+
+  const campos = [
+    { name: "DNI", placeholder: "DNI *" ,  },
+    { name: "Nombre", placeholder: "Nombre *" },
+    { name: "Apellido", placeholder: "Apellido *" },
+    { name: "Calle", placeholder: "Calle *" },
+    { name: "Numero", placeholder: "Número *" },
+    { name: "Piso", placeholder: "Piso" },
+    { name: "Dpto", placeholder: "Dpto" },
+    { name: "CodPostal", placeholder: "Código Postal *" },
+    { name: "IdLocalidad", placeholder: "IdLocalidad" },
+    { name: "Telefono", placeholder: "Teléfono *" },
+    { name: "Mail", placeholder: "Mail *" },
+  ];
+
+  
   return (
     <>
       <SectionLayout>
@@ -327,158 +359,69 @@ const Empleados = () => {
             title="Empleados"
           />
 
-          {modalAbierto && (
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div
-                  className="fixed inset-0 transition-opacity"
-                  aria-hidden="true"
-                >
-                  <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                </div>
-
-                <span
-                  className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                  aria-hidden="true"
-                >
-                  &#8203;
-                </span>
-                <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-                  <div>
-               
-
-                    <div className="mt-3 text-center sm:mt-5">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">
-                        Agregar Empleado
-                      </h3>
-                      <div></div>
-                      <div className="mt-2">
-                        <input
-                          type="text"
-                          name="DNI"
-                          placeholder="DNI *"
-                          value={nuevoEmpleado.DNI}
-                          onChange={handleChange}
-                          className="border mb-2 p-2 w-full "
-                        />
-
-                        <input
-                          type="text"
-                          name="Nombre"
-                          placeholder="Nombre *"
-                          value={nuevoEmpleado.Nombre}
-                          onChange={handleChange}
-                          className="border p-2 w-full"
-                        />
-                        <input
-                          type="text"
-                          name="Apellido"
-                          placeholder="Apellido *"
-                          value={nuevoEmpleado.Apellido}
-                          onChange={handleChange}
-                          className="border p-2 w-full mt-2"
-                        />
-                        <input
-                          type="text"
-                          name="Calle"
-                          placeholder="Calle *"
-                          value={nuevoEmpleado.Calle}
-                          onChange={handleChange}
-                          className="border p-2 w-full mt-2"
-                        />
-                        <input
-                          type="text"
-                          name="Numero"
-                          placeholder="Número *"
-                          value={nuevoEmpleado.Numero}
-                          onChange={handleChange}
-                          className="border p-2 w-full mt-2"
-                        />
-                        <input
-                          type="text"
-                          name="Piso"
-                          placeholder="Piso"
-                          value={nuevoEmpleado.Piso}
-                          onChange={handleChange}
-                          className="border p-2 w-full mt-2"
-                        />
-                        <input
-                          type="text"
-                          name="Dpto"
-                          placeholder="Dpto"
-                          value={nuevoEmpleado.Dpto}
-                          onChange={handleChange}
-                          className="border p-2 w-full mt-2"
-                        />
-                        <input
-                          type="text"
-                          name="CodPostal"
-                          placeholder="Código Postal *"
-                          value={nuevoEmpleado.CodPostal}
-                          onChange={handleChange}
-                          className="border p-2 w-full mt-2"
-                        />
-                        <input
-                          type="text"
-                          name="IdLocalidad"
-                          placeholder="IdLocalidad"
-                          value={nuevoEmpleado.IdLocalidad}
-                          onChange={handleChange}
-                          className="border p-2 w-full mt-2"
-                        />
-                        <input
-                          type="date"
-                          name="FechaIngreso"
-                          placeholder="Fecha de Ingreso (dd/mm/aaaa) *"
-                          value={nuevoEmpleado.FechaIngreso}
-                          onChange={handleChange}
-                          className="border p-2 w-full mt-2"
-                        />
-                        <input
-                          type="text"
-                          name="Telefono"
-                          placeholder="Teléfono *"
-                          value={nuevoEmpleado.Telefono}
-                          onChange={handleChange}
-                          className="border p-2 w-full mt-2"
-                        />
-                        <input
-                          type="text"
-                          name="Mail"
-                          placeholder="Mail *"
-                          value={nuevoEmpleado.Mail}
-                          onChange={handleChange}
-                          className="border p-2 w-full mt-2"
-                        />
-                        <input
-                          type="text"
-                          name="IdArea"
-                          placeholder="IdArea *"
-                          value={nuevoEmpleado.IdArea}
-                          onChange={handleChange}
-                          className="border p-2 w-full mt-2"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-5 sm:mt-6">
-                    <button
-                      onClick={handleSubmit}
-                      className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
-                    >
-                      Guardar
-                    </button>
-                    <button
-                      onClick={cerrarModal}
-                      className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
-                    >
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
-              </div>
+{modalAbierto && (
+  <div className="fixed inset-0 overflow-y-auto">
+    <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+        <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+      </div>
+      <span
+        className="hidden sm:inline-block sm:align-middle sm:h-screen"
+        aria-hidden="true"
+      >
+        &#8203;
+      </span>
+      <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+        <div>
+          <div className="mt-3 text-center sm:mt-5">
+            <h3 className="text-lg leading-6 font-medium text-gray-900">
+              Agregar Empleado
+            </h3>
+            <div className="mt-2">
+              {/* Inputs dinámicos */}
+              {campos.map((campo, index) => (
+                <input
+                  key={index}
+                  type="text"
+                  name={campo.name}
+                  placeholder={campo.placeholder}
+                  value={nuevoEmpleado[campo.name]}
+                  onChange={handleChange}
+                  className="border p-2 w-full mt-2"
+                />
+              ))}
+              <input
+                type="date"
+                name="FechaIngreso"
+                value={nuevoEmpleado.FechaIngreso}
+                onChange={handleChange}
+                className="border p-2 w-full mt-2"
+              />
             </div>
-          )}
+          </div>
+        </div>
+        <div className="mt-5 sm:mt-6">
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className={`inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 ${
+              loading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
+            } text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm`}
+          >
+            {loading ? "Guardando..." : "Guardar"}
+          </button>
+          <button
+            onClick={cerrarModal}
+            className="mt-2 inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
           {modalAbiertoMod && (
             <div className="fixed inset-0 overflow-y-auto">
               <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -496,31 +439,8 @@ const Empleados = () => {
                 </span>
                 <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                   <div>
-                    {mensaje && (
-                      <div className="bg-red-700 text-white p-4 rounded-lg flex items-center space-x-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M18.364 5.636a9 9 0 11-12.728 0 9 9 0 0112.728 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 9v2m0 4h.01"
-                          />
-                        </svg>
-                        <span>{mensaje}</span>
-                      </div>
-                    )}
+          
+                
                     <div className="mt-3 text-center sm:mt-5">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">
                         Modificar Empleado

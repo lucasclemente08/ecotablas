@@ -5,10 +5,12 @@ import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { MdDateRange } from "react-icons/md";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
+import { FiEdit } from "react-icons/fi";
+import TableComponent from "../../components/TableComponent";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import { BsClipboardDataFill } from "react-icons/bs";
-import TablaHead from "../../components/Thead";
+
 import { GrLinkNext } from "react-icons/gr";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
 import DateFilter from "../../components/DateFilter";
@@ -17,9 +19,7 @@ import NextProcess from "../../components/buttons/NextProcess";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 
-import { FaSearch, FaArrowLeft } from "react-icons/fa";
 
-import Pagination from "../../components/Pagination";
 import {
   getAllMaterialClas,
   addMaterialClas,
@@ -71,33 +71,33 @@ const EntradasDeMaterial = () => {
     setDateRange(dates);
   };
 
-  // Estado para la paginación
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Número de elementos por página
 
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
 
   const abrirModalEdit = (material) => {
-    setMaterialId(material.IdIngresoMaterial);
-
+    const MaterialSeguro = material || {};
+  
+    setMaterialId(MaterialSeguro.IdIngresoMaterial);
+  
     setFormValues({
-      VolumenUtil: material.VolumenM,
-      VolumenInutil:material.VolumenMInutil,
-      FechaIngresoM: material.FechaIngresoM,
-      IdTipoPlastico: material.IdTipoPlastico,
-      Estado: material.Estado,
-      TipoDonante: material.TipoDonante,
+      VolumenM: MaterialSeguro.VolumenM || "", // Asegúrate de que coincide con la estructura de `formValues`
+      VolumenMInutil: MaterialSeguro.VolumenMInutil || "",
+      FechaIngresoM: MaterialSeguro.FechaIngresoM || "",
+      IdTipoPlastico: MaterialSeguro.IdTipoPlastico || "",
+      Estado: MaterialSeguro.Estado || 1, // Valor por defecto si está vacío
+      TipoDonante: MaterialSeguro.TipoDonante || "",
     });
     setModalEdit(true);
   };
+  
 
   const cerrarModalEdit = () => setModalEdit(false);
 
   const handleSubmit = () => {
     axios
       .post(
-        "http://localhost:61274/api/IngresoMat/Insertar",
+        "http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Insertar",
         formValues,
       )
       .then(() => {
@@ -196,7 +196,7 @@ const EntradasDeMaterial = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:61274/api/IngresoMat/ListarTodo",
+        "http://www.trazabilidadodsapi.somee.com/api/IngresoMat/ListarTodo",
       );
       setFilteredMaterials(response.data);
     } catch (error) {
@@ -293,7 +293,6 @@ const getPlasticbyId =(id)=>{
     setShowTable(!showTable);  
   };
 
- 
 
   const filterByDate = () => {
     const filteredItems = filteredMaterials.filter((item) => {
@@ -305,27 +304,85 @@ const getPlasticbyId =(id)=>{
     setCurrentPage(1); 
   };
 
-
-
-
-  
-
-
-  
   const totalVolumen = filteredMaterials.reduce(
     (acc, material) =>
       acc + parseFloat(material.VolumenM || 0) + parseFloat(material.VolumenMInutil || 0),
     0,
   );
-  const totalItems =filteredMaterials.length;
+  // const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredMaterials.slice(indexOfFirstItem, indexOfLastItem);
-  // Cambiar de página
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   
-  const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
+  const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [data, setData] = useState(filteredMaterials);
+ 
+  useEffect(() => {
+    setData(filteredMaterials);
+  }, [filteredMaterials]);
+
+
+  const handleSort = (campo) => {
+ 
+    let direction = "asc";
+    if (sortConfig.campo === campo && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    const sortedData = [...filteredMaterials].sort((a, b) => {
+      if (a[campo] < b[campo]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[campo] > b[campo]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  
+    setData(sortedData);
+    setSortConfig({ campo, direction });
+  };
+  
+  const titlesT = [
+    { key: "VolumenM", label: "Volumen Util (kgs)", type: "number" },
+    { key: "VolumenMInutil", label: "Volumen Inutil (kgs)", type: "number" },
+    { key: "FechaIngresoM", label: "Fecha de ingreso", type: "date" },
+    { key: "IdTipoPlastico", label: "Tipo de plásticos", type: "string" },
+    { key: "TipoDonante", label: "Tipo Donante", type: "string" ,hasActions: true },
+// Para acciones como editar o eliminar
+  ];
+  
+
+  const actions = [
+    {
+      render: (material) => (
+        <td
+        className={` py-2 px-4 flex justify-center 
+         
+        `}
+      >
+        <button
+            onClick={() => abrirModalClasificado(material.IdIngresoMaterial)}
+            className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+            >
+              <GrLinkNext />
+            Terminado
+          </button>
+        <button
+          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          onClick={() => abrirModalEdit(material)}
+        >
+                  <FiEdit />
+                  Modificar
+        </button>
+
+        <DeleteButton
+          id={material.IdIngresoMaterial}
+          endpoint="http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Borrar"
+          updateList={fetchMaterials}
+        />
+      </td>
+      ),
+    },
+  ];
   return (
     <>
       <SectionLayout title="Materiales Ingresados">
@@ -382,7 +439,7 @@ const getPlasticbyId =(id)=>{
 />
 
         {modalEdit && (
-          <AddModalWithSelect
+          <ButtonEdit
             title="Material"
             fields={fields}
             id={materialId}
@@ -407,83 +464,25 @@ const getPlasticbyId =(id)=>{
             />
           )}
 {showTable ? (
-         
-
-
+        
          <div className="overflow-x-auto">
          <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
            <h5>
              <span class="text-gray-400">Total de materiales ingresados:</span>
-             <span class="dark:text-white"> {totalItems}</span>
+             {/* <span class="dark:text-white"> {totalItems}</span> */}
            </h5>
            <h5>
              <span class="text-gray-400">Total volumen: </span>
              <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
            </h5>
          </div>
-           <table className="min-w-full bg-white rounded-lg shadow-md">
-             <LoadingTable loading={loading} />
-             <TablaHead titles={title} />
-             <tbody className="bg-white">
-               {currentItems.map((material) => (
-                 <tr key={material.IdMaterialClasificado} className="hover:bg-gray-100">
-   <td className="border-b py-2 px-4 text-right">
-     <span className="font-semibold lg:hidden">Volumen Útil: </span>
-     {material.VolumenM} kgs
-   </td>
-   <td className="border-b py-2 px-4 text-right">
-     <span className="font-semibold lg:hidden">Volumen Inútil: </span>
-     {material.VolumenMInutil} kgs
-   </td>
-   <td className="border-b py-2 px-4 text-left">
-     <span className="font-semibold lg:hidden">Tipo de Plástico: </span>
-     {material.IdTipoPlastico}
-   </td>
-   <td className="border-b py-2 px-4 text-right">
-     <span className="font-semibold lg:hidden">Fecha de Ingreso: </span>
-     {material.FechaIngresoM.slice(0, 10)}
-   </td>
-   <td className="border-b py-2 px-4 text-left">
-     <span className="font-semibold lg:hidden">Tipo de Donante: </span>
-     {material.TipoDonante}
-                   </td>
-                  <td
-                    className={` py-2 px-4 flex justify-center ${
-                      modalEdit || modalAbierto ? "hidden" : ""
-                    }`}
-                  >
-                    <button
-                        onClick={() => abrirModalClasificado(material.IdIngresoMaterial)}
-                        className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                        >
-                          <GrLinkNext />
-                        Terminado
-                      </button>
-                    <button
-                      className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      onClick={() => abrirModalEdit(material)}
-                    >
-                              <FiEdit />
-                              Modificar
-                    </button>
-
-                    <DeleteButton
-                      id={material.IdIngresoMaterial}
-                      endpoint="http://localhost:61274/api/IngresoMat/Borrar"
-                      updateList={fetchMaterials}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {/* Controles de paginación integrados */}
-
-          <Pagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    paginate={paginate}
-  />
+         <TableComponent
+      data={data}
+      titles={titlesT}
+      sortConfig={sortConfig}
+      onSort={handleSort}
+      actions={actions}
+    />
         </div>    
 
 ):(

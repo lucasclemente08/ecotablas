@@ -1,25 +1,30 @@
-import React from "react";
-
-const TablaHead = ({ titles = [] }) => {
 
 
-  const isFewColumns = titles.length <= 3;
+const TablaHead = ({ titles, onSort, sortConfig }) => {
   return (
-    <thead className="">
-      <tr>
-      {titles.map((title, key) => (
-          <th
-            key={key}
-            className={`border-b-2 py-3 items-center  bg-gray-700 px-4 text-center text-white ${
-              isFewColumns ? "text-center w-1/3" : "text-left"
-            }`}
-          >
-            {title}
-          </th>
-        ))}
-      </tr>
-    </thead>
+    <thead className="bg-gray-800 text-white">
+    <tr>
+      {titles.map((title) => (
+        <th
+          key={title.key}
+          className="w-1/4 py-2 cursor-pointer text-center px-4"
+          onClick={() => onSort && onSort(title.key, title.type)}
+        >
+          {title.label}
+          {sortConfig?.campo === title.key && (
+            <span className="ml-2">
+              {sortConfig.direction === "asc" ? "▲" : "▼"}
+            </span>
+          )}
+        </th>
+      ))}
+
+      {/* Header for actions column */}
+      {titles.some((title) => title.hasActions) && (
+        <th className="w-1/4 text-center bg-gray-800 py-2 px-4">Acciones</th>
+      )}
+    </tr>
+  </thead>
   );
 };
-
-export default TablaHead;
+export default TablaHead

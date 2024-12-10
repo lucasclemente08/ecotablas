@@ -1,7 +1,7 @@
 import axios from "axios";
 import builderApiUrl from "../utils/BuilderApi";
 
-const BASE_URL = "http://localhost:61274/api/Tolva";
+const BASE_URL = "http://www.trazabilidadodsapi.somee.com/api/Tolva";
 
 export const getAllTolva = () => axios.get(`${BASE_URL}/ListarTodo`);
 export const addTolva = (data) => axios.post(`${BASE_URL}/Insertar`, data);
