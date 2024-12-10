@@ -86,7 +86,7 @@ const GenerateIdentificationCode = (size, large) => {
       HorarioInicio: material.HorarioInicio,
       CantidadCargada: material.CantidadCargada,
       TipoPlastico: material.TipoPlastico,
-      Proporcion: material.proporcion,
+      Proporcion: material.Proporcion,
       Especificaciones: material.Especificaciones,
       Estado: 1,
     });
@@ -310,7 +310,18 @@ const GenerateIdentificationCode = (size, large) => {
     setSortConfig({ campo, direction });
   };
   const titlesT = [
-    { label: "Horario Inicio", key: "HorarioInicio", type: "datetime" },
+    { label: "Horario Inicio", key: "HorarioInicio",
+     
+        
+      
+      
+      render: (value) => (
+        <td className="border-b px-4 py-2 text-right">
+          <span className="font-semibold lg:hidden">Horario de Inicio: </span>
+          {value ? value.slice(0, 10) : "Sin horario"}
+        </td>
+      ),
+    },
     { label: "Cantidad Cargada (kg)", key: "CantidadCargada", type: "number" },
     { label: "Tipo de Plástico", key: "TipoPlastico", type: "text" },
     { label: "Proporción (%)", key: "Proporcion", type: "number" },
@@ -394,7 +405,7 @@ const GenerateIdentificationCode = (size, large) => {
         />
       )}
 {modalEdit && (
-  <AddModalWithSelect
+  <ButtonEdit
     title="Editar Registro de Tolva"
     fields={[
       { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },
@@ -438,39 +449,6 @@ const GenerateIdentificationCode = (size, large) => {
       onSort={handleSort}
       actions={actions}
     />
-
-{/*         
-          <table className="table-auto w-full bg-white rounded-lg shadow-lg">
-            <TablaHead titles={titles} />
-            <tbody>
-              {currentItems.map((material) => (
-                <tr key={material.IdTolva}>
-  <td className="border-b px-4 py-2 text-right">
-    <span className="font-semibold lg:hidden">Horario de Inicio: </span>
-    {material.HorarioInicio.slice(0, 10)}
-  </td>
-  <td className="border-b px-4 py-2 text-right">
-    <span className="font-semibold lg:hidden">Cantidad Cargada: </span>
-    {material.CantidadCargada}
-  </td>
-  <td className="border-b px-4 py-2 text-left">
-    <span className="font-semibold lg:hidden">Tipo de Plástico: </span>
-    {material.TipoPlastico}
-  </td>
-  <td className="border-b px-4 py-2 text-right">
-    <span className="font-semibold lg:hidden">Proporción: </span>
-    {material.Proporcion}
-  </td>
-  <td className="border-b px-4 py-2 text-left">
-    <span className="font-semibold lg:hidden">Especificaciones: </span>
-    {material.Especificaciones}
-  </td>
- 
-                </tr>
-              ))}
-            </tbody>
-          </table> */}
-
  
           <div className="mt-4 text-white">
             <p>Total de Volumen Cargado: {totalVolumen} kg</p>
