@@ -311,10 +311,6 @@ const GenerateIdentificationCode = (size, large) => {
   };
   const titlesT = [
     { label: "Horario Inicio", key: "HorarioInicio",
-     
-        
-      
-      
       render: (value) => (
         <td className="border-b px-4 py-2 text-right">
           <span className="font-semibold lg:hidden">Horario de Inicio: </span>
@@ -442,6 +438,12 @@ const GenerateIdentificationCode = (size, large) => {
         <LoadingTable loading={loading}  />
       ) : (
         <>
+
+<div className="mt-4 text-white">
+            <p>Total de Volumen Cargado: {totalVolumen} kg</p>
+            <p>Total de Items: {totalItems}</p>
+          </div>
+
  <TableComponent
       data={data}
       titles={titlesT}
@@ -450,10 +452,6 @@ const GenerateIdentificationCode = (size, large) => {
       actions={actions}
     />
  
-          <div className="mt-4 text-white">
-            <p>Total de Volumen Cargado: {totalVolumen} kg</p>
-            <p>Total de Items: {totalItems}</p>
-          </div>
         </>
       )}
 
