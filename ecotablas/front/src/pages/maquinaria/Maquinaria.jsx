@@ -6,6 +6,7 @@ import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
 import { ToastContainer, toast } from "react-toastify";
+import TableComponent from "../../components/TableComponent";
 import "react-toastify/dist/ReactToastify.css";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { FaChartPie } from "react-icons/fa";
@@ -340,6 +341,106 @@ const [showPieChart, setShowPieChart] = useState(false);
     setShowTable(true);
     setShowPieChart(false);
   };
+
+  const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [data, setData] = useState(maquinarias);
+ 
+  useEffect(() => {
+    setData(maquinarias);
+  }, [maquinarias]);
+
+
+  const handleSort = (campo) => {
+ 
+    let direction = "asc";
+    if (sortConfig.campo === campo && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    const sortedData = [...maquinarias].sort((a, b) => {
+      if (a[campo] < b[campo]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[campo] > b[campo]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  
+    setData(sortedData);
+    setSortConfig({ campo, direction });
+  };
+
+  const titlesT = [
+    { label: "Nombre", key: "Nombre", type: "text" },
+    { label: "Tipo", key: "Tipo", type: "text" },
+    { label: "Modelo", key: "Modelo", type: "text" },
+    { 
+      label: "Estado", 
+      key: "IdEstado", 
+      render: (value) => (
+        <td
+         // className={border-b py-2 px-4 text-center ${estadoStyles[value.IdEstado]}}
+        >
+          {getNombreEstado(value.IdEstado)}
+        </td>
+      ),
+    },
+    { label: "Fecha de Adquisición", key: "fecha_adquisicion", type: "date", hasActions: true },
+  ];
+
+  const actions = [
+    {
+      render: (maquinaria) => (
+        <td className="border-b py-2 px-4 flex flex-row justify-center gap-2">
+                     {maquinaria.IdEstado === 3 && (
+                        <button
+          className="bg-blue-500 text-white p-2 rounded"
+          onClick={() => abrirModalDetallesReparacion(maquinaria.Id)}
+        >
+          Ver Reparaciones
+       </button>
+                      )}
+                      
+                      <button
+                        onClick={() => abrirModalEdit(maquinaria)}
+                        className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+                      >
+                        <FiEdit />
+                        Modificar
+                      </button>
+                      
+                      {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
+                        <button
+                          onClick={() => abrirModalReparacion(maquinaria.Id)}
+                          className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+                        >
+                          <FiPlus />
+                          Agregar Reparación
+                        </button>
+                      )}
+                      
+
+                      {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
+                        <button
+                          onClick={() => handleChangeState(maquinaria)}
+                          className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded flex items-center gap-2"
+                        >
+                          <FiRefreshCw />
+                          Cambiar Estado
+                        </button>
+                      )}
+                      
+                      <DeleteButton
+                        id={maquinaria.Id}
+                        endpoint={`${BASE_URL}/Borrar`}
+                        updateList={fetchMaquinarias}
+                      />
+                    </td>
+
+      ),
+    },
+  ];
   
 
   return (
@@ -371,6 +472,8 @@ pauseOnHover
           title="Reporte de Maquinarias"
           />
 
+          
+
 <DataView ShowTable={handleShowTable} />
 
 <button
@@ -397,7 +500,7 @@ pauseOnHover
           />
         )}
         {modalEdit && (
-          <AddModalWithSelect
+          <ButtonEdit
             title="Modificar Maquinaria"
             fields={fields}
             id={maquinariaId}
@@ -464,97 +567,104 @@ pauseOnHover
 )}
       <div className="overflow-x-auto">
   {showTable ? (
-    <table className="min-w-full bg-white rounded-lg shadow-md">
-      {/* Cargando */}
-      <LoadingTable loading={loading} />
+//     <table className="min-w-full bg-white rounded-lg shadow-md">
+//       {/* Cargando */}
+//       <LoadingTable loading={loading} />
 
-      {/* Encabezado */}
-      <TablaHead titles={title} />
+//       {/* Encabezado */}
+//       <TablaHead titles={title} />
       
-      {/* Cuerpo */}
-      <tbody>
-        {maquinarias.map((maquinaria) => (
-          <tr
-            key={maquinaria.Id}
-            className="hover:bg-gray-100 text-sm md:text-base"
-          >
-            {/* Nombre */}
-            <td className="border-b py-2 px-4 text-left">{maquinaria.Nombre}</td>
+//       {/* Cuerpo */}
+//       <tbody>
+//         {maquinarias.map((maquinaria) => (
+//           <tr
+//             key={maquinaria.Id}
+//             className="hover:bg-gray-100 text-sm md:text-base"
+//           >
+//             {/* Nombre */}
+//             <td className="border-b py-2 px-4 text-left">{maquinaria.Nombre}</td>
             
-            {/* Tipo */}
-            <td className="border-b py-2 px-4 text-left">{maquinaria.Tipo}</td>
+//             {/* Tipo */}
+//             <td className="border-b py-2 px-4 text-left">{maquinaria.Tipo}</td>
             
-            {/* Modelo */}
-            <td className="border-b py-2 px-4 text-left">{maquinaria.Modelo}</td>
+//             {/* Modelo */}
+//             <td className="border-b py-2 px-4 text-left">{maquinaria.Modelo}</td>
             
-            {/* Estado */}
-            <td
-              className={`border-b py-2 px-4 text-center ${
-                estadoStyles[maquinaria.IdEstado]
-              }`}
-            >
-              {getNombreEstado(maquinaria.IdEstado)}
-            </td>
+//             {/* Estado */}
+//             <td
+//               className={`border-b py-2 px-4 text-center ${
+//                 estadoStyles[maquinaria.IdEstado]
+//               }`}
+//             >
+//               {getNombreEstado(maquinaria.IdEstado)}
+//             </td>
             
-            {/* Fecha de adquisición */}
-            <td className="border-b py-2 px-4 text-right">
-              {maquinaria.fecha_adquisicion.slice(0,10)}
-            </td>
+//             {/* Fecha de adquisición */}
+//             <td className="border-b py-2 px-4 text-right">
+//               {maquinaria.fecha_adquisicion.slice(0,10)}
+//             </td>
             
-            {/* Acciones */}
-            <td className="border-b py-2 px-4 flex flex-wrap justify-center gap-2">
-              {/* Ver Reparación */}
-              {maquinaria.IdEstado === 3 && (
-                <button
-  className="bg-blue-500 text-white p-2 rounded"
-  onClick={() => abrirModalDetallesReparacion(maquinaria.Id)}
->
-  Ver Reparaciones
-</button>
-              )}
+//             {/* Acciones */}
+//             <td className="border-b py-2 px-4 flex flex-wrap justify-center gap-2">
+//               {/* Ver Reparación */}
+//               {maquinaria.IdEstado === 3 && (
+//                 <button
+//   className="bg-blue-500 text-white p-2 rounded"
+//   onClick={() => abrirModalDetallesReparacion(maquinaria.Id)}
+// >
+//   Ver Reparaciones
+// </button>
+//               )}
               
-              {/* Modificar */}
-              <button
-                onClick={() => abrirModalEdit(maquinaria)}
-                className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
-              >
-                <FiEdit />
-                Modificar
-              </button>
+//               {/* Modificar */}
+//               <button
+//                 onClick={() => abrirModalEdit(maquinaria)}
+//                 className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+//               >
+//                 <FiEdit />
+//                 Modificar
+//               </button>
               
-              {/* Agregar Reparación */}
-              {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
-                <button
-                  onClick={() => abrirModalReparacion(maquinaria.Id)}
-                  className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
-                >
-                  <FiPlus />
-                  Agregar Reparación
-                </button>
-              )}
+//               {/* Agregar Reparación */}
+//               {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
+//                 <button
+//                   onClick={() => abrirModalReparacion(maquinaria.Id)}
+//                   className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+//                 >
+//                   <FiPlus />
+//                   Agregar Reparación
+//                 </button>
+//               )}
               
-              {/* Cambiar Estado */}
-              {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
-                <button
-                  onClick={() => handleChangeState(maquinaria)}
-                  className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded flex items-center gap-2"
-                >
-                  <FiRefreshCw />
-                  Cambiar Estado
-                </button>
-              )}
+//               {/* Cambiar Estado */}
+//               {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
+//                 <button
+//                   onClick={() => handleChangeState(maquinaria)}
+//                   className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded flex items-center gap-2"
+//                 >
+//                   <FiRefreshCw />
+//                   Cambiar Estado
+//                 </button>
+//               )}
               
-              {/* Botón de Borrar */}
-              <DeleteButton
-                id={maquinaria.Id}
-                endpoint={`${BASE_URL}/Borrar`}
-                updateList={fetchMaquinarias}
-              />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+//               {/* Botón de Borrar */}
+//               <DeleteButton
+//                 id={maquinaria.Id}
+//                 endpoint={`${BASE_URL}/Borrar`}
+//                 updateList={fetchMaquinarias}
+//               />
+//             </td>
+//           </tr>
+//         ))}
+//       </tbody>
+//     </table>
+<TableComponent
+data={data}
+titles={titlesT}
+sortConfig={sortConfig}
+onSort={handleSort}
+actions={actions}
+/>
   ) : (
     <div>
       <MaquinariaChart />
