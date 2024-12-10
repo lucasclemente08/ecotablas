@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Pagination from "../../../components/Pagination"
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { HiMiniLink } from "react-icons/hi2";
+
 import TableComponent from "../../../components/TableComponent";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,7 @@ import {
 import SectionLayout from "../../../layout/SectionLayout";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
-import TablaHead from "../../../components/Thead";
+
 import LoadingTable from "../../../components/LoadingTable";
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import { FaChartLine, FaChartPie } from "react-icons/fa";
