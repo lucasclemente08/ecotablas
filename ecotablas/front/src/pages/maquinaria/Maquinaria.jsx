@@ -10,6 +10,7 @@ import TableComponent from "../../components/TableComponent";
 import "react-toastify/dist/ReactToastify.css";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { FaChartPie } from "react-icons/fa";
+import ModalReparacion from "../../components/ModalReparacion";
 import DataView from "../../components/buttons/DataView";
 import LoadingTable from "../../components/LoadingTable";
 import builderApiUrl from "../../utils/BuilderApi";
@@ -85,7 +86,9 @@ const [showPieChart, setShowPieChart] = useState(false);
     try {
       setLoading(true);
       const res = await getReparacionByIdMaquinaria(id);
-      setReparaciones(res.data); // Guardar las reparaciones en el estado
+      setReparaciones(res.data); 
+      console.log(res.data);
+      // Guardar las reparaciones en el estado
       setModalDetallesReparacion(true); // Mostrar el modal
     } catch (error) {
       toast.error("Error al cargar los detalles de las reparaciones.");
@@ -393,13 +396,14 @@ const [showPieChart, setShowPieChart] = useState(false);
     {
       render: (maquinaria) => (
         <td className="border-b py-2 px-4 flex flex-row justify-center gap-2">
-                     {maquinaria.IdEstado === 3 && (
-                        <button
-          className="bg-blue-500 text-white p-2 rounded"
-          onClick={() => abrirModalDetallesReparacion(maquinaria.Id)}
-        >
-          Ver Reparaciones
-       </button>
+       {maquinaria.IdEstado === 3 && (
+    <button
+      className="bg-blue-500 text-white p-2 rounded"
+      onClick={() => abrirModalDetallesReparacion(maquinaria.Id)}
+    >
+      Ver Reparaciones
+    </button>
+ 
                       )}
                       
                       <button
@@ -512,7 +516,7 @@ pauseOnHover
         )}
 
         {modalReparacion && (
-          <AddModal
+          <AddModalWithSelect
             title="Agregar Reparación"
             fields={[
               {
@@ -548,23 +552,23 @@ pauseOnHover
         )}
 
 {modalDetallesReparacion && (
-  <AddModal
-    title="Detalles de Reparación"
-    content={
-      reparacionValues.Detalle ? (
-        <div>
-          <p><strong>Detalle:</strong> {reparacionValues.Detalle}</p>
-          <p><strong>Fecha de Inicio:</strong> {reparacionValues.FechaInicio}</p>
-          <p><strong>Estado:</strong> {reparacionValues.IdEstadoReparacion}</p>
-          <p><strong>Costo:</strong> {reparacionValues.Costo}</p>
-        </div>
-      ) : (
-        <p>No hay información disponible sobre esta reparación.</p>
-      )
-    }
-    cerrarModal={cerrarModalDetallesReparacion}
-  />
-)}
+        <ModalReparacion
+          title="Detalles de Reparación"
+          content={
+            reparacionValues ? (
+              <div>
+                <p><strong>Detalle:</strong> {reparacionValues.Detalle}</p>
+                <p><strong>Fecha de Inicio:</strong> {reparacionValues.FechaInicio}</p>
+                <p><strong>Estado:</strong> {reparacionValues.IdEstadoReparacion}</p>
+                <p><strong>Costo:</strong> {reparacionValues.Costo}</p>
+              </div>
+            ) : (
+              <p>No hay información disponible sobre esta reparación.</p>
+            )
+          }
+          cerrarModal={cerrarModalDetallesReparacion}
+        />
+      )}
       <div className="overflow-x-auto">
   {showTable ? (
 //     <table className="min-w-full bg-white rounded-lg shadow-md">
