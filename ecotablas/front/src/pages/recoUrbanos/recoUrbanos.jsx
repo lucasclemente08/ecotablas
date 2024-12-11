@@ -3,10 +3,11 @@ import { Pie, Line } from "react-chartjs-2";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import SectionLayout from "../../layout/SectionLayout";
-import { toast } from "react-toastify";
-import Pagination from "../../components/Pagination";
+
+import TableComponent from "../../components/TableComponent";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { FaMapMarkedAlt } from "react-icons/fa";
-import TablaHead from "../../components/Thead";
 import { MdOutlineEditLocationAlt } from "react-icons/md";
 import { MdOutlineAddLocation } from "react-icons/md";
 
@@ -22,7 +23,7 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
-import { FaChartLine, FaChartPie } from "react-icons/fa";
+
 import DeleteButton from "../../components/buttons/DeleteButton";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -31,7 +32,6 @@ import ecoTruck from "../../assets/ecoTruck.png";
 import individual from "../../assets/individual.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import icon from "leaflet/dist/images/marker-icon.png";
-import Toast from "../../components/Toast";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
 
@@ -109,7 +109,7 @@ const RecoUrbanos = () => {
 
   const handleSubmit = () => {
     if (!newUbicacion.Nombre || !newUbicacion.Lat || !newUbicacion.Long) {
-      alert("Por favor, completa todos los campos obligatorios.");
+      toast.alert("Por favor, completa todos los campos obligatorios.");
       return;
     }
 
@@ -128,7 +128,7 @@ const RecoUrbanos = () => {
       
         fetchLocations()
       })
-      .catch((error) => console.error("error al obtener los datos:", error));
+      .catch((error) => toast.error("error al obtener los datos:", error));
   };
 
   const fetchLocations = async () => {
@@ -139,7 +139,7 @@ const RecoUrbanos = () => {
       setLocations(response.data);
   
     } catch (error) {
-      console.error("Error fetching locations:", error);
+      toast.error("Error fetching locations:", error);
     }
   };
 
@@ -213,7 +213,7 @@ const RecoUrbanos = () => {
         fetchLocations();
         setModalEdit(false); 
       } catch (error) {
-        console.error("Error al editar ubicación:", error);
+        toast.error("Error al editar ubicación:", error);
       }
     };
 
@@ -259,10 +259,100 @@ const currentItems = locations.slice(indexOfFirstItem, indexOfLastItem);
 const totalPages = Math.ceil(locations.length / itemsPerPage);
 const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [data, setData] = useState(locations);
+ 
+  useEffect(() => {
+    setData(locations);
+  }, [locations]);
+
+
+  const handleSort = (campo) => {
+    let direction = "asc";
+    if (sortConfig.campo === campo && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    const sortedData = [...locations].sort((a, b) => {
+      if (a[campo] < b[campo]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[campo] > b[campo]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  
+    setData(sortedData);
+    setSortConfig({ campo, direction });
+  };
+
+
+  const titlesT = [
+    {
+      key: "Nombre",
+      label: "Nombre",
+      type: "text",
+    },
+    {
+      key: "TipoDonante",
+      label: "Tipo de Donante",
+      type: "text",
+     hasActions:true
+    },
+    // {
+    //   key: "Lat",
+    //   label: "Latitud",
+    //   type: "number",
+    // },
+    // {
+    //   key: "Long",
+    //   label: "Longitud",
+    //   type: "number",
+    // },
+  ];
+  
+  const actions = [
+    {
+      render: (location) => (
+<td className="px-4 py-2 flex justify-center content-center items-center">
+                  <button
+                    onClick={() => handleEdit(location)}
+                    className="bg-yellow-700 ml-2 flex justify-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                  >
+                    Modificar  <MdOutlineEditLocationAlt className="m-1" />
+                  </button>
+                  <DeleteButton
+                    id={location.IdUbicacion}
+                    endpoint={
+                      "http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Delete"
+                    }
+                    updateList={fetchLocations}
+                  />
+                </td>
+      ),
+    },
+  ];
+
 
   return (
     <SectionLayout title="Recolección de Urbanos">
  
+
+
+ <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
+
+
  {modalEdit && (
             <ButtonEdit
               title="Recoleccion Urbanos"
@@ -277,7 +367,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
 
-         <Toast message={toastMessage} type={toastType}  />
+
       <div className="overflow-x-auto">
         {modalAbierto && (
       <div className="fixed inset-0 overflow-y-auto">
@@ -421,68 +511,21 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
             </MapContainer>
           </div>
         )}
-{/*      
-     <div style={{ width: '500px', height: '500px', margin: '0 auto' }}>
-  <h3 className="text-xl font-semibold mb-4">
-    Distribución de Tipos de Donantes
-  </h3>
-  {pieData.datasets && (
-    <Pie
-      data={pieData}
-      options={{
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "bottom",
-          },
-        },
-      }}
-    />
-  )}
-</div> */}
+
 
       {showMap ? (
     <>
     </>
       ) : (
-        <div>
+        <div className="mt-2">
 
-      <table className="table-auto w-full bg-white rounded-lg shadow-lg mt-4">
-          <TablaHead titles={titles}   />
-          <tbody>
-            {locations.map((location) => (
-              <tr key={location.Nombre}>
-                <td className="px-4 py-2 ">{location.Nombre}</td>
-                <td className="px-4 py-2">{location.TipoDonante}</td>
-                {/* <td className="px-4 py-2">{location.Lat}</td> */}
-          
-                {/* <td className="px-4 py-2">{location.Long}</td> */}
-                <td className="px-4 py-2 flex justify-center content-center items-center">
-                  <button
-                    onClick={() => handleEdit(location)}
-                    className="bg-yellow-700 ml-2 flex justify-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                  >
-                    Modificar  <MdOutlineEditLocationAlt className="m-1" />
-                  </button>
-                  <DeleteButton
-                    id={location.IdUbicacion}
-                    endpoint={
-                      "http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Delete"
-                    }
-                    updateList={fetchLocations}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        
-        </table>
-        <Pagination 
-        currentPage={currentPage}
-        totalPages={totalPages}
-        paginate={paginate}
-      />
-              
+<TableComponent
+      data={data}
+      titles={titlesT}
+      sortConfig={sortConfig}
+      onSort={handleSort}
+      actions={actions}
+    />
       </div>
       )}
     

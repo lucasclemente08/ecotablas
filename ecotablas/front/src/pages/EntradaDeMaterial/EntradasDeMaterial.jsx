@@ -4,13 +4,10 @@ import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { MdDateRange } from "react-icons/md";
 import DeleteButton from "../../components/buttons/DeleteButton";
-import AddModal from "../../components/AddModal";
 import { FiEdit } from "react-icons/fi";
 import TableComponent from "../../components/TableComponent";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
-import LoadingTable from "../../components/LoadingTable";
 import { BsClipboardDataFill } from "react-icons/bs";
-
 import { GrLinkNext } from "react-icons/gr";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
 import DateFilter from "../../components/DateFilter";
@@ -46,12 +43,12 @@ const EntradasDeMaterial = () => {
   
   const [filteredMaterials, setFilteredMaterials] = useState([]); // Datos filtrados
   const [formValues, setFormValues] = useState({
-    VolumenM: "",
-    VolumenMInutil: "",
-    FechaIngresoM: "",
-    IdTipoPlastico: "",
+    VolumenM: "" || undefined,
+    VolumenMInutil: "" || undefined,
+    FechaIngresoM: "" || undefined ,
+    IdTipoPlastico: "" || undefined ,
     Estado: 1,
-    TipoDonante: "",
+    TipoDonante: ""  || undefined,
   });
 
   const [clasificacionValues, setClasificacionValues] = useState({
@@ -181,6 +178,7 @@ const EntradasDeMaterial = () => {
       ...prevState,
       [name]: value,
     }));
+    
   };
 
   const handleChangeClasificado = (e) => {
@@ -233,13 +231,13 @@ const EntradasDeMaterial = () => {
     {
       name: "VolumenM",
       label: "Volumen Util",
-      type: "number",
+      type: "text",
       placeholder: "Volumen Util *",
     },
     {
       name: "VolumenMInutil",
       label: "Volumen Inutil",
-      type: "number",
+      type: "text",
       placeholder: "Volumen Inutil *",
     },
     {
@@ -266,6 +264,8 @@ const EntradasDeMaterial = () => {
     ],
     },
   ];
+
+  
   const fetchPlasticos = async () => {
     try {
       const response = await axios.get(
@@ -426,6 +426,11 @@ const getPlasticbyId =(id)=>{
             formValues={formValues}
           />
         )}
+
+
+
+
+
       <ToastContainer
   position="top-right"
   autoClose={3000}
