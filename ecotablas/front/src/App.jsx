@@ -17,7 +17,7 @@ import Volumen from "./pages/volumen/Volumen";
 import Areas from "./pages/areas/Areas";
 import EmpresaDonante from "./pages/empresaDonante/EmpresaDonante";
 import TablasProducidas from "./pages/TablasProducidas/TablasProducidas";
-import EntradasDeMaterial from "./pages/EntradaDeMaterial/EntradasDeMaterial";
+import EntradasDeMaterial from "./pages/ingresoMaterial/EntradasDeMaterial";
 import ClasificacionDeMaterial from "./pages/clasificacionDeMaterial/ClasificacionDeMaterial";
 import Maquinarias from "./pages/maquinaria/Maquinaria";
 import Tolva from "./pages/tolva/Tolva";
@@ -30,7 +30,7 @@ import Reparaciones from "./pages/reparaciones/Reparaciones";
 import Permisos from "./pages/permisos/Permisos";
 import PermisosCallback from "./components/PermisosCallback";
 import Estadisticas from "./pages/estadisticas/Estadisticas";
-
+import Admin from "./pages/admin/admin";
 
 const routesConfig = [
   { path: "/", element: <Estadisticas/> , protected: true },
@@ -48,6 +48,8 @@ const routesConfig = [
   { path: "/areas", element: <Areas />, protected: true },
   { path: "/empresa", element: <EmpresaDonante />, protected: true },
   { path: "/reportes", element: <Reportes />, protected: true },
+  { path: "/Admin", element: <Admin />, protected: true },
+
   {
     path: "/entrada/material",
     element: <EntradasDeMaterial />,
