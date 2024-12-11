@@ -1,7 +1,7 @@
 import axios from "axios";
 import builderApiUrl from "../utils/BuilderApi";
 
-const BASE_URL = `http://www.trazabilidadodsapi.somee.com/api/Reparacion`;
+const BASE_URL = `http://localhost:61274/api/Reparacion`;
 
 export const getAllReparaciones = async () => {
   try {
@@ -24,6 +24,16 @@ export const getReparacionById = async (id) => {
 export const getReparacionByIdMaquinaria = async (id) => {
   try {
     const response = await axios.get(`${BASE_URL}/ListarPorIdMaquinaria/${id}`);
+    return response;
+  } catch (error) {
+    console.error("Error fetching reparación by ID:", error);
+    throw error; // Propaga el error para que pueda ser manejado en el componente
+  }
+};
+
+export const getReparacionByIdVehiculo = async (id) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/ListarPorIdVehiculo/${id}`);
     return response;
   } catch (error) {
     console.error("Error fetching reparación by ID:", error);

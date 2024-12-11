@@ -15,6 +15,7 @@ import LoadingTable from "../../components/LoadingTable";
 import builderApiUrl from "../../utils/BuilderApi";
 import { FiEdit, FiPlus, FiRefreshCw, FiEye } from "react-icons/fi";
 import MaquinariaChart from "../../components/graficos/MaquinariaChart";
+import ModalReparacion from "../../components/ModalReparacion";
 
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -80,24 +81,42 @@ const [showPieChart, setShowPieChart] = useState(false);
     setModalEdit(true);
   };
  
-  const abrirModalDetallesReparacion = async (id) => {
-    setMaquinariaId(id); // Guardar el ID de la maquinaria seleccionada
+  const abrirModalDetallesReparacion = async (maquinaria) => {
     try {
-      setLoading(true);
-      const res = await getReparacionByIdMaquinaria(id);
-      setReparaciones(res.data); // Guardar las reparaciones en el estado
-      setModalDetallesReparacion(true); // Mostrar el modal
+      const id = maquinaria.Id;
+      // Llama al servicio para obtener los datos por ID de maquinaria
+      const response = await getReparacionByIdMaquinaria(id);
+      const reparacion = response.data;
+  
+      // Actualiza el estado con los valores obtenidos
+      setReparacionValues({
+        Id: reparacion.Id || "",
+        IdMaquinaria: reparacion.IdMaquinaria || "",
+        Detalle: reparacion.Detalle || "",
+        FechaInicio: reparacion.FechaInicio || "",
+        IdEstadoReparacion: reparacion.IdEstadoReparacion || 1,
+        Costo: reparacion.Costo || "",
+      });
+  
+      // Abre el modal
+      setModalDetallesReparacion(true);
     } catch (error) {
-      toast.error("Error al cargar los detalles de las reparaciones.");
-      console.error("Error al cargar reparaciones: ", error);
-    } finally {
-      setLoading(false);
+      console.error("Error al obtener la reparación:", error);
+      // Puedes mostrar una alerta o manejar el error de forma personalizada
     }
   };
   
   const cerrarModalDetallesReparacion = () => {
     setModalDetallesReparacion(false);
-    setReparaciones([]); // Limpiar los datos al cerrar el modal
+    // Opcional: Reinicia los valores del estado
+    setReparacionValues({
+      IdMaquinaria: "",
+      IdVehiculo: "",
+      Detalle: "",
+      FechaInicio: "",
+      IdEstadoReparacion: 1,
+      Costo: "",
+    });
   };
 
   const cerrarModalEdit = () => setModalEdit(false);
@@ -335,6 +354,42 @@ const [showPieChart, setShowPieChart] = useState(false);
     return estado ? estado.Nombre : "Estado no disponible";
   };
 
+  const terminarReparacion = async () => {
+    try {
+      // Actualiza el estado de la reparación a 2 (terminada)
+      await editReparacion(reparacionValues.Id, {
+        ...reparacionValues,
+        IdEstadoReparacion: 2,
+      });
+  
+      const maquinariaActual = maquinarias.find(
+        (m) => m.Id === reparacionValues.IdMaquinaria
+      );
+  
+      if (!maquinariaActual) {
+        throw new Error("No se encontró la maquinaria asociada a esta reparación.");
+      }
+  
+      // Actualiza el estado de la maquinaria a 1
+      await editMaquinarias(reparacionValues.IdMaquinaria, {
+        ...maquinariaActual,
+        IdEstado: 1, // Estado de maquinaria disponible
+      });
+      // Opcional: actualiza la UI si es necesario
+      setReparacionValues((prev) => ({
+        ...prev,
+        IdEstadoReparacion: 2,
+      }));
+  
+      toast.success("La reparación ha sido marcada como terminada.");
+      await fetchMaquinarias(); // Actualiza la lista
+      setModalDetallesReparacion(false); // Cierra el modal después de la acción
+    } catch (error) {
+      console.error("Error al terminar la reparación:", error);
+      alert("Ocurrió un error al marcar la reparación como terminada.");
+    }
+  };
+
 
 
   const handleShowTable = () => {
@@ -379,10 +434,11 @@ const [showPieChart, setShowPieChart] = useState(false);
       label: "Estado", 
       key: "IdEstado", 
       render: (value) => (
-        <td
-         // className={border-b py-2 px-4 text-center ${estadoStyles[value.IdEstado]}}
-        >
-          {getNombreEstado(value.IdEstado)}
+<td
+         className={`border-b py-2 px-4 full text-center ${estadoStyles[value]} `}>
+          
+          {getNombreEstado(value)
+          }
         </td>
       ),
     },
@@ -395,9 +451,10 @@ const [showPieChart, setShowPieChart] = useState(false);
         <td className="border-b py-2 px-4 flex flex-row justify-center gap-2">
                      {maquinaria.IdEstado === 3 && (
                         <button
-          className="bg-blue-500 text-white p-2 rounded"
-          onClick={() => abrirModalDetallesReparacion(maquinaria.Id)}
+          className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+          onClick={() => abrirModalDetallesReparacion(maquinaria)}
         >
+          <FiEye />
           Ver Reparaciones
        </button>
                       )}
@@ -528,12 +585,6 @@ pauseOnHover
                 placeholder: "Fecha *",
               },
               {
-                name: "IdEstadoReparacion",
-                label: "Estado",
-                type: "text",
-                placeholder: "Estado *",
-              },
-              {
                 name: "Costo",
                 label: "Costo",
                 type: "number",
@@ -548,23 +599,26 @@ pauseOnHover
         )}
 
 {modalDetallesReparacion && (
-  <AddModal
-    title="Detalles de Reparación"
-    content={
-      reparacionValues.Detalle ? (
-        <div>
-          <p><strong>Detalle:</strong> {reparacionValues.Detalle}</p>
-          <p><strong>Fecha de Inicio:</strong> {reparacionValues.FechaInicio}</p>
-          <p><strong>Estado:</strong> {reparacionValues.IdEstadoReparacion}</p>
-          <p><strong>Costo:</strong> {reparacionValues.Costo}</p>
-        </div>
-      ) : (
-        <p>No hay información disponible sobre esta reparación.</p>
-      )
-    }
-    cerrarModal={cerrarModalDetallesReparacion}
-  />
-)}
+        <ModalReparacion
+          title="Detalles de Reparación"
+          content={
+            reparacionValues ? (
+              <div>
+                <p><strong>Detalle:</strong> {reparacionValues.Detalle}</p>
+                <p><strong>Fecha de Inicio:</strong> {reparacionValues.FechaInicio}</p>
+                <p><strong>Costo:</strong> {reparacionValues.Costo}</p>
+                <button onClick={terminarReparacion} 
+                className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
+              Terminar Reparación
+            </button>
+              </div>
+            ) : (
+              <p>No hay información disponible sobre esta reparación.</p>
+            )
+          }
+          cerrarModal={cerrarModalDetallesReparacion}
+        />
+      )}
       <div className="overflow-x-auto">
   {showTable ? (
 //     <table className="min-w-full bg-white rounded-lg shadow-md">
