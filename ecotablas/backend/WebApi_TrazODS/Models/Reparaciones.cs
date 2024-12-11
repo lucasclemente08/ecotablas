@@ -112,6 +112,33 @@ namespace WebApi_TrazODS.Models
 
             }
 
+            public DataTable SelectIdVehiculo()
+            {
+                string sqlSentencia = "SP_GetReparacionesPorVehiculo";
+
+
+                SqlConnection sqlCnn = new SqlConnection();
+                sqlCnn.ConnectionString = conectionString;
+
+
+                sqlCnn.Open();
+
+                SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+                sqlCom.CommandType = CommandType.StoredProcedure;
+                sqlCom.Parameters.Add("@IdVehiculo", SqlDbType.Int).Value = IdVehiculo;
+
+                DataSet ds = new DataSet();
+
+                SqlDataAdapter da = new SqlDataAdapter();
+                da.SelectCommand = sqlCom;
+                da.Fill(ds);
+
+                sqlCnn.Close();
+
+                return ds.Tables[0];
+
+            }
+
             public void Insert()
             {
                 string sqlSentencia = "SP_InsertReparacion";

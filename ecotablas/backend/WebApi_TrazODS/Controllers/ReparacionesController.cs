@@ -54,6 +54,21 @@ namespace WebApi_TrazODS.Controllers
             return obj;
         }
 
+        // GET: api/Reparacion/5
+        [HttpGet]
+        public Reparacion ListarPorIdVehiculo(int id)
+        {
+            Reparacion oReparacion = new Reparacion();
+            oReparacion.IdVehiculo = id;
+
+            DataTable dt = oReparacion.SelectIdVehiculo();
+
+            var listaJson = JsonConvert.SerializeObject(dt);
+            var obj = JsonConvert.DeserializeObject<List<Reparacion>>(listaJson).FirstOrDefault();
+
+            return obj;
+        }
+
         // POST: api/Reparacion
         [HttpPost]
         public void Insertar([FromBody] Reparacion value)
