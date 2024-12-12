@@ -10,7 +10,7 @@ import TableComponent from "../../components/TableComponent";
 import "react-toastify/dist/ReactToastify.css";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { FaChartPie } from "react-icons/fa";
-import ModalReparacion from "../../components/ModalReparacion";
+
 import DataView from "../../components/buttons/DataView";
 import LoadingTable from "../../components/LoadingTable";
 import builderApiUrl from "../../utils/BuilderApi";
