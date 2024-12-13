@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db} from '../../firebase/firebase'; // Asegúrate de tener configurado Firebase en un archivo firebase.js
 import TableComponent from '../../components/TableComponent';// Tu componente de tabla personalizado
+import { deleteDoc, } from 'firebase/firestore';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
@@ -17,7 +22,7 @@ const Admin = () => {
         const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setUsers(usersData);
       } catch (error) {
-        console.error('Error fetching users:', error);
+        toast.error('Error fetching users:', error);
       } finally {
         setLoading(false);
       }
@@ -32,9 +37,9 @@ const Admin = () => {
       const userRef = doc(db, 'usuarios', userId);
       await updateDoc(userRef, { role: newRole });
       setUsers(prevUsers => prevUsers.map(user => user.id === userId ? { ...user, role: newRole } : user));
-      alert('Role updated successfully!');
+      toast.success('Rol actualizado!');
     } catch (error) {
-      console.error('Error updating role:', error);
+      toast.error('Error actualizando rol:', error);
     }
   };
 
@@ -44,13 +49,14 @@ const Admin = () => {
     try {
       const userRef = doc(db, 'usuario', userId);
       await deleteDoc(userRef);
+      console.log(useRef)
       setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
-      alert('User deleted successfully!');
+      toast.success('Usuario eliminado exitosamente!');
     } catch (error) {
-      console.error('Error deleting user:', error);
+      toast.error('Error eliminando usuario:', error);
     }
   };
-
+  
   const titles = [
 
     { key: 'correo', label: 'Correo     ' },
@@ -97,6 +103,17 @@ const Admin = () => {
     <div className="p-8">
       <h1 className="text-2xl text-white font-bold mb-6">Admin Panel</h1>
 
+          <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
 
       <form onSubmit={getByMail} className="mb-4">
         <input
