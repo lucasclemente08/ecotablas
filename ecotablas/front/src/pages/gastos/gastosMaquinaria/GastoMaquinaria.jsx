@@ -443,7 +443,7 @@ return link;
                         Modificar
                       </button>
           <DeleteButton
-            endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
+            endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/EliminarGastoVehiculo"
             id={item.Id}
             updateList={fetchGastos}
           />

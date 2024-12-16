@@ -4,6 +4,7 @@ import Pagination from "../../../components/Pagination"
 import FilterTable from "../../../components/FilterTable";
 import { FiEdit } from "react-icons/fi";
 import { HiMiniLink } from "react-icons/hi2";
+import TableComponent from "../../../components/TableComponent";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -299,17 +300,36 @@ const GastoVehiculos = () => {
     "Descripción",
     "Acciones",
   ];
-  const titlesT = [
-    { key: "TipoComprobante", label: "Tipo de comprobante" },
-    { key: "Comprobante", label: "Comprobante" },
-    { key: "TipoGasto", label: "Tipo de gasto" },
-    { key: "Proveedor", label: "Proveedor" },
-    { key: "Monto", label: "Monto ($)" },
-    { key: "Fecha", label: "Fecha" },
-    { key: "Descripcion", label: "Descripción" },
-    { key: "acciones", label: "Acciones" },
 
-  ];;
+
+
+  const titlesT = [
+    { key: "TipoComprobante", label: "Tipo de Comprobante" },
+    {
+      key: "Comprobante",
+      label: "Comprobante",
+      render: (value) =>
+        value ? (
+          <a
+            href={`https://www.dropbox.com/scl/fi/${value}`}
+            className="text-blue-500 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver Comprobante
+          </a>
+        ) : (
+          "No disponible"
+        ),
+    },
+    { key: "TipoGasto", label: "Tipo de Gasto" },
+    { key: "Proveedor", label: "Proveedor" },
+    { key: "Monto", label: "Monto", type: "number" },
+    { key: "Fecha", label: "Fecha", type: "date" },
+    { key: "Descripcion", label: "Descripción",hasActions: true  },
+
+  ];
+
 
   const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
   const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
@@ -447,14 +467,55 @@ const currentItems = (filteredData.length > 0 ? filteredData : dataV).slice(
 );
 const totalPages = Math.ceil((filteredData.length > 0 ? filteredData.length : dataV.length) / itemsPerPage);
 
+const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [data, setData] = useState(dataV);
+ 
+  useEffect(() => {
+    setData(dataV);
+  }, [dataV]);
 
-const paginate = (pageNumber) => {
-  if (pageNumber > 0 && pageNumber <= totalPages) {
-    setCurrentPage(pageNumber);
-  }
-};
 
+  const handleSort = (campo) => {
+ 
+    let direction = "asc";
+    if (sortConfig.campo === campo && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    const sortedData = [...dataV].sort((a, b) => {
+      if (a[campo] < b[campo]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[campo] > b[campo]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  
+    setData(sortedData);
+    setSortConfig({ campo, direction });
+  };
 
+  const actions = [
+    {
+      render: (item) => (
+        <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
+            <button
+                        onClick={() => abrirModalEdit(item)}
+                        className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        <FiEdit />
+                        Modificar
+                      </button>
+          <DeleteButton
+            endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
+            id={item.Id}
+            updateList={fetchMaterials}
+          />
+        </td>
+      ),
+    },
+  ];
 
 const [lineData, setLineData] = useState({});
 
@@ -591,106 +652,104 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
         loading ? (
           <LoadingTable loading={loading} />
         ) : (
-<div className="overflow-x-auto w-full bg-gray-100">
-  <table className="min-w-full bg-white rounded-lg shadow-md">
-  <TablaHead
-        titles={titlesT}
-        data={currentItems}
-        onSortedData={(sorted) => setSortedData(sorted)}
-      />
-    <tbody>
-      {sortedData.map((item, index) => (
-        <tr key={index} className="hover:bg-gray-100 text-sm md:text-base">
 
-          <td className="border-b py-3 px-4 text-left">
-            <span className="font-semibold lg:hidden">Tipo Comprobante: </span>
-            {item.TipoComprobante}
-          </td>
+          <TableComponent
+          data={data}
+          titles={titlesT}
+          sortConfig={sortConfig}
+          onSort={handleSort}
+          actions={actions}
+        />
+    
+
+
+    // // <tbody>
+    //   {sortedData.map((item, index) => (
+    //     <tr key={index} className="hover:bg-gray-100 text-sm md:text-base">
+
+    //       <td className="border-b py-3 px-4 text-left">
+    //         <span className="font-semibold lg:hidden">Tipo Comprobante: </span>
+    //         {item.TipoComprobante}
+    //       </td>
           
-          {/* Comprobante */}
-          <td className="border-b py-3 px-4 text-left">
-            <span className="font-semibold lg:hidden">Comprobante: </span>
-            {item.Comprobante ? (
-              <a
-                href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
-                className="text-blue-500 flex items-center gap-1"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <HiMiniLink className="m-1" /> Comprobante
-              </a>
-            ) : (
-              "No disponible"
-            )}
-          </td>
+    //       {/* Comprobante */}
+    //       <td className="border-b py-3 px-4 text-left">
+    //         <span className="font-semibold lg:hidden">Comprobante: </span>
+    //         {item.Comprobante ? (
+    //           <a
+    //             href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
+    //             className="text-blue-500 flex items-center gap-1"
+    //             target="_blank"
+    //             rel="noopener noreferrer"
+    //           >
+    //             <HiMiniLink className="m-1" /> Comprobante
+    //           </a>
+    //         ) : (
+    //           "No disponible"
+    //         )}
+    //       </td>
           
-          {/* Tipo de Gasto */}
-          <td className="border-b py-3 px-4 text-left">
-            <span className="font-semibold lg:hidden">Tipo Gasto: </span>
-            {item.TipoGasto}
-          </td>
+    //       {/* Tipo de Gasto */}
+    //       <td className="border-b py-3 px-4 text-left">
+    //         <span className="font-semibold lg:hidden">Tipo Gasto: </span>
+    //         {item.TipoGasto}
+    //       </td>
           
-          {/* Vehículo */}
-          <td className="border-b py-3 px-4 text-left">
-            <span className="font-semibold lg:hidden">Vehículo: </span>
-            {getVehicleById(item.IdVehiculo)}
-          </td>
+    //       {/* Vehículo */}
+    //       <td className="border-b py-3 px-4 text-left">
+    //         <span className="font-semibold lg:hidden">Vehículo: </span>
+    //         {getVehicleById(item.IdVehiculo)}
+    //       </td>
           
 
-          <td className="border-b py-3 px-4 text-left">
-            <span className="font-semibold lg:hidden">Proveedor: </span>
-            {item.Proveedor}
-          </td>
+    //       <td className="border-b py-3 px-4 text-left">
+    //         <span className="font-semibold lg:hidden">Proveedor: </span>
+    //         {item.Proveedor}
+    //       </td>
         
-          <td className="border-b py-3 px-4 text-right">
-            <span className="font-semibold lg:hidden">Monto: </span>
-            ${item.Monto}
-          </td>
+    //       <td className="border-b py-3 px-4 text-right">
+    //         <span className="font-semibold lg:hidden">Monto: </span>
+    //         ${item.Monto}
+    //       </td>
           
 
-          <td className="border-b py-3 px-4 text-right">
-            <span className="font-semibold lg:hidden">Fecha: </span>
-            {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
-          </td>
+    //       <td className="border-b py-3 px-4 text-right">
+    //         <span className="font-semibold lg:hidden">Fecha: </span>
+    //         {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
+    //       </td>
  
-          <td className="border-b py-3 px-4 text-left">
-            <span className="font-semibold lg:hidden">Descripción: </span>
-            {item.Descripcion}
-          </td>
+    //       <td className="border-b py-3 px-4 text-left">
+    //         <span className="font-semibold lg:hidden">Descripción: </span>
+    //         {item.Descripcion}
+    //       </td>
       
-          <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
+    //       <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
          
-            <button
-              onClick={() => {
-                setGastoEdit(item);
-                setFormValues(item);
-                setModalEdit(true);
-              }}
-              className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              <FiEdit className="m-1" />
-              Modificar
-            </button>
+    //         <button
+    //           onClick={() => {
+    //             setGastoEdit(item);
+    //             setFormValues(item);
+    //             setModalEdit(true);
+    //           }}
+    //           className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+    //         >
+    //           <FiEdit className="m-1" />
+    //           Modificar
+    //         </button>
             
-            {/* Borrar */}
-            <DeleteButton
-              endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
-              id={item.IdGasto}
-              updateList={fetchMaterials}
-            />
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+    //         {/* Borrar */}
+    //         <DeleteButton
+    //           endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
+    //           id={item.IdGasto}
+    //           updateList={fetchMaterials}
+    //         />
+    //       </td>
+    //     </tr>
+    //   ))}
+    // </tbody>
+  // </table>
 
-  {/* Paginación */}
-  <Pagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    paginate={paginate}
-  />
-</div>
+ 
 
 
 
