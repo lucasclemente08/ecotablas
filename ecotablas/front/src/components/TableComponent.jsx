@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Pagination from "./Pagination"; // Asegúrate de importar el componente de paginación
 import TablaHead from "./Thead";
 import LoadingTable from "./LoadingTable";
+import { useRole } from "../context/RoleContext";
 const TableComponent = ({ 
   data, 
   titles, 
@@ -14,6 +15,10 @@ const TableComponent = ({
   const [currentPage, setCurrentPage] = useState(1);
 
   // Lógica de paginación
+
+
+  const userRole = useRole(); 
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedData = data.slice(startIndex, endIndex);
@@ -51,11 +56,14 @@ const TableComponent = ({
                     </td>
                   ))}
   
-                  {actions && (
+                  
+  {actions && (
                     <td className="border-b py-3 px-4">
                       {actions.map((action, index) => (
                         <React.Fragment key={index}>
-                          {action.render ? action.render(item) : null}
+                          {/* Verificar si la acción está permitida según el rol */}
+                          {action.allowedRoles?.includes(userRole) &&
+                            (action.render ? action.render(item) : null)}
                         </React.Fragment>
                       ))}
                     </td>

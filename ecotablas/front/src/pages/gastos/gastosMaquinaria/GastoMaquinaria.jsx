@@ -15,7 +15,7 @@ import {
 import SectionLayout from "../../../layout/SectionLayout";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
-
+import { RoleProvider } from "../../../context/RoleContext";
 import LoadingTable from "../../../components/LoadingTable";
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import { FaChartLine, FaChartPie } from "react-icons/fa";

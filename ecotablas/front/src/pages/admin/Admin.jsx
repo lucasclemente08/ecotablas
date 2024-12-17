@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs,getDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase'; // Configuración de Firebase
 import TableComponent from '../../components/TableComponent'; // Tu componente de tabla personalizado
 import { ToastContainer, toast } from "react-toastify";
@@ -45,23 +45,26 @@ const Admin = () => {
     fetchUsers();
   }, []);
 
-  // Actualizar permisos de un rol
   const updatePermissions = async (role, updatedPermissions) => {
     try {
       const roleRef = doc(db, 'roles', role);
+  
+      // Verificar existencia del documento
+      const roleDoc = await getDoc(roleRef);
+      if (!roleDoc.exists()) {
+        toast.error(`El rol '${role}' no existe en Firestore.`);
+        return;
+      }
+  
+      // Actualizar permisos
       await updateDoc(roleRef, { permissions: updatedPermissions });
       setPermissions(prev => ({ ...prev, [role]: updatedPermissions }));
       toast.success('Permisos actualizados correctamente!');
     } catch (error) {
-      toast.error('Error al actualizar permisos:', error);
+     console.error(`Error al actualizar permisos: ${error.message}`);
     }
   };
-
-  // Verificar si un rol tiene un permiso
-  const hasPermission = (role, permission) => {
-    return permissions[role]?.includes(permission);
-  };
-
+  
   // Actualizar rol de usuario
   const updateRole = async (userId, newRole) => {
     try {

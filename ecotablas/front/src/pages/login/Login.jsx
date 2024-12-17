@@ -28,11 +28,33 @@ const dropboxSecret=import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
 
     try {
       signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then(async(userCredential) => {
           setUser({
             uid: userCredential.user.uid,
             email: userCredential.user.email,
           });
+
+          if (!user || !user.email) {
+            console.error("Error: El objeto 'user' o la propiedad 'email' no están definidos.");
+            return;
+          }
+    
+          const infoUser = user.uid;
+          const docuRef = doc(db, `usuarios/${infoUser}`); // Asegúrate de que 'doc' esté definido
+    
+  
+            // Verificar si el usuario ya existe
+            const docSnap = await getDoc(docuRef);
+            if (!docSnap.exists()) {
+              // Si no existe, guardarlo en la base de datos
+              await setDoc(docuRef, {
+                correo: user.email, // Aseguramos que 'email' esté definido
+                role: "empleado",
+              });
+            
+            }
+
+
           navigate("/permisos");
         })
         .catch((error) => {
