@@ -38,7 +38,7 @@ const Register = () => {
 
       const docuRef = doc(db, `usuarios/${infoUser}`);
 
-      await setDoc(docuRef, { correo: correo, role: "empleado" });
+      await setDoc(docuRef, { correo: correo, role: "viewer" });
 
       // async function fetchUsuarios() {
       //   try {
@@ -86,7 +86,7 @@ const Register = () => {
         // Guardar el rol del usuario en Firestore
         await addDoc(collection(db, "usuarios"), {
           correo: user.email,
-          role: "empleado",
+          role: "viewer",
         });
 
         navigate("/");

@@ -49,7 +49,7 @@ const dropboxSecret=import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
               // Si no existe, guardarlo en la base de datos
               await setDoc(docuRef, {
                 correo: user.email, // Aseguramos que 'email' esté definido
-                role: "empleado",
+                role: "viewer",
               });
             
             }
@@ -91,7 +91,7 @@ const dropboxSecret=import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
             // Si no existe, guardarlo en la base de datos
             await setDoc(docuRef, {
               correo: user.email, // Aseguramos que 'email' esté definido
-              role: "empleado",
+              role: "viewer",
             });
           }
   

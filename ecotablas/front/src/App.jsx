@@ -33,10 +33,10 @@ import Estadisticas from "./pages/estadisticas/Estadisticas";
 import Admin from "./pages/admin/admin";
 
 const routesConfig = [
-  { path: "/", element: <Estadisticas />, protected: true, roles: ["admin", "editor"] },
+  { path: "/", element: <Estadisticas />, protected: true, roles: ["admin", "editor","empleado"] },
   { path: "/login", element: <Login />, protected: false },
   { path: "/register", element: <Register />, protected: false },
-  { path: "/empleados", element: <Empleados />, protected: true, roles: ["admin", "editor"] },
+  { path: "/empleados", element: <Empleados />, protected: true, roles: ["admin", "editor","viewer"] },
   { path: "/plasticos", element: <Tablas />, protected: true, roles: ["admin", "editor","viewer"] },
   { path: "/material", element: <Material />, protected: true, roles: ["admin", "editor"] },
   { path: "/materialTri", element: <MaterialTrit />, protected: true, roles: ["admin", "editor"] },
@@ -49,7 +49,7 @@ const routesConfig = [
   { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true, roles: ["admin", "editor"] },
   { path: "/reportes", element: <Reportes />, protected: true, roles: ["admin", "editor"] },
   { path: "/admin", element: <Admin />, protected: true, roles: ["admin"] },
-  { path: "/permisos", element: <Permisos />, protected: true, roles: ["admin", "editor","viewer"] },
+  { path: "/permisos", element: <Permisos />, protected: true, roles: ["admin", "editor","viewer","empleado"] },
   { path: "/verificacion", element: <PermisosCallback />, protected: true, roles: ["admin", "editor","viewer"] },
 ];
 
