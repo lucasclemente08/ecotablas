@@ -31,6 +31,7 @@ import Permisos from "./pages/permisos/Permisos";
 import PermisosCallback from "./components/PermisosCallback";
 import Estadisticas from "./pages/estadisticas/Estadisticas";
 import Admin from "./pages/admin/admin";
+import { RoleProvider } from "./context/RoleContext";
 
 const routesConfig = [
   { path: "/", element: <Estadisticas />, protected: true, roles: ["admin", "editor","empleado"] },
@@ -59,25 +60,28 @@ function App() {
   return (
     <Provider store={store}>
       <AuthProvider>
+              <RoleProvider>
+
         <Router>
           <div className="bg-slate-900 flex flex-col min-h-screen">
             <Routes>
               {routesConfig.map(({ path, element, protected: isProtected, roles }) => (
                 <Route
-                  key={path}
-                  path={path}
-                  element={
-                    isProtected ? (
-                      <ProtectedRoute roles={roles}>{element}</ProtectedRoute>
-                    ) : (
-                      element
-                    )
-                  }
+                key={path}
+                path={path}
+                element={
+                  isProtected ? (
+                    <ProtectedRoute roles={roles}>{element}</ProtectedRoute>
+                  ) : (
+                    element
+                  )
+                }
                 />
               ))}
             </Routes>
           </div>
         </Router>
+              </RoleProvider>
       </AuthProvider>
     </Provider>
   );

@@ -12,8 +12,6 @@ const ProtectedRoute = ({ children, roles = [] }) => {
   const effectiveUser = user || (storedUser ? JSON.parse(storedUser) : null);
   const effectiveRole = role || storedRole;
 
-  console.log("Effective Role:", effectiveRole);
-  console.log("Effective User:", effectiveUser);
 
   if (!effectiveUser) {
     // Si el usuario no está autenticado, redirige a la página de inicio de sesión

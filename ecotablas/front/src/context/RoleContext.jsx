@@ -1,18 +1,24 @@
-
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const RoleContext = createContext();
 
-// Proveedor de contexto
-export const RoleProvider = ({ role, children }) => {
+export const RoleProvider = ({ children }) => {
+  const [role, setRole] = useState(() => {
+    // Cargar el rol desde localStorage al inicializar
+    return localStorage.getItem("role") || null;
+  });
+
+  useEffect(() => {
+    // console.log("RoleProvider initialized with role:", role);
+  }, [role]);
+
   return (
-    <RoleContext.Provider value={role}>
+    <RoleContext.Provider value={{ role, setRole }}>
       {children}
     </RoleContext.Provider>
   );
 };
 
-// Hook para obtener el rol
 export const useRole = () => {
   return useContext(RoleContext);
 };

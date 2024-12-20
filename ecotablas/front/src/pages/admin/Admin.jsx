@@ -4,6 +4,7 @@ import { db } from '../../firebase/firebase'; // Configuración de Firebase
 import TableComponent from '../../components/TableComponent'; // Tu componente de tabla personalizado
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { RoleProvider } from '../../context/RoleContext';
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
@@ -133,34 +134,32 @@ const Admin = () => {
 
   // Acciones de la tabla
   const actions = [
-  
     {
-      label: 'Delete',
-      render: (user) => (
-<div className=" flex justify-center">
-
-<select
-          className="border rounded px-2 py-1"
-          value={user.role}
-          onChange={(e) => updateRole(user.id, e.target.value)}
-        >
-          <option value="admin">Admin</option>
-          <option value="editor">Editor</option>
-          <option value="viewer">Viewer</option>
-        </select>
-        
-        <button
-         className="ml-2 bg-red-700 flex hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-          onClick={() => deleteUser(user.id)}
-        >
-          Delete
-        </button>
-</div>
-      )
-    }
+      label: "Editar",
+      allowedRoles: ["admin", ],
+      render: (item) => <select
+      className="border rounded px-2 py-1"
+      value={item.role}
+      onChange={(e) => updateRole(item.id, e.target.value)} 
+    >
+      <option value="admin">Admin</option>
+      <option value="editor">Editor</option>
+      <option value="viewer">Viewer</option>
+    </select>
+    },
+    {
+      label: "Eliminar",
+      allowedRoles: ["admin"],
+      render: (item) => <button
+       className="ml-2 bg-red-700 flex hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+      onClick={() => deleteItem(item)}>Eliminar</button>,
+    },
   ];
-
+  
+  
   return (
+    <RoleProvider role={currentUserRole}>
+
     <div className="p-8">
       <h1 className="text-2xl text-white font-bold mb-6">Admin Panel</h1>
       <ToastContainer
@@ -189,8 +188,10 @@ const Admin = () => {
         actions={actions}
         itemsPerPage={5}
         isLoading={loading}
-      />
+       
+        />
     </div>
+        </RoleProvider>
   );
 };
 
