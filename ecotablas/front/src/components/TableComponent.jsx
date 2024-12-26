@@ -71,7 +71,7 @@ const TableComponent = ({
       </div>
     ) : (
       <div className="flex items-center bg-red-100 text-red-700 text-sm px-3 py-1 rounded">
-        No tienes permisos para realizar esta acción
+        No permitido
       </div>
     )}
   </div>
