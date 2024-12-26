@@ -5,7 +5,7 @@ import { auth, provider } from "../../firebase/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 import { db } from "../../firebase/firebase";
-import { doc, Firestore, getDocs, setDoc } from "firebase/firestore";
+import { doc, Firestore, getDocs, addDoc,setDoc } from "firebase/firestore";
 
 import { collection } from "firebase/firestore";
 
@@ -38,7 +38,7 @@ const Register = () => {
 
       const docuRef = doc(db, `usuarios/${infoUser}`);
 
-      await setDoc(docuRef, { correo: correo, role: "empleado" });
+      await setDoc(docuRef, { correo: correo, role: "viewer" });
 
       // async function fetchUsuarios() {
       //   try {
@@ -85,10 +85,8 @@ const Register = () => {
 
         // Guardar el rol del usuario en Firestore
         await addDoc(collection(db, "usuarios"), {
-          uid: user.uid,
-          nombre: user.displayName,
           correo: user.email,
-          rol: "empleado",
+          role: "viewer",
         });
 
         navigate("/");

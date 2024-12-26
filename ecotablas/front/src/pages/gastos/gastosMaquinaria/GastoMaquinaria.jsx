@@ -15,7 +15,7 @@ import {
 import SectionLayout from "../../../layout/SectionLayout";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
-
+import { RoleProvider } from "../../../context/RoleContext";
 import LoadingTable from "../../../components/LoadingTable";
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import { FaChartLine, FaChartPie } from "react-icons/fa";
@@ -432,7 +432,9 @@ return link;
 
   ];
   const actions = [
+
     {
+      allowedRoles: ["admin","editor", ],
       render: (item) => (
         <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
             <button
@@ -443,7 +445,7 @@ return link;
                         Modificar
                       </button>
           <DeleteButton
-            endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
+            endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/EliminarGastoVehiculo"
             id={item.Id}
             updateList={fetchGastos}
           />

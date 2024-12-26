@@ -231,13 +231,13 @@ const EntradasDeMaterial = () => {
     {
       name: "VolumenM",
       label: "Volumen Util",
-      type: "text",
+      type: "number",
       placeholder: "Volumen Util *",
     },
     {
       name: "VolumenMInutil",
       label: "Volumen Inutil",
-      type: "text",
+      type: "number",
       placeholder: "Volumen Inutil *",
     },
     {
@@ -353,6 +353,7 @@ const getPlasticbyId =(id)=>{
 
   const actions = [
     {
+      allowedRoles: ["admin","editor", ],
       render: (material) => (
         <td
         className={` py-2 px-4 flex justify-center 

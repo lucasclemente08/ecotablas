@@ -17,7 +17,7 @@ import Volumen from "./pages/volumen/Volumen";
 import Areas from "./pages/areas/Areas";
 import EmpresaDonante from "./pages/empresaDonante/EmpresaDonante";
 import TablasProducidas from "./pages/TablasProducidas/TablasProducidas";
-import EntradasDeMaterial from "./pages/EntradaDeMaterial/EntradasDeMaterial";
+import EntradasDeMaterial from "./pages/ingresoMaterial/EntradasDeMaterial";
 import ClasificacionDeMaterial from "./pages/clasificacionDeMaterial/ClasificacionDeMaterial";
 import Maquinarias from "./pages/maquinaria/Maquinaria";
 import Tolva from "./pages/tolva/Tolva";
@@ -30,75 +30,66 @@ import Reparaciones from "./pages/reparaciones/Reparaciones";
 import Permisos from "./pages/permisos/Permisos";
 import PermisosCallback from "./components/PermisosCallback";
 import Estadisticas from "./pages/estadisticas/Estadisticas";
-import Rutas from "./pages/rutas/Rutas";
+import Admin from "./pages/admin/admin";
 
+import { RoleProvider } from "./context/RoleContext";
 
 const routesConfig = [
-  { path: "/", element: <Estadisticas/> , protected: true },
+  { path: "/", element: <Estadisticas />, protected: true, roles: ["admin", "editor","empleado"] },
   { path: "/login", element: <Login />, protected: false },
   { path: "/register", element: <Register />, protected: false },
-  { path: "/empleados", element: <Empleados />, protected: true },
-  { path: "/plasticos", element: <Tablas />, protected: true },
-  { path: "/material", element: <Material />, protected: true },
-  { path: "/materialTri", element: <MaterialTrit />, protected: true },
-  { path: "/materialProc", element: <MaterialProc />, protected: true },
-  { path: "/profile", element: <Profile />, protected: true },
-  { path: "/recoleccion", element: <RecoUrbanos />, protected: true },
-  { path: "/vehiculos", element: <Vehiculos />, protected: true },
-  { path: "/volumen", element: <Volumen />, protected: true },
-  { path: "/areas", element: <Areas />, protected: true },
-  { path: "/rutas", element: <Rutas />, protected: true },
-  { path: "/empresa", element: <EmpresaDonante />, protected: true },
-  { path: "/reportes", element: <Reportes />, protected: true },
-  {
-    path: "/entrada/material",
-    element: <EntradasDeMaterial />,
-    protected: true,
-  },
-  {
-    path: "/clasificacion",
-    element: <ClasificacionDeMaterial />,
-    protected: true,
-  },
-  { path: "/maquinaria", element: <Maquinarias />, protected: true },
-  { path: "/tolva", element: <Tolva />, protected: true },
-  { path: "/reparaciones", element: <Reparaciones />, protected: true },
-  { path: "/tablas", element: <TablasProducidas />, protected: true },
-  { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true },
-  { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true },
-  { path: "/permisos", element: <Permisos />, protected: true },
-  { path: "/verificacion", element: <PermisosCallback/>, protected: true },
+  { path: "/empleados", element: <Empleados />, protected: true, roles: ["admin", "editor","viewer"] },
+  { path: "/plasticos", element: <Tablas />, protected: true, roles: ["admin", "editor","viewer"] },
+  { path: "/material", element: <Material />, protected: true, roles: ["admin", "editor"] },
+  { path: "/materialTri", element: <MaterialTrit />, protected: true, roles: ["admin", "editor"] },
+  { path: "/materialProc", element: <MaterialProc />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
+  { path: "/recoleccion", element: <RecoUrbanos />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
+  { path: "/clasificacion", element: <ClasificacionDeMaterial />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
+  { path: "/entrada/material", element: <EntradasDeMaterial />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
+  { path: "/maquinaria", element: <Maquinarias />, protected: true, roles: ["admin", "editor"] },
+  { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true, roles: ["admin", "editor"] },
 
-
+  { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true, roles: ["admin", "editor"] },
+  { path: "/profile", element: <Profile />, protected: true, roles: ["admin", "editor"] },
+  
+  { path: "/reportes", element: <Reportes />, protected: true, roles: ["admin", "editor"] },
+  { path: "/admin", element: <Admin />, protected: true, roles: ["admin"] },
+  { path: "/permisos", element: <Permisos />, protected: true, roles: ["admin", "editor","viewer","empleado"] },
+  { path: "/verificacion", element: <PermisosCallback />, protected: true, roles: ["admin", "editor","viewer"] },
 ];
+
 
 
 function App() {
   return (
     <Provider store={store}>
       <AuthProvider>
+              <RoleProvider>
+
         <Router>
           <div className="bg-slate-900 flex flex-col min-h-screen">
             <Routes>
-              {routesConfig.map(({ path, element, protected: isProtected }) => (
+              {routesConfig.map(({ path, element, protected: isProtected, roles }) => (
                 <Route
-                  key={path}
-                  path={path}
-                  element={
-                    isProtected ? (
-                      <ProtectedRoute>{element}</ProtectedRoute>
-                    ) : (
-                      element
-                    )
-                  }
+                key={path}
+                path={path}
+                element={
+                  isProtected ? (
+                    <ProtectedRoute roles={roles}>{element}</ProtectedRoute>
+                  ) : (
+                    element
+                  )
+                }
                 />
               ))}
             </Routes>
           </div>
         </Router>
+              </RoleProvider>
       </AuthProvider>
     </Provider>
   );
 }
+
 
 export default App;
