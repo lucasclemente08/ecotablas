@@ -60,23 +60,23 @@ const TableComponent = ({
                   {/* Aquí van las acciones */}
                   {actions && (
                     <td className="border-b py-3 flex justify-center  text-center  px-4">
-                      {actions.map((action, index) => {
-                        // Log para verificar los roles permitidos y el rol del usuario
-                        console.log("Roles permitidos para esta acción:", action.allowedRoles);
-                        console.log("Rol actual del usuario:", userRole);
+         {actions.map((action, index) => (
+  <div
+    key={index}
+    className="flex items-center justify-start gap-2 py-1"
+  >
+    {Array.isArray(action.allowedRoles) && action.allowedRoles.includes(userRole) ? (
+      <div className="flex items-center bg-green-100 text-green-700 text-sm px-3 py-1 rounded">
+        {action.render ? action.render(item) : null}
+      </div>
+    ) : (
+      <div className="flex items-center bg-red-100 text-red-700 text-sm px-3 py-1 rounded">
+        No tienes permisos para realizar esta acción
+      </div>
+    )}
+  </div>
+))}
 
-                        // Asegurarse de que 'allowedRoles' sea un array válido y verificar si el rol de usuario tiene acceso
-                        if (Array.isArray(action.allowedRoles) && action.allowedRoles.includes(userRole)) {
-                          return (
-                            <React.Fragment key={index}>
-                            {action.render ? (
-                              <div className="">{action.render(item)}</div> // O cualquier otro contenedor o elemento que necesite el className
-                            ) : null}
-                          </React.Fragment>
-                          );
-                        }
-                        return null;
-                      })}
                     </td>
                   )}
                 </tr>

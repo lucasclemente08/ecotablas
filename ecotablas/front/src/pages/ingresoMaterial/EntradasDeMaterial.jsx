@@ -353,6 +353,7 @@ const getPlasticbyId =(id)=>{
 
   const actions = [
     {
+      allowedRoles: ["admin","editor", ],
       render: (material) => (
         <td
         className={` py-2 px-4 flex justify-center 

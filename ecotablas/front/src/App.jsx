@@ -31,6 +31,7 @@ import Permisos from "./pages/permisos/Permisos";
 import PermisosCallback from "./components/PermisosCallback";
 import Estadisticas from "./pages/estadisticas/Estadisticas";
 import Admin from "./pages/admin/admin";
+
 import { RoleProvider } from "./context/RoleContext";
 
 const routesConfig = [
@@ -47,7 +48,10 @@ const routesConfig = [
   { path: "/entrada/material", element: <EntradasDeMaterial />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
   { path: "/maquinaria", element: <Maquinarias />, protected: true, roles: ["admin", "editor"] },
   { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true, roles: ["admin", "editor"] },
+
   { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true, roles: ["admin", "editor"] },
+  { path: "/profile", element: <Profile />, protected: true, roles: ["admin", "editor"] },
+  
   { path: "/reportes", element: <Reportes />, protected: true, roles: ["admin", "editor"] },
   { path: "/admin", element: <Admin />, protected: true, roles: ["admin"] },
   { path: "/permisos", element: <Permisos />, protected: true, roles: ["admin", "editor","viewer","empleado"] },

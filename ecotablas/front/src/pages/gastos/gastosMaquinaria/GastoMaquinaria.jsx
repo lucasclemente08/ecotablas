@@ -432,7 +432,9 @@ return link;
 
   ];
   const actions = [
+
     {
+      allowedRoles: ["admin","editor", ],
       render: (item) => (
         <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
             <button
