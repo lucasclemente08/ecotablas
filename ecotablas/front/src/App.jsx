@@ -30,6 +30,7 @@ import Reparaciones from "./pages/reparaciones/Reparaciones";
 import Permisos from "./pages/permisos/Permisos";
 import PermisosCallback from "./components/PermisosCallback";
 import Estadisticas from "./pages/estadisticas/Estadisticas";
+import Rutas from "./pages/rutas/Rutas";
 
 
 const routesConfig = [
@@ -46,6 +47,7 @@ const routesConfig = [
   { path: "/vehiculos", element: <Vehiculos />, protected: true },
   { path: "/volumen", element: <Volumen />, protected: true },
   { path: "/areas", element: <Areas />, protected: true },
+  { path: "/rutas", element: <Rutas />, protected: true },
   { path: "/empresa", element: <EmpresaDonante />, protected: true },
   { path: "/reportes", element: <Reportes />, protected: true },
   {

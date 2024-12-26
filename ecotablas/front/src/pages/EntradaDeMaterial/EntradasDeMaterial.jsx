@@ -423,7 +423,7 @@ const getPlasticbyId =(id)=>{
             handleChange={handleChange}
             handleSubmit={handleSubmit}
             cerrarModal={cerrarModal}
-            formValues={formValues}
+            values={formValues}
           />
         )}
 
