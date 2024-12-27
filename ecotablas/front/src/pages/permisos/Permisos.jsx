@@ -3,7 +3,9 @@ import React from 'react';
 const Permisos = () => {
 
   const clientId = import.meta.env.VITE_DROPBOX_CLIENT_ID;
-  const redirectUri = encodeURIComponent(import.meta.env.VITE_REDIRECT_URI || 'http://localhost:5173/'); // Default redirect URI
+  const redirectUri = encodeURIComponent(import.meta.env.VITE_REDIRECT_URI || 'http://localhost:5173/');
+  console.log("Redirect URI:", redirectUri);
+   // Default redirect URI
 
   const authUrl = `https://www.dropbox.com/oauth2/authorize?client_id=${clientId}&response_type=code&token_access_type=offline&redirect_uri=${redirectUri}`;
   
