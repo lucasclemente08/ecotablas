@@ -14,6 +14,7 @@ const LinksBar = ({ isOpen }) => {
   const urbanMenus = [
     { title: "Recolección Urbanos", link: "/recoleccion" },
     { title: "Empresa Donante", link: "/empresa" },
+    { title: "Rutas", link: "/rutas" },
   ];
 
   const materialMenus = [
