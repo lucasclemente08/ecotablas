@@ -234,6 +234,9 @@
     <Compile Include="Controllers\EstadosVehiculosController.cs" />
     <Compile Include="Controllers\GastoMaquinariaController.cs" />
     <Compile Include="Controllers\EmpleadosController.cs" />
+    <Compile Include="Controllers\PuntosRutaController.cs" />
+    <Compile Include="Controllers\RutasController.cs" />
+    <Compile Include="Controllers\RutaxEmpleadosController.cs" />
     <Compile Include="Controllers\TolvaController.cs" />
     <Compile Include="Controllers\EmpresaDonanteController.cs" />
     <Compile Include="Controllers\EstadosMaquinariasController.cs" />
@@ -261,6 +264,9 @@
     <Compile Include="Models\AreaTrabajo.cs" />
     <Compile Include="Models\EstadosVehiculos.cs" />
     <Compile Include="Models\GastoMaquinaria.cs" />
+    <Compile Include="Models\PuntosRuta.cs" />
+    <Compile Include="Models\Rutas.cs" />
+    <Compile Include="Models\RutaxEmpleados.cs" />
     <Compile Include="Models\Tolva.cs" />
     <Compile Include="Models\GastoVehiculos.cs" />
     <Compile Include="Models\EmpresasDonante.cs" />

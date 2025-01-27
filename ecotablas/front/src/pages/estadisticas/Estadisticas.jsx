@@ -7,7 +7,7 @@ import GastoMaquinariaChart from "../../components/graficos/GastoMaquinariaChart
 import ChartCard from "../../components/graficos/ChardCard";
 import TotalCard from "../../components/graficos/TotalChart";
 import { FaTruckFront } from "react-icons/fa6";
-import TotalTableDevelop from "../../components/graficos/totalTableDevelop";
+import TotalTableDevelop from "../../components/graficos/TotalTableDevelop";
 import { getAllMaquinarias } from "../../api/MaquinariasAPI";
 
 import { FaChartBar, FaDollarSign, FaCogs } from "react-icons/fa";
