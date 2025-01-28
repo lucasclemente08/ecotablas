@@ -1,27 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../../firebase/firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-
 import { db } from "../../firebase/firebase";
-import { doc, Firestore, getDocs, addDoc,setDoc } from "firebase/firestore";
-
-import { collection } from "firebase/firestore";
-
-import { info } from "autoprefixer";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const Register = () => {
-  const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    nombre: "",
     correo: "",
     contrasena: "",
   });
-  const [contrasena, setContrasena] = useState("");
-  const [correo, setCorreo] = useState("");
+  const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
+
+
+
+  const saveUserToFirestore = async (user) => {
+    try {
+      const userDocRef = doc(db, "usuarios", user.uid); // Referencia al documento del usuario
+      const userDoc = await getDoc(userDocRef); // Verifica si el documento ya existe
+  
+      if (!userDoc.exists()) {
+        // Solo guardar si el documento no existe
+        console.log("Guardando nuevo usuario...");
+        await setDoc(userDocRef, {
+          correo: user.email,
+          role: "viewer",
+        });
+      } else {
+        console.log("El usuario ya existe. No se guardará nuevamente.");
+      }
+    } catch (error) {
+      console.error("Error al guardar el usuario en Firestore:", error);
+    }
+  };
+  
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,36 +45,35 @@ const Register = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
-        correo,
-        contrasena,
+        formData.correo,
+        formData.contrasena
       );
       const user = userCredential.user;
-      const infoUser = user.uid;
 
-      const docuRef = doc(db, `usuarios/${infoUser}`);
+      await saveUserToFirestore(user);
 
-      await setDoc(docuRef, { correo: correo, role: "viewer" });
-
-      // async function fetchUsuarios() {
-      //   try {
-
-      //     const usuariosCollection = collection(db, "usuarios");
-      //     const usuariosSnapshot = await getDocs(usuariosCollection);
-      //     const usuariosList = usuariosSnapshot.docs.map(doc => doc.data());
-      //     console.log(usuariosList);
-      //   } catch (error) {
-      //     console.error("Error fetching usuarios:", error);
-      //   }
-      // }
-
-      // fetchUsuarios();
-
-
-      window.location.replace(`https://www.dropbox.com/oauth2/authorize?client_id=${clientId}&response_type=code&token_access_type=offline&redirect_uri=http://localhost:5173/gastos/vehiculos`); 
+      // Redirigir al flujo de autenticación de Dropbox
+      window.location.replace(
+        `https://www.dropbox.com/oauth2/authorize?client_id=${clientId}&response_type=code&token_access_type=offline&redirect_uri=http://localhost:5173/gastos/vehiculos`
+      );
     } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      setErrors((prevErrors) => [...prevErrors, { errorCode, errorMessage }]);
+      setErrors((prevErrors) => [...prevErrors, error.message]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      await saveUserToFirestore(user);
+      navigate("/");
+    } catch (error) {
+      setErrors((prevErrors) => [...prevErrors, error.message]);
     } finally {
       setLoading(false);
     }
@@ -71,30 +85,6 @@ const Register = () => {
       ...prev,
       [name]: value,
     }));
-  };
-
-  useEffect(() => {
-    setContrasena(formData.contrasena);
-    setCorreo(formData.correo);
-  }, [formData]);
-
-  const handleClick = () => {
-    signInWithPopup(auth, provider)
-      .then(async (result) => {
-        const user = result.user;
-
-        // Guardar el rol del usuario en Firestore
-        await addDoc(collection(db, "usuarios"), {
-          correo: user.email,
-          role: "viewer",
-        });
-
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Error during Google sign-in:", error);
-        setErrors([error.message]);
-      });
   };
 
   return (
@@ -141,7 +131,7 @@ const Register = () => {
           </button>
           <div className="flex flex-col mt-5">
             <button
-              onClick={handleClick}
+              onClick={handleGoogleSignIn}
               type="button"
               className="text-white flex justify-center bg-teal hover:-translate-y-1 transition-transform border-2 font-bold rounded-full px-5 py-3 text-center"
             >
