@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_URL = 'http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria';
+const API_URL = 'http://www.ecotablasapi.somee.com/api/GastoMaquinaria';
 
 // Async thunk para obtener todos los gastos de maquinaria
 export const fetchGastos = createAsyncThunk('gastoMaquinaria/fetchGastos', async () => {
-  const response = await axios.get(`http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/GetAll`);
+  const response = await axios.get(`${API_URL}/GetAll`);
 
   return response.data;
 });

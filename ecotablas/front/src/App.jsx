@@ -18,6 +18,7 @@ import Areas from "./pages/areas/Areas";
 import EmpresaDonante from "./pages/empresaDonante/EmpresaDonante";
 import TablasProducidas from "./pages/TablasProducidas/TablasProducidas";
 import EntradasDeMaterial from "./pages/ingresoMaterial/EntradasDeMaterial";
+import Rutas from "./pages/rutas/Rutas";
 import ClasificacionDeMaterial from "./pages/clasificacionDeMaterial/ClasificacionDeMaterial";
 import Maquinarias from "./pages/maquinaria/Maquinaria";
 import Tolva from "./pages/tolva/Tolva";
@@ -45,7 +46,14 @@ const routesConfig = [
   { path: "/materialProc", element: <MaterialProc />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
   { path: "/recoleccion", element: <RecoUrbanos />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
   { path: "/clasificacion", element: <ClasificacionDeMaterial />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
-  { path: "/entrada/material", element: <EntradasDeMaterial />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
+  { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true, roles: ["admin", "editor"] },
+  { path: "/entrada/material", element: <EntradasDeMaterial />, protected: true, roles: ["admin", "editor", "viewer"] },
+  { path: "/rutas", element: <Rutas/>, protected: true, roles: ["admin", "editor", "viewer"] },
+  { path: "/empresa", element: <EmpresaDonante/>, protected: true, roles: ["admin", "editor", "viewer"] },
+
+
+  { path: "/tolva", element: <Tolva />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
+   // Viewer permitido
   { path: "/maquinaria", element: <Maquinarias />, protected: true, roles: ["admin", "editor"] },
   { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true, roles: ["admin", "editor"] },
 

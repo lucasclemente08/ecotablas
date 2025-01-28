@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "http://www.gestiondeecotablas.somee.com/api/EmpresaDonante";
+const API_URL = "http://www.ecotablasapi.somee.com/api/EmpresaDonante";
 
 // Asincronía para obtener empresas donantes
 export const fetchEmpresaDonante = createAsyncThunk(
   "ListarTodo",
   async () => {
-    const response = await axios.get("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/ListarTodo");
+    const response = await axios.get("http://www.ecotablasapi.somee.com/api/EmpresaDonante/ListarTodo");
  
     return response.data;
   }
@@ -17,7 +17,7 @@ export const fetchEmpresaDonante = createAsyncThunk(
 export const addEmpresaDonante = createAsyncThunk(
   "empresaDonante/addEmpresaDonante",
   async (newEmpresa) => {
-    const response = await axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar", newEmpresa);
+    const response = await axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", newEmpresa);
     return { ...newEmpresa, id: response.data.id };
   }
 );
@@ -26,16 +26,16 @@ export const addEmpresaDonante = createAsyncThunk(
 export const editEmpresaDonante = createAsyncThunk(
   "empresaDonante/editEmpresaDonante",
   async ({ id, empresa }) => {
-    await axios.put(`${"http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Modificar"}/${id}`, empresa);
+    await axios.put(`${"http://www.ecotablasapi.somee.com/api/EmpresaDonante/Modificar"}/${id}`, empresa);
     return { id, empresa };
   }
 );
 
 // Asincronía para eliminar empresa donante
 export const deleteEmpresaDonante = createAsyncThunk(
-  "http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar",
+  "http://www.ecotablasapi.somee.com/api/EmpresaDonante/Borrar",
   async (id) => {
-    await axios.delete(`${"http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar"}/${id}`);
+    await axios.delete(`${"http://www.ecotablasapi.somee.com/api/EmpresaDonante/Borrar"}/${id}`);
     return id;
   }
 );
