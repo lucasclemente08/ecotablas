@@ -10,7 +10,7 @@ const ActiveCars = () => {
     const fetchMaquinarias = async () => {
         try {
           const response = await fetch(
-            "http://www.gestiondeecotablas.somee.com/api/Vehiculos/ListarTodo"
+            "http://www.ecotablasapi.somee.com/api/Vehiculos/ListarTodo"
           );
           if (!response.ok) throw new Error("Error al obtener las maquinarias");
           const data = await response.json();
