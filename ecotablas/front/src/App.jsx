@@ -11,6 +11,7 @@ import Profile from "./pages/profile/Profile";
 import Register from "./pages/login/Register";
 import Material from "./pages/materiales/Materiales";
 import { AuthProvider } from "./context/AuthContext";
+
 import Tablas from "./pages/plasticos/plasticos";
 import Vehiculos from "./pages/vehiculos/Vehiculos";
 import Volumen from "./pages/volumen/Volumen";
@@ -43,6 +44,8 @@ const routesConfig = [
   { path: "/plasticos", element: <Tablas />, protected: true, roles: ["admin", "editor","viewer"] },
   { path: "/material", element: <Material />, protected: true, roles: ["admin", "editor"] },
   { path: "/materialTri", element: <MaterialTrit />, protected: true, roles: ["admin", "editor"] },
+  { path: "/tablas", element: <TablasProducidas />, protected: true, roles: ["admin", "editor"] },
+
   { path: "/materialProc", element: <MaterialProc />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
   { path: "/recoleccion", element: <RecoUrbanos />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
   { path: "/clasificacion", element: <ClasificacionDeMaterial />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
@@ -50,11 +53,13 @@ const routesConfig = [
   { path: "/entrada/material", element: <EntradasDeMaterial />, protected: true, roles: ["admin", "editor", "viewer"] },
   { path: "/rutas", element: <Rutas/>, protected: true, roles: ["admin", "editor", "viewer"] },
   { path: "/empresa", element: <EmpresaDonante/>, protected: true, roles: ["admin", "editor", "viewer"] },
+  { path: "/vehiculos", element: <Vehiculos/>, protected: true, roles: ["admin", "editor", "viewer"] },
+
 
 
   { path: "/tolva", element: <Tolva />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
    // Viewer permitido
-  { path: "/maquinaria", element: <Maquinarias />, protected: true, roles: ["admin", "editor"] },
+  { path: "/maquinaria", element: <Maquinarias />, protected: true, roles: ["admin", "editor","viewer"] },
   { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true, roles: ["admin", "editor"] },
 
   { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true, roles: ["admin", "editor"] },

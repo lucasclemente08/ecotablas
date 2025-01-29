@@ -65,6 +65,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       {/* Enlaces */}
       <div className="flex flex-col items-center mt-4">
         <Links isOpen={isOpen} />
+            
+
         <ReportButton isOpen={isOpen} />
       </div>
 

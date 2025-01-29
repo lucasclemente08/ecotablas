@@ -157,7 +157,7 @@ const TablasProducidas = () => {
  
   const fetchMaterials = async () => {
     try {
-      const response = await fetch("http://www.trazabilidadodsapi.somee.com/api/TablaProducidas/ListarTodo"); // Reemplaza "URL_DEL_ENDPOINT" con la URL de tu API
+      const response = await fetch("http://www.ecotablasapi.somee.com/api/TablaProducidas/ListarTodo"); // Reemplaza "URL_DEL_ENDPOINT" con la URL de tu API
       if (!response.ok) {
         throw new Error("Error al obtener los datos.");
       }

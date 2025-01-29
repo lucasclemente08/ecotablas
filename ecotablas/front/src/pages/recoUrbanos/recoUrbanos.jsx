@@ -116,7 +116,7 @@ const RecoUrbanos = () => {
  
     axios
       .post(
-        `http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Insertar`,
+        `http://www.ecotablasapi.somee.com/api/UbicacionesMapa/Insertar`,
         newUbicacion,
       )
       .then((response) => {
@@ -134,7 +134,7 @@ const RecoUrbanos = () => {
   const fetchLocations = async () => {
     try {
       const response = await axios.get(
-        "http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/UbicacionesMapa/ListarTodo",
       );
       setLocations(response.data);
   

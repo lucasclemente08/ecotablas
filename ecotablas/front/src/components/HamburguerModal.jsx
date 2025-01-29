@@ -13,6 +13,8 @@ import { FaTools, FaDollarSign } from "react-icons/fa";
 const HamburgerModal = ({ isOpen, close }) => {
   const modalRef = useRef(null);
   const navigate = useNavigate();
+
+  
   const employeeMenus = [
     { title: "Empleados", link: "/empleados" },
     { title: "Áreas y turnos de trabajo", link: "/areas" },
