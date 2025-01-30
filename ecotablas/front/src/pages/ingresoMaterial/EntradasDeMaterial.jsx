@@ -74,7 +74,7 @@ const EntradasDeMaterial = () => {
 
   const abrirModalEdit = (material) => {
     const MaterialSeguro = material || {};
-  
+  console.log("MaterialSeguro", MaterialSeguro);
     setMaterialId(MaterialSeguro.IdIngresoMaterial);
   
     setFormValues({
@@ -87,6 +87,7 @@ const EntradasDeMaterial = () => {
     });
     setModalEdit(true);
   };
+  
   
 
   const cerrarModalEdit = () => setModalEdit(false);
@@ -105,6 +106,7 @@ const EntradasDeMaterial = () => {
   };
 
   const handleEditSubmit = () => {
+    console
     if (
       !formValues.VolumenM ||
       !formValues.VolumenMInutil ||
@@ -117,11 +119,18 @@ const EntradasDeMaterial = () => {
       return;
     }
 
-    axios.put(`http://localhost:61274/api/IngresoMat/Modificar/${materialId}`,formValues,)
+    axios.put(`http://www.ecotablasapi.somee.com/api/IngresoMat/Modificar/${materialId}`,formValues,)
       .then(() => {
         setModalEdit(false);
-        setMensaje("Modificación exitosa");
-        fetchMaterials();
+        toast.success("Material modificado con éxito.");
+ 
+    setMaterials((prevMaterials) =>
+      prevMaterials.map((material) =>
+        material.IdIngresoMaterial === materialId
+          ? { ...material, ...formValues }
+          : material
+      )
+    );
       })
       .catch((error) =>
         console.error("Error al modificar el material:", error),
@@ -387,6 +396,22 @@ const getPlasticbyId =(id)=>{
   return (
     <>
       <SectionLayout title="Materiales Ingresados">
+
+        
+
+
+      <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
+
 <div className="flex flex-wrap items-center gap-1 ">
 
         <AddButtonWa
@@ -429,20 +454,6 @@ const getPlasticbyId =(id)=>{
         )}
 
 
-
-
-
-      <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
 
         {modalEdit && (
           <ButtonEdit
