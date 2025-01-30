@@ -31,18 +31,20 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
 
   return (
     <>
+    <div className="">
+
       <button
         onClick={openModal}
-        className="ml-2 bg-red-700 flex hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-      >
+        className="ml-2 bg-red-700 flex  hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+        >
         <MdDelete  className="m-1 "/>
         Eliminar
-
       </button>
 
+        </div>
       {isModalOpen && (
         <div
-          className="fixed top-0 right-0 left-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center"
+          className="fixed z-10 inset-0 overflow-y-auto top-0 right-0 left-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center"
           onClick={closeModal}
         >
           <div

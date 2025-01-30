@@ -87,7 +87,7 @@ const ClasificacionDeMaterial = () => {
   const handleSubmit = () => {
     axios
       .post(
-        "http://localhost:61274/api/MaterialClas/Insertar",
+        "http://www.ecotablasapi.somee.com/api/MaterialClas/Insertar",
         formValues,
       )
       .then(() => {
@@ -155,7 +155,7 @@ const ClasificacionDeMaterial = () => {
 
     axios
       .put(
-        `http://localhost:61274/api/MaterialClas/Modificar/${materialId}`,
+        `http://www.ecotablasapi.somee.com/api/MaterialClas/Modificar/${materialId}`,
         formValues,
       )
       .then(() => {
@@ -188,7 +188,7 @@ const ClasificacionDeMaterial = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://www.trazabilidadodsapi.somee.com/api/MaterialClas/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/MaterialClas/ListarTodo",
       );
       setFilteredMaterials(response.data);
       
@@ -346,7 +346,7 @@ const ClasificacionDeMaterial = () => {
 
         <DeleteButton
           id={material.IdMaterialClasificado}
-          endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialClas/Borrar"
+          endpoint="http://www.ecotablasapi.somee.com/api/MaterialClas/Borrar"
           updateList={fetchMaterials}
     />
   </td>

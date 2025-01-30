@@ -94,7 +94,7 @@ const EntradasDeMaterial = () => {
   const handleSubmit = () => {
     axios
       .post(
-        "http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Insertar",
+        "http://www.ecotablasapi.somee.com/api/IngresoMat/Insertar",
         formValues,
       )
       .then(() => {
@@ -194,7 +194,7 @@ const EntradasDeMaterial = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://www.trazabilidadodsapi.somee.com/api/IngresoMat/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/IngresoMat/ListarTodo",
       );
       setFilteredMaterials(response.data);
     } catch (error) {
@@ -269,7 +269,7 @@ const EntradasDeMaterial = () => {
   const fetchPlasticos = async () => {
     try {
       const response = await axios.get(
-        "http://www.trazabilidadodsapi.somee.com/api/TiposPlastico/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/TiposPlastico/ListarTodo",
       );
       setPlasticos(response.data);
     } catch (error) {
@@ -377,7 +377,7 @@ const getPlasticbyId =(id)=>{
 
         <DeleteButton
           id={material.IdIngresoMaterial}
-          endpoint="http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Borrar"
+          endpoint="http://www.ecotablasapi.somee.com/api/IngresoMat/Borrar"
           updateList={fetchMaterials}
         />
       </td>
