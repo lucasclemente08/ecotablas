@@ -40,7 +40,7 @@ const ButtonEdit = ({
         <h3 id="modal-title" className="text-lg leading-6 font-medium text-gray-900">
           Editar {title}
         </h3>
-        <div >
+        <form onSubmit={handleEditSubmit}>
           {fields.map((field) => (
             <div key={field.name} className="mt-2">
               {field.type === "select" ? (
@@ -72,14 +72,14 @@ const ButtonEdit = ({
           {/* {error && <div className="text-red-500 mt-2">{error}</div>} */}
           <div className="mt-5 sm:mt-6">
             <button
-            oncclick={handleEditSubmit()}
+            onClick={handleEditSubmit}
               type="submit"
               className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
             >
               Guardar
             </button>
           </div>
-        </div>
+        </form>
         <div className="mt-2">
           <button
             type="button"

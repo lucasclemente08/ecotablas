@@ -74,7 +74,7 @@ const EntradasDeMaterial = () => {
 
   const abrirModalEdit = (material) => {
     const MaterialSeguro = material || {};
-  console.log("MaterialSeguro", MaterialSeguro);
+
     setMaterialId(MaterialSeguro.IdIngresoMaterial);
   
     setFormValues({
@@ -105,8 +105,10 @@ const EntradasDeMaterial = () => {
       .catch((error) => console.error("Error al agregar el material:", error));
   };
 
-  const handleEditSubmit = () => {
-    console
+  const handleEditSubmit = (e) => {
+ 
+    e.preventDefault();
+
     if (
       !formValues.VolumenM ||
       !formValues.VolumenMInutil ||
@@ -119,18 +121,19 @@ const EntradasDeMaterial = () => {
       return;
     }
 
-    axios.put(`http://www.ecotablasapi.somee.com/api/IngresoMat/Modificar/${materialId}`,formValues,)
+    axios.put(`http://www.ecotablasapi.somee.com/api/IngresoMat/Modificar/${materialId}`,formValues)
       .then(() => {
         setModalEdit(false);
+        
         toast.success("Material modificado con éxito.");
- 
-    setMaterials((prevMaterials) =>
-      prevMaterials.map((material) =>
-        material.IdIngresoMaterial === materialId
-          ? { ...material, ...formValues }
-          : material
-      )
-    );
+        setFilteredMaterials((prevMaterials) =>
+          prevMaterials.map((data) =>
+            data.IdIngresoMaterial === materialId
+              ? { ...data, ...formValues }
+              : data
+          )
+        );
+        
       })
       .catch((error) =>
         console.error("Error al modificar el material:", error),
