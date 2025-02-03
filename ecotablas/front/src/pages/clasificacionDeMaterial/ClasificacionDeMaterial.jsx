@@ -75,10 +75,12 @@ const ClasificacionDeMaterial = () => {
     setMaterialId(material.IdMaterialClasificado);
 
     setFormValues({
-      VolumenUtil: material.VolumenUtil,
-      VolumenInutil: material.VolumenInutil,
-      // IdIngresoMaterial: material.IdIngresoMaterial,
-      FechaC: material.Fecha,
+      VolumenUtil: material.VolumenUtil || "",
+      VolumenInutil: material.VolumenInutil || "",
+
+      FechaC: material.Fecha || "",
+      IdIngresoMaterial: material.IdIngresoMaterial || "",
+      Estado: material.Estado || "",
     });
     setModalEdit(true);
   };
@@ -142,7 +144,10 @@ const ClasificacionDeMaterial = () => {
   };
 
 
-  const handleEditSubmit = () => {
+  const handleEditSubmit = (e) => {
+ 
+    e.preventDefault();
+
     if (
       !formValues.VolumenUtil ||
       !formValues.VolumenInutil ||
@@ -150,18 +155,28 @@ const ClasificacionDeMaterial = () => {
       !formValues.FechaC
     ) {
       toast.info("Todos los campos son obligatorios.");
-      return;
     }
+    
 
-    axios
-      .put(
+    axios.put(
         `http://www.ecotablasapi.somee.com/api/MaterialClas/Modificar/${materialId}`,
         formValues,
       )
       .then(() => {
         setModalEdit(false);
-        toast.success("Material actualizado!");
-        fetchMaterials();
+
+      
+        setFilteredMaterials((prevMaterials) =>
+          prevMaterials.map((data) =>
+            data.IdIngresoMaterial === materialId
+              ? { ...data, ...formValues }
+              : data
+          )
+        );
+        toast.clearWaitingQueue();
+
+        toast.success("Material actualizado!", { autoClose: 3000 });
+      
       })
       .catch((error) =>
         console.error("Error al modificar el material:", error),
@@ -356,7 +371,21 @@ const ClasificacionDeMaterial = () => {
 
   return (
     <>
+         <ToastContainer
+  // position="top-right"
+  autoClose={3000}
+  // hideProgressBar={false}
+  // newestOnTop={false}
+  closeOnClick={false}
+
+  // pauseOnFocusLoss
+  // draggable
+  // pauseOnHover
+/>
       <SectionLayout title="Materiales Clasificados">
+        
+
+ 
       <div className="flex flex-wrap items-center gap-1 ">
         <AddButtonWa
           abrirModal={abrirModal}
@@ -386,18 +415,6 @@ const ClasificacionDeMaterial = () => {
       />
               </div>
 
-
-          <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
         {modalAbierto && (
           <AddModalWithSelect
             title="Agregar Material Clasificado"
