@@ -12,13 +12,15 @@ import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+import toast, { Toaster } from 'react-hot-toast';
+
 import Pagination from "../../components/Pagination";
 import VolumenChart from "../../components/volumen/VolumenChart";
 import FilterButton from "../../components/buttons/FilterButton";
 import DateFilter from "../../components/DateFilter";
 import NextProcess from "../../components/buttons/NextProcess";
+
 import SectionLayout from "../../layout/SectionLayout";
 import {
   getAllMaterialTrit,
@@ -371,17 +373,8 @@ const ClasificacionDeMaterial = () => {
 
   return (
     <>
-         <ToastContainer
-  // position="top-right"
-  autoClose={3000}
-  // hideProgressBar={false}
-  // newestOnTop={false}
-  closeOnClick={false}
+<ToastBar position="top-right" autoClose={3000} />
 
-  // pauseOnFocusLoss
-  // draggable
-  // pauseOnHover
-/>
       <SectionLayout title="Materiales Clasificados">
         
 
