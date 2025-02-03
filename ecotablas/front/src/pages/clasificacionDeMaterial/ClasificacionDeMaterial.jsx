@@ -175,7 +175,7 @@ const ClasificacionDeMaterial = () => {
               : data
           )
         );
-        toast.clearWaitingQueue();
+
 
         toast.success("Material actualizado!", { autoClose: 3000 });
       
@@ -373,7 +373,32 @@ const ClasificacionDeMaterial = () => {
 
   return (
     <>
-<ToastBar position="top-right" autoClose={3000} />
+<Toaster
+  position="top-right"
+  reverseOrder={false}
+  gutter={10}
+  containerClassName=""
+  containerStyle={{}}
+  toastOptions={{
+    // Define default options
+    className: '',
+    duration: 5000,
+    removeDelay: 1000,
+    style: {
+      background: '#363636',
+      color: '#fff',
+    },
+
+    // Default options for specific types
+    success: {
+      duration: 3000,
+      iconTheme: {
+        primary: 'green',
+        secondary: 'white',
+      },
+    },
+  }}
+/>
 
       <SectionLayout title="Materiales Clasificados">
         
