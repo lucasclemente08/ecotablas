@@ -1,93 +1,66 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import RouteFormModal from "../../components/ModalRutas";
+import MapComponent from "../../components/MapComponent";
 import SectionLayout from "../../layout/SectionLayout";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import { getRoutes, createRoute, getRoutePoints } from "../../api/RutasAPI";
 
 const Rutas = () => {
-  const [empleados, setEmpleados] = useState([]);
-  const [selectedEmpleado, setSelectedEmpleado] = useState("");
-  const [inicio, setInicio] = useState(null);
-  const [fin, setFin] = useState(null);
-  const [rutas, setRutas] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [routes, setRoutes] = useState([]);
+  const [selectedRoute, setSelectedRoute] = useState(null);
+  const [routePoints, setRoutePoints] = useState([]);
 
-  // Cargar empleados y rutas al iniciar
+  // Cargar rutas al iniciar
   useEffect(() => {
-    fetchEmpleados();
-    fetchRutas();
+    const fetchRoutes = async () => {
+      const data = await getRoutes();
+      setRoutes(data);
+    };
+    fetchRoutes();
   }, []);
 
-  const fetchEmpleados = async () => {
-    const response = await axios.get("http://localhost:61274/api/Empleados/ListarTodo");
-    setEmpleados(response.data);
-  };
-
-  const fetchRutas = async () => {
-    const response = await axios.get("http://localhost:61274/api/Rutas/ListarTodo");
-    setRutas(response.data);
-  };
-
-  const GuardarRuta = async () => {
-    if (!inicio || !fin || !selectedEmpleado) {
-      alert("Por favor completa todos los campos.");
-      return;
+  // Cargar puntos de la ruta seleccionada
+  useEffect(() => {
+    if (selectedRoute) {
+      const fetchPoints = async () => {
+        const points = await getRoutePoints(selectedRoute.IdRuta);
+        setRoutePoints(points);
+      };
+      fetchPoints();
     }
+  }, [selectedRoute]);
 
-    const nuevaRuta = {
-      InicioLat: inicio.lat,
-      InicioLong: inicio.lng,
-      FinLat: fin.lat,
-      FinLong: fin.lng,
-      IdEmpleado: selectedEmpleado,
-    };
-
-    await axios.post("http://localhost:61274/api/Rutas/Insertar", nuevaRuta);
-    fetchRutas();
-  };
-
-  const SelectLocation = ({ setLocation }) => {
-    useMapEvents({
-      click(e) {
-        setLocation(e.latlng);
-      },
-    });
-    return null;
+  const handleSaveRoute = async (route) => {
+    const newRoute = await createRoute(route);
+    setRoutes([...routes, newRoute]);
   };
 
   return (
-    <SectionLayout title="Recolección de Urbanos">
+    <SectionLayout>
     <div>
-      <h1>Asignar Rutas</h1>
-      <div>
-        <label>Seleccionar Empleado:</label>
-        <select onChange={(e) => setSelectedEmpleado(e.target.value)} value={selectedEmpleado}>
-          <option value="">-- Seleccionar --</option>
-          {empleados.map((emp) => (
-            <option key={emp.IdEmpleado} value={emp.IdEmpleado}>
-              {emp.Nombre}
-            </option>
-          ))}
-        </select>
-      </div>
+      <h1>Rutas y Empleados</h1>
+      <button onClick={() => setIsModalOpen(true)}>Agregar Ruta</button>
+      <RouteFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveRoute}
+      />
 
-      <MapContainer center={[-31.4184, -64.1705]} zoom={13} style={{ height: "400px", width: "100%" }}>
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <SelectLocation setLocation={setInicio} />
-        <SelectLocation setLocation={setFin} />
-        {inicio && <Marker position={inicio}><Popup>Inicio</Popup></Marker>}
-        {fin && <Marker position={fin}><Popup>Fin</Popup></Marker>}
-      </MapContainer>
-
-      <button onClick={GuardarRuta}>Guardar Ruta</button>
-
-      <h2>Rutas Existentes</h2>
+      <h2>Rutas Disponibles</h2>
       <ul>
-        {rutas.map((ruta) => (
-          <li key={ruta.IdRuta}>
-            Inicio: ({ruta.InicioLat}, {ruta.InicioLong}) - Fin: ({ruta.FinLat}, {ruta.FinLong}) - Empleado: {ruta.NombreEmpleado}
+        {routes.map((route) => (
+          <li key={route.IdRuta} onClick={() => setSelectedRoute(route)}>
+             <strong>{route.Nombre}</strong> - {new Date(route.Fecha).toLocaleDateString()}
           </li>
         ))}
       </ul>
+
+      {selectedRoute && (
+        <div>
+          <h3>Puntos de la Ruta: {selectedRoute.Nombre}</h3>
+          <MapComponent points={routePoints} />
+        </div>
+      )}
     </div>
     </SectionLayout>
   );

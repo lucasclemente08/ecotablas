@@ -32,7 +32,8 @@ import Reparaciones from "./pages/reparaciones/Reparaciones";
 import Permisos from "./pages/permisos/Permisos";
 import PermisosCallback from "./components/PermisosCallback";
 import Estadisticas from "./pages/estadisticas/Estadisticas";
-import Admin from "./pages/admin/Admin";
+import Admin from "./pages/admin/admin";
+import Rutas from "./pages/rutas/Rutas";
 
 import { RoleProvider } from "./context/RoleContext";
 
@@ -61,6 +62,7 @@ const routesConfig = [
    // Viewer permitido
   { path: "/maquinaria", element: <Maquinarias />, protected: true, roles: ["admin", "editor","viewer"] },
   { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true, roles: ["admin", "editor"] },
+  {path: "/rutas", element: <Rutas/>},
 
   { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true, roles: ["admin", "editor"] },
   { path: "/profile", element: <Profile />, protected: true, roles: ["admin", "editor"] },
