@@ -388,7 +388,7 @@ const MaterialTrit = () => {
                         </button>
                         <DeleteButton
                           id={material.IdMaterialTriturado}
-                          endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Borrar"
+                          endpoint="http://www.ecotablasapi.somee.com/api/MaterialTrit/Borrar"
                           updateList={fetchMaterials}
                         />
                       </td>
