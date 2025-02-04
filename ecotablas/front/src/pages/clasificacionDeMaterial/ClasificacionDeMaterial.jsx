@@ -13,7 +13,7 @@ import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import Pagination from "../../components/Pagination";
 import VolumenChart from "../../components/volumen/VolumenChart";
@@ -88,7 +88,9 @@ const ClasificacionDeMaterial = () => {
   };
 
   const cerrarModalEdit = () => setModalEdit(false);
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
     axios
       .post(
         "http://www.ecotablasapi.somee.com/api/MaterialClas/Insertar",
@@ -134,7 +136,7 @@ const ClasificacionDeMaterial = () => {
         ...filteredMaterials.find((m) => m.IdMaterialClasificado === materialId),
         Estado: 2, // Establecer el estado a 2
       };
-      console.log (materialActualizado)
+     
       await editMaterialClas(materialId, materialActualizado);
 
       setModalTriturado(false);

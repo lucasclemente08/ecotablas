@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from 'react-hot-toast';
+
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import TableComponent from "../../components/TableComponent";

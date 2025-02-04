@@ -16,8 +16,8 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from 'react-hot-toast';
+
 
 import SectionLayout from "../../../layout/SectionLayout";
 import TablaHead from "../../../components/Thead";
@@ -586,17 +586,6 @@ const lineOptions = {
 const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
   return (
     <SectionLayout title="Gastos de Vehículos">
-      <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
 
 <div className="flex flex-wrap items-center gap-1">
         <AddButtonWa

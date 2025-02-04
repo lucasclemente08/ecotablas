@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
+import toast from 'react-hot-toast';
+
 import { FiEdit } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
 import {
