@@ -22,8 +22,7 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from 'react-hot-toast';
 import { editTablas, } from "../../api/TablasProducidaAPI";
 import { v4 as uuidv4 } from "uuid";
 
@@ -97,6 +96,7 @@ const TablasProducidas = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    
     await editTablas({ tablaId, formValues });
     toast.success("Registro editado con éxito!");
     cerrarModalEdit();
@@ -258,17 +258,7 @@ const TablasProducidas = () => {
 
   return (
     <SectionLayout title="Tablas Producidas">
-            <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
+  
 
       <div className="flex items-center">        
       <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />
