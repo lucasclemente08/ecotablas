@@ -134,7 +134,7 @@ namespace WebApi_TrazODS.Models
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
 
-            sqlCom.Parameters.Add("@IdRutaxEmpleado", SqlDbType.Int).Value = IdRutaxEmpleado;
+            sqlCom.Parameters.Add("@IdRutaxEmpleados", SqlDbType.Int).Value = IdRutaxEmpleado;
             sqlCom.Parameters.Add("@IdRuta", SqlDbType.VarChar).Value = IdRuta;
             sqlCom.Parameters.Add("@IdEmpleado", SqlDbType.DateTime).Value = IdEmpleado;
 

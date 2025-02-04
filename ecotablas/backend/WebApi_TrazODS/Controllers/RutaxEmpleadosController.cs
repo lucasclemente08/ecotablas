@@ -5,35 +5,76 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
+using System.Data;
+using WebApi_TrazODS.Models;
+using Newtonsoft.Json;
+
 namespace WebApi_TrazODS.Controllers
 {
     public class RutaxEmpleadosController : ApiController
     {
         // GET: api/RutaxEmpleados
-        public IEnumerable<string> Get()
+        [HttpGet]
+        public List<RutaxEmpleados> ListarTodo()
         {
-            return new string[] { "value1", "value2" };
+            RutaxEmpleados oRutaxEmpleados = new RutaxEmpleados();
+
+            DataTable dt = oRutaxEmpleados.SelectAll();
+
+            var listaJson = JsonConvert.SerializeObject(dt);
+
+            var Lista = JsonConvert.DeserializeObject<List<RutaxEmpleados>>(listaJson);
+
+            return Lista;
+
         }
 
         // GET: api/RutaxEmpleados/5
-        public string Get(int id)
+        [HttpGet]
+        public RutaxEmpleados RutaxEmpleados(int id)
         {
-            return "value";
+            RutaxEmpleados oRutaxEmpleados = new RutaxEmpleados();
+            oRutaxEmpleados.IdRutaxEmpleado = id;
+
+            DataTable dt = oRutaxEmpleados.SelectId();
+
+
+            var ListaJsom = JsonConvert.SerializeObject(dt);
+
+            var obj = JsonConvert.DeserializeObject<List<RutaxEmpleados>>(ListaJsom).ToList().FirstOrDefault();
+
+            return obj;
         }
 
         // POST: api/RutaxEmpleados
-        public void Post([FromBody]string value)
+        [HttpPost]
+        public void Insertar([FromBody] RutaxEmpleados value)
         {
+            RutaxEmpleados oRutaxEmpleados = new RutaxEmpleados();
+            oRutaxEmpleados.IdRuta = value.IdRuta;
+            oRutaxEmpleados.IdEmpleado = value.IdEmpleado;
+            oRutaxEmpleados.Insert();
         }
 
         // PUT: api/RutaxEmpleados/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPut]
+        public void Modificar(int id, [FromBody] RutaxEmpleados value)
         {
+            RutaxEmpleados oRutaxEmpleados = new RutaxEmpleados();
+            oRutaxEmpleados.IdRuta = value.IdRuta;
+            oRutaxEmpleados.IdEmpleado = value.IdEmpleado;
+
+            oRutaxEmpleados.Update();
         }
 
         // DELETE: api/RutaxEmpleados/5
+        [HttpDelete]
         public void Delete(int id)
         {
+            RutaxEmpleados oRutaxEmpleados = new RutaxEmpleados();
+            oRutaxEmpleados.IdRutaxEmpleado = id;
+
+            oRutaxEmpleados.Delete();
         }
     }
 }
