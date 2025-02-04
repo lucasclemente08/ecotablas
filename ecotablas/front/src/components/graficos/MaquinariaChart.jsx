@@ -14,7 +14,7 @@ const MaquinariaChart = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        "http://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo"
+        "http://www.ecotablasapi.somee.com/api/Maquinaria/ListarTodo"
       );
       if (!response.ok) throw new Error("Error al obtener las maquinarias");
       const data = await response.json();

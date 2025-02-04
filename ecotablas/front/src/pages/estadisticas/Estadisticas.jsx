@@ -22,7 +22,7 @@ const Estadisticas = () => {
 
   useEffect(() => {
     // Obtener datos de tablas producidas
-    fetch("http://www.gestiondeecotablas.somee.com/api/TablaProducidas/ListarTodo")
+    fetch("http://www.ecotablasapi.somee.com/api/TablaProducidas/ListarTodo")
       .then((response) => response.json())
       .then((data) => setTablasProducidas(data))
       .catch((error) =>

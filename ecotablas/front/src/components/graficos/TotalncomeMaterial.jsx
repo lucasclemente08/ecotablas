@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TotalCard from "./TotalChart";
 import { FaChartBar } from "react-icons/fa";
-
+import axios from "axios";
 const TotalIncomeMaterial = () => {
   const [total, setTotal] = useState(0);
   const [data, setData] = useState([]);
@@ -11,7 +11,7 @@ const TotalIncomeMaterial = () => {
     
     try {
       const response = await axios.get(
-        "http://www.gestiondeecotablas.somee.com/api/IngresoMat/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/IngresoMat/ListarTodo",
       );
       setData(response.data);
     } catch (error) {

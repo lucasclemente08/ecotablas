@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:61274/api/MaterialClas";
+const BASE_URL = "http://www.ecotablasapi.somee.com/api/MaterialClas";
 
 export const getAllMaterialClas = () => axios.get(`${BASE_URL}/ListarTodo`);
 export const addMaterialClas = (data) =>

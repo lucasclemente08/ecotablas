@@ -15,8 +15,9 @@ import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextProcess from "../../components/buttons/NextProcess";
 import VolumenTrituradoChart from "../../components/volumen/VolumenTrituradoChart";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+
+import toast, { Toaster } from 'react-hot-toast';
 import SectionLayout from "../../layout/SectionLayout";
 import { FiEdit } from "react-icons/fi";
 import LoadingTable from "../../components/LoadingTable";
@@ -169,7 +170,8 @@ const MaterialTrit = () => {
       })
       .catch((error) => console.error("Error al agregar el material:", error));
   };
-  const handleEditSubmit = async () => {
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
     if (!validateForm()) return;
     try {
       await editMaterialTrit(materialId, formValues);
@@ -386,7 +388,7 @@ const MaterialTrit = () => {
                         </button>
                         <DeleteButton
                           id={material.IdMaterialTriturado}
-                          endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialTrit/Borrar"
+                          endpoint="http://www.ecotablasapi.somee.com/api/MaterialTrit/Borrar"
                           updateList={fetchMaterials}
                         />
                       </td>
@@ -409,17 +411,7 @@ const MaterialTrit = () => {
             title="Reporte de Materiales triturado"
           />
 
-<ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
+
 <button
         onClick={toggleView}
         className="bg-blue-600 hover:bg-blue-700 flex justify-center items-center text-white font-bold py-2 mt-2 mb-5 px-4 rounded"

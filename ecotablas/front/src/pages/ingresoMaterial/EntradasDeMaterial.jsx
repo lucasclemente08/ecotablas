@@ -13,10 +13,7 @@ import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChar
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 import NextProcess from "../../components/buttons/NextProcess";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
-
-
+import toast, { Toaster } from 'react-hot-toast';
 import {
   getAllMaterialClas,
   addMaterialClas,
@@ -74,7 +71,7 @@ const EntradasDeMaterial = () => {
 
   const abrirModalEdit = (material) => {
     const MaterialSeguro = material || {};
-  
+
     setMaterialId(MaterialSeguro.IdIngresoMaterial);
   
     setFormValues({
@@ -88,13 +85,14 @@ const EntradasDeMaterial = () => {
     setModalEdit(true);
   };
   
+  
 
   const cerrarModalEdit = () => setModalEdit(false);
 
   const handleSubmit = () => {
     axios
       .post(
-        "http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Insertar",
+        "http://www.ecotablasapi.somee.com/api/IngresoMat/Insertar",
         formValues,
       )
       .then(() => {
@@ -104,7 +102,10 @@ const EntradasDeMaterial = () => {
       .catch((error) => console.error("Error al agregar el material:", error));
   };
 
-  const handleEditSubmit = () => {
+  const handleEditSubmit = (e) => {
+ 
+    e.preventDefault();
+
     if (
       !formValues.VolumenM ||
       !formValues.VolumenMInutil ||
@@ -113,15 +114,29 @@ const EntradasDeMaterial = () => {
       !formValues.Estado ||
       !formValues.TipoDonante
     ) {
-      toast.warn("Todos los campos son obligatorios.");
+      
+      toast('Todos los campos son obligatorios!⚠️', {
+        duration: 4000,
+        style: { background: '#3b82f6', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#2563eb' },
+      });
+
       return;
     }
 
-    axios.put(`http://localhost:61274/api/IngresoMat/Modificar/${materialId}`,formValues,)
+    axios.put(`http://www.ecotablasapi.somee.com/api/IngresoMat/Modificar/${materialId}`,formValues)
       .then(() => {
         setModalEdit(false);
-        setMensaje("Modificación exitosa");
-        fetchMaterials();
+        
+        toast.success("Material modificado con éxito.");
+        setFilteredMaterials((prevMaterials) =>
+          prevMaterials.map((data) =>
+            data.IdIngresoMaterial === materialId
+              ? { ...data, ...formValues }
+              : data
+          )
+        );
+        
       })
       .catch((error) =>
         console.error("Error al modificar el material:", error),
@@ -194,7 +209,7 @@ const EntradasDeMaterial = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://www.trazabilidadodsapi.somee.com/api/IngresoMat/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/IngresoMat/ListarTodo",
       );
       setFilteredMaterials(response.data);
     } catch (error) {
@@ -269,7 +284,7 @@ const EntradasDeMaterial = () => {
   const fetchPlasticos = async () => {
     try {
       const response = await axios.get(
-        "http://www.trazabilidadodsapi.somee.com/api/TiposPlastico/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/TiposPlastico/ListarTodo",
       );
       setPlasticos(response.data);
     } catch (error) {
@@ -377,7 +392,7 @@ const getPlasticbyId =(id)=>{
 
         <DeleteButton
           id={material.IdIngresoMaterial}
-          endpoint="http://www.trazabilidadodsapi.somee.com/api/IngresoMat/Borrar"
+          endpoint="http://www.ecotablasapi.somee.com/api/IngresoMat/Borrar"
           updateList={fetchMaterials}
         />
       </td>
@@ -387,6 +402,10 @@ const getPlasticbyId =(id)=>{
   return (
     <>
       <SectionLayout title="Materiales Ingresados">
+
+        
+
+
 <div className="flex flex-wrap items-center gap-1 ">
 
         <AddButtonWa
@@ -429,20 +448,6 @@ const getPlasticbyId =(id)=>{
         )}
 
 
-
-
-
-      <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
 
         {modalEdit && (
           <ButtonEdit
