@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,7 +28,7 @@ const DonantesChart = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/ListarTodo"
+        "http://www.ecotablasapi.somee.com/api/UbicacionesMapa/ListarTodo"
       );
       const data = response.data || [];
       setLocations(data);

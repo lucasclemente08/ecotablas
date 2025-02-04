@@ -1,7 +1,7 @@
 import axios from "axios";
 import builderApiUrl from "../utils/BuilderApi";
 
-const BASE_URL = "http://localhost:61274/api/Maquinaria";
+const BASE_URL = "http://www.ecotablasapi.somee.com/api/Maquinaria";
 
 export const getAllMaquinarias = async () => {
   try {

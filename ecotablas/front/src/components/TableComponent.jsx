@@ -66,7 +66,7 @@ const TableComponent = ({
     className="flex items-center justify-start gap-2 py-1"
   >
     {Array.isArray(action.allowedRoles) && action.allowedRoles.includes(userRole) ? (
-      <div className="flex items-center bg-green-100 text-green-700 text-sm px-3 py-1 rounded">
+      <div className="flex items-center text-sm px-3 py-1 rounded">
         {action.render ? action.render(item) : null}
       </div>
     ) : (

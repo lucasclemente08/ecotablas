@@ -173,12 +173,12 @@ const Admin = () => {
         draggable
         pauseOnHover
       />
-      {currentUserRole === 'admin' && (
+      {/* {currentUserRole === 'admin' && (
         <>
           <RolePermissionsEditor role="editor" />
           <RolePermissionsEditor role="viewer" />
         </>
-      )}
+      )} */}
       <TableComponent
         data={users}
         titles={[

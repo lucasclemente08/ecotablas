@@ -19,7 +19,7 @@ const GastoMaquinariaChart = () => {
     setLoading(true);
     setError(null); // Reiniciar error
     try {
-      const response = await axios.get("https://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/GetAll");
+      const response = await axios.get("http://www.ecotablasapi.somee.com/api/GastoMaquinaria/GetAll");
       console.log("Datos recibidos:", response.data); // Para inspeccionar las fechas y valores
       setDataV(response.data);
     } catch (error) {

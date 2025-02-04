@@ -19,7 +19,7 @@ const GastoMaquinariaDatePicker = () => {
   const fetchData = () => {
     setLoading(true);
     axios
-      .get("https://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/GetAll") // Cambiar al endpoint de maquinaria
+      .get("http://www.ecotablasapi.somee.com/api/GastoMaquinaria/GetAll") // Cambiar al endpoint de maquinaria
       .then((response) => {
         setDataM(response.data);
         setFilteredData(response.data); // Inicialmente, no hay filtros aplicados

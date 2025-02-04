@@ -7,7 +7,7 @@ import GastoMaquinariaChart from "../../components/graficos/GastoMaquinariaChart
 import ChartCard from "../../components/graficos/ChardCard";
 import TotalCard from "../../components/graficos/TotalChart";
 import { FaTruckFront } from "react-icons/fa6";
-import TotalTableDevelop from "../../components/graficos/totalTableDevelop";
+import TotalTableDevelop from "../../components/graficos/TotalTableDevelop";
 import { getAllMaquinarias } from "../../api/MaquinariasAPI";
 
 import { FaChartBar, FaDollarSign, FaCogs } from "react-icons/fa";
@@ -22,7 +22,7 @@ const Estadisticas = () => {
 
   useEffect(() => {
     // Obtener datos de tablas producidas
-    fetch("http://www.gestiondeecotablas.somee.com/api/TablaProducidas/ListarTodo")
+    fetch("http://www.ecotablasapi.somee.com/api/TablaProducidas/ListarTodo")
       .then((response) => response.json())
       .then((data) => setTablasProducidas(data))
       .catch((error) =>

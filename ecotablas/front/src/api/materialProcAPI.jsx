@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://www.trazabilidadodsapi.somee.com/api/MaterialPros";
+const BASE_URL = "http://www.ecotablasapi.somee.com/api/MaterialPros";
 
 export const getAllMaterials = () => axios.get(`${BASE_URL}/ListarTodo`);
 export const addMaterial = (data) => axios.post(`${BASE_URL}/Insertar`, data);

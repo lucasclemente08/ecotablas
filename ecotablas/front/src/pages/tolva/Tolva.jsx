@@ -9,8 +9,7 @@ import NextProcess from "../../components/buttons/NextProcess";
 import { GrLinkNext } from "react-icons/gr";
 import { BsClipboardDataFill } from "react-icons/bs";
 import TableComponent from "../../components/TableComponent";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from 'react-hot-toast';
 import { FiEdit } from "react-icons/fi";
 import Pagination from "../../components/Pagination";
 import TablaHead from "../../components/Thead";
@@ -184,7 +183,8 @@ const GenerateIdentificationCode = (size, large) => {
     
     return isValid;
   };
-  const handleEditSubmit = async () => {
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
     if (!validateForm()) return;
     try {
       await editTolva(materialId, formValues);
@@ -357,7 +357,7 @@ const GenerateIdentificationCode = (size, large) => {
           </button>
           <DeleteButton
             id={material.IdTolva}
-            endpoint="http://localhost:61274/api/Tolva/Borrar"
+            endpoint="http://www.ecotablasapi.somee.com/api/Tolva/Borrar"
             updateList={fetchMaterials}
           />
         </td>
@@ -384,17 +384,6 @@ const GenerateIdentificationCode = (size, large) => {
 </div>
 
 
-<ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
      
       {modalAbierto && (
         <AddModalWithSelect 

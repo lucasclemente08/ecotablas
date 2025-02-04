@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:61274/api/IngresoMat";
+const BASE_URL = "http://www.ecotablasapi.somee.com/api/IngresoMat";
 
 export const getAllIngresoMat = () => axios.get(`${BASE_URL}/ListarTodo`);
 export const addIngresoMat = (data) => axios.post(`${BASE_URL}/Insertar`, data);

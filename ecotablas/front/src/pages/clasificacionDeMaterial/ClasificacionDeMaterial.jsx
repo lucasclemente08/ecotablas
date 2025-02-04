@@ -12,13 +12,15 @@ import AddModal from "../../components/AddModal";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+import toast, { Toaster } from 'react-hot-toast';
+
 import Pagination from "../../components/Pagination";
 import VolumenChart from "../../components/volumen/VolumenChart";
 import FilterButton from "../../components/buttons/FilterButton";
 import DateFilter from "../../components/DateFilter";
 import NextProcess from "../../components/buttons/NextProcess";
+
 import SectionLayout from "../../layout/SectionLayout";
 import {
   getAllMaterialTrit,
@@ -46,7 +48,7 @@ const ClasificacionDeMaterial = () => {
     FechaC: "",
     Estado: 1,
   });
-
+ 
 
   const [trituradoValues, setTrituradoValues] = useState({
     VolumenT: "",
@@ -75,10 +77,12 @@ const ClasificacionDeMaterial = () => {
     setMaterialId(material.IdMaterialClasificado);
 
     setFormValues({
-      VolumenUtil: material.VolumenUtil,
-      VolumenInutil: material.VolumenInutil,
-      // IdIngresoMaterial: material.IdIngresoMaterial,
-      FechaC: material.Fecha,
+      VolumenUtil: material.VolumenUtil || "",
+      VolumenInutil: material.VolumenInutil || "",
+
+      FechaC: material.Fecha || "",
+      IdIngresoMaterial: material.IdIngresoMaterial || "",
+      Estado: material.Estado || "",
     });
     setModalEdit(true);
   };
@@ -87,7 +91,7 @@ const ClasificacionDeMaterial = () => {
   const handleSubmit = () => {
     axios
       .post(
-        "http://localhost:61274/api/MaterialClas/Insertar",
+        "http://www.ecotablasapi.somee.com/api/MaterialClas/Insertar",
         formValues,
       )
       .then(() => {
@@ -141,33 +145,47 @@ const ClasificacionDeMaterial = () => {
     }
   };
 
-
-  const handleEditSubmit = () => {
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+  
     if (
       !formValues.VolumenUtil ||
       !formValues.VolumenInutil ||
       !formValues.IdIngresoMaterial ||
       !formValues.FechaC
     ) {
-      toast.info("Todos los campos son obligatorios.");
-      return;
+      toast('Todos los campos son obligatorios!', {
+        duration: 4000,
+        style: { background: '#3b82f6', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#2563eb' },
+      });
+      return; 
     }
-
+  
     axios
       .put(
-        `http://localhost:61274/api/MaterialClas/Modificar/${materialId}`,
-        formValues,
+        `http://www.ecotablasapi.somee.com/api/MaterialClas/Modificar/${materialId}`,
+        formValues
       )
       .then(() => {
         setModalEdit(false);
-        toast.success("Material actualizado!");
-        fetchMaterials();
+  
+        setFilteredMaterials((prevMaterials) =>
+          prevMaterials.map((data) =>
+            data.IdIngresoMaterial === materialId
+              ? { ...data, ...formValues }
+              : data
+          )
+        );
+  
+        toast.success("Material actualizado!", { autoClose: 3000 });
       })
-      .catch((error) =>
-        console.error("Error al modificar el material:", error),
-      );
+      .catch((error) => {
+        console.error("Error al modificar el material:", error);
+        toast.error("Hubo un error al actualizar.", { autoClose: 3000 }); // ⬅️ Agregué un toast de error
+      });
   };
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prevState) => ({
@@ -188,7 +206,7 @@ const ClasificacionDeMaterial = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://www.trazabilidadodsapi.somee.com/api/MaterialClas/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/MaterialClas/ListarTodo",
       );
       setFilteredMaterials(response.data);
       
@@ -346,7 +364,7 @@ const ClasificacionDeMaterial = () => {
 
         <DeleteButton
           id={material.IdMaterialClasificado}
-          endpoint="http://www.trazabilidadodsapi.somee.com/api/MaterialClas/Borrar"
+          endpoint="http://www.ecotablasapi.somee.com/api/MaterialClas/Borrar"
           updateList={fetchMaterials}
     />
   </td>
@@ -356,7 +374,11 @@ const ClasificacionDeMaterial = () => {
 
   return (
     <>
+
       <SectionLayout title="Materiales Clasificados">
+        
+
+ 
       <div className="flex flex-wrap items-center gap-1 ">
         <AddButtonWa
           abrirModal={abrirModal}
@@ -386,18 +408,6 @@ const ClasificacionDeMaterial = () => {
       />
               </div>
 
-
-          <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
         {modalAbierto && (
           <AddModalWithSelect
             title="Agregar Material Clasificado"

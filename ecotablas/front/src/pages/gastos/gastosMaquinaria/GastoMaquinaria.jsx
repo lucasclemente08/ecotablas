@@ -92,7 +92,7 @@ const GastoMaquinaria = () => {
   // Fetch maquinaria
   const fetchMaquinaria = () => {
     axios
-      .get("https://www.gestiondeecotablas.somee.com/api/Maquinaria/ListarTodo")
+      .get("http://www.ecotablasapi.somee.com/api/Maquinaria/ListarTodo")
       .then((response) => {
         setMaquinaria(response.data);
       })
