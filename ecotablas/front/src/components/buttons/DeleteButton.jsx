@@ -1,114 +1,110 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from "react-hot-toast";
 import { MdDelete } from "react-icons/md";
 
 const DeleteButton = ({ id, endpoint, updateList }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  const handleDelete = async () => {
+    setIsLoading(true);
 
-  const handleDelete = () => {
-    axios
-      .delete(`${endpoint}/${id}`)
-      .then((response) => {
-        toast.success("Eliminación exitosa");
+    try {
+      const response = await axios.delete(`${endpoint}/${id}`);
+      
+      if (response.status === 200) {
+        toast.success("Material eliminado correctamente ✅");
         updateList();
-        closeModal(); // Cerrar el modal después de éxito
-      })
-      .catch((error) => {
-        console.error("Error al eliminar:", error);
-        toast.error("Error al eliminar");
-      });
+        closeModal();
+      } else {
+        // toast.warn("No se pudo eliminar el material ⚠️");
+      }
+    } catch (error) {
+      console.error("Error al eliminar:", error.response?.data || error.message);
+      
+      toast.error(
+        error.response?.data?.message || "Error interno del servidor 🚨"
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <>
-    <div className="">
-
       <button
         onClick={openModal}
-        className="ml-2 bg-red-700 flex  hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-        >
-        <MdDelete  className="m-1 "/>
+        className="ml-2 bg-red-700 flex hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+      >
+        <MdDelete className="m-1" />
         Eliminar
       </button>
 
-        </div>
       {isModalOpen && (
         <div
-          className="fixed z-10 inset-0 overflow-y-auto top-0 right-0 left-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center"
+          className="fixed z-10 inset-0 bg-black bg-opacity-50 flex justify-center items-center"
           onClick={closeModal}
         >
           <div
             className="bg-white p-6 rounded-lg w-full max-w-md"
-            onClick={(e) => e.stopPropagation()} // Evitar cerrar modal al hacer clic dentro
+            onClick={(e) => e.stopPropagation()} // Evita que el modal se cierre al hacer clic dentro
           >
             <div className="text-right">
               <button
                 className="text-gray-500 hover:text-gray-700"
                 onClick={closeModal}
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                ✖
               </button>
             </div>
             <div className="text-center">
-              <svg
-                className="mx-auto mb-4 text-gray-400 w-12 h-12"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
               <h3 className="mb-5 text-lg font-normal text-gray-500">
                 ¿Estás seguro de que quieres eliminar este elemento?
               </h3>
               <button
                 onClick={handleDelete}
-                className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                disabled={isLoading}
+                className={`text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 ${
+                  isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
-                Sí, estoy seguro
+                {isLoading ? "Eliminando..." : "Sí, eliminar"}
               </button>
               <button
                 onClick={closeModal}
-                className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-100"
+                className="py-2.5 px-5 ml-3 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100"
               >
-                No, cancelar
+                Cancelar
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Contenedor de Toast */}
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      {/* Toaster para notificaciones */}
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        gutter={10}
+        containerStyle={{ zIndex: 9999 }}
+        toastOptions={{
+          className: "",
+          duration: 5000,
+          removeDelay: 1000,
+       
+          error: {
+            duration: 4000,
+            style: { background: "#dc2626", color: "#fff" },
+            iconTheme: { primary: "#fff", secondary: "#b91c1c" },
+          },
+       
+    
+        }}
+      />
     </>
   );
 };

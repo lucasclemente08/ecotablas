@@ -48,7 +48,7 @@ const ClasificacionDeMaterial = () => {
     FechaC: "",
     Estado: 1,
   });
-
+ 
 
   const [trituradoValues, setTrituradoValues] = useState({
     VolumenT: "",
@@ -145,29 +145,31 @@ const ClasificacionDeMaterial = () => {
     }
   };
 
-
   const handleEditSubmit = (e) => {
- 
     e.preventDefault();
-
+  
     if (
       !formValues.VolumenUtil ||
       !formValues.VolumenInutil ||
       !formValues.IdIngresoMaterial ||
       !formValues.FechaC
     ) {
-      toast.info("Todos los campos son obligatorios.");
+      toast('Todos los campos son obligatorios!', {
+        duration: 4000,
+        style: { background: '#3b82f6', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#2563eb' },
+      });
+      return; 
     }
-    
-
-    axios.put(
+  
+    axios
+      .put(
         `http://www.ecotablasapi.somee.com/api/MaterialClas/Modificar/${materialId}`,
-        formValues,
+        formValues
       )
       .then(() => {
         setModalEdit(false);
-
-      
+  
         setFilteredMaterials((prevMaterials) =>
           prevMaterials.map((data) =>
             data.IdIngresoMaterial === materialId
@@ -175,16 +177,15 @@ const ClasificacionDeMaterial = () => {
               : data
           )
         );
-
-
+  
         toast.success("Material actualizado!", { autoClose: 3000 });
-      
       })
-      .catch((error) =>
-        console.error("Error al modificar el material:", error),
-      );
+      .catch((error) => {
+        console.error("Error al modificar el material:", error);
+        toast.error("Hubo un error al actualizar.", { autoClose: 3000 }); // ⬅️ Agregué un toast de error
+      });
   };
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prevState) => ({
@@ -373,32 +374,6 @@ const ClasificacionDeMaterial = () => {
 
   return (
     <>
-<Toaster
-  position="top-right"
-  reverseOrder={false}
-  gutter={10}
-  containerClassName=""
-  containerStyle={{}}
-  toastOptions={{
-    // Define default options
-    className: '',
-    duration: 5000,
-    removeDelay: 1000,
-    style: {
-      background: '#363636',
-      color: '#fff',
-    },
-
-    // Default options for specific types
-    success: {
-      duration: 3000,
-      iconTheme: {
-        primary: 'green',
-        secondary: 'white',
-      },
-    },
-  }}
-/>
 
       <SectionLayout title="Materiales Clasificados">
         

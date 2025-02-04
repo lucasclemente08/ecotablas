@@ -13,10 +13,7 @@ import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChar
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 import NextProcess from "../../components/buttons/NextProcess";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
-
-
+import toast, { Toaster } from 'react-hot-toast';
 import {
   getAllMaterialClas,
   addMaterialClas,
@@ -117,7 +114,13 @@ const EntradasDeMaterial = () => {
       !formValues.Estado ||
       !formValues.TipoDonante
     ) {
-      toast.warn("Todos los campos son obligatorios.");
+      
+      toast('Todos los campos son obligatorios!⚠️', {
+        duration: 4000,
+        style: { background: '#3b82f6', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#2563eb' },
+      });
+
       return;
     }
 
@@ -402,18 +405,6 @@ const getPlasticbyId =(id)=>{
 
         
 
-
-      <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
 
 <div className="flex flex-wrap items-center gap-1 ">
 
