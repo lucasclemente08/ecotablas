@@ -5,7 +5,8 @@ import { MdExpandLess } from "react-icons/md";
 import { FaEdit } from 'react-icons/fa';
 
 import PdfGenerator from "../../components/buttons/PdfGenerator";
-
+import { FiEdit } from "react-icons/fi";
+import toast from 'react-hot-toast';
 import { FaSearch, FaList, FaFilter } from 'react-icons/fa';
 import DeleteButton from "../../components/buttons/DeleteButton";
 import SectionLayout from "../../layout/SectionLayout";
@@ -61,12 +62,12 @@ const Empleados = () => {
     IdArea: "1",
   });
 
-  const [mensaje, setMensaje] = useState("");
+const [mensaje,setMensaje]=useState("")
 
   // Obtener todos los empleados
   function getEmpleados() {
     axios
-      .get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
+      .get(`http://www.ecotablasapi.somee.com/api/Empleados/ListarTodo`)
       .then((response) => {
         setEmpleadosData(response.data);
         setLoading(false)
@@ -93,7 +94,12 @@ const Empleados = () => {
     );
     setFilteredEmpleados(filtered);
     if (filtered.length === 0) {
-      setMensaje("La consulta no arrojó datos");
+    
+      toast('La consulta no arrojó datos!', {
+        duration: 4000,
+        style: { background: '#3b82f6', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#2563eb' },
+      });
     } else {
       setMensaje("");
     }
@@ -115,7 +121,7 @@ const Empleados = () => {
 
   const abrirModalModificar = async (idEmpleado) => {
     try {
-      const response = await axios.get(`URL_API/empleados/${idEmpleado}`);
+      const response = await axios.get(`http://www.ecotablasapi.somee.com/api/Empleados/ListarPorId/${idEmpleado}`);
       const empleado = response.data;
   
       setEmpleadoSeleccionado({
@@ -171,9 +177,13 @@ const Empleados = () => {
   };
 
   const handleSubmit = () => {
-    console.log("HandleSubmit ejecutado");
+   
     if (verificarDNIExistente()) {
-      setMensaje("Ya existe un empleado con el mismo DNI");
+      toast('Ya existe un empleado con el mismo DNI', {
+        duration: 4000,
+        style: { background: '#3b82f6', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#2563eb' },
+      });
       return;
     }
   
@@ -189,66 +199,40 @@ const Empleados = () => {
       !nuevoEmpleado.Mail ||
       !nuevoEmpleado.IdArea
     ) {
-      setMensaje("Todos los campos requeridos deben ser completados");
+    
+      toast('Todos los campos requeridos deben ser completados', {
+        duration: 4000,
+        style: { background: '#3b82f6', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#2563eb' },
+      });
       return;
     }
   
     axios
       .post(
-        `http://www.trazabilidadodsapi.somee.com/api/Empleados/Insertar`,
+        `http://www.ecotablasapi.somee.com/api/Empleados/Insertar`,
         nuevoEmpleado,
       )
       .then((response) => {
-        console.log("Empleado agregado correctamente", response);
+        toast.success("Empleado agregado correctamente");
         setModalAbierto(false);
   
         axios
-          .get(`http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`)
+          .get(`http://www.ecotablasapi.somee.com/api/Empleados/ListarTodo`)
           .then((response) => {
             setEmpleadosData(response.data);
             setFilteredEmpleados(response.data);
           })
           .catch((error) =>
-            console.error("Error al obtener los datos:", error),
+            toast.error("Error al obtener los datos:", error),
           );
       })
-      .catch((error) => console.error("Error al agregar el empleado:", error));
+      .catch((error) => toast.error("Error al agregar el empleado:", error));
   };
   
 
   
 
-  const handleEliminarEmpleado = (idEmpleado) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
-      axios
-        .delete(
-          `http://www.trazabilidadodsapi.somee.com/api/Empleados/Borrar/${idEmpleado}`,
-        )
-        .then((response) => {
-          setMensaje("Eliminación exitosa");
-          axios
-            .get(
-              `http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`,
-            )
-            .then((response) => {
-              setEmpleadosData(response.data);
-              setFilteredEmpleados(response.data);
-            })
-            .catch((error) =>
-              console.error("Error al obtener los datos:", error),
-            );
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 409) {
-            setMensaje(
-              "No es posible eliminar el registro, posee relación con otras tablas",
-            );
-          } else {
-            console.error("Error al eliminar el empleado:", error);
-          }
-        });
-    }
-  };
 
   const handleSubmitModificar = () => {
     if (
@@ -263,36 +247,45 @@ const Empleados = () => {
       !empleadoSeleccionado.Mail ||
       !empleadoSeleccionado.IdArea
     ) {
-      setMensaje("Todos los campos requeridos deben ser completados");
+
+      toast('Todos los campos son obligatorios!', {
+        duration: 4000,
+        style: { background: '#3b82f6', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#2563eb' },
+      });
       return;
     }
     if (empleadoSeleccionado.DNI.length > 8) {
-      setMensaje("El DNI no puede tener más de 8 dígitos");
+      toast('El DNI no puede tener más de 8 dígitos', {
+        duration: 4000,
+        style: { background: '#3b82f6', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#2563eb' },
+      });
       return;
     }
 
     axios
       .put(
-        `http://www.trazabilidadodsapi.somee.com/api/Empleados/Modificar/${empleadoSeleccionadoId}`,
+        `http://www.ecotablasapi.somee.com/api/Empleados/Modificar/${empleadoSeleccionadoId}`,
         empleadoSeleccionado,
       )
       .then((response) => {
         setModalAbiertoMod(false);
-        setMensaje("Modificación exitosa");
+        toast.success("Modificación exitosa");
         axios
           .get(
-            `http://www.trazabilidadodsapi.somee.com/api/Empleados/ListarTodo`,
+            `http://www.ecotablasapi.somee.com/api/Empleados/ListarTodo`,
           )
           .then((response) => {
             setEmpleadosData(response.data);
             setFilteredEmpleados(response.data);
           })
           .catch((error) =>
-            console.error("Error al obtener los datos:", error),
+            consol.error("Error al obtener los datos:", error),
           );
       })
       .catch((error) =>
-        console.error("Error al modificar el empleado:", error),
+        toast.error("Error al modificar el empleado:", error),
       );
   };
 
@@ -707,16 +700,19 @@ const Empleados = () => {
                 <td className="text-center py-2">{empleado.Dpto}</td>
                 <td className="text-center py-2">{empleado.Mail}</td>
                 <td className="text-center py-2 flex p-2">
-                <button
-  onClick={() => abrirModalModificar(empleado.IdEmpleado)}
-  className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded mr-2 flex items-center gap-2"
->
-  <FaEdit className="w-5 h-5" />
-  Modificar
-</button>
+       
+
+<button
+          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          onClick={() =>abrirModalModificar(empleado.IdEmpleado)}
+        >
+          <FiEdit />
+          Modificar
+        </button>
+
                   <DeleteButton
                     id={empleado.IdEmpleado}
-                    endpoint="http://www.trazabilidadodsapi.somee.com/api/Empleados/Borrar" // Ajusta el endpoint según sea necesario
+                    endpoint="http://www.ecotablasapi.somee.com/api/Empleados/Borrar" // Ajusta el endpoint según sea necesario
                     updateList={getEmpleados} // Pasa la función para actualizar la lista
                   />
                 </td>
