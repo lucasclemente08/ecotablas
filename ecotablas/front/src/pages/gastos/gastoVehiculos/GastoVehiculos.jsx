@@ -60,6 +60,7 @@ const GastoVehiculos = () => {
   const [itemsPerPage] = useState(5);
   const [accessToken, setAccessToken] = useState(null);
   const [sortedData, setSortedData] = useState([]);
+   const[gastoId,setGastoid]=useState([])
 
   const [filteredData, setFilteredData] = useState([]);
 
@@ -83,7 +84,7 @@ const GastoVehiculos = () => {
     setLoading(true);
     axios
       .get(
-        "https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/GastoVehiculos/ListarTodo",
       )
       .then((response) => {
         setDataV(response.data);
@@ -105,9 +106,29 @@ const GastoVehiculos = () => {
     }));
   };
   
+  const abrirModalEdit = (gasto) => {
+    const gastoSeguro = gasto || {}; // Evita errores si gasto es null/undefined
+    
+    setGastoid(gastoSeguro.IdVehiculo || ""); // IdGastoMaquinaria coincide con el JSON
+    setFormValues({
+      TipoComprobante: "",
+    Comprobante: "comprobante",
+    TipoGasto: "",
+    IdVehiculo: "",
+    Proveedor: "",
+    Monto: "",
+    Fecha: "", 
+    Descripcion: "",
+    });
+  
+    setModalEdit(true);
+  };
+
+
+
   const fetchTrucks = () => {
     axios
-      .get(URL_trucks)
+      .get("http://www.ecotablasapi.somee.com/api/Vehiculos/ListarTodo")
       .then((response) => {
         setTrucks(response.data);
       })
@@ -132,7 +153,7 @@ const GastoVehiculos = () => {
     
         const updatedFormValues = { ...formValues, Comprobante: URL };
         axios
-          .post("https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/CrearGastoVehiculo", updatedFormValues)
+          .post("http://www.ecotablasapi.somee.com/api/GastoVehiculos/CrearGastoVehiculo", updatedFormValues)
           .then((response) => {
             toast.success("Gasto agregado con éxito");
             fetchMaterials();
@@ -274,12 +295,19 @@ const GastoVehiculos = () => {
     e.preventDefault();
     axios
       .put(
-        `https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${id}`,
+        `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${id}`,
         formValues,
       )
       .then((response) => {
         toast.success("Gasto actualizado con éxito"); // Notificación de éxito
-        fetchMaterials();
+      
+        setMaterial((prevMaterials) =>
+          prevMaterials.map((data) =>
+            data.IdIngresoMaterial === materialId
+              ? { ...data, ...formValues }
+              : data
+          )
+        );
         cerrarModalEdit();
       })
       .catch((error) => {
@@ -498,6 +526,7 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
 
   const actions = [
     {
+      allowedRoles: ["admin","editor", ],
       render: (item) => (
         <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
             <button
@@ -508,7 +537,7 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
                         Modificar
                       </button>
           <DeleteButton
-            endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
+            endpoint="http://www.ecotablasapi.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
             id={item.Id}
             updateList={fetchMaterials}
           />

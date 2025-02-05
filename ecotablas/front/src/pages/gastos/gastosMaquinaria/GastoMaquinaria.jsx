@@ -65,6 +65,7 @@ const GastoMaquinaria = () => {
   // Cerrar Modal
   const cerrarModal = () => setModalAbierto(false);
   const abrirModalEdit = (gasto) => {
+    console.log(gasto);
     const gastoSeguro = gasto || {}; // Evita errores si gasto es null/undefined
     
     setGastoid(gastoSeguro.IdGastoMaquinaria || ""); // IdGastoMaquinaria coincide con el JSON

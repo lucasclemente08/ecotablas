@@ -5,8 +5,7 @@ import axios from "axios";
 import SectionLayout from "../../layout/SectionLayout";
 
 import TableComponent from "../../components/TableComponent";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from 'react-hot-toast';
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { MdOutlineEditLocationAlt } from "react-icons/md";
 import { MdOutlineAddLocation } from "react-icons/md";
@@ -109,7 +108,12 @@ const RecoUrbanos = () => {
 
   const handleSubmit = () => {
     if (!newUbicacion.Nombre || !newUbicacion.Lat || !newUbicacion.Long) {
-      toast.alert("Por favor, completa todos los campos obligatorios.");
+
+      toast('Todos los campos son obligatorios!', {
+        duration: 4000,
+        style: { background: '#3b82f6', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#2563eb' },
+      });
       return;
     }
 
@@ -209,7 +213,7 @@ const RecoUrbanos = () => {
     const handleEditSubmit = async (event) => {
       event.preventDefault(); 
       try {
-        await axios.put(`http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Modificar/${IdUbicacion}`, newUbicacion);
+        await axios.put(`http://www.ecotablasapi.somee.com/api/UbicacionesMapa/Modificar/${IdUbicacion}`, newUbicacion);
         fetchLocations();
         setModalEdit(false); 
       } catch (error) {
@@ -339,21 +343,6 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   return (
     <SectionLayout title="Recolección de Urbanos">
  
-
-
- <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
-
-
  {modalEdit && (
             <ButtonEdit
               title="Recoleccion Urbanos"
@@ -365,8 +354,6 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
               cerrarModalEdit={cerrarModalEdit}
             />
           )}
-
-
 
 
       <div className="overflow-x-auto">

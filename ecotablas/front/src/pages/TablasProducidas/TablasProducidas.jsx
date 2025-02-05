@@ -99,6 +99,13 @@ const TablasProducidas = () => {
     
     await editTablas({ tablaId, formValues });
     toast.success("Registro editado con éxito!");
+    setFilteredMaterials((prevMaterials) =>
+      prevMaterials.map((data) =>
+        data.IdIngresoMaterial === materialId
+          ? { ...data, ...formValues }
+          : data
+      )
+    );
     cerrarModalEdit();
   };
 
