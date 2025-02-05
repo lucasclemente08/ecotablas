@@ -33,7 +33,6 @@ import Permisos from "./pages/permisos/Permisos";
 import PermisosCallback from "./components/PermisosCallback";
 import Estadisticas from "./pages/estadisticas/Estadisticas";
 import Admin from "./pages/admin/admin";
-import Rutas from "./pages/rutas/Rutas";
 
 import { RoleProvider } from "./context/RoleContext";
 

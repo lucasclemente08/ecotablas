@@ -5,9 +5,8 @@ import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
-import { ToastContainer, toast } from "react-toastify";
+import toast, { Toaster } from 'react-hot-toast';
 import TableComponent from "../../components/TableComponent";
-import "react-toastify/dist/ReactToastify.css";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { FaChartPie } from "react-icons/fa";
 import DataView from "../../components/buttons/DataView";
@@ -447,6 +446,7 @@ const [showPieChart, setShowPieChart] = useState(false);
 
   const actions = [
     {
+        allowedRoles: ["admin","editor", ],
       render: (maquinaria) => (
         <td className="border-b py-2 px-4 flex flex-row justify-center gap-2">
                      {maquinaria.IdEstado === 3 && (
@@ -503,18 +503,6 @@ const [showPieChart, setShowPieChart] = useState(false);
   return (
     <>
     <SectionLayout>
-    <ToastContainer
-position="top-right"
-autoClose={3000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-/>
-
       <div className="p-4 w-full">
 
         <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>

@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from 'react-hot-toast';
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import TableComponent from "../../components/TableComponent";
@@ -61,8 +60,8 @@ const Vehiculos = () => {
     Costo: "",
   });
 
-  const BASE_URL = ("http://localhost:61274/api/Vehiculos");
-  const BASE_URL_State = ("http://localhost:61274/api/EstadosVehiculos");
+  const BASE_URL = ("http://www.ecotablasapi.somee.com/api/Vehiculos");
+  const BASE_URL_State = ("http://www.ecotablasapi.somee.com/api/EstadosVehiculos");
 
   const abrirModalEdit = (vehiculo) => {
     setVehiculoId(vehiculo.IdVehiculo);
@@ -523,6 +522,7 @@ const Vehiculos = () => {
 
   const actions = [
     {
+      allowedRoles: ["admin","editor"],
       render: (vehiculo) => (
         <td className="border-b py-2 px-4 flex flex-row justify-center gap-2">
                      {vehiculo.IdEstado === 3 && (
