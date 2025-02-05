@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
+
+import toast from 'react-hot-toast';
 import { FiEdit } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -51,6 +51,8 @@ const EmpresaDonante = () => {
     { header: "Tipo Plástico", accessor: "tipo_plastico" },
     { header: "Rubro", accessor: "rubro" },
     { header: "Web", accessor: "web" },
+    { header: "Cuit", accessor: "Cuit" },
+
   ];
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
@@ -123,6 +125,7 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
     { key: "TipoPlastico", label: "Tipo de Plástico" },
     { key: "Rubro", label: "Rubro" },
     { key: "Web", label: "Web",
+      
       render: (value) =>(
         value ? (
       <td className=" font-normal px-4 py-2">
@@ -195,17 +198,7 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
         data={data}
         title="Reporte de Empresas Donantes"
       />
-       <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
+
 
       {modalAbierto && (
         <AddModalWithSelect

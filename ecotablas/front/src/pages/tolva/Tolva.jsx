@@ -11,6 +11,7 @@ import { BsClipboardDataFill } from "react-icons/bs";
 import TableComponent from "../../components/TableComponent";
 import toast, { Toaster } from 'react-hot-toast';
 import { FiEdit } from "react-icons/fi";
+
 import Pagination from "../../components/Pagination";
 import TablaHead from "../../components/Thead";
 import DateFilter from "../../components/DateFilter";
@@ -190,7 +191,13 @@ const GenerateIdentificationCode = (size, large) => {
       await editTolva(materialId, formValues);
       setModalEdit(false);
       toast.success("Modificación exitosa");
-      fetchMaterials();
+      setFilteredMaterials((prevMaterials) =>
+        prevMaterials.map((data) =>
+          data.IdIngresoMaterial === materialId
+            ? { ...data, ...formValues }
+            : data
+        )
+      );
     } catch (error) {
       toast.error("Error al modificar el material.");
       console.error("Error al modificar el material:", error);
@@ -339,6 +346,8 @@ const GenerateIdentificationCode = (size, large) => {
   
   const actions = [
     {
+    allowedRoles: ["admin","editor", ],
+    
       render: (material) => (
         <td className="border-b px-4 py-2 flex justify-center">
         <button

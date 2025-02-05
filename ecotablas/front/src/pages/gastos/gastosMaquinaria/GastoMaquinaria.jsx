@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../../../components/Pagination"
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from 'react-hot-toast';
+
 
 import TableComponent from "../../../components/TableComponent";
 import { FiEdit } from "react-icons/fi";
@@ -65,6 +65,7 @@ const GastoMaquinaria = () => {
   // Cerrar Modal
   const cerrarModal = () => setModalAbierto(false);
   const abrirModalEdit = (gasto) => {
+    console.log(gasto);
     const gastoSeguro = gasto || {}; // Evita errores si gasto es null/undefined
     
     setGastoid(gastoSeguro.IdGastoMaquinaria || ""); // IdGastoMaquinaria coincide con el JSON
@@ -104,8 +105,10 @@ const GastoMaquinaria = () => {
     e.preventDefault(); // Previene el comportamiento por defecto del formulario
     try {
       await dispatch(updateGasto({ id: gastoId, ...formValues }));
+      toast.success("Gasto actualizado con éxito");
       cerrarModalEdit(); // Cierra el modal después de guardar
     } catch (error) {
+      toast.error("Error al actualizar el gasto");
       console.error("Error al actualizar el gasto:", error);
     }
   };
@@ -501,17 +504,6 @@ return link;
 <>
     <SectionLayout title="Gasto de Maquinaria">
 
-    <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-/>
 
 
 

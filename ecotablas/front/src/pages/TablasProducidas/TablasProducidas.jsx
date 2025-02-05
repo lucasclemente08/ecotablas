@@ -99,6 +99,13 @@ const TablasProducidas = () => {
     
     await editTablas({ tablaId, formValues });
     toast.success("Registro editado con éxito!");
+    setFilteredMaterials((prevMaterials) =>
+      prevMaterials.map((data) =>
+        data.IdIngresoMaterial === materialId
+          ? { ...data, ...formValues }
+          : data
+      )
+    );
     cerrarModalEdit();
   };
 
@@ -231,7 +238,7 @@ const TablasProducidas = () => {
 
   const actions = [
     {
-      allowedRoles: ["admin","editor", ],
+      allowedRoles: ["admin","editor" ],
       render: (item) => (
         <td className="px-4 py-2 flex justify-center">
              
