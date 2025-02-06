@@ -65,7 +65,9 @@ const TablasProducidas = () => {
   const cerrarModal = () => setModalAbierto(false);
 
   const abrirModalEdit = (tabla) => {
+    
     setTablaId(tabla.ID_Tabla);
+   
     setFormValues({
       FechaProduccion: tabla.FechaProduccion,
       Dimensiones: tabla.Dimensiones,
@@ -96,12 +98,12 @@ const TablasProducidas = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    
+;
     await editTablas({ tablaId, formValues });
     toast.success("Registro editado con éxito!");
     setFilteredMaterials((prevMaterials) =>
       prevMaterials.map((data) =>
-        data.IdIngresoMaterial === materialId
+        data.ID_Tabla ===tablaId
           ? { ...data, ...formValues }
           : data
       )

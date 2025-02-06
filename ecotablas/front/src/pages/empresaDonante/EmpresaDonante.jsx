@@ -65,7 +65,9 @@ const EmpresaDonante = () => {
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
   const abrirModalEdit = (empresa) => {
-    setEmpresaId(empresa.idEmpresa);
+  
+    setEmpresaId(empresa.Id_EmpresaDonante); // Asegurar que se guarde correctamente el ID
+  console.log(empresaId)
     setFormValues({
       Nombre: empresa.Nombre,
       Direccion: empresa.Direccion,
@@ -78,6 +80,7 @@ const EmpresaDonante = () => {
     });
     setModalEdit(true);
   };
+  
   const cerrarModalEdit = () => {
     setModalEdit(false);
   }
@@ -87,7 +90,7 @@ const EmpresaDonante = () => {
       console.error("Por favor completa todos los campos requeridos");
       return;
     }
-axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar", formValues)
+axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", formValues)
   .then((response) => {
     // Verificar si la respuesta es exitosa
     if (response && response.data) {
@@ -105,11 +108,35 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
     cerrarModal();
   });
   }
-  const handleEditSubmit = async (e) => {
+
+
+  const handleEditSubmit = (e) => {
+  
     e.preventDefault();
-    await dispatch(editEmpresaDonante({ id: empresaId, formValues }));
-    cerrarModalEdit();
+    if (!formValues.Nombre || !formValues.Direccion || !formValues.Telefono) {
+      toast.error('Por favor completa todos los campos requeridos');
+    }
+  
+    axios
+      .put(
+        `http://www.ecotablasapi.somee.com/api/EmpresaDonante/Modificar/${empresaId}`,
+        formValues
+      )
+      .then(() => {
+        setModalEdit(false);
+     fetchEmpresaDonante();
+  
+        toast.success("Material actualizado!", { autoClose: 3000 });
+      })
+      .catch((error) => {
+        console.error("Error al modificar el material:", error);
+        toast.error("Hubo un error al actualizar.", { autoClose: 3000 }); // ⬅️ Agregué un toast de error
+      });
   };
+  
+
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prevState) => ({
@@ -155,7 +182,7 @@ axios.post("http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Insertar"
           Modificar
         </button>
         <DeleteButton
-          endpoint="http://www.gestiondeecotablas.somee.com/api/EmpresaDonante/Borrar"
+          endpoint="http://www.ecotablasapi.somee.com/api/EmpresaDonante/Borrar"
           updateList={() => dispatch(fetchEmpresaDonante())}
           id={item.Id_EmpresaDonante}
         />
