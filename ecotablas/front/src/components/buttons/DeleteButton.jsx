@@ -17,7 +17,7 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
       const response = await axios.delete(`${endpoint}/${id}`);
       
       if (response.status === 200) {
-        toast.success("Material eliminado correctamente ✅");
+ 
         updateList();
         closeModal();
       } else {
@@ -85,26 +85,9 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
         </div>
       )}
 
-      {/* Toaster para notificaciones */}
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-        gutter={10}
-        containerStyle={{ zIndex: 9999 }}
-        toastOptions={{
-          className: "",
-          duration: 5000,
-          removeDelay: 1000,
-       
-          error: {
-            duration: 4000,
-            style: { background: "#dc2626", color: "#fff" },
-            iconTheme: { primary: "#fff", secondary: "#b91c1c" },
-          },
-       
+
     
-        }}
-      />
+
     </>
   );
 };
