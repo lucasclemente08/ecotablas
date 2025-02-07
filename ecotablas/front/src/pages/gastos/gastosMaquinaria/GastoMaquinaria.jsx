@@ -363,7 +363,7 @@ return link;
 
         axios
             .post(
-                "http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/Create",
+                "http://www.ecotablasapi.somee.com/api/GastoMaquinaria/Create",
                 updatedFormValues
             )
             .then(() => {
@@ -448,9 +448,9 @@ return link;
                         Modificar
                       </button>
           <DeleteButton
-            endpoint="http://www.gestiondeecotablas.somee.com/api/GastoMaquinaria/EliminarGastoVehiculo"
-            id={item.Id}
-            updateList={fetchGastos}
+            endpoint="http://www.ecotablasapi.somee.com/api/GastoMaquinaria/Delete"
+            id={item.IdGastoMaquinaria}
+            updateList={fetchMaquinaria}
           />
         </td>
       ),

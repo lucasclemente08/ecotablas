@@ -256,7 +256,8 @@ const Vehiculos = () => {
     }
   };
 
-  const handleEditSubmit = async () => {
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
     if (!validateForm()) return;
 
     try {
@@ -522,7 +523,7 @@ const Vehiculos = () => {
 
   const actions = [
     {
-      allowedRoles: ["admin","editor"],
+      allowedRoles: ["admin","editor", ],
       render: (vehiculo) => (
         <td className="border-b py-2 px-4 flex flex-row justify-center gap-2">
                      {vehiculo.IdEstado === 3 && (
@@ -565,8 +566,8 @@ const Vehiculos = () => {
                       )}
                       
                       <DeleteButton
-                        id={vehiculo.IdEstado}
-                        endpoint={`${BASE_URL}/Borrar`}
+                        id={vehiculo.IdVehiculo}
+                        endpoint={`${BASE_URL}/Delete`}
                         updateList={fetchVehiculos}
                       />
                     </td>

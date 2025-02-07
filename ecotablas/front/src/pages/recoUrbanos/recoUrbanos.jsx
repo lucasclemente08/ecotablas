@@ -330,7 +330,7 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
                   <DeleteButton
                     id={location.IdUbicacion}
                     endpoint={
-                      "http://www.gestiondeecotablas.somee.com/api/UbicacionesMapa/Delete"
+                      "http://www.ecotablasapi.somee.com/api/UbicacionesMapa/Delete"
                     }
                     updateList={fetchLocations}
                   />
@@ -358,7 +358,7 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
 
       <div className="overflow-x-auto">
         {modalAbierto && (
-      <div className="fixed inset-0 overflow-y-auto">
+      <div className="fixed z-10 inset-0  overflow-y-auto">
   <div className="flex items-center justify-center min-h-screen p-2  text-center sm:block">
     <div
       className="fixed inset-0 transition-opacity"

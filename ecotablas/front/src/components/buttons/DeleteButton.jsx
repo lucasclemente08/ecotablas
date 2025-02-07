@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+
 import { MdDelete } from "react-icons/md";
 
 const DeleteButton = ({ id, endpoint, updateList }) => {
@@ -15,20 +15,16 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
 
     try {
       const response = await axios.delete(`${endpoint}/${id}`);
-      
-      if (response.status === 200) {
-        toast.success("Material eliminado correctamente ✅");
+
         updateList();
         closeModal();
-      } else {
-        // toast.warn("No se pudo eliminar el material ⚠️");
-      }
+      
+
+      
     } catch (error) {
       console.error("Error al eliminar:", error.response?.data || error.message);
       
-      toast.error(
-        error.response?.data?.message || "Error interno del servidor 🚨"
-      );
+     
     } finally {
       setIsLoading(false);
     }
@@ -85,26 +81,9 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
         </div>
       )}
 
-      {/* Toaster para notificaciones */}
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-        gutter={10}
-        containerStyle={{ zIndex: 9999 }}
-        toastOptions={{
-          className: "",
-          duration: 5000,
-          removeDelay: 1000,
-       
-          error: {
-            duration: 4000,
-            style: { background: "#dc2626", color: "#fff" },
-            iconTheme: { primary: "#fff", secondary: "#b91c1c" },
-          },
-       
+
     
-        }}
-      />
+
     </>
   );
 };
