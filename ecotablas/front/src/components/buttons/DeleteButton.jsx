@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+
 import { MdDelete } from "react-icons/md";
 
 const DeleteButton = ({ id, endpoint, updateList }) => {
@@ -15,20 +15,16 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
 
     try {
       const response = await axios.delete(`${endpoint}/${id}`);
-      
-      if (response.status === 200) {
- 
+
         updateList();
         closeModal();
-      } else {
-        // toast.warn("No se pudo eliminar el material ⚠️");
-      }
+      
+
+      
     } catch (error) {
       console.error("Error al eliminar:", error.response?.data || error.message);
       
-      toast.error(
-        error.response?.data?.message || "Error interno del servidor 🚨"
-      );
+     
     } finally {
       setIsLoading(false);
     }

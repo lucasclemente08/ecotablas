@@ -185,6 +185,15 @@ const TablasProducidas = () => {
     fetchMaterials();
   }, []);
   
+
+
+
+
+
+
+
+
+
   
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   const [dataT, setDataT] = useState(filteredMaterials);
@@ -254,9 +263,9 @@ const TablasProducidas = () => {
         <DeleteButton
           id={item.ID_Tabla}
           endpoint={
-            "http://www.gestiondeecotablas.somee.com/api/TablaProducidas/Borrar"
+            "http://www.ecotablasapi.somee.com/api/TablaProducidas/Borrar"
           }
-          updateList={() => dispatch(fetchTablasProducidas())}
+          updateList={fetchMaterials}
         />
       </td>
       ),

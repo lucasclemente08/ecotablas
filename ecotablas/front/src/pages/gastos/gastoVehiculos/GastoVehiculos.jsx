@@ -538,7 +538,7 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
                       </button>
           <DeleteButton
             endpoint="http://www.ecotablasapi.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
-            id={item.Id}
+            id={item.IdGasto}
             updateList={fetchMaterials}
           />
         </td>
