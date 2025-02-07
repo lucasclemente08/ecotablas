@@ -61,8 +61,8 @@ const Vehiculos = () => {
     Costo: "",
   });
 
-  const BASE_URL = ("http://localhost:61274/api/Vehiculos");
-  const BASE_URL_State = ("http://localhost:61274/api/EstadosVehiculos");
+  const BASE_URL = ("http://www.ecotablasapi.somee.com/api/Vehiculos");
+  const BASE_URL_State = ("http://www.ecotablasapi.somee.com/api/EstadosVehiculos");
 
   const abrirModalEdit = (vehiculo) => {
     setVehiculoId(vehiculo.IdVehiculo);
@@ -257,7 +257,8 @@ const Vehiculos = () => {
     }
   };
 
-  const handleEditSubmit = async () => {
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
     if (!validateForm()) return;
 
     try {
@@ -523,6 +524,7 @@ const Vehiculos = () => {
 
   const actions = [
     {
+      allowedRoles: ["admin","editor", ],
       render: (vehiculo) => (
         <td className="border-b py-2 px-4 flex flex-row justify-center gap-2">
                      {vehiculo.IdEstado === 3 && (
@@ -565,8 +567,8 @@ const Vehiculos = () => {
                       )}
                       
                       <DeleteButton
-                        id={vehiculo.IdEstado}
-                        endpoint={`${BASE_URL}/Borrar`}
+                        id={vehiculo.IdVehiculo}
+                        endpoint={`${BASE_URL}/Delete`}
                         updateList={fetchVehiculos}
                       />
                     </td>

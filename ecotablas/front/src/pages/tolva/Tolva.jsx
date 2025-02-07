@@ -148,7 +148,8 @@ const GenerateIdentificationCode = (size, large) => {
     return isValid;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!validateForm()) return;
     try {
       const response = await addTolva(formValues);
