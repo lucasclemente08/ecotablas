@@ -154,7 +154,7 @@ const GenerateIdentificationCode = (size, large) => {
       const response = await addTolva(formValues);
       setModalAbierto(false);
       toast.success("Inserción exitosa");
-      setMaterials([...filteredMaterials, response.data]);
+      fetchMaterials();
     } catch (error) {
       toast.error("Error al agregar el material.");
       console.error("Error al agregar el material:", error);
@@ -191,13 +191,7 @@ const GenerateIdentificationCode = (size, large) => {
       await editTolva(materialId, formValues);
       setModalEdit(false);
       toast.success("Modificación exitosa");
-      setFilteredMaterials((prevMaterials) =>
-        prevMaterials.map((data) =>
-          data.IdIngresoMaterial === materialId
-            ? { ...data, ...formValues }
-            : data
-        )
-      );
+      fetchMaterials();
     } catch (error) {
       toast.error("Error al modificar el material.");
       console.error("Error al modificar el material:", error);
@@ -227,7 +221,7 @@ const GenerateIdentificationCode = (size, large) => {
   
       // Actualizar el estado de la tolva a 2
       const materialActualizado = {
-        ...materials.find((m) => m.IdTolva === materialId),
+        ...filteredMaterials.find((m) => m.IdTolva === materialId),
         Estado: 2, // Establecer el estado a 2
       };
   

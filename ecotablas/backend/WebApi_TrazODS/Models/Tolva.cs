@@ -50,37 +50,57 @@ namespace WebApi_TrazODS.Models
         }
         public void Insert()
         {
+  
+                DateTime minDate = new DateTime(1753, 1, 1);
+                DateTime maxDate = new DateTime(9999, 12, 31);
 
-            string sqlSentencia = "sp_InsertTolvasPrueba";
-            SqlConnection sqlCnn = new SqlConnection();
-            sqlCnn.ConnectionString = connectionString;
+                if (HorarioInicio < minDate || HorarioInicio > maxDate)
+                {
+                    throw new ArgumentException("La fecha está fuera del rango permitido.");
+                }
 
+                 
+               
 
-            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
-            sqlCom.CommandType = CommandType.StoredProcedure;
-
-
-            sqlCom.Parameters.Add("@IdMaterialTriturado", SqlDbType.Int).Value = IdMaterialTriturado;
-                    sqlCom.Parameters.Add("@HorarioInicio", SqlDbType.DateTime).Value = HorarioInicio;
-                    sqlCom.Parameters.Add("@CantidadCargada", SqlDbType.Decimal).Value = CantidadCargada;
-                    sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
-                    sqlCom.Parameters.Add("@Proporcion", SqlDbType.NVarChar).Value = Proporcion;
-                    sqlCom.Parameters.Add("@Especificaciones", SqlDbType.NVarChar).Value = Especificaciones;
-                    sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
+                string sqlSentencia = "sp_InsertTolvasPrueba";
+                SqlConnection sqlCnn = new SqlConnection();
+                sqlCnn.ConnectionString = connectionString;
 
 
-
-                    sqlCnn.Open();
-
-
-                    var res = sqlCom.ExecuteNonQuery();
+                SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+                sqlCom.CommandType = CommandType.StoredProcedure;
 
 
-                    sqlCnn.Close();
+                sqlCom.Parameters.Add("@IdMaterialTriturado", SqlDbType.Int).Value = IdMaterialTriturado;
+                sqlCom.Parameters.Add("@HorarioInicio", SqlDbType.DateTime).Value = HorarioInicio;
+                sqlCom.Parameters.Add("@CantidadCargada", SqlDbType.Decimal).Value = CantidadCargada;
+                sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
+                sqlCom.Parameters.Add("@Proporcion", SqlDbType.NVarChar).Value = Proporcion;
+                sqlCom.Parameters.Add("@Especificaciones", SqlDbType.NVarChar).Value = Especificaciones;
+                sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
 
+
+
+                sqlCnn.Open();
+
+
+                var res = sqlCom.ExecuteNonQuery();
+
+
+                sqlCnn.Close();
+            
+            
                 }
         public void Update()
         {
+
+            DateTime minDate = new DateTime(1753, 1, 1);
+            DateTime maxDate = new DateTime(9999, 12, 31);
+
+            if (HorarioInicio < minDate || HorarioInicio > maxDate)
+            {
+                throw new ArgumentException("La fecha está fuera del rango permitido.");
+            }
 
             string sqlSentencia = "sp_UpdateTolva";
 

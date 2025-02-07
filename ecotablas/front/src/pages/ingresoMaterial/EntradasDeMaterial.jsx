@@ -219,6 +219,7 @@ const EntradasDeMaterial = () => {
     }
   };
 
+
   useEffect(() => {
     fetchMaterials();
   }, []);

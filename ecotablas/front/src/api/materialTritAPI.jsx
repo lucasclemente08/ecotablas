@@ -2,7 +2,7 @@
 import axios from "axios";
 import builderApiUrl from "../utils/BuilderApi";
 
-const BASE_URL = "http://www.ecotablasapi.somee.com/api/MaterialTrit";
+const BASE_URL = "http://localhost:61274/api/MaterialTrit";
 
 export const getAllMaterialTrit = () => axios.get(`${BASE_URL}/ListarTodo`);
 export const addMaterialTrit = (data) => axios.post(`${BASE_URL}/Insertar`, data);

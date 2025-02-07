@@ -97,11 +97,11 @@ const TablasProducidas = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     
-    await editTablas({ tablaId, formValues });
+    await editTablas({ tablaId, formValues }); 
     toast.success("Registro editado con éxito!");
     setFilteredMaterials((prevMaterials) =>
       prevMaterials.map((data) =>
-        data.IdIngresoMaterial === materialId
+        data.ID_Tabla === tablaId
           ? { ...data, ...formValues }
           : data
       )
@@ -252,7 +252,7 @@ const TablasProducidas = () => {
         <DeleteButton
           id={item.ID_Tabla}
           endpoint={
-            "http://www.gestiondeecotablas.somee.com/api/TablaProducidas/Borrar"
+            "http://www.ecotablasapi.somee.com/api/TablaProducidas/Borrar/"
           }
           updateList={() => dispatch(fetchTablasProducidas())}
         />
