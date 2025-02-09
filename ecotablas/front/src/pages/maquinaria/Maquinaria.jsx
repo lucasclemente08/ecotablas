@@ -192,7 +192,8 @@ const [showPieChart, setShowPieChart] = useState(false);
     }
   };
 
-  const handleEditSubmit = async () => {
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
     if (!validateForm()) return;
 
     try {
