@@ -65,7 +65,7 @@ const GastoMaquinaria = () => {
   // Cerrar Modal
   const cerrarModal = () => setModalAbierto(false);
   const abrirModalEdit = (gasto) => {
-    console.log(gasto);
+    
     const gastoSeguro = gasto || {}; // Evita errores si gasto es null/undefined
     
     setGastoid(gastoSeguro.IdGastoMaquinaria || ""); // IdGastoMaquinaria coincide con el JSON
@@ -101,17 +101,27 @@ const GastoMaquinaria = () => {
   };
 
 
+
   const handleEditSubmit = async (e) => {
-    e.preventDefault(); // Previene el comportamiento por defecto del formulario
+    e.preventDefault();
+  
+    if (!gastoId) {
+      toast.error("Error: No se encontró el ID del gasto.");
+      return;
+    }
+  
     try {
-      await dispatch(updateGasto({ id: gastoId, ...formValues }));
+      await dispatch(updateGasto({ id: gastoId, ...formValues })).unwrap();
       toast.success("Gasto actualizado con éxito");
+      await dispatch(fetchGastos());
+  
       cerrarModalEdit(); // Cierra el modal después de guardar
     } catch (error) {
       toast.error("Error al actualizar el gasto");
       console.error("Error al actualizar el gasto:", error);
     }
   };
+  
   
 
 

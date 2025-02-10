@@ -87,7 +87,7 @@ const EmpresaDonante = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formValues.Nombre || !formValues.Direccion || !formValues.Telefono) {
-      console.error("Por favor completa todos los campos requeridos");
+      toast.error("Por favor completa todos los campos requeridos");
       return;
     }
 axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", formValues)

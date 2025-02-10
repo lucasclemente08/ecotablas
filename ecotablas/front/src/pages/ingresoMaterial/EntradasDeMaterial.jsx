@@ -96,6 +96,7 @@ const EntradasDeMaterial = () => {
         formValues,
       )
       .then(() => {
+        toast.success("Material agregado correctamente");
         cerrarModal();
         fetchMaterials();
       })
@@ -404,8 +405,7 @@ const getPlasticbyId =(id)=>{
     <>
       <SectionLayout title="Materiales Ingresados">
 
-        
-
+    
 
 <div className="flex flex-wrap items-center gap-1 ">
 

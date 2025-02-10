@@ -67,3 +67,8 @@ nav {
   animation: spin 1s linear infinite;
   -webkit-animation: spin 1s linear infinite;
 }
+
+
+.Toastify__toast-container {
+  z-index: 9999 !important;
+}

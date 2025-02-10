@@ -97,7 +97,7 @@ const ClasificacionDeMaterial = () => {
         formValues,
       )
       .then(() => {
-        toast.success("Material cargado")
+        toast.success("¡Material añadido con existo!")
         cerrarModal();
         fetchMaterials();
       })
