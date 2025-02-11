@@ -16,8 +16,7 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
-import toast from 'react-hot-toast';
-
+import { Toaster, toast } from 'sonner';
 
 import SectionLayout from "../../../layout/SectionLayout";
 import TablaHead from "../../../components/Thead";

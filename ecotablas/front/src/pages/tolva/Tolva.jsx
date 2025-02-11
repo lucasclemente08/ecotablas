@@ -9,7 +9,7 @@ import NextProcess from "../../components/buttons/NextProcess";
 import { GrLinkNext } from "react-icons/gr";
 import { BsClipboardDataFill } from "react-icons/bs";
 import TableComponent from "../../components/TableComponent";
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'sonner';
 import { FiEdit } from "react-icons/fi";
 
 import Pagination from "../../components/Pagination";
@@ -373,6 +373,7 @@ const GenerateIdentificationCode = (size, large) => {
 
   return (
     <SectionLayout title="Tolva">
+        <Toaster />
        <div className="flex flex-wrap items-center gap-1 ">
       <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
       <PdfGenerator columns={columns} data={materials} title="Reporte de Tolva" />

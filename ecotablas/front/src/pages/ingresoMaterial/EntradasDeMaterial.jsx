@@ -10,10 +10,11 @@ import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { GrLinkNext } from "react-icons/gr";
 import VolumenIngresadoChart from "../../components/volumen/VolumenIngresadoChart";
+import { Toaster, toast } from 'sonner';
 import DateFilter from "../../components/DateFilter";
 import SectionLayout from "../../layout/SectionLayout";
 import NextProcess from "../../components/buttons/NextProcess";
-import toast, { Toaster } from 'react-hot-toast';
+
 import {
   getAllMaterialClas,
   addMaterialClas,
@@ -116,6 +117,8 @@ const EntradasDeMaterial = () => {
       !formValues.TipoDonante
     ) {
       
+
+
       toast('Todos los campos son obligatorios!⚠️', {
         duration: 4000,
         style: { background: '#3b82f6', color: '#fff' },
@@ -170,7 +173,7 @@ const EntradasDeMaterial = () => {
   
     try {
       await addMaterialClas(clasificacionValues);
-      setMensaje("Lote enviado a clasificación");
+     toast.success("Lote enviado a clasificación");
   
       const materialActualizado = {
         ...filteredMaterials.find((m) => m.IdIngresoMaterial === materialId),
@@ -182,7 +185,7 @@ const EntradasDeMaterial = () => {
       setModalClasificado(false);
       fetchMaterials(); // Refrescar la lista para mostrar cambios
     } catch (error) {
-      setMensaje("Error al terminar el proceso.");
+      toast.error("Error al terminar el proceso.");
       console.error("Error al terminar el proceso:", error);
     }
   };
@@ -405,7 +408,7 @@ const getPlasticbyId =(id)=>{
     <>
       <SectionLayout title="Materiales Ingresados">
 
-    
+      <Toaster />
 
 <div className="flex flex-wrap items-center gap-1 ">
 

@@ -5,7 +5,7 @@ import axios from "axios";
 import SectionLayout from "../../layout/SectionLayout";
 
 import TableComponent from "../../components/TableComponent";
-import toast from 'react-hot-toast';
+import { Toaster, toast } from 'sonner';
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { MdOutlineEditLocationAlt } from "react-icons/md";
 import { MdOutlineAddLocation } from "react-icons/md";
@@ -343,6 +343,8 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   return (
     <SectionLayout title="Recolección de Urbanos">
  
+ <Toaster />
+
  {modalEdit && (
             <ButtonEdit
               title="Recoleccion Urbanos"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../../../components/Pagination"
-import toast from 'react-hot-toast';
+import { Toaster, toast } from 'sonner';
 
 
 import TableComponent from "../../../components/TableComponent";
@@ -515,7 +515,7 @@ return link;
     <SectionLayout title="Gasto de Maquinaria">
 
 
-
+    <Toaster />
 
       <div className="flex">
         <AddButtonWa

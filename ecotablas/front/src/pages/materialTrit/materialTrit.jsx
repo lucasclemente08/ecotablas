@@ -17,7 +17,7 @@ import NextProcess from "../../components/buttons/NextProcess";
 import VolumenTrituradoChart from "../../components/volumen/VolumenTrituradoChart";
 
 
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'sonner';
 import SectionLayout from "../../layout/SectionLayout";
 import { FiEdit } from "react-icons/fi";
 import LoadingTable from "../../components/LoadingTable";

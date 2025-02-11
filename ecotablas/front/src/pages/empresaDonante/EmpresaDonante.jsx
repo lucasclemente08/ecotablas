@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import toast from 'react-hot-toast';
+import toast,{Toaster} from 'sonner';
 import { FiEdit } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -219,6 +219,7 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
   };
   return (
     <SectionLayout title="Empresas Donantes">
+        <Toaster />
       <AddButtonWa abrirModal={abrirModal} title="Añadir Empresa Donante" />
       <PdfGenerator
         columns={columns}
