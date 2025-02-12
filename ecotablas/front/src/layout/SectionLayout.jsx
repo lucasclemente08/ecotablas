@@ -9,7 +9,8 @@ const SectionLayout = ({ title, children }) => {
     <div className="bg-slate-900 min-h-screen flex">
       {/* Navbar móvil */}
       <div className="block  md:hidden">
-        <Navbar />
+      <Navbar isOpen={!isSidebarOpen} close={() => setSidebarOpen(!isSidebarOpen)} />
+
       </div>
 
       {/* Sidebar fijo */}

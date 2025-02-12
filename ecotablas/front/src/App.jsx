@@ -45,7 +45,7 @@ const routesConfig = [
   { path: "/material", element: <Material />, protected: true, roles: ["admin", "editor"] },
   { path: "/materialTri", element: <MaterialTrit />, protected: true, roles: ["admin", "editor"] },
   { path: "/tablas", element: <TablasProducidas />, protected: true, roles: ["admin", "editor"] },
-
+  { path: "/areas", element: <Areas />, protected: true, roles: ["admin", "editor"] },
   { path: "/materialProc", element: <MaterialProc />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
   { path: "/recoleccion", element: <RecoUrbanos />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
   { path: "/clasificacion", element: <ClasificacionDeMaterial />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido

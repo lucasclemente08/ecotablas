@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import toast from 'react-hot-toast';
+
 import { FiEdit } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -20,8 +20,7 @@ import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
 import axios from "axios";
 import TableComponent from "../../components/TableComponent"
-
-
+import { Toaster, toast } from 'sonner';
 const EmpresaDonante = () => {
   const dispatch = useDispatch();
   const { data:data,  error } = useSelector((state) => state.empresaDonante);
@@ -88,7 +87,7 @@ const EmpresaDonante = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formValues.Nombre || !formValues.Direccion || !formValues.Telefono) {
-      console.error("Por favor completa todos los campos requeridos");
+      toast.error("Por favor completa todos los campos requeridos");
       return;
     }
 axios.post("http://localhost:61274/api/EmpresaDonante/Insertar", formValues,)
@@ -221,6 +220,7 @@ axios.post("http://localhost:61274/api/EmpresaDonante/Insertar", formValues,)
   };
   return (
     <SectionLayout title="Empresas Donantes">
+        <Toaster />
       <AddButtonWa abrirModal={abrirModal} title="Añadir Empresa Donante" />
       <PdfGenerator
         columns={columns}

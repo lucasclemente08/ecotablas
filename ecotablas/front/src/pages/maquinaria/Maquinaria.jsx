@@ -5,7 +5,7 @@ import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'sonner';
 import TableComponent from "../../components/TableComponent";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { FaChartPie } from "react-icons/fa";

@@ -16,8 +16,7 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
-import toast from 'react-hot-toast';
-
+import { Toaster, toast } from 'sonner';
 
 import SectionLayout from "../../../layout/SectionLayout";
 import TablaHead from "../../../components/Thead";
@@ -33,6 +32,7 @@ import AddModalWithSelect from "../../../components/AddModalWithSelect";
 import AddButtonWa from "../../../components/buttons/AddButtonWa";
 import GastoVehiculosChart from "../../../components/graficos/GastoVehiculosChart";
 import GastoVehiculosDataPicker from "../../../components/graficos/GastoVehiculoDataPicker";
+import ButtonEdit from "../../../components/buttons/ButtonEditPr";
 
 ChartJS.register(
   CategoryScale,
@@ -300,14 +300,7 @@ const GastoVehiculos = () => {
       )
       .then((response) => {
         toast.success("Gasto actualizado con éxito"); // Notificación de éxito
-      
-        setMaterial((prevMaterials) =>
-          prevMaterials.map((data) =>
-            data.IdIngresoMaterial === materialId
-              ? { ...data, ...formValues }
-              : data
-          )
-        );
+    fetchMaterials();
         cerrarModalEdit();
       })
       .catch((error) => {
@@ -656,13 +649,13 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
       )}
 
       {modalEdit && (
-        <AddModalWithSelect
+        <ButtonEdit
           title="Editar Gasto de Vehículo"
           fields={fields}
           handleChange={handleChange}
-          handleSubmit={handleEditSubmit} // Cambia el manejador al de edición
-          cerrarModal={cerrarModalEdit} // Cambia al cierre de modal de edición
-          values={formValues}
+          handleEditSubmit={handleEditSubmit} // Cambia el manejador al de edición
+          cerrarModalEdit={cerrarModalEdit} // Cambia al cierre de modal de edición
+          formValues={formValues}
         />
       )}
 

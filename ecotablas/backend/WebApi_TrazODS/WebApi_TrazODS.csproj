@@ -362,6 +362,7 @@
     <None Include="Properties\PublishProfiles\FTPProfile3.pubxml" />
     <None Include="Properties\PublishProfiles\FTPProfile4.pubxml" />
     <None Include="Properties\PublishProfiles\FTPProfile5.pubxml" />
+    <None Include="Properties\PublishProfiles\FTPProfile6.pubxml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />

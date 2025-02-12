@@ -22,7 +22,7 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'sonner';
 import { editTablas, } from "../../api/TablasProducidaAPI";
 import { v4 as uuidv4 } from "uuid";
 
@@ -276,7 +276,7 @@ const TablasProducidas = () => {
 
   return (
     <SectionLayout title="Tablas Producidas">
-  
+    <Toaster />
 
       <div className="flex items-center">        
       <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />

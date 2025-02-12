@@ -13,8 +13,7 @@ import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 
-import toast from 'react-hot-toast';
-
+import { Toaster, toast } from 'sonner';
 import Pagination from "../../components/Pagination";
 import VolumenChart from "../../components/volumen/VolumenChart";
 import FilterButton from "../../components/buttons/FilterButton";
@@ -97,7 +96,7 @@ const ClasificacionDeMaterial = () => {
         formValues,
       )
       .then(() => {
-        toast.success("Material cargado")
+        toast.success("¡Material añadido con existo!")
         cerrarModal();
         fetchMaterials();
       })
@@ -378,7 +377,7 @@ const ClasificacionDeMaterial = () => {
     <>
 
       <SectionLayout title="Materiales Clasificados">
-        
+      <Toaster />
 
  
       <div className="flex flex-wrap items-center gap-1 ">

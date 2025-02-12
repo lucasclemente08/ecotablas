@@ -4,9 +4,13 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 const MapComponent = ({ points, onMapClick }) => {
+
+
+
   return (
     <MapContainer
-      center={[51.505, -0.09]} // Centro inicial del mapa
+      className="z-0"
+      center={[-31.4184, -64.1705]} // Centro inicial del mapa
       zoom={13} // Nivel de zoom inicial
       style={{ height: "400px", width: "100%" }}
       onClick={onMapClick} // Asegúrate de que el evento onClick esté configurado

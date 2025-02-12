@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:61274/api/";
+const API_URL = "http://www.ecotablasapi.somee.com/api";
 
 export const getRoutes = async () => {
   const response = await fetch(`${API_URL}/Rutas/ListarTodo`);
