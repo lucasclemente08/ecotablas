@@ -237,7 +237,7 @@ const [showPieChart, setShowPieChart] = useState(false);
     try {
 
       await addReparacion(reparacionValues);
-      setMensaje("Reparación agregada exitosamente");
+      toast.success("Reparación agregada exitosamente");
 
       // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
       const maquinariaActualizada = {
@@ -450,7 +450,7 @@ const [showPieChart, setShowPieChart] = useState(false);
     {
         allowedRoles: ["admin","editor", ],
       render: (maquinaria) => (
-        <td className="border-b py-2 px-4 flex flex-row justify-center gap-2">
+        <td className="border-b flex flex-row justify-center gap-2">
                      {maquinaria.IdEstado === 3 && (
                         <button
           className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"

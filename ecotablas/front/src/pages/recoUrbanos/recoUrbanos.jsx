@@ -120,7 +120,7 @@ const RecoUrbanos = () => {
  
     axios
       .post(
-        `http://localhost:61274/api/UbicacionesMapa/Insertar`,
+        `http://www.ecotablasapi.somee.com/api/UbicacionesMapa/Insertar`,
         newUbicacion,
       )
       .then((response) => {

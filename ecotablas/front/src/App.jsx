@@ -55,6 +55,7 @@ const routesConfig = [
   { path: "/empresa", element: <EmpresaDonante/>, protected: true, roles: ["admin", "editor", "viewer"] },
   { path: "/vehiculos", element: <Vehiculos/>, protected: true, roles: ["admin", "editor", "viewer"] },
 
+  { path: "/volumen", element: <Volumen/>, protected: true, roles: ["admin", "editor", "viewer"] },
 
 
   { path: "/tolva", element: <Tolva />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido

@@ -27,7 +27,7 @@ const VolumenProcesadoChart = ({ dateRange }) => {
 
     axios
       .get(
-        "http://www.trazabilidadodsapi.somee.com/api/Volumen/ObtenerVolumen",
+        "http://www.ecotablasapi.somee.com/api/Volumen/ObtenerVolumen",
         {
           params: {
             fechaInicio: startDate,

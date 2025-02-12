@@ -218,7 +218,7 @@ const GenerateIdentificationCode = (size, large) => {
       // Asegúrate de pasar correctamente los valores de tablaValues y el nuevo campo CódigoIdentificacion
       await addTablas({ ...tablaValues, CodigoIdentificacion: code });
   
-      setMensaje("¡Tabla producida!");
+      toast.success("¡Tabla producida!");
   
       // Actualizar el estado de la tolva a 2
       const materialActualizado = {
