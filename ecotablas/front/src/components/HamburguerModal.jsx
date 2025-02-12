@@ -1,60 +1,36 @@
 import { useEffect, useRef } from "react";
 import { RiCloseFill } from "react-icons/ri";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebase";
 import { signOut } from "firebase/auth";
 
-import MenuSection from "./MenuSection";
-
+import MenuSection from "./MenuSectionNavBar";
 import { ImTruck } from "react-icons/im";
 import { RiTeamFill, RiRecycleFill } from "react-icons/ri";
 import { FaTools, FaDollarSign } from "react-icons/fa";
+
 const HamburgerModal = ({ isOpen, close }) => {
   const modalRef = useRef(null);
   const navigate = useNavigate();
 
-  
-  const employeeMenus = [
-    { title: "Empleados", link: "/empleados" },
-    { title: "Áreas y turnos de trabajo", link: "/areas" },
-    { title: "Perfil", link: "/profile" },
-  ];
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        close(); // Cierra el modal si se hace clic fuera de él
+      }
+    };
 
-  const urbanMenus = [
-    { title: "Recolección Urbanos", link: "/recoleccion" },
-    { title: "Empresa Donante", link: "/empresa" },
-    { title: "Rutas", link: "/rutas" },
-  ];
+  }, [isOpen, close]);
 
-  const materialMenus = [
-    { title: "Entrada de material", link: "/Entrada/material" },
-    { title: "Clasificacíon de material", link: "/clasificacion" },
-    { title: "Material Triturado", link: "/materialTri" },
-    { title: "Tolva", link: "/Tolva" },
-    { title: "Tablas producidas", link: "/tablas" },
-    { title: "Volumen", link: "/volumen" },
-  ];
-
-  const machinesMenus = [
-    { title: "Maquinaria", link: "/maquinaria" },
-    { title: "Vehículos", link: "/vehiculos" },
-    { title: "Plásticos", link: "/material" },
-  ];
-
-  const ExpensesMenus = [
-    { title: "Gastos de vehículos", link: "/gastos/vehiculos" },
-    { title: "Gastos de maquinaria", link: "/gastos/maquinaria" },
-  ];
+  if (!isOpen) return null; // No renderizar el modal si isOpen es false
 
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
         localStorage.clear();
-        navigate("/login"); // Navegar a la página de inicio de sesión
+        navigate("/login");
       })
-      .catch((error) => {
-        console.error("Error al cerrar sesión:", error);
-      });
+      .catch((error) => console.error("Error al cerrar sesión:", error));
   };
 
   return (
@@ -63,7 +39,7 @@ const HamburgerModal = ({ isOpen, close }) => {
       tabIndex={-1}
       className="fixed top-0 right-0 bottom-0 z-50 w-3/4 backdrop-blur-md flex flex-col items-center bg-white/50 rounded-l-lg"
     >
-     <div className="flex justify-end w-full p-5">
+      <div className="flex justify-end w-full p-5">
         <button
           onClick={close}
           type="button"
@@ -74,26 +50,16 @@ const HamburgerModal = ({ isOpen, close }) => {
         </button>
       </div>
 
-<div></div>
+      <MenuSection title="Empleados" menus={[{ title: "Empleados", link: "/empleados" }]} icon={<RiTeamFill />} />
+      <MenuSection title="Recolección" menus={[{ title: "Recolección Urbanos", link: "/recoleccion" }]} icon={<ImTruck />} />
+      <MenuSection title="Materiales" menus={[{ title: "Materiales", link: "/materiales" }]} icon={<RiRecycleFill />} />
+      <MenuSection title="Maquinaria" menus={[{ title: "Maquinaria", link: "/maquinaria" }]} icon={<FaTools />} />
+      <MenuSection title="Gastos" menus={[{ title: "Gastos", link: "/gastos" }]} icon={<FaDollarSign />} />
 
-<div>
-
-      <MenuSection title="Empleados" menus={employeeMenus} icon={<RiTeamFill />} isOpen={isOpen} />
-      <MenuSection title="Recolección" menus={urbanMenus} icon={<ImTruck />} isOpen={isOpen} />
-      <MenuSection title="Materiales" menus={materialMenus} icon={<RiRecycleFill />} isOpen={isOpen} />
-      <MenuSection title="Maquinaria" menus={machinesMenus} icon={<FaTools />} isOpen={isOpen} />
-      <MenuSection title="Gastos" menus={ExpensesMenus} icon={<FaDollarSign />} isOpen={isOpen} />
-</div>
-
-      <div className="mt-20">
-        <div className="mt-auto mb-5 flex flex-col justify-end w-full items-end">
-          <button
-            onClick={handleSignOut}
-            className="font-semibold hover:text-red-700 text-end"
-          >
-            Cerrar sesión
-          </button>
-        </div>
+      <div className="mt-auto mb-5 flex flex-col justify-center text-center w-full items-end">
+        <button onClick={handleSignOut} className="font-semibold hover:text-red-700 text-end">
+          Cerrar sesión
+        </button>
       </div>
     </div>
   );
