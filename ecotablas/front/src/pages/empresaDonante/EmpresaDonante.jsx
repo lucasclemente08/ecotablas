@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import toast,{Toaster} from 'sonner';
+
 import { FiEdit } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -20,8 +20,7 @@ import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
 import axios from "axios";
 import TableComponent from "../../components/TableComponent"
-
-
+import { Toaster, toast } from 'sonner';
 const EmpresaDonante = () => {
   const dispatch = useDispatch();
   const { data:data,  error } = useSelector((state) => state.empresaDonante);

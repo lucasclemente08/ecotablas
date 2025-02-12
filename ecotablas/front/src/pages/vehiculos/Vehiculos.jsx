@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
-import toast, { Toaster } from 'sonner';
+import { Toaster, toast } from 'sonner';
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import TableComponent from "../../components/TableComponent";
