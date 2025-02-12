@@ -3,6 +3,7 @@ import RouteFormModal from "../../components/ModalRutas";
 import MapComponent from "../../components/MapComponent";
 import SectionLayout from "../../layout/SectionLayout";
 import { getRoutes, createRoute, getRoutePoints } from "../../api/RutasAPI";
+import AddButtonWa from "../../components/buttons/AddButtonWa";
 
 const Rutas = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,33 +36,58 @@ const Rutas = () => {
     setRoutes([...routes, newRoute]);
   };
 
+
+  const abrirModal = () => {
+    setIsModalOpen(true);
+  }
+    
   return (
-    <SectionLayout>
-    <div>
-      <h1>Rutas y Empleados</h1>
-      <button onClick={() => setIsModalOpen(true)}>Agregar Ruta</button>
-      <RouteFormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveRoute}
-      />
+    <SectionLayout title={"Rutas y Empleados"}>
 
-      <h2>Rutas Disponibles</h2>
-      <ul>
-        {routes.map((route) => (
-          <li key={route.IdRuta} onClick={() => setSelectedRoute(route)}>
-             <strong>{route.Nombre}</strong> - {new Date(route.Fecha).toLocaleDateString()}
-          </li>
-        ))}
-      </ul>
+   
 
-      {selectedRoute && (
-        <div>
-          <h3>Puntos de la Ruta: {selectedRoute.Nombre}</h3>
-          <MapComponent points={routePoints} />
-        </div>
-      )}
+  <AddButtonWa
+   abrirModal ={abrirModal}
+    title={"Agregar Ruta"}
+  />
+    
+
+  <RouteFormModal
+    isOpen={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    onSave={handleSaveRoute}
+  />
+
+  <h2 className="text-xl font-semibold mt-6 text-gray-400">Rutas Disponibles</h2>
+
+  <ul className="mt-4 grid grid-cols-5 md:grid-cols-4 gap-4">
+  {routes.map((route) => (
+    <li
+      key={route.IdRuta}
+      onClick={() => setSelectedRoute(route)}
+      className="cursor-pointer border border-gray-300 bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition"
+    >
+      <h3 className="text-lg font-semibold text-gray-800">{route.Nombre}</h3>
+      <p className="text-sm text-gray-600">
+        {new Date(route.Fecha).toLocaleDateString()}
+      </p>
+    </li>
+  ))}
+</ul>
+
+
+  {selectedRoute && (
+    <div className="mt-6 p-4 border rounded-lg shadow-md bg-white">
+      <h3 className="text-lg font-semibold text-gray-800">
+        Puntos de la Ruta: {selectedRoute.Nombre}
+      </h3>
+      
+
     </div>
+  )}
+<div className="mt-4">
+        <MapComponent points={routePoints} />
+      </div>
     </SectionLayout>
   );
 };

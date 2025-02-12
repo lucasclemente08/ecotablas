@@ -14,7 +14,7 @@ const Areas = () => {
   const fetchMaterials = async () => {
     try {
       const response = await axios.get(
-        " http://www.trazabilidadodsapi.somee.com/api/Roles/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/Roles/ListarTodo",
       );
       setArea(response.data);
     } catch (error) {

@@ -52,22 +52,40 @@ const ModalRutas = ({ isOpen, onClose, onSave }) => {
       <div style={{ pointerEvents: "auto" }}> {/* Permite eventos en el contenido del modal */}
         <h2>Agregar Ruta</h2>
         <input
-          type="text"
-          placeholder="Nombre de la ruta"
-          value={routeName}
-          onChange={(e) => setRouteName(e.target.value)}
-        />
-        <input
-          type="date"
-          value={routeDate}
-          onChange={(e) => setRouteDate(e.target.value)}
-        />
-        <button onClick={handleSave}>Guardar</button>
-        <button onClick={onClose}>Cancelar</button>
-      </div>
-      <div style={{ pointerEvents: "auto", marginTop: "20px" }}> {/* Permite eventos en el mapa */}
+  type="text"
+  placeholder="Nombre de la ruta"
+  value={routeName}
+  onChange={(e) => setRouteName(e.target.value)}
+  className="w-full px-4 py-2 border rounded-lg mt-2  outline-none placeholder-gray-500"
+/>
+
+<input
+  type="date"
+  value={routeDate}
+  onChange={(e) => setRouteDate(e.target.value)}
+  className="w-full px-4 py-2 border rounded-lg mt-2   outline-none"
+/>
+
+<div style={{ pointerEvents: "auto", marginTop: "20px" }}> {/* Permite eventos en el mapa */}
         <MapComponent points={points} onMapClick={handleMapClick} />
       </div>
+
+      <div className="flex justify-center space-x-2 mt-4">
+<button
+  onClick={handleSave}
+  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
+>
+  Guardar
+</button>
+<button
+  onClick={onClose}
+  className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md transition"
+>
+  Cancelar
+</button>
+</div>
+      </div>
+      
     </div>
   );
 };
