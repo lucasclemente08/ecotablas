@@ -262,6 +262,7 @@
     <Compile Include="Models\AreaTrabajo.cs" />
     <Compile Include="Models\EstadosVehiculos.cs" />
     <Compile Include="Models\GastoMaquinaria.cs" />
+    <Compile Include="Models\Maquinaria.cs" />
     <Compile Include="Models\PuntosRuta.cs" />
     <Compile Include="Models\Rutas.cs" />
     <Compile Include="Models\RutaxEmpleados.cs" />
@@ -274,7 +275,6 @@
     <Compile Include="Models\EstadosMaquinarias.cs" />
     <Compile Include="Models\IngresoMat.cs" />
     <Compile Include="Models\Localidades.cs" />
-    <Compile Include="Models\Maquinaria.cs" />
     <Compile Include="Models\MaterialClas.cs" />
     <Compile Include="Models\MaterialPros.cs" />
     <Compile Include="Models\MaterialTrit.cs" />

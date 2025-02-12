@@ -16,8 +16,8 @@ namespace WebApi_TrazODS.Controllers
         [HttpGet]
         public List<EmpresaDonante> ListarTodo()
         {
-            EmpresaDonante empresaDonante = new EmpresaDonante();
-            DataTable dt = empresaDonante.SelectAll();
+            EmpresaDonante oEmpresaDonante = new EmpresaDonante();
+            DataTable dt = oEmpresaDonante.SelectAll();
 
             var listaJson = JsonConvert.SerializeObject(dt);
             var lista = JsonConvert.DeserializeObject<List<EmpresaDonante>>(listaJson);
@@ -30,41 +30,38 @@ namespace WebApi_TrazODS.Controllers
         [HttpPost]
         public void Insertar([FromBody] EmpresaDonante value)
         {
-            EmpresaDonante empresaDonante = new EmpresaDonante
-            {
-                CUIT = value.CUIT,
-                Nombre = value.Nombre,
-                Direccion = value.Direccion,
-                Telefono = value.Telefono,
-                Email = value.Email,
-                TipoPlastico = value.TipoPlastico,
-                Rubro = value.Rubro,
-                DonacionesDisponibles = value.DonacionesDisponibles,
-                Web = value.Web
-            };
+            EmpresaDonante oEmpresaDonante = new EmpresaDonante();
+            oEmpresaDonante.CUIT = value.CUIT;
+            oEmpresaDonante.Nombre = value.Nombre;
+            oEmpresaDonante.Direccion = value.Direccion;
+            oEmpresaDonante.Telefono = value.Telefono;
+            oEmpresaDonante.Email = value.Email;
+            oEmpresaDonante.TipoPlastico = value.TipoPlastico;
+            oEmpresaDonante.Rubro = value.Rubro;
+            oEmpresaDonante.DonacionesDisponibles = value.DonacionesDisponibles;
+            oEmpresaDonante.Web = value.Web;
 
-            empresaDonante.Insert(empresaDonante);
+
+            oEmpresaDonante.Insert();
         }
 
         // PUT: api/EmpresaDonante/{id}
         [HttpPut]
         public void Modificar(int id, [FromBody] EmpresaDonante value)
         {
-            EmpresaDonante empresaDonante = new EmpresaDonante
-            {
-                Id_EmpresaDonante = id,
-                CUIT = value.CUIT,
-                Nombre = value.Nombre,
-                Direccion = value.Direccion,
-                Telefono = value.Telefono,
-                Email = value.Email,
-                TipoPlastico = value.TipoPlastico,
-                Rubro = value.Rubro,
-                DonacionesDisponibles = value.DonacionesDisponibles,
-                Web = value.Web
-            };
+            EmpresaDonante oEmpresaDonante = new EmpresaDonante();
+                oEmpresaDonante.Id_empresaDonante = id;
+                oEmpresaDonante.CUIT = value.CUIT;
+                oEmpresaDonante.Nombre = value.Nombre;
+                oEmpresaDonante.Direccion = value.Direccion;
+                oEmpresaDonante.Telefono = value.Telefono;
+                oEmpresaDonante.Email = value.Email;
+                oEmpresaDonante.TipoPlastico = value.TipoPlastico;
+                oEmpresaDonante.Rubro = value.Rubro;
+                oEmpresaDonante.DonacionesDisponibles = value.DonacionesDisponibles;
+                oEmpresaDonante.Web = value.Web;
 
-            empresaDonante.Update(empresaDonante);
+            oEmpresaDonante.Update();
         }
 
         // DELETE: api/EmpresaDonante/{id}
@@ -72,8 +69,8 @@ namespace WebApi_TrazODS.Controllers
         public void Borrar(int id)
         {
             EmpresaDonante empresaDonante = new EmpresaDonante();
-            empresaDonante.Id_EmpresaDonante = id;
-            empresaDonante.Delete();
+            empresaDonante.Id_empresaDonante = id;
+            empresaDonante.Delete(id);
         }
     }
 }

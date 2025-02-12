@@ -107,7 +107,7 @@ const RecoUrbanos = () => {
       : [-31.4184, -64.1705];
 
   const handleSubmit = () => {
-    if (!newUbicacion.Nombre || !newUbicacion.Lat || !newUbicacion.Long) {
+    if (!newUbicacion.Nombre || !newUbicacion.Lat || !newUbicacion.Long || !newUbicacion.TipoDonante)  {
 
       toast('Todos los campos son obligatorios!', {
         duration: 4000,
@@ -120,7 +120,7 @@ const RecoUrbanos = () => {
  
     axios
       .post(
-        `http://www.ecotablasapi.somee.com/api/UbicacionesMapa/Insertar`,
+        `http://localhost:61274/api/UbicacionesMapa/Insertar`,
         newUbicacion,
       )
       .then((response) => {
@@ -247,7 +247,7 @@ const fields = [
     label: "Tipo de Donante",
     type: "select",
     options: [
-      { value: "Urbanos", label: "Recolección de urbanos" },
+      { value: "Urbanos", label: "Urbanos" },
       { value: "Empresa", label: "Empresa donante" },
       { value: "Particular", label: "Particular" },
     ],

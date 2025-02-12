@@ -12,7 +12,7 @@ namespace WebApi_TrazODS.Models
         #endregion
 
         #region Propiedades
-        public int Id_EmpresaDonante { get; set; } 
+        public int Id_empresaDonante { get; set; } 
         public string CUIT { get; set; }
         public string Nombre { get; set; }
         public string Direccion { get; set; }
@@ -55,101 +55,70 @@ namespace WebApi_TrazODS.Models
 
 
         // Método para insertar una nueva empresa donante
-        public void Insert(EmpresaDonante nuevaEmpresa)
+        public void Insert()
         {
             string sqlSentencia = "SP_InsertarEmpresaDonante"; // Procedimiento almacenado
-
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-
-                        // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@CUIT", nuevaEmpresa.CUIT);
-                        sqlCom.Parameters.AddWithValue("@Nombre", nuevaEmpresa.Nombre);
-                        sqlCom.Parameters.AddWithValue("@Direccion", nuevaEmpresa.Direccion);
-                        sqlCom.Parameters.AddWithValue("@Telefono", nuevaEmpresa.Telefono);
-                        sqlCom.Parameters.AddWithValue("@Email", nuevaEmpresa.Email);
-                        sqlCom.Parameters.AddWithValue("@TipoPlastico", nuevaEmpresa.TipoPlastico);
-                        sqlCom.Parameters.AddWithValue("@Rubro", nuevaEmpresa.Rubro);
-                        sqlCom.Parameters.AddWithValue("@DonacionesDisponibles", nuevaEmpresa.DonacionesDisponibles);
-                        sqlCom.Parameters.AddWithValue("@Web", nuevaEmpresa.Web);
-
-                        sqlCom.ExecuteNonQuery(); // Ejecutar el comando de inserción
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
-
-        // Método para actualizar una empresa donante
-        public void Update(EmpresaDonante empresaActualizada)
-        {
-            string sqlSentencia = "SP_ActualizarEmpresaDonante"; // Procedimiento almacenado
-
-            using (SqlConnection sqlCnn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    sqlCnn.Open();
-                    using (SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn))
-                    {
-                        sqlCom.CommandType = CommandType.StoredProcedure;
-
-                        // Añadir parámetros
-                        sqlCom.Parameters.AddWithValue("@Id_EmpresaDonante", empresaActualizada.Id_EmpresaDonante);
-                        sqlCom.Parameters.AddWithValue("@CUIT", empresaActualizada.CUIT);
-                        sqlCom.Parameters.AddWithValue("@Nombre", empresaActualizada.Nombre);
-                        sqlCom.Parameters.AddWithValue("@Direccion", empresaActualizada.Direccion);
-                        sqlCom.Parameters.AddWithValue("@Telefono", empresaActualizada.Telefono);
-                        sqlCom.Parameters.AddWithValue("@Email", empresaActualizada.Email);
-                        sqlCom.Parameters.AddWithValue("@TipoPlastico", empresaActualizada.TipoPlastico);
-                        sqlCom.Parameters.AddWithValue("@Rubro", empresaActualizada.Rubro);
-                        sqlCom.Parameters.AddWithValue("@DonacionesDisponibles", empresaActualizada.DonacionesDisponibles);
-                        sqlCom.Parameters.AddWithValue("@Web", empresaActualizada.Web);
-
-                        sqlCom.ExecuteNonQuery(); // Ejecutar el comando de actualización
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
-
-        // Método para eliminar una empresa donante
-        public void Delete()
-        {
-
-            string sqlSentencia = "SP_EliminarEmpresaDonante";
-
 
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = connectionString;
 
 
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
+            sqlCom.CommandType = CommandType.StoredProcedure;
+            sqlCom.Parameters.Add("@CUIT", SqlDbType.NVarChar).Value = CUIT;
+            sqlCom.Parameters.Add("@Nombre", SqlDbType.NVarChar).Value = Nombre;
+            sqlCom.Parameters.Add("@Direccion", SqlDbType.NVarChar).Value = Direccion;
+            sqlCom.Parameters.Add("@Telefono", SqlDbType.NVarChar).Value = Telefono;
+            sqlCom.Parameters.Add("@Email", SqlDbType.NVarChar).Value = Email;
+            sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
+            sqlCom.Parameters.Add("@Rubro", SqlDbType.NVarChar).Value = Rubro;
+            sqlCom.Parameters.Add("@DonacionesDisponibles", SqlDbType.NVarChar).Value = DonacionesDisponibles;
+            sqlCom.Parameters.Add("@Web", SqlDbType.NVarChar).Value = Web;
+            sqlCnn.Open();
+            var res = sqlCom.ExecuteNonQuery();
+            sqlCnn.Close();
+        }
 
+        // Método para actualizar una empresa donante
+        public void Update()
+        {
+            string sqlSentencia = "SP_ActualizarEmpresaDonante"; // Procedimiento almacenado
+
+
+            SqlConnection sqlCnn = new SqlConnection();
+            sqlCnn.ConnectionString = connectionString;
 
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
 
-            sqlCom.Parameters.Add("@Id_EmpresaDonante", SqlDbType.Int).Value = Id_EmpresaDonante;
-
-
+            sqlCom.Parameters.AddWithValue("@Id_empresaDonante", SqlDbType.Int).Value = Id_empresaDonante;
+            sqlCom.Parameters.Add("@CUIT", SqlDbType.NVarChar).Value = CUIT;
+            sqlCom.Parameters.Add("@Nombre", SqlDbType.NVarChar).Value = Nombre;
+            sqlCom.Parameters.Add("@Direccion", SqlDbType.NVarChar).Value = Direccion;
+            sqlCom.Parameters.Add("@Telefono", SqlDbType.NVarChar).Value = Telefono;
+            sqlCom.Parameters.Add("@Email", SqlDbType.NVarChar).Value = Email;
+            sqlCom.Parameters.Add("@TipoPlastico", SqlDbType.NVarChar).Value = TipoPlastico;
+            sqlCom.Parameters.Add("@Rubro", SqlDbType.NVarChar).Value = Rubro;
+            sqlCom.Parameters.Add("@DonacionesDisponibles", SqlDbType.NVarChar).Value = DonacionesDisponibles;
+            sqlCom.Parameters.Add("@Web", SqlDbType.NVarChar).Value = Web;
             sqlCnn.Open();
-
-
             var res = sqlCom.ExecuteNonQuery();
+            sqlCnn.Close();
+        }
 
+        // Método para eliminar una empresa donante
+        public void Delete(int id)
+        {
 
+            string sqlSentencia = "SP_EliminarEmpresaDonante";
+            SqlConnection sqlCnn = new SqlConnection(connectionString);
+            SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            sqlCom.Parameters.Add("@Id_empresaDonante", SqlDbType.Int).Value = Id_empresaDonante;
+            sqlCnn.Open();
+            var res = sqlCom.ExecuteNonQuery();
             sqlCnn.Close();
 
 

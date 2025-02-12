@@ -361,7 +361,7 @@ const GenerateIdentificationCode = (size, large) => {
           </button>
           <DeleteButton
             id={material.IdTolva}
-            endpoint="http://www.ecotablasapi.somee.com/api/Tolva/Borrar"
+            endpoint="http://localhost:61274/api/Tolva/Delete/"
             updateList={fetchMaterials}
           />
         </td>

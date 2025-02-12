@@ -192,7 +192,8 @@ const [showPieChart, setShowPieChart] = useState(false);
     }
   };
 
-  const handleEditSubmit = async () => {
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
     if (!validateForm()) return;
 
     try {
@@ -229,7 +230,8 @@ const [showPieChart, setShowPieChart] = useState(false);
     return isValid;
   };
 
-  const handleSubmitReparacion = async () => {
+  const handleSubmitReparacion = async (e) => {
+    e.preventDefault();
     if (!validateReparacionForm()) return;
 
     try {

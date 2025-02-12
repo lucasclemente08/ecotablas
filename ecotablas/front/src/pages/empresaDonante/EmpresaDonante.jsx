@@ -69,14 +69,15 @@ const EmpresaDonante = () => {
     setEmpresaId(empresa.Id_EmpresaDonante); // Asegurar que se guarde correctamente el ID
   console.log(empresaId)
     setFormValues({
-      Nombre: empresa.Nombre,
-      Direccion: empresa.Direccion,
-      Telefono: empresa.Telefono,
-      Email: empresa.Email,
-      TipoPlastico: empresa.Tipo_plastico,
-      Rubro: empresa.Rubro,
-      Web: empresa.Web,
-      CUIT: empresa.Cuit,
+      Nombre: empresa.Nombre || "",
+      Direccion: empresa.Direccion || "",
+      Telefono: empresa.Telefono || "",
+      Email: empresa.Email || "",
+      TipoPlastico: empresa.Tipo_plastico || "",
+      Rubro: empresa.Rubro || "",
+      Web: empresa.Web || "",
+      DonacionesDisponibles: empresa.DonacionesDisponibles || "",
+      CUIT: empresa.Cuit || "",
     });
     setModalEdit(true);
   };
@@ -90,7 +91,7 @@ const EmpresaDonante = () => {
       console.error("Por favor completa todos los campos requeridos");
       return;
     }
-axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", formValues)
+axios.post("http://localhost:61274/api/EmpresaDonante/Insertar", formValues,)
   .then((response) => {
     // Verificar si la respuesta es exitosa
     if (response && response.data) {
@@ -119,7 +120,7 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
   
     axios
       .put(
-        `http://www.ecotablasapi.somee.com/api/EmpresaDonante/Modificar/${empresaId}`,
+        `http://localhost:61274/api/EmpresaDonante/Modificar/${empresaId}`,
         formValues
       )
       .then(() => {
@@ -167,6 +168,7 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
       "No disponible"
       ),
       hasActions: true },
+      { key: "DonacionesDisponibles", label: "Donaciones Disponibles" },
 
   ];  
   const actions = [
@@ -182,7 +184,7 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
           Modificar
         </button>
         <DeleteButton
-          endpoint="http://www.ecotablasapi.somee.com/api/EmpresaDonante/Borrar"
+          endpoint="http://localhost:61274/api/EmpresaDonante/Borrar"
           updateList={() => dispatch(fetchEmpresaDonante())}
           id={item.Id_EmpresaDonante}
         />
@@ -248,6 +250,7 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
             },
             { name: "Rubro", label: "Rubro", type: "text" },
             { name: "Web", label: "Web", type: "text" },
+            { name: "DonacionesDisponibles", label: "Donaciones Disponibles", type: "text" },
           ]}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
@@ -274,6 +277,7 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
             },
             { name: "Rubro", label: "Rubro", type: "text" },
             { name: "Web", label: "Web", type: "text" },
+            { name: "DonacionesDisponibles", label: "Donaciones Disponibles", type: "text" },
             { name: "CUIT", label: "CUIT", type: "text" },
           ]}
           formValues={formValues}
