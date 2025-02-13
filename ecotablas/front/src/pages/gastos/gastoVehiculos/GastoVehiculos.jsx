@@ -519,7 +519,7 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
 
   const actions = [
     {
-      allowedRoles: ["admin","editor", ],
+      allowedRoles: ["admin","supervisor", ],
       render: (item) => (
         <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
             <button

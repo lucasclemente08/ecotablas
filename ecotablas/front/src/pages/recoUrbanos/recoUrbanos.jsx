@@ -318,7 +318,7 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   
   const actions = [
     {
-      allowedRoles: ["admin","editor", ],
+      allowedRoles: ["admin","supervisor", ],
       render: (location) => (
 <td className="px-4 py-2 flex justify-center content-center items-center">
                   <button

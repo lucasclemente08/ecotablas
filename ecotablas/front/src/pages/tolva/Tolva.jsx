@@ -341,7 +341,7 @@ const GenerateIdentificationCode = (size, large) => {
   
   const actions = [
     {
-    allowedRoles: ["admin","editor", ],
+    allowedRoles: ["admin","supervisor", ],
     
       render: (material) => (
         <td className="border-b px-4 py-2 flex justify-center">

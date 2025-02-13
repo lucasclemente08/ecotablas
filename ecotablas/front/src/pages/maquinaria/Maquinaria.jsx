@@ -448,7 +448,7 @@ const [showPieChart, setShowPieChart] = useState(false);
 
   const actions = [
     {
-        allowedRoles: ["admin","editor", ],
+        allowedRoles: ["admin","supervisor", ],
       render: (maquinaria) => (
         <td className="border-b flex flex-row justify-center gap-2">
                      {maquinaria.IdEstado === 3 && (

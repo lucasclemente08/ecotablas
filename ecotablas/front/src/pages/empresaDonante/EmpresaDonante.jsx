@@ -172,7 +172,7 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
   ];  
   const actions = [
     {
-      allowedRoles: ["admin","editor", ],
+      allowedRoles: ["admin","supervisor", ],
       render: (item) => (
         <td className="px-4 py-2 flex">
 

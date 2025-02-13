@@ -523,7 +523,7 @@ const Vehiculos = () => {
 
   const actions = [
     {
-      allowedRoles: ["admin","editor", ],
+      allowedRoles: ["admin","supervisor", ],
       render: (vehiculo) => (
         <td className="border-b py-2 px-4 flex flex-row justify-center gap-2">
                      {vehiculo.IdEstado === 3 && (

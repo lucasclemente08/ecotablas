@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { getFirestore, collection, getDocs,getDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase'; // Configuración de Firebase
 import TableComponent from '../../components/TableComponent'; // Tu componente de tabla personalizado
-import { ToastContainer, toast } from "react-toastify";
+
 import "react-toastify/dist/ReactToastify.css";
 import { RoleProvider } from '../../context/RoleContext';
-
+import { Toaster, toast } from 'sonner';
 const Admin = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,8 +15,8 @@ const Admin = () => {
   // Definir permisos predeterminados por rol
   const defaultRolePermissions = {
     admin: ['create', 'read', 'update', 'delete'],
-    editor: ['read', 'update'],
-    viewer: ['read'],
+    superVisor: ['read', 'update'],
+    empleado: ['read'],
   };
 
   // Cargar usuarios y permisos desde Firestore
@@ -143,8 +143,8 @@ const Admin = () => {
       onChange={(e) => updateRole(item.id, e.target.value)} 
     >
       <option value="admin">Admin</option>
-      <option value="editor">Editor</option>
-      <option value="viewer">Viewer</option>
+      <option value="supervisor">Supervisor</option>
+      <option value="empleado">Empleado</option>
     </select>
     },
     {
@@ -152,33 +152,19 @@ const Admin = () => {
       allowedRoles: ["admin"],
       render: (item) => <button
        className="ml-2 bg-red-700 flex hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-      onClick={() => deleteItem(item)}>Eliminar</button>,
+      onClick={() => deleteUser(item.id)}>Eliminar</button>,
     },
   ];
   
   
   return (
     <RoleProvider role={currentUserRole}>
+     <Toaster />
 
     <div className="p-8">
       <h1 className="text-2xl text-white font-bold mb-6">Admin Panel</h1>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      {/* {currentUserRole === 'admin' && (
-        <>
-          <RolePermissionsEditor role="editor" />
-          <RolePermissionsEditor role="viewer" />
-        </>
-      )} */}
+
+
       <TableComponent
         data={users}
         titles={[

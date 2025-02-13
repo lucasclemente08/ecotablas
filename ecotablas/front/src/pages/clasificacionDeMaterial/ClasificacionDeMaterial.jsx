@@ -343,7 +343,7 @@ const ClasificacionDeMaterial = () => {
 
   const actions = [
     {
-      allowedRoles: ["admin","editor", ],
+      allowedRoles: ["admin","supervisor", ],
       render: (material) => (
         <td
         className={`border-b py-2 px-4 flex justify-center `}
