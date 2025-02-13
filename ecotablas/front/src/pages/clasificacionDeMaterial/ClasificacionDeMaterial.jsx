@@ -352,14 +352,14 @@ const ClasificacionDeMaterial = () => {
           onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
           className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
         >
-          <GrLinkNext />
+          <GrLinkNext className="m-1" />
           Terminado
         </button>
         <button
           className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
           onClick={() => abrirModalEdit(material)}
         >
-          <FiEdit />
+          <FiEdit className="m-1" />
           Modificar
         </button>
 

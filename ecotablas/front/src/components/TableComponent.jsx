@@ -43,7 +43,7 @@ const TableComponent = ({
           <tbody>
             {data && data.length > 0 ? (
               paginatedData.map((item) => (
-                <tr key={item.id || item.Id} className="hover:bg-gray-100">
+                <tr key={item.id || item.Id} className= "text-center hover:bg-gray-100">
                   {titles.map((title) => (
                     <td key={title.key} className="border-b py-3 px-4">
                       {/* Verificar si la columna es de tipo "Fecha" */}
