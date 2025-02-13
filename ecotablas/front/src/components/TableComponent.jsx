@@ -16,9 +16,6 @@ const TableComponent = ({
   const [currentPage, setCurrentPage] = useState(1);
   const { role: userRole } = useRole(); // Obtenemos solo el rol del usuario
 
-  useEffect(() => {
-    console.log("Rol del usuario:", userRole);
-  }, [userRole]); // Se actualizará cuando cambie el rol del usuario
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -58,27 +55,23 @@ const TableComponent = ({
                   ))}
   
                   {/* Aquí van las acciones */}
-                  {actions && (
-                    <td className="border-b py-3 flex justify-center  text-center  px-4">
-         {actions.map((action, index) => (
-  <div
-    key={index}
-    className="flex items-center justify-start gap-2 py-1"
-  >
-    {Array.isArray(action.allowedRoles) && action.allowedRoles.includes(userRole) ? (
-      <div className="flex items-center text-sm px-3 py-1 rounded">
-        {action.render ? action.render(item) : null}
-      </div>
-    ) : (
-      <div className="flex items-center bg-red-100 text-red-700 text-sm px-3 py-1 rounded">
-        No permitido
-      </div>
-    )}
-  </div>
-))}
+                 
 
-                    </td>
-                  )}
+                  {actions && actions.some(action => Array.isArray(action.allowedRoles) && action.allowedRoles.includes(userRole)) && (
+  <td className="border-b py-3 flex justify-center text-center px-4">
+    {actions.map((action, index) => (
+      action.allowedRoles.includes(userRole) && (
+        <div key={index} className="flex items-center justify-start gap-2 py-1">
+          <div className="flex items-center text-sm px-3 py-1 rounded">
+            {action.render ? action.render(item) : null}
+          </div>
+        </div>
+      )
+    ))}
+  </td>
+)}
+
+
                 </tr>
               ))
             ) : (
