@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { getFirestore, collection, getDocs,getDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase'; // Configuración de Firebase
 import TableComponent from '../../components/TableComponent'; // Tu componente de tabla personalizado
-
+import SectionLayout from '../../layout/SectionLayout'; // Tu componente de diseño personalizado
+import ButtonEdit from '../../components/buttons/ButtonEditPr'; // Tu componente de edición personalizado
+import { FiEdit } from 'react-icons/fi'; // Iconos de edición
 import "react-toastify/dist/ReactToastify.css";
 import { RoleProvider } from '../../context/RoleContext';
 import { Toaster, toast } from 'sonner';
@@ -11,13 +13,48 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
   const [permissions, setPermissions] = useState({});
   const [currentUserRole, setCurrentUserRole] = useState('admin'); // Simula el rol actual del usuario
-
+const [modalEdit, setModalEdit] = useState(false);
   // Definir permisos predeterminados por rol
   const defaultRolePermissions = {
     admin: ['create', 'read', 'update', 'delete'],
     superVisor: ['read', 'update'],
     empleado: ['read'],
   };
+
+  
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [formValues, setFormValues] = useState([]);
+  
+
+
+const handleEditSubmit = async () => {
+  try {
+    const userRef = doc(db, 'usuarios', selectedUser.id);
+    await updateDoc(userRef, formValues);
+    setUsers(prevUsers =>
+      prevUsers.map(user => (user.id === selectedUser.id ? { ...user, ...formValues } : user))
+    );
+    toast.success('Usuario actualizado correctamente!');
+  } catch (error) {
+    toast.error('Error actualizando usuario:', error);
+  } finally {
+    cerrarModalEdit();
+  }
+}
+  const abrirModalEdit = (user) => {
+    setSelectedUser(user);
+
+    setFormValues(user); // Pre-cargar datos del usuario en el formulario
+    setModalEdit(true);
+  };
+  
+  const cerrarModalEdit = () => {
+    setModalEdit(false);
+    setSelectedUser(null);
+    setFormValues({});
+  };
+
+
 
   // Cargar usuarios y permisos desde Firestore
   useEffect(() => {
@@ -132,37 +169,89 @@ const Admin = () => {
     );
   };
 
+
+
+
   // Acciones de la tabla
   const actions = [
     {
       label: "Editar",
-      allowedRoles: ["admin", ],
-      render: (item) => <select
-      className="border rounded px-2 py-1"
-      value={item.role}
-      onChange={(e) => updateRole(item.id, e.target.value)} 
-    >
-      <option value="admin">Admin</option>
-      <option value="supervisor">Supervisor</option>
-      <option value="empleado">Empleado</option>
-    </select>
+      allowedRoles: ["admin"],
+      render: (item) => (
+        <select
+        className="border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-700 shadow-sm transition duration-200 ease-in-out hover:bg-gray-100"
+        value={item.role}
+        onChange={(e) => updateRole(item.id, e.target.value)}
+      >
+        <option value="admin">Admin</option>
+        <option value="supervisor">Supervisor</option>
+        <option value="empleado">Empleado</option>
+      </select>
+      
+      ),
+    },
+    {
+      label: "Modificar",
+      allowedRoles: ["admin"],
+      render: (item) => (
+        <button
+          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          onClick={() => abrirModalEdit(item)}
+        >
+          <FiEdit className="m-1" />
+          Modificar
+        </button>
+      ),
     },
     {
       label: "Eliminar",
       allowedRoles: ["admin"],
-      render: (item) => <button
-       className="ml-2 bg-red-700 flex hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-      onClick={() => deleteUser(item.id)}>Eliminar</button>,
+      render: (item) => (
+        <button
+          className="ml-2 bg-red-700 flex hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          onClick={() => deleteUser(item.id)}
+        >
+          Eliminar
+        </button>
+      ),
     },
   ];
   
+  const fields = [
+    { key: "correo", label: "Correo", type: "email", disabled: true }, // Solo lectura
+    // { key: "role", label: "Rol", type: "select", options: ["admin", "supervisor", "empleado"] }
+  ];
   
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+
+  };
+
   return (
+
     <RoleProvider role={currentUserRole}>
+    <SectionLayout title="Gestión de Usuarios">
+
      <Toaster />
 
-    <div className="p-8">
-      <h1 className="text-2xl text-white font-bold mb-6">Admin Panel</h1>
+    <div className="">
+
+    {modalEdit && selectedUser && (
+  <ButtonEdit
+    title="Usuario"
+    fields={fields} // Asegúrate de definir estos campos
+    id={selectedUser.id}
+    formValues={formValues}
+    handleChange={handleChange}
+
+    handleEditSubmit={handleEditSubmit}
+    cerrarModalEdit={cerrarModalEdit}
+  />
+)}
 
 
       <TableComponent
@@ -177,6 +266,7 @@ const Admin = () => {
        
         />
     </div>
+    </SectionLayout>
         </RoleProvider>
   );
 };

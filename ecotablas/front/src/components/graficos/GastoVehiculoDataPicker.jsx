@@ -19,7 +19,7 @@ const GastoVehiculosDataPicker = () => {
   const fetchMaterials = () => {
     setLoading(true);
     axios
-      .get("https://www.gestiondeecotablas.somee.com/api/GastoVehiculos/ListarTodo")
+      .get("http://www.ecotablasapi.somee.com/api/GastoVehiculos/ListarTodo")
       .then((response) => {
         setDataV(response.data);
         setFilteredData(response.data);
