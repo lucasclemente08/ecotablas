@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels); // Asegúrate de que ChartDataLabels se registre correctamente
 
 const MaquinariaChart = () => {
   const [maquinarias, setMaquinarias] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Función para obtener los datos de la API
   const fetchMaquinarias = async () => {
     try {
       setLoading(true);
@@ -32,7 +32,6 @@ const MaquinariaChart = () => {
     fetchMaquinarias();
   }, []);
 
-  // Calcula los estados de las maquinarias
   const estados = {
     operativa: maquinarias.filter((m) => m.IdEstado === 1).length,
     rota: maquinarias.filter((m) => m.IdEstado === 2).length,
@@ -59,8 +58,18 @@ const MaquinariaChart = () => {
       legend: {
         position: "bottom",
         labels: {
-          color: "#FFFFFF", // Texto de la leyenda en blanco
+          color: "#FFFFFF",
         },
+      },
+      datalabels: {
+        color: "#FFF",
+        anchor: "center",
+        align: "center",
+        font: {
+          weight: "bold",
+          size: 14,
+        },
+        formatter: (value) => (value > 0 ? value : ""),
       },
     },
   };

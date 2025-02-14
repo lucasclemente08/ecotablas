@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
-
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,8 +10,9 @@ import {
   Legend,
 } from "chart.js";
 import axios from "axios";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
 const DonantesChart = () => {
   const [locations, setLocations] = useState([]);
@@ -56,13 +56,16 @@ const DonantesChart = () => {
     // Actualizar los datos para el gráfico
     setChartData({
       labels: ["Empresa", "Urbanos", "Particular"],
+  
       datasets: [
         {
           label: "Cantidad por tipo de donante",
           data: [counts.empresa, counts.urbanos, counts.particular],
           backgroundColor: ["#4CAF50", "#2196F3", "#FFC107"],
           borderColor: ["#388E3C", "#1976D2", "#FFA000"],
+
           borderWidth: 1,
+          
         },
       ],
     });
@@ -70,9 +73,6 @@ const DonantesChart = () => {
 
   return (
     <div className="bg-gray-800 p-4 rounded-md shadow-md mx-auto">
-      {/* <h2 className="text-center text-gray-50 font-bold text-md mb-3">
-      Cantidad de Donantes por Tipo
-      </h2> */}
       {loading ? (
         <p className="text-center text-gray-50">Cargando datos...</p>
       ) : error ? (
@@ -82,22 +82,43 @@ const DonantesChart = () => {
           <Bar
             data={chartData}
             options={{
+              color: "#FFFFFF",
               responsive: true,
               maintainAspectRatio: false,
-         
               scales: {
                 x: {
                   ticks: { font: { size: 15 } },
+                  color: "#FFFFFF",
+                  barPercentage: 0.4,  // Reduce el tamaño de las barras
                 },
                 y: {
+                  color: "#FFFFFF",
                   ticks: { font: { size: 15 } },
+                },
+              },
+              plugins: {
+                legend: {
+                  labels: {
+                    color: "#FFFFFF", // Color blanco para las etiquetas de la leyenda
+                  },
+                },
+                datalabels: {
+                  color: "#FFFFFF", // Número sobre las barras en blanco
+                  font: {
+                    weight: "bold",
+                    size: 16,
+                  },
+                  
+                  align: "top", // Muestra los números arriba de las barras
+                  anchor: "center ", // Ajusta la posición de los números
+                  formatter: (value) => value, // Solo muestra el número
                 },
               },
             }}
           />
         </div>
       ) : (
-        <p className="text-center text-gray-50">No hay datos para mostrar.</p>
+        <p className="text-center text-white">No hay datos para mostrar.</p>
       )}
     </div>
   );
