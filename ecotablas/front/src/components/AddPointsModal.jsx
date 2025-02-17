@@ -36,14 +36,8 @@ const handleSave = () => {
     return;
   }
 
-  // Datos a enviar
-  const data = {
-    idRuta: routeId,
-    puntos: points, // Enviamos los puntos al backend
-  };
-console.log(data);
   axios
-    .put(`http://www.ecotablasapi.somee.com/api/PuntosRutas/${routeId}`, data)
+    .put(`http://www.ecotablasapi.somee.com/api/PuntosRutas/Insertar/${routeId}`, points)
     .then((res) => {
       toast.success("Puntos guardados exitosamente.");
       onClose(); // Cerrar el modal después de guardar

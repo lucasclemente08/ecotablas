@@ -42,13 +42,30 @@ const Rutas = () => {
     }
   }, [selectedRoute]);
 
-  // Maneja la creación de la ruta
   const handleSaveRoute = async (route) => {
     try {
-      const newRoute = await createRoute(route);
-      setNewRouteId(newRoute.data.IdRuta); 
+      // Crear la ruta
+      await createRoute(route);
+      console.log("Ruta creada exitosamente");
+  
+      // Obtener todas las rutas y buscar la más reciente
+      const { data: rutas } = await getRoutes();
+  
+      // Encontrar la última ruta (suponiendo que el ID es incremental)
+      const newRoute = rutas.reduce((latest, current) =>
+        current.Fecha > latest.Fecha ? current : latest
+      );
+  
+      if (newRoute?.IdRuta) {
+        setNewRouteId(newRoute.IdRuta);
+        console.log("ID de la nueva ruta:", newRoute.IdRuta);
+      } else {
+        console.warn("No se encontró la nueva ruta.");
+      }
+  
       setIsModalOpen(false);
       setIsAddPointsModalOpen(true);
+  
     } catch (error) {
       console.error("Error al crear la ruta:", error);
       alert("Hubo un error al crear la ruta. Por favor, inténtalo de nuevo.");
