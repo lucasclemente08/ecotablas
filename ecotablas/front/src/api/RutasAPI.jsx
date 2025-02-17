@@ -1,44 +1,28 @@
-const API_URL = "http://www.ecotablasapi.somee.com/api";
+import axios from "axios";
 
-export const getRoutes = async () => {
-  const response = await fetch(`${API_URL}/Rutas/ListarTodo`);
-  return response.json();
-};
+const BASE_URL = "http://localhost:61274/api";
 
-export const createRoute = async (route) => {
-  const response = await fetch(`${API_URL}/Rutas/Insertar`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(route),
-  });
-  return response.json();
-};
+// Endpoints para Rutas
+export const getRoutes = () => axios.get(`${BASE_URL}/Rutas/ListarTodo`);
+export const createRoute = (data) => axios.post(`${BASE_URL}/Rutas/Insertar`, data);
+export const editRoute = (id, data) => axios.put(`${BASE_URL}/Rutas/Modificar/${id}`, data);
+export const deleteRoute = (id) => axios.delete(`${BASE_URL}/Rutas/Borrar/${id}`);
 
-export const saveRoutePoints = async (idRuta, points) => {
-  const response = await fetch(`${API_URL}/PuntosRuta/Insertar`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(points.map((punto) => ({ 
-      IdRuta: idRuta, 
-      Orden: punto.Orden,
-      Longitud: punto.Longitud, 
-      Latitud: punto.Latitud, 
-      
-    }))),
-  });
-  return response.json();
-};
+// Endpoints para PuntosRuta
+export const getRoutePoints = (IdRuta) => axios.get(`${BASE_URL}/PuntosRuta/ListarPorRuta?IdRuta=${IdRuta}`);
+export const saveRoutePoints = (IdRuta, points) =>
+  axios.post(`${BASE_URL}/PuntosRuta/Insertar`, points.map(punto => ({
+    IdRuta: IdRuta,
+    Orden: punto.Orden,
+    Longitud: punto.Longitud,
+    Latitud: punto.Latitud,
+  })));
 
-export const assignEmployees = async (assignment) => {
-  const response = await fetch(`${API_URL}/RutasxEmpleados/Insertar`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(assignment),
-  });
-  return response.json();
-};
-
-export const getRoutePoints = async (idRuta) => {
-  const response = await fetch(`${API_URL}/PuntosRuta?IdRuta=${idRuta}`);
-  return response.json();
-};
+// Endpoints para RutasxEmpleados
+export const getEmployeesForRoute = (IdRuta) => axios.get(`${BASE_URL}/RutasxEmpleados/ListarPorRuta?IdRuta=${IdRuta}`);
+export const assignEmployeesToRoute = (IdRuta, empleados) =>
+  axios.post(`${BASE_URL}/RutasxEmpleados/Insertar`, empleados.map(idEmpleado => ({
+    IdRuta: IdRuta,
+    IdEmpleado: idEmpleado,
+  })));
+export const getEmpleados = () => axios.get(`${BASE_URL}/Empleados/ListarTodo`);

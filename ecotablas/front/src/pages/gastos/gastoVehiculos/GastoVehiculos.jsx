@@ -293,10 +293,15 @@ const GastoVehiculos = () => {
   ];
   const handleEditSubmit = (e) => {
     e.preventDefault();
+
+    if (!gastoId) {
+      toast.error("Error: No se encontró el ID del gasto.");
+      return;
+    }
     axios
       .put(
         `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${id}`,
-        formValues,
+        formValues
       )
       .then((response) => {
         toast.success("Gasto actualizado con éxito"); // Notificación de éxito
@@ -652,10 +657,11 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
         <ButtonEdit
           title="Editar Gasto de Vehículo"
           fields={fields}
+          formValues={formValues}
           handleChange={handleChange}
           handleEditSubmit={handleEditSubmit} // Cambia el manejador al de edición
           cerrarModalEdit={cerrarModalEdit} // Cambia al cierre de modal de edición
-          formValues={formValues}
+          
         />
       )}
 
