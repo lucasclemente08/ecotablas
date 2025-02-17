@@ -460,7 +460,7 @@ return link;
           <DeleteButton
             endpoint="http://www.ecotablasapi.somee.com/api/GastoMaquinaria/Delete"
             id={item.IdGastoMaquinaria}
-            updateList={fetchMaquinaria}
+            updateList={(fetchGastos())}
           />
         </td>
       ),

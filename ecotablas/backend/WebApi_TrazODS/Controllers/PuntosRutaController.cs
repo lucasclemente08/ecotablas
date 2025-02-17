@@ -34,7 +34,7 @@ namespace WebApi_TrazODS.Controllers
         public PuntosRuta ListarPorId(int id)
         {
             PuntosRuta oPuntosRuta = new PuntosRuta();
-            oPuntosRuta.IdPunto = id;
+            oPuntosRuta.IdRuta = id;
 
             DataTable dt = oPuntosRuta.SelectId();
 

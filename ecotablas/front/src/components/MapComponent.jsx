@@ -13,18 +13,17 @@ const MapComponent = ({ points, onMapClick }) => {
       center={[-31.4184, -64.1705]} // Centro inicial del mapa
       zoom={13} // Nivel de zoom inicial
       style={{ height: "400px", width: "100%" }}
-      onClick={onMapClick} // Asegúrate de que el evento onClick esté configurado
+      onClick={onMapClick} 
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {points.map((point, index) => (
+      {points.map((punto, index) => (
         <Marker
           key={index}
-          position={[point.Latitud, point.Longitud]}
-          icon={L.icon({ iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png" })}
+          position={[punto.Latitud, punto.Longitud]}
         >
-          <Popup>Punto {point.Orden}</Popup>
+          <Popup>Punto {punto.Orden}</Popup>
         </Marker>
       ))}
     </MapContainer>

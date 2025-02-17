@@ -34,7 +34,7 @@ namespace WebApi_TrazODS.Controllers
         public RutaxEmpleados RutaxEmpleados(int id)
         {
             RutaxEmpleados oRutaxEmpleados = new RutaxEmpleados();
-            oRutaxEmpleados.IdRutaxEmpleado = id;
+            oRutaxEmpleados.IdRuta = id;
 
             DataTable dt = oRutaxEmpleados.SelectId();
 
