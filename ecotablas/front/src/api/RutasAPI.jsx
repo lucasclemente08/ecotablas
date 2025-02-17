@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:61274/api";
+const BASE_URL = "http://www.ecotablasapi.somee.com/api";
 
 // Endpoints para Rutas
 export const getRoutes = () => axios.get(`${BASE_URL}/Rutas/ListarTodo`);
@@ -9,7 +9,7 @@ export const editRoute = (id, data) => axios.put(`${BASE_URL}/Rutas/Modificar/${
 export const deleteRoute = (id) => axios.delete(`${BASE_URL}/Rutas/Borrar/${id}`);
 
 // Endpoints para PuntosRuta
-export const getRoutePoints = (IdRuta) => axios.get(`${BASE_URL}/PuntosRuta/ListarPorRuta?IdRuta=${IdRuta}`);
+export const getRoutePoints = (IdRuta) => axios.get(`${BASE_URL}/PuntosRuta/ListarPorId/${IdRuta}`);
 export const saveRoutePoints = (IdRuta, points) =>
   axios.post(`${BASE_URL}/PuntosRuta/Insertar`, points.map(punto => ({
     IdRuta: IdRuta,
@@ -19,7 +19,7 @@ export const saveRoutePoints = (IdRuta, points) =>
   })));
 
 // Endpoints para RutasxEmpleados
-export const getEmployeesForRoute = (IdRuta) => axios.get(`${BASE_URL}/RutasxEmpleados/ListarPorRuta?IdRuta=${IdRuta}`);
+export const getEmployeesForRoute = (IdRuta) => axios.get(`${BASE_URL}/RutasxEmpleados/ListarPorId/${IdRuta}`);
 export const assignEmployeesToRoute = (IdRuta, empleados) =>
   axios.post(`${BASE_URL}/RutasxEmpleados/Insertar`, empleados.map(idEmpleado => ({
     IdRuta: IdRuta,

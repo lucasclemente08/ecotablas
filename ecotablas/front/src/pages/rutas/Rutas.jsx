@@ -36,7 +36,7 @@ const Rutas = () => {
     if (selectedRoute) {
       const fetchPoints = async () => {
         const points = await getRoutePoints(selectedRoute.IdRuta);
-        setRoutePoints(points.data); 
+        setRoutePoints(points.data || []); // Ajusta según la respuesta de tu API
       };
       fetchPoints();
     }
@@ -57,10 +57,12 @@ const Rutas = () => {
 
   // Maneja el guardado de puntos
   const handleSavePoints = async (points) => {
+    console.log("Puntos guardados exitosamente:", points);
     try {
       await saveRoutePoints(newRouteId, points);
       setIsAddPointsModalOpen(false);
       setIsAssignEmployeesModalOpen(true);
+
     } catch (error) {
       console.error("Error al guardar los puntos:", error);
       alert("Hubo un error al guardar los puntos. Por favor, inténtalo de nuevo.");
