@@ -129,7 +129,16 @@ const Rutas = () => {
       {/* Lista de rutas disponibles */}
       <h2 className="text-xl font-semibold mt-6 text-gray-400">Rutas Disponibles</h2>
       <ul className="mt-4 grid grid-cols-5 md:grid-cols-4 gap-4">
-        {routes.map((route) => (
+
+        
+      {
+        routes.map((route)=>{
+<select>
+<option value={route.IdRuta}>{route.Nombre}</option>
+</select>
+        })
+      }
+        {/* {routes.map((route) => (
           <li
             key={route.IdRuta}
             onClick={() => setSelectedRoute(route)}
@@ -140,7 +149,8 @@ const Rutas = () => {
               {new Date(route.Fecha).toLocaleDateString()}
             </p>
           </li>
-        ))}
+        ))} */}
+
       </ul>
 
       {/* Detalles de la ruta seleccionada */}

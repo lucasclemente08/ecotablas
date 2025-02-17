@@ -35,9 +35,17 @@ const handleSave = () => {
     toast.error("Por favor, agrega al menos un punto.");
     return;
   }
+  console.log("Puntos a guardar:", points);
 
   axios
-    .put(`http://www.ecotablasapi.somee.com/api/PuntosRutas/Insertar/${routeId}`, points)
+    .put(`http://www.ecotablasapi.somee.com/api/PuntosRutas/Insertar/${routeId}`, 
+      points.map(punto => ({
+        IdRuta: punto.IdRuta,
+        Orden: punto.Orden,
+        Longitud: punto.Longitud,
+        Latitud: punto.Latitud,
+      }))
+    )
     .then((res) => {
       toast.success("Puntos guardados exitosamente.");
       onClose(); // Cerrar el modal después de guardar
