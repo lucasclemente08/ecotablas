@@ -18,9 +18,11 @@ const Rutas = () => {
   const [isAddPointsModalOpen, setIsAddPointsModalOpen] = useState(false);
   const [isAssignEmployeesModalOpen, setIsAssignEmployeesModalOpen] = useState(false);
   const [routes, setRoutes] = useState([]);
-  const [selectedRoute, setSelectedRoute] = useState(null);
+  const [selectedRoute,setSelectedRoute] = useState(null);
   const [routePoints, setRoutePoints] = useState([]);
   const [newRouteId, setNewRouteId] = useState(null);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [filteredRoutes, setFilteredRoutes] = useState([]);;
 
   // Cargar rutas al iniciar
   useEffect(() => {
@@ -98,6 +100,30 @@ const Rutas = () => {
       alert("Hubo un error al asignar empleados. Por favor, inténtalo de nuevo.");
     }
   };
+  const handleRouteClick = (route) => {
+    // When selecting a route, set the date without the time component.
+    const date = new Date(route.Fecha);
+    // Remove the time part by setting it to midnight (00:00:00).
+    date.setHours(0, 0, 0, 0);
+    setSelectedDate(date.toISOString().split('T')[0]);
+  };
+  
+  useEffect(() => {
+    if (selectedDate) {
+      const selectedDateObj = new Date(selectedDate);
+      selectedDateObj.setDate(selectedDateObj.getDate() - 1); // Subtract one day
+      selectedDateObj.setHours(0, 0, 0, 0); // Ensure no time component
+  
+      const filtered = routes.filter((route) => {
+        const routeDate = new Date(route.Fecha);
+        routeDate.setHours(0, 0, 0, 0); // Set route date to midnight (00:00:00)
+        return routeDate.getTime() === selectedDateObj.getTime(); // Compare dates ignoring time
+      });
+      setFilteredRoutes(filtered);
+    } else {
+      setFilteredRoutes(routes);
+    }
+  }, [selectedDate, routes]);
 
   return (
     <SectionLayout title={"Rutas y Empleados"}>
@@ -118,46 +144,45 @@ const Rutas = () => {
         onSavePoints={handleSavePoints}
       />
 
-      {/* Modal de asignar empleados */}
-      <AssignEmployeesModal
-        isOpen={isAssignEmployeesModalOpen}
-        onClose={() => setIsAssignEmployeesModalOpen(false)}
-        routeId={newRouteId}
-        onAssignEmployees={handleAssignEmployees}
-      />
+    
+        <AssignEmployeesModal
+          isOpen={isAssignEmployeesModalOpen}
+          onClose={() => setIsAssignEmployeesModalOpen(false)}
+          routeId={newRouteId}
+          onAssignEmployees={handleAssignEmployees}
+        />
 
-      {/* Lista de rutas disponibles */}
-      <h2 className="text-xl font-semibold mt-6 text-gray-400">Rutas Disponibles</h2>
-      <ul className="mt-4 grid grid-cols-5 md:grid-cols-4 gap-4">
+        <h2 className="text-xl font-semibold mt-6 text-gray-400">Rutas Disponibles</h2>
 
-        
-      {
-        routes.map((route)=>{
-<select>
-<option value={route.IdRuta}>{route.Nombre}</option>
-</select>
-        })
-      }
-        {/* {routes.map((route) => (
-          <li
-            key={route.IdRuta}
-            onClick={() => setSelectedRoute(route)}
-            className="cursor-pointer border border-gray-300 bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition"
-          >
-            <h3 className="text-lg font-semibold text-gray-800">{route.Nombre}</h3>
-            <p className="text-sm text-gray-600">
-              {new Date(route.Fecha).toLocaleDateString()}
-            </p>
-          </li>
-        ))} */}
+        <div className="mt-4">
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="p-2 border border-gray-300 rounded-md shadow-sm mb-4"
+          />
 
-      </ul>
+          {selectedDate && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredRoutes.map((route) => (
+            <div
+              key={route.IdRuta}
+              className="p-4 border bg-slate-100 border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 cursor-pointer"
+              onClick={() => handleRouteClick(route)}
+            >
+              <h3 className="text-lg font-semibold text-gray-800">{route.NombreRuta}</h3>
+              <p className="text-gray-600">{new Date(route.Fecha).toLocaleDateString()}</p>
+            </div>
+          ))}
+            </div>
+          )}
+        </div>
 
-      {/* Detalles de la ruta seleccionada */}
+        {/* Detalles de la ruta seleccionada */}
       {selectedRoute && (
         <div className="mt-6 p-4 border rounded-lg shadow-md bg-white">
           <h3 className="text-lg font-semibold text-gray-800">
-            Puntos de la Ruta: {selectedRoute.Nombre}
+            Puntos de la Ruta: {selectedRoute.NombreRuta}
           </h3>
           <div className="mt-4">
             <MapComponent points={routePoints} />

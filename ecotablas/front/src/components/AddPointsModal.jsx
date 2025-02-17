@@ -37,23 +37,27 @@ const handleSave = () => {
   }
   console.log("Puntos a guardar:", points);
 
+points.map((res)=>{
   axios
-    .put(`http://www.ecotablasapi.somee.com/api/PuntosRutas/Insertar/${routeId}`, 
-      points.map(punto => ({
-        IdRuta: punto.IdRuta,
-        Orden: punto.Orden,
-        Longitud: punto.Longitud,
-        Latitud: punto.Latitud,
-      }))
-    )
-    .then((res) => {
-      toast.success("Puntos guardados exitosamente.");
-      onClose(); // Cerrar el modal después de guardar
-    })
-    .catch((error) => {
-      console.error("Error al guardar los puntos:", error);
-      toast.error("Hubo un problema al guardar los puntos.");
-    });
+  .put(`http://www.ecotablasapi.somee.com/api/PuntosRutas/Insertar/${routeId}`, 
+    points.map(punto => ({
+      IdRuta: punto.IdRuta,
+      Orden: punto.Orden,
+      Longitud: punto.Longitud,
+      Latitud: punto.Latitud,
+    }))
+
+
+  )
+  .then((res) => {
+    toast.success("Puntos guardados exitosamente.");
+    onClose(); // Cerrar el modal después de guardar
+  })
+  .catch((error) => {
+    console.error("Error al guardar los puntos:", error);
+    toast.error("Hubo un problema al guardar los puntos.");
+  });
+})
 };
 
 
