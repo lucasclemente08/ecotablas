@@ -102,7 +102,7 @@ const GastoVehiculos = () => {
     const { name, value, files } = e.target;
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: files ? files[0] : value,
+      [name]: files ? files[0] : null, 
     }));
   };
   
@@ -111,14 +111,14 @@ const GastoVehiculos = () => {
     
     setGastoid(gastoSeguro.IdVehiculo || ""); // IdGastoMaquinaria coincide con el JSON
     setFormValues({
-      TipoComprobante: "",
-    Comprobante: "comprobante",
-    TipoGasto: "",
-    IdVehiculo: "",
-    Proveedor: "",
-    Monto: "",
-    Fecha: "", 
-    Descripcion: "",
+      TipoComprobante: gastoSeguro.TipoComprobante || "",
+      Comprobante: gastoSeguro.Comprobante || "comprobante",
+      TipoGasto: gastoSeguro.TipoGasto || "",
+      IdVehiculo: gastoSeguro.IdVehiculo || "",
+      Proveedor: gastoSeguro.Proveedor || "",
+      Monto: gastoSeguro.Monto || "",
+      Fecha: gastoSeguro.Fecha ? gastoSeguro.Fecha.slice(0, 10) : "",
+      Descripcion: gastoSeguro.Descripcion || "",
     });
   
     setModalEdit(true);
