@@ -23,17 +23,51 @@ const [modalEdit, setModalEdit] = useState(false);
 
   
   const [selectedUser, setSelectedUser] = useState(null);
-  const [formValues, setFormValues] = useState([]);
+
+  const [formValues, setFormValues] = useState({
+    correo: '',
+    role: '',
+  });
+ 
+
+
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
   
+  setFormValues((prevState) => ({
+    ...prevState,
+    [name]: value,
+  }));
+  
+};
 
 
-const handleEditSubmit = async () => {
+const abrirModalEdit = (user) => {
+  setSelectedUser(user);
+  setFormValues({ 
+    correo: user.correo || "", role: user.role || "" }); // ✅ Mantener como objeto
+  setModalEdit(true);
+};
+
+
+  const cerrarModalEdit = () => {
+    setModalEdit(false);
+    setSelectedUser(null);
+    setFormValues({});
+  };
+
+const handleEditSubmit = async (e) => {
+  e.preventDefault();
   try {
     const userRef = doc(db, 'usuarios', selectedUser.id);
-    await updateDoc(userRef, formValues);
+    await updateDoc(userRef, { correo: formValues.correo });
     setUsers(prevUsers =>
-      prevUsers.map(user => (user.id === selectedUser.id ? { ...user, ...formValues } : user))
+      prevUsers.map(user => (user.id === selectedUser.id ? { ...user, correo: formValues.correo } : user))
     );
+
+fetchUsers();
+
     toast.success('Usuario actualizado correctamente!');
   } catch (error) {
     toast.error('Error actualizando usuario:', error);
@@ -41,23 +75,12 @@ const handleEditSubmit = async () => {
     cerrarModalEdit();
   }
 }
-  const abrirModalEdit = (user) => {
-    setSelectedUser(user);
 
-    setFormValues(user); // Pre-cargar datos del usuario en el formulario
-    setModalEdit(true);
-  };
-  
-  const cerrarModalEdit = () => {
-    setModalEdit(false);
-    setSelectedUser(null);
-    setFormValues({});
-  };
 
 
 
   // Cargar usuarios y permisos desde Firestore
-  useEffect(() => {
+
     const fetchUsers = async () => {
       try {
         const usersCollection = collection(db, 'usuarios');
@@ -79,7 +102,7 @@ const handleEditSubmit = async () => {
         setLoading(false);
       }
     };
-
+    useEffect(() => {
     fetchUsers();
   }, []);
 
@@ -218,19 +241,10 @@ const handleEditSubmit = async () => {
   ];
   
   const fields = [
-    { key: "correo", label: "Correo", type: "email", disabled: true }, // Solo lectura
-    // { key: "role", label: "Rol", type: "select", options: ["admin", "supervisor", "empleado"] }
+    { name: "correo", label: "Correo", type: "email", }, // Solo lectura
+ 
   ];
-  
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-
-  };
-
+ 
   return (
 
     <RoleProvider role={currentUserRole}>
