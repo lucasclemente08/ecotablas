@@ -98,13 +98,32 @@ const GastoVehiculos = () => {
       });
   };
 
+
   const handleChange = (e) => {
+    e.preventDefault();
     const { name, value, files } = e.target;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: files ? files[0] : null, 
-    }));
-  };
+
+    if (files && files[0]) {
+        // Si se seleccionó un archivo
+        const selectedFile = files[0];
+        console.log("Archivo seleccionado:", selectedFile.name);
+
+        // Guardar el archivo en un estado separado
+        setComprobante(selectedFile);
+
+        // Si necesitas manejar el archivo en formValues:
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: selectedFile.name, // Guarda solo el nombre del archivo
+        }));
+    } else {
+        // Si es un campo de texto u otro tipo de input
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+    }
+};
   
   const abrirModalEdit = (gasto) => {
     const gastoSeguro = gasto || {}; // Evita errores si gasto es null/undefined

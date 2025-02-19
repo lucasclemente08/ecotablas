@@ -67,8 +67,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         <Links isOpen={isOpen} />
             
 
-        <ReportButton isOpen={isOpen} />
-      </div>
+      
+      </div>  <ReportButton isOpen={isOpen} />
 
       {/* Botón de cerrar sesión */}
       <div className="mt-auto flex justify-center mb-4">

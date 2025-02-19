@@ -43,7 +43,7 @@ const MenuSection = ({ title, menus, icon, isOpen }) => {
           {menus.map((menu, index) => (
             <li
               key={index}
-              className="flex rounded-md ml-10 p-1.5 cursor-pointer text-left hover:bg-light-white text-black"
+              className="flex rounded-md ml-10 p-1.5 cursor-pointer text-left hover:bg-light-white text-white"
             >
               <Link to={menu.link} className="w-full">
                 {menu.title}
