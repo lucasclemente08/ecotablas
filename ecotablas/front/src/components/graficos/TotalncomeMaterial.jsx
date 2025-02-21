@@ -38,10 +38,10 @@ const TotalIncomeMaterial = () => {
   // Cálculo de ingresos de hoy
   useEffect(() => {
     if (!data || !Array.isArray(data)) return;
-
     const hoy = new Date().toISOString().slice(0, 10);
     const ingresosHoy = data.filter((item) => {
-      const fechaItem = parseFecha(item.FechaIngreso); // Ajusta el campo si tiene otro nombre
+     
+      const fechaItem = parseFecha(item.FechaIngresoM); // Ajusta el campo si tiene otro nombre
       return fechaItem === hoy;
     });
 
