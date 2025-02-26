@@ -61,7 +61,7 @@ const GastoVehiculos = () => {
   const [accessToken, setAccessToken] = useState(null);
   const [sortedData, setSortedData] = useState([]);
    const[gastoId,setGastoid]=useState([])
-
+  const [comprobante, setComprobante] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
 
   const abrirModal = () => setModalAbierto(true);
@@ -123,20 +123,22 @@ const GastoVehiculos = () => {
             [name]: value,
         }));
     }
+    
 };
   
   const abrirModalEdit = (gasto) => {
-    const gastoSeguro = gasto || {}; // Evita errores si gasto es null/undefined
+    const gastoSeguro = gasto || {}; 
+
     
-    setGastoid(gastoSeguro.IdVehiculo || ""); // IdGastoMaquinaria coincide con el JSON
+    setGastoid(gastoSeguro.IdVehiculo || "");
     setFormValues({
       TipoComprobante: gastoSeguro.TipoComprobante || "",
-      Comprobante: gastoSeguro.Comprobante || "comprobante",
+      Comprobante: "",
       TipoGasto: gastoSeguro.TipoGasto || "",
       IdVehiculo: gastoSeguro.IdVehiculo || "",
       Proveedor: gastoSeguro.Proveedor || "",
       Monto: gastoSeguro.Monto || "",
-      Fecha: gastoSeguro.Fecha ? gastoSeguro.Fecha.slice(0, 10) : "",
+      Fecha: gastoSeguro.Fecha || "",
       Descripcion: gastoSeguro.Descripcion || "",
     });
   
@@ -317,9 +319,10 @@ const GastoVehiculos = () => {
       toast.error("Error: No se encontró el ID del gasto.");
       return;
     }
+    console.log("Gasto ID:", gastoId);
     axios
       .put(
-        `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${id}`,
+        `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
         formValues
       )
       .then((response) => {
