@@ -66,11 +66,11 @@ const GastoMaquinaria = () => {
   const cerrarModal = () => setModalAbierto(false);
   const abrirModalEdit = (gasto) => {
     
-    const gastoSeguro = gasto || {}; // Evita errores si gasto es null/undefined
+    const gastoSeguro = gasto || {}; 
     
-    setGastoid(gastoSeguro.IdGastoMaquinaria || ""); // IdGastoMaquinaria coincide con el JSON
+    setGastoid(gastoSeguro.IdGastoMaquinaria || ""); 
     setFormValues({
-      tipoGasto: gastoSeguro.TipoGasto || "",        // Nota las mayúsculas
+      tipoGasto: gastoSeguro.TipoGasto || "",       
       tipoComprobante: gastoSeguro.TipoComprobante || "",
       Comprobante: gastoSeguro.Comprobante || "",
       proveedor: gastoSeguro.Proveedor || "",
