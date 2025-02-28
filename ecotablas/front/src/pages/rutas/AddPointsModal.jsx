@@ -15,7 +15,6 @@ const AddPointsModal = ({ isOpen, onClose, routeId, onSavePoints }) => {
   // Manejar clics en el mapa
   const handleMapClick = (e) => {
     console.log("Coordenadas del clic:", e.latlng); // Verifica que se detecten los clics
-    
     if (points.length < 5) {
       const { lat, lng } = e.latlng;
       const newPoint = {
@@ -32,26 +31,24 @@ const AddPointsModal = ({ isOpen, onClose, routeId, onSavePoints }) => {
   };
 // Guardar puntos
 const handleSave = () => {
-  if (!routeId) {
-    toast.error("No se ha proporcionado un ID de ruta válido.");
-    return;
-  }
   if (points.length === 0) {
     toast.error("Por favor, agrega al menos un punto.");
     return;
   }
   console.log("Puntos a guardar:", points);
-  console.log("Puntos a guardar:", routeId);
-  axios
-    .post(`http://localhost:61274/api/PuntosRuta/Insertar`, routeId, points)
-    .then((res) => {
-      toast.success("Puntos guardados exitosamente.");
-      onClose(); // Cerrar el modal después de guardar
-    })
-    .catch((error) => {
-      console.error("Error al guardar los puntos:", error);
-      toast.error("Hubo un problema al guardar los puntos.");
-    });
+
+  points.forEach((punto) => {
+    axios
+      .post("http://localhost:61274/api/PuntosRutas/Insertar", punto)
+      .then((res) => {
+        toast.success("Punto guardado exitosamente.");
+        onClose(); // Cerrar el modal después de guardar
+      })
+      .catch((error) => {
+        console.error("Error al guardar el punto:", error);
+        toast.error("Hubo un problema al guardar el punto.");
+  });
+})
 };
 
 

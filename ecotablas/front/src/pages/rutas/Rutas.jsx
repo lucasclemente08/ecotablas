@@ -78,7 +78,7 @@ const Rutas = () => {
   const handleSavePoints = async (points) => {
     console.log("Puntos guardados exitosamente:", points);
     try {
-      await saveRoutePoints(newRouteId, points);
+      await saveRoutePoints(points);
       setIsAddPointsModalOpen(false);
       setIsAssignEmployeesModalOpen(true);
 

@@ -1,20 +1,20 @@
 import axios from "axios";
 
-const BASE_URL = "http://www.ecotablasapi.somee.com/api";
+const BASE_URL = "http://localhost:61274/api";
 
 // Endpoints para Rutas
 export const getRoutes = () => axios.get(`${BASE_URL}/Rutas/ListarTodo`);
 export const createRoute = (data) => axios.post(`${BASE_URL}/Rutas/Insertar`, data);
 
 
-export const editRoute = (id, data) => axios.put(`${BASE_URL}/Rutas/Modificar/${id}`, data);
+export const editRoute = (id, data) => axios.post(`${BASE_URL}/Rutas/Modificar/${id}`, data);
 export const deleteRoute = (id) => axios.delete(`${BASE_URL}/Rutas/Borrar/${id}`);
 
 // Endpoints para PuntosRuta
 export const getRoutePoints = (IdRuta) => axios.get(`${BASE_URL}/PuntosRuta/ListarPorId/${IdRuta}`);
-export const saveRoutePoints = (IdRuta, points) =>
+export const saveRoutePoints = (points) =>
   axios.post(`${BASE_URL}/PuntosRuta/Insertar`, points.map(punto => ({
-    IdRuta: IdRuta,
+    IdRuta: punto.IdRuta,
     Orden: punto.Orden,
     Longitud: punto.Longitud,
     Latitud: punto.Latitud,
