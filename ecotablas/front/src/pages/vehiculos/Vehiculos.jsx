@@ -525,10 +525,10 @@ const Vehiculos = () => {
     {
       allowedRoles: ["admin","supervisor", ],
       render: (vehiculo) => (
-        <td className="border-b py-2 px-4 flex flex-row justify-center gap-2">
+        <td className="border-b flex flex-row justify-center gap-1">
                      {vehiculo.IdEstado === 3 && (
                         <button
-          className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+          className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-2 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
           onClick={() => abrirModalDetallesReparacion(vehiculo)}
         >
           <FiEye />
@@ -538,7 +538,7 @@ const Vehiculos = () => {
                       
                       <button
                         onClick={() => abrirModalEdit(vehiculo)}
-                        className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+                        className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-2 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
                       >
                         <FiEdit />
                         Modificar
@@ -547,7 +547,7 @@ const Vehiculos = () => {
                       {(vehiculo.IdEstado === 1 || vehiculo.IdEstado === 2) && (
                         <button
                           onClick={() => abrirModalReparacion(vehiculo.IdVehiculo)}
-                          className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+                          className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-2 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
                         >
                           <FiPlus />
                           Agregar Reparación
@@ -558,7 +558,7 @@ const Vehiculos = () => {
                       {(vehiculo.IdEstado === 1 || vehiculo.IdEstado === 2) && (
                         <button
                           onClick={() => handleChangeState(vehiculo)}
-                          className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded flex items-center gap-2"
+                          className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded flex items-center gap-1"
                         >
                           <FiRefreshCw />
                           Cambiar Estado
