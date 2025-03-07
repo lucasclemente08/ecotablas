@@ -55,23 +55,17 @@ const TableComponent = ({
                   ))}
   
                   {/* Aquí van las acciones */}
-                 
-
-                  {actions && actions.some(action => Array.isArray(action.allowedRoles) && action.allowedRoles.includes(userRole)) && (
-  <td className="border-b py-3 flex justify-center text-center px-4">
-    {actions.map((action, index) => (
-      action.allowedRoles.includes(userRole) && (
-        <div key={index} className="flex items-center justify-start gap-2 py-1">
-          <div className="flex items-center text-sm px-3 py-1 rounded">
-            {action.render ? action.render(item) : null}
-          </div>
-        </div>
-      )
-    ))}
-  </td>
-)}
-
-
+                  <td className="border-b py-3 flex justify-center text-center px-4">
+                    {actions && actions.map((action, index) => (
+                      (action.allowedRoles.includes(userRole) || action.alwaysVisible) && (
+                        <div key={index} className="flex items-center justify-start gap-2 py-1">
+                          <div className="flex items-center text-sm px-3 py-1 rounded">
+                            {action.render ? action.render(item) : null}
+                          </div>
+                        </div>
+                      )
+                    ))}
+                  </td>
                 </tr>
               ))
             ) : (

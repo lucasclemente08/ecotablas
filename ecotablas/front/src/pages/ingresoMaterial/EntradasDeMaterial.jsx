@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
@@ -370,40 +369,43 @@ const getPlasticbyId =(id)=>{
 // Para acciones como editar o eliminar
   ];
   
+  
 
   const actions = [
-    {
-      allowedRoles: ["admin","supervisor", ],
-      render: (material) => (
-        <td
-        className={` py-2 px-4 flex justify-center 
-         
-        `}
-      >
+  {
+    allowedRoles: ["admin", "supervisor","empleado"],
+    render: (material) => (
+      <div className="flex items-center justify-start gap-2 py-1">
         <button
-            onClick={() => abrirModalClasificado(material.IdIngresoMaterial)}
-            className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              <GrLinkNext />
-            Terminado
-          </button>
+          className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          onClick={() => abrirModalClasificado(material.IdIngresoMaterial)}
+        >
+          <GrLinkNext />
+          Terminado
+        </button>
+      </div>
+    ),
+  },
+  {
+    allowedRoles: ["admin", "supervisor"],
+    render: (material) => (
+      <div className="flex items-center justify-start gap-2 py-1">
         <button
           className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
           onClick={() => abrirModalEdit(material)}
         >
-                  <FiEdit />
-                  Modificar
+          <FiEdit />
+          Modificar
         </button>
-
         <DeleteButton
           id={material.IdIngresoMaterial}
           endpoint="http://www.ecotablasapi.somee.com/api/IngresoMat/Borrar"
           updateList={fetchMaterials}
         />
-      </td>
-      ),
-    },
-  ];
+      </div>
+    ),
+  },
+];
   return (
     <>
       <SectionLayout title="Materiales Ingresados">
