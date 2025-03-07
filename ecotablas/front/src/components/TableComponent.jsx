@@ -10,6 +10,7 @@ const TableComponent = ({
   sortConfig, 
   onSort, 
   actions,
+  hasMaterial , // Propiedad para controlar si la tabla tiene Material
   itemsPerPage = 5,  // Puedes definir el número de items por página
   isLoading = false, // Propiedad para controlar el estado de carga
 }) => {
@@ -36,7 +37,7 @@ const TableComponent = ({
         <LoadingTable loading={isLoading} />
       ) : (
         <table className="min-w-full bg-white rounded-lg shadow-md">
-          <TablaHead titles={titles} onSort={onSort} sortConfig={sortConfig} />
+          <TablaHead titles={titles} onSort={onSort} sortConfig={sortConfig} hasMaterial={hasMaterial} />
           <tbody>
             {data && data.length > 0 ? (
               paginatedData.map((item) => (
@@ -55,17 +56,22 @@ const TableComponent = ({
                   ))}
   
                   {/* Aquí van las acciones */}
-                  <td className="border-b py-3 flex justify-center text-center px-4">
-                    {actions && actions.map((action, index) => (
-                      (action.allowedRoles.includes(userRole) || action.alwaysVisible) && (
-                        <div key={index} className="flex items-center justify-start gap-2 py-1">
-                          <div className="flex items-center text-sm px-3 py-1 rounded">
-                            {action.render ? action.render(item) : null}
-                          </div>
-                        </div>
-                      )
-                    ))}
-                  </td>
+                 
+                  {actions && actions.some(action => Array.isArray(action.allowedRoles) && action.allowedRoles.includes(userRole)) && (
+  <td className="border-b py-3 flex justify-center text-center px-4">
+    {actions.map((action, index) => (
+      action.allowedRoles.includes(userRole) && (
+        <div key={index} className="flex items-center justify-start gap-2 py-1">
+          <div className="flex items-center text-sm px-3 py-1 rounded">
+            {action.render ? action.render(item) : null}
+          </div>
+        </div>
+      )
+    ))}
+  </td>
+)}
+
+
                 </tr>
               ))
             ) : (

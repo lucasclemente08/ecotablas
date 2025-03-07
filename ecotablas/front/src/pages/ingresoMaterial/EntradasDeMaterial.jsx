@@ -495,6 +495,7 @@ const getPlasticbyId =(id)=>{
          </div>
          <TableComponent
       data={data}
+      hasMaterial={true}
       titles={titlesT}
       sortConfig={sortConfig}
       onSort={handleSort}
