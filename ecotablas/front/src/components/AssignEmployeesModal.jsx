@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { getEmpleados, assignEmployeesToRoute } from "../api/RutasAPI";
+import { toast } from "sonner";
+import axios from "axios";
 
 const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) => {
   const [empleados, setEmpleados] = useState([]);
   const [selectedEmpleados, setSelectedEmpleados] = useState([]);
+  const [empleadosR, setEmpleadosR] = useState([]);
 
   // Cargar empleados al abrir el modal
   useEffect(() => {
@@ -21,30 +24,49 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
 
   // Maneja la selección/deselección de empleados
   const handleCheckboxChange = (idEmpleado) => {
+    console.log("Checkbox cambiado. ID del empleado:", idEmpleado); // Verifica el ID del empleado seleccionado
+
     if (selectedEmpleados.includes(idEmpleado)) {
       setSelectedEmpleados(selectedEmpleados.filter((id) => id !== idEmpleado));
+      console.log("Empleado deseleccionado. Empleados seleccionados:", selectedEmpleados); // Muestra los empleados seleccionados después de deseleccionar
+
     } else {
       setSelectedEmpleados([...selectedEmpleados, idEmpleado]);
+      console.log("Empleado seleccionado. Empleados seleccionados:", selectedEmpleados); // Muestra los empleados seleccionados después de seleccionar
+
     }
+
+    const NewEmpleadoR ={
+      IdRuta: routeId,
+      IdEmpleado: idEmpleado
+    }
+    setEmpleadosR([...empleadosR, NewEmpleadoR])
   };
 
   // Maneja el guardado de empleados asignados
   const handleSave = async () => {
     if (selectedEmpleados.length === 0) {
-      alert("Por favor, selecciona al menos un empleado.");
+      toast.error("Por favor, selecciona al menos un empleado.");
       return;
     }
 
     try {
+      for (const empleadoRt of empleadosR)
+      await axios.post("http://localhost:61274/api/RutaxEmpleados/Insertar", empleadoRt);
+      console.log("Empleados seleccionados para guardar:", selectedEmpleados); // Muestra los empleados seleccionados
+      console.log("Route ID para asignar empleados:", routeId); // Muestra el ID de la ruta
+
       // Asigna los empleados a la ruta en el backend
-      await assignEmployeesToRoute(routeId, selectedEmpleados);
+      console.log("EMPLEADOS:", empleadosR);
       onAssignEmployees(selectedEmpleados); // Notifica al componente padre
       onClose(); // Cierra el modal
+      toast.success("Empleados asignados correctamente.");
     } catch (error) {
       console.error("Error al asignar empleados:", error);
-      alert("Hubo un error al asignar empleados. Por favor, inténtalo de nuevo.");
+      toast.error("Hubo un problema al asignar los empleados.");
     }
   };
+
 
   if (!isOpen) return null;
 

@@ -48,12 +48,25 @@ namespace WebApi_TrazODS.Controllers
 
         // POST: api/Rutas
         [HttpPost]
-        public void Insertar([FromBody] Rutas value)
+        public HttpResponseMessage Insertar([FromBody] Rutas value)
         {
-            Rutas oRutas = new Rutas();
-            oRutas.NombreRuta = value.NombreRuta;
-            oRutas.Fecha = value.Fecha;
-            oRutas.Insert();
+            try
+            {
+                Rutas oRutas = new Rutas();
+                oRutas.NombreRuta = value.NombreRuta;
+                oRutas.Fecha = value.Fecha;
+
+                // Insertar la ruta y obtener el IdRuta generado
+                int idRuta = oRutas.Insert();
+
+                // Devolver el IdRuta en la respuesta
+                return Request.CreateResponse(HttpStatusCode.OK, new { IdRuta = idRuta });
+            }
+            catch (Exception ex)
+            {
+                // Manejar errores
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
         // PUT: api/Rutas/5

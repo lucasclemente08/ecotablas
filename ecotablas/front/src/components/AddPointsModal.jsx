@@ -3,6 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvent } from "react-leafl
 import "leaflet/dist/leaflet.css";
 import { Toaster, toast } from 'sonner';
 import axios from "axios";
+import { point } from "leaflet";
+
 // Componente para manejar los clics en el mapa
 const ClickHandler = ({ onMapClick }) => {
   useMapEvent("click", onMapClick); // Escucha los clics en el mapa
@@ -20,9 +22,9 @@ const AddPointsModal = ({ isOpen, onClose, routeId, onSavePoints }) => {
       const { lat, lng } = e.latlng;
       const newPoint = {
         IdRuta: routeId,
+        Orden: points.length + 1,
         Longitud: lng.toFixed(6),
         Latitud: lat.toFixed(6),
-        Orden: points.length + 1,
       };
       setPoints([...points, newPoint]);
       toast.success("Punto agregado correctamente");
@@ -30,32 +32,24 @@ const AddPointsModal = ({ isOpen, onClose, routeId, onSavePoints }) => {
       toast.warning("Solo se permiten 5 puntos como máximo");
     }
   };
-// Guardar puntos
-const handleSave = () => {
-  if (!routeId) {
-    toast.error("No se ha proporcionado un ID de ruta válido.");
-    return;
-  }
-  if (points.length === 0) {
-    toast.error("Por favor, agrega al menos un punto.");
-    return;
-  }
-  console.log("Puntos a guardar:", points);
-  console.log("Puntos a guardar:", routeId);
-  axios
-    .post(`http://localhost:61274/api/PuntosRuta/Insertar`, routeId, points)
-    .then((res) => {
-      toast.success("Puntos guardados exitosamente.");
-      onClose(); // Cerrar el modal después de guardar
-    })
-    .catch((error) => {
-      console.error("Error al guardar los puntos:", error);
-      toast.error("Hubo un problema al guardar los puntos.");
-    });
-};
 
+  // Guardar puntos
+  const handleSave = () => {
+    if (!routeId) {
+      toast.error("No se ha proporcionado un ID de ruta válido.");
+      return;
+    }
+    if (points.length === 0) {
+      toast.error("Por favor, agrega al menos un punto.");
+      return;
+    }
 
+    console.log("Puntos a guardar:", points);
+    console.log("ID de ruta:", routeId);
 
+    // Llama a la función onSavePoints pasada como prop
+    onSavePoints(points);
+  };
 
   if (!isOpen) return null;
 
