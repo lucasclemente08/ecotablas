@@ -342,6 +342,24 @@ const MaterialTrit = () => {
 
   
   const actions = [
+
+
+
+    {
+      allowedRoles: ["admin", "supervisor","empleado"],
+      render: (material) => (
+        <div className="flex items-center justify-start gap-2 py-1">
+           <button
+                          onClick={() => abrirModalTolva(material.IdMaterialTriturado)}
+                          className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                          >
+                            <GrLinkNext />
+                            Terminado
+                          </button>
+        </div>
+      ),
+    },
+    
     {
       allowedRoles: ["admin","supervisor", ],
       render: (material) => (
@@ -350,13 +368,7 @@ const MaterialTrit = () => {
           modalAbierto ? "hidden" : ""
         }`}
                       >
-                      <button
-                          onClick={() => abrirModalTolva(material.IdMaterialTriturado)}
-                          className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                          >
-                            <GrLinkNext />
-                            Terminado
-                          </button>
+              
   
                         {modalTolva &&
             <AddModalWithSelect title="Pasar a Extrucción/tolva"
@@ -474,6 +486,7 @@ const MaterialTrit = () => {
 
           <TableComponent
       data={data}
+      hasMaterial={true}
       titles={titlesT}
       sortConfig={sortConfig}
       onSort={handleSort}

@@ -340,18 +340,30 @@ const GenerateIdentificationCode = (size, large) => {
   ];
   
   const actions = [
+
+
     {
-    allowedRoles: ["admin","supervisor", ],
-    
+      allowedRoles: ["admin", "supervisor","empleado"],
       render: (material) => (
-        <td className="border-b px-4 py-2 flex justify-center">
-        <button
+        <div className="flex items-center justify-start gap-2 py-1">
+       <button
               onClick={() => abrirModalTabla(material.IdTolva)}
               className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
             >
               <GrLinkNext className="mr-2" />
               Terminado
             </button>
+        </div>
+      ),
+    },
+
+
+    {
+    allowedRoles: ["admin","supervisor", ],
+    
+      render: (material) => (
+        <td className="border-b px-4 py-2 flex justify-center">
+  
           <button
             onClick={() => abrirModalEdit(material)}
             className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
@@ -453,6 +465,7 @@ const GenerateIdentificationCode = (size, large) => {
 
  <TableComponent
       data={data}
+      hasMaterial={true}
       titles={titlesT}
       sortConfig={sortConfig}
       onSort={handleSort}

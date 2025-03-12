@@ -248,6 +248,10 @@ const TablasProducidas = () => {
 
 
   const actions = [
+
+
+
+    
     {
       allowedRoles: ["admin","supervisor" ],
       render: (item) => (
