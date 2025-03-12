@@ -103,8 +103,8 @@ namespace WebApi_TrazODS.Models
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
 
-            sqlCom.Parameters.Add("@IdRuta", SqlDbType.VarChar).Value = IdRuta;
-            sqlCom.Parameters.Add("@IdEmpleado", SqlDbType.DateTime).Value = IdEmpleado;
+            sqlCom.Parameters.Add("@IdRuta", SqlDbType.Int).Value = IdRuta;
+            sqlCom.Parameters.Add("@IdEmpleado", SqlDbType.Int).Value = IdEmpleado;
 
             sqlCnn.Open();
 
@@ -135,8 +135,8 @@ namespace WebApi_TrazODS.Models
             sqlCom.CommandType = CommandType.StoredProcedure;
 
             sqlCom.Parameters.Add("@IdRutaxEmpleados", SqlDbType.Int).Value = IdRutaxEmpleado;
-            sqlCom.Parameters.Add("@IdRuta", SqlDbType.VarChar).Value = IdRuta;
-            sqlCom.Parameters.Add("@IdEmpleado", SqlDbType.DateTime).Value = IdEmpleado;
+            sqlCom.Parameters.Add("@IdRuta", SqlDbType.Int).Value = IdRuta;
+            sqlCom.Parameters.Add("@IdEmpleado", SqlDbType.Int).Value = IdEmpleado;
 
 
             sqlCnn.Open();

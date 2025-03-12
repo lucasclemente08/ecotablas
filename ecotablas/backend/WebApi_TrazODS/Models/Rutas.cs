@@ -90,15 +90,12 @@ namespace WebApi_TrazODS.Models
         }
 
 
-        public void Insert()
+        public int Insert()
         {
-
             string sqlSentencia = "SP_InsertRuta";
-
 
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = conectionString;
-
 
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
@@ -108,13 +105,12 @@ namespace WebApi_TrazODS.Models
 
             sqlCnn.Open();
 
-
-            var res = sqlCom.ExecuteNonQuery();
-
+            // Ejecutar el stored procedure y obtener el IdRuta generado
+            int idRuta = Convert.ToInt32(sqlCom.ExecuteScalar());
 
             sqlCnn.Close();
 
-
+            return idRuta; // Devolver el IdRuta
         }
 
 

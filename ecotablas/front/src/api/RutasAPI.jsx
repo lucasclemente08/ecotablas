@@ -16,8 +16,8 @@ export const saveRoutePoints = (points) =>
   axios.post(`${BASE_URL}/PuntosRuta/Insertar`, points.map(punto => ({
     IdRuta: punto.IdRuta,
     Orden: punto.Orden,
-    Longitud: punto.Longitud,
     Latitud: punto.Latitud,
+    Longitud: punto.Longitud
   })));
 
 // Endpoints para RutasxEmpleados
