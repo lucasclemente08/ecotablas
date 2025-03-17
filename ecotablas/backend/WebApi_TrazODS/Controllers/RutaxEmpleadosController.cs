@@ -31,19 +31,29 @@ namespace WebApi_TrazODS.Controllers
 
         // GET: api/RutaxEmpleados/5
         [HttpGet]
-        public RutaxEmpleados RutaxEmpleados(int id)
+        public List<RutaxEmpleados> ListarPorId(int id)
         {
-            RutaxEmpleados oRutaxEmpleados = new RutaxEmpleados();
-            oRutaxEmpleados.IdRuta = id;
+            try
+            {
+                RutaxEmpleados oRutaxEmpleados = new RutaxEmpleados();
+                oRutaxEmpleados.IdRuta = id;
 
-            DataTable dt = oRutaxEmpleados.SelectId();
+                DataTable dt = oRutaxEmpleados.SelectId();
 
+                if (dt.Rows.Count == 0)
+                {
+                    return new List<RutaxEmpleados>(); // Devuelve una lista vacía si no hay puntos
+                }
 
-            var ListaJsom = JsonConvert.SerializeObject(dt);
-
-            var obj = JsonConvert.DeserializeObject<List<RutaxEmpleados>>(ListaJsom).ToList().FirstOrDefault();
-
-            return obj;
+                var ListaJson = JsonConvert.SerializeObject(dt);
+                var listaEmpleados = JsonConvert.DeserializeObject<List<RutaxEmpleados>>(ListaJson);
+                return listaEmpleados;
+            }
+            catch (Exception ex)
+            {
+                // Log del error (puedes usar un logger como NLog o Serilog)
+                throw new Exception("Error al obtener los puntos de la ruta.", ex);
+            }
         }
 
         // POST: api/RutaxEmpleados
@@ -72,7 +82,7 @@ namespace WebApi_TrazODS.Controllers
         public void Delete(int id)
         {
             RutaxEmpleados oRutaxEmpleados = new RutaxEmpleados();
-            oRutaxEmpleados.IdRutaxEmpleado = id;
+            oRutaxEmpleados.IdRuta = id;
 
             oRutaxEmpleados.Delete();
         }

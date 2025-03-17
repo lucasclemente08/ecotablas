@@ -69,12 +69,11 @@ namespace WebApi_TrazODS.Models
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = conectionString;
 
-
             sqlCnn.Open();
 
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
-            sqlCom.Parameters.Add("@IdRutaxEmpleado", SqlDbType.Int).Value = IdRutaxEmpleado;
+            sqlCom.Parameters.Add("@IdRuta", SqlDbType.Int).Value = IdRuta;
 
             DataSet ds = new DataSet();
 
@@ -85,8 +84,6 @@ namespace WebApi_TrazODS.Models
             sqlCnn.Close();
 
             return ds.Tables[0];
-
-
         }
 
 
@@ -154,7 +151,7 @@ namespace WebApi_TrazODS.Models
         public void Delete()
         {
 
-            string sqlSentencia = "SP_DeleteRutaxEmpleado";
+            string sqlSentencia = "SP_DeleteRutaxEmpleados";
 
 
             SqlConnection sqlCnn = new SqlConnection();
@@ -166,7 +163,7 @@ namespace WebApi_TrazODS.Models
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
 
-            sqlCom.Parameters.Add("@IdRutaxEmpleado", SqlDbType.Int).Value = IdRutaxEmpleado;
+            sqlCom.Parameters.Add("@IdRuta", SqlDbType.Int).Value = IdRuta;
 
 
             sqlCnn.Open();

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { getEmpleados, assignEmployeesToRoute } from "../api/RutasAPI";
-import { toast } from "sonner";
 import axios from "axios";
+import { toast } from "sonner";
 
-const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) => {
+const ModifyEmployeesModal = ({ isOpen, onClose, routeId, onModifyEmployees }) => {
   const [empleados, setEmpleados] = useState([]);
   const [selectedEmpleados, setSelectedEmpleados] = useState([]);
   const [empleadosR, setEmpleadosR] = useState([]);
@@ -16,11 +16,36 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
         setEmpleados(response.data); // Ajusta según la respuesta de tu API
       } catch (error) {
         console.error("Error al cargar los empleados:", error);
-        alert("Hubo un error al cargar los empleados. Por favor, inténtalo de nuevo.");
+        toast.error("Hubo un error al cargar los empleados.");
       }
     };
     fetchEmpleados();
   }, []);
+
+  useEffect(() => {
+    if (isOpen && routeId) {
+      const fetchAssignedEmployees = async () => {
+        try {
+          const response = await axios.get(`http://www.ecotablasapi.somee.com/api/RutaxEmpleados/ListarPorId/${routeId}`);
+          const assigned = response.data || [];
+          setSelectedEmpleados(assigned.map((emp) => emp.IdEmpleado)); // Actualizar empleados seleccionados
+          setEmpleadosR(assigned); // Actualizar empleadosR
+        } catch (error) {
+          console.error("Error al cargar los empleados asignados:", error);
+          toast.error("Hubo un problema al cargar los empleados asignados.");
+        }
+      };
+      fetchAssignedEmployees();
+    }
+  }, [isOpen, routeId]);
+
+  // Reiniciar estados al cerrar el modal
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedEmpleados([]);
+      setEmpleadosR([]);
+    }
+  }, [isOpen]);
 
   // Maneja la selección/deselección de empleados
   const handleCheckboxChange = (idEmpleado) => {
@@ -44,6 +69,14 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
       }
     });
   };
+  // Eliminar empleados actuales antes de asignar nuevos
+  const deleteCurrentEmployees = async () => {
+    try {
+      await axios.delete(`http://www.ecotablasapi.somee.com/api/RutaxEmpleados/Delete/${routeId}`);
+    } catch (error) {
+      console.error("Error al eliminar empleados actuales:", error);
+    }
+  };
 
   // Maneja el guardado de empleados asignados
   const handleSave = async () => {
@@ -51,31 +84,34 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
       toast.error("Por favor, selecciona al menos un empleado.");
       return;
     }
-
+  
     try {
-      for (const empleadoRt of empleadosR)
-      await axios.post("http://www.ecotablasapi.somee.com/api/RutaxEmpleados/Insertar", empleadoRt);
-      console.log("Empleados seleccionados para guardar:", selectedEmpleados); // Muestra los empleados seleccionados
-      console.log("Route ID para asignar empleados:", routeId); // Muestra el ID de la ruta
-
-      // Asigna los empleados a la ruta en el backend
-      console.log("EMPLEADOS:", empleadosR);
-      onAssignEmployees(selectedEmpleados); // Notifica al componente padre
-      onClose(); // Cierra el modal
-      toast.success("Empleados asignados correctamente.");
+      // Eliminar empleados actuales
+      await deleteCurrentEmployees();
+  
+      // Asignar nuevos empleados
+      for (const empleadoRt of empleadosR) {
+        await axios.post("http://www.ecotablasapi.somee.com/api/RutaxEmpleados/Insertar", empleadoRt);
+      }
+  
+      // Notificar al componente padre con los empleados actualizados
+      onModifyEmployees(empleadosR);
+  
+      // Cerrar el modal
+      onClose();
+  
     } catch (error) {
-      console.error("Error al asignar empleados:", error);
-      toast.error("Hubo un problema al asignar los empleados.");
+      console.error("Error al modificar empleados:", error);
+      toast.error("Hubo un problema al modificar los empleados.");
     }
   };
-
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-lg p-6 w-11/12 max-w-lg">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Asignar Empleados</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Modificar Empleados</h2>
 
         {/* Lista de empleados */}
         <div className="mt-4">
@@ -90,7 +126,9 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
                   onChange={() => handleCheckboxChange(empleado.IdEmpleado)}
                   className="mr-2"
                 />
-                <span className="text-sm text-gray-600">{empleado.Nombre} {empleado.Apellido} ({empleado.DNI})</span>
+                <span className="text-sm text-gray-600">
+                  {empleado.Nombre} {empleado.Apellido} ({empleado.DNI})
+                </span>
               </li>
             ))}
           </ul>
@@ -106,9 +144,9 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
           </button>
           <button
             onClick={handleSave}
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
           >
-            Guardar
+            Guardar Cambios
           </button>
         </div>
       </div>
@@ -116,4 +154,4 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
   );
 };
 
-export default AssignEmployeesModal;
+export default ModifyEmployeesModal;

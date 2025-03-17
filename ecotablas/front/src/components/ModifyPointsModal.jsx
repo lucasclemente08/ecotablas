@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvent } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 import axios from "axios";
 
 // Componente para manejar los clics en el mapa
@@ -10,8 +10,24 @@ const ClickHandler = ({ onMapClick }) => {
   return null;
 };
 
-const AddPointsModal = ({ isOpen, onClose, routeId, onSavePoints }) => {
+const ModifyPointsModal = ({ isOpen, onClose, routeId, onModifyPoints }) => {
   const [points, setPoints] = useState([]);
+
+  // Reiniciar el estado al abrir el modal
+  useEffect(() => {
+    if (isOpen && routeId) {
+      const fetchCurrentPoints = async () => {
+        try {
+          const response = await axios.get(`http://www.ecotablasapi.somee.com/api/ListarPorId/${routeId}`);
+          setPoints(response.data || []);
+        } catch (error) {
+          console.error("Error al cargar los puntos actuales:", error);
+          toast.error("Hubo un problema al cargar los puntos actuales.");
+        }
+      };
+      fetchCurrentPoints();
+    }
+  }, [isOpen, routeId]);
 
   // Manejar clics en el mapa
   const handleMapClick = (e) => {
@@ -44,8 +60,18 @@ const AddPointsModal = ({ isOpen, onClose, routeId, onSavePoints }) => {
     toast.success("Punto eliminado correctamente");
   };
 
+  // Eliminar puntos actuales antes de asignar nuevos
+  const deleteCurrentPoints = async () => {
+    try {
+      await axios.delete(`http://www.ecotablasapi.somee.com/api/PuntosRuta/Delete/${routeId}`);
+    } catch (error) {
+      console.error("Error al eliminar puntos actuales:", error);
+      toast.error("Hubo un problema al eliminar los puntos actuales.");
+    }
+  };
+
   // Guardar puntos
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!routeId) {
       toast.error("No se ha proporcionado un ID de ruta válido.");
       return;
@@ -55,24 +81,30 @@ const AddPointsModal = ({ isOpen, onClose, routeId, onSavePoints }) => {
       return;
     }
 
-    console.log("Puntos a guardar:", points);
-    console.log("ID de ruta:", routeId);
+    try {
+      // Eliminar puntos actuales
+      await deleteCurrentPoints();
 
-    // Llama a la función onSavePoints pasada como prop
-    onSavePoints(points);
+      // Asignar nuevos puntos
+      for (const punto of points) {
+        await axios.post("http://www.ecotablasapi.somee.com/api/PuntosRuta/Insertar", punto);
+      }
+
+      onModifyPoints(points); // Notifica al componente padre
+      onClose(); // Cierra el modal
+    } catch (error) {
+      console.error("Error al modificar puntos:", error);
+      toast.error("Hubo un problema al modificar los puntos.");
+    }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed inset-0 z-10 flex items-center justify-center ${isOpen ? "visible" : "invisible"}`}>
-      <Toaster richColors position="top-right" />
-      {/* Fondo oscuro semi-transparente */}
-      <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-
+    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
       {/* Contenedor del modal */}
-      <div className="relative bg-white rounded-lg p-6 shadow-lg w-11/12 max-w-lg">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Agregar Puntos</h2>
+      <div className="bg-white rounded-lg p-6 w-11/12 max-w-lg">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Modificar Puntos de Ruta</h2>
 
         {/* Mapa */}
         <div className="mt-4">
@@ -120,18 +152,18 @@ const AddPointsModal = ({ isOpen, onClose, routeId, onSavePoints }) => {
         </div>
 
         {/* Botones */}
-        <div className="flex justify-center space-x-2 mt-4">
-          <button
-            onClick={handleSave}
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
-          >
-            Siguiente
-          </button>
+        <div className="flex justify-end space-x-2 mt-4">
           <button
             onClick={onClose}
             className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md transition"
           >
             Cancelar
+          </button>
+          <button
+            onClick={handleSave}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
+          >
+            Guardar Cambios
           </button>
         </div>
       </div>
@@ -139,4 +171,4 @@ const AddPointsModal = ({ isOpen, onClose, routeId, onSavePoints }) => {
   );
 };
 
-export default AddPointsModal;
+export default ModifyPointsModal;

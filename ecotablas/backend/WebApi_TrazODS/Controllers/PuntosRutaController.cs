@@ -31,20 +31,32 @@ namespace WebApi_TrazODS.Controllers
 
         // GET: api/PuntosRuta/5
         [HttpGet]
-        public PuntosRuta ListarPorId(int id)
+        public List<PuntosRuta> ListarPorId(int id)
         {
-            PuntosRuta oPuntosRuta = new PuntosRuta();
-            oPuntosRuta.IdRuta = id;
+            try
+            {
+                PuntosRuta oPuntosRuta = new PuntosRuta();
+                oPuntosRuta.IdRuta = id;
 
-            DataTable dt = oPuntosRuta.SelectId();
+                DataTable dt = oPuntosRuta.SelectId();
 
+                if (dt.Rows.Count == 0)
+                {
+                    return new List<PuntosRuta>(); // Devuelve una lista vacía si no hay puntos
+                }
 
-            var ListaJsom = JsonConvert.SerializeObject(dt);
-
-            var obj = JsonConvert.DeserializeObject<List<PuntosRuta>>(ListaJsom).ToList().FirstOrDefault();
-
-            return obj;
+                var ListaJson = JsonConvert.SerializeObject(dt);
+                var listaPuntos = JsonConvert.DeserializeObject<List<PuntosRuta>>(ListaJson);
+                return listaPuntos;
+            }
+            catch (Exception ex)
+            {
+                // Log del error (puedes usar un logger como NLog o Serilog)
+                throw new Exception("Error al obtener los puntos de la ruta.", ex);
+            }
         }
+
+
 
         // POST: api/PuntosRuta
         [HttpPost]
@@ -77,7 +89,7 @@ namespace WebApi_TrazODS.Controllers
         public void Delete(int id)
         {
             PuntosRuta oPuntosRuta = new PuntosRuta();
-            oPuntosRuta.IdPunto = id;
+            oPuntosRuta.IdRuta = id;
 
             oPuntosRuta.Delete();
         }
