@@ -5,6 +5,7 @@ using System.Web;
 
 using System.Data;
 using System.Data.SqlClient;
+using Newtonsoft.Json;
 namespace WebApi_TrazODS.Models
 {
     public class PuntosRuta
@@ -63,20 +64,16 @@ namespace WebApi_TrazODS.Models
 
         public DataTable SelectId()
         {
-
-
             string sqlSentencia = "SP_GetIdPuntosRuta";
-
 
             SqlConnection sqlCnn = new SqlConnection();
             sqlCnn.ConnectionString = conectionString;
-
 
             sqlCnn.Open();
 
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
-            sqlCom.Parameters.Add("@IdPunto", SqlDbType.Int).Value = IdPunto;
+            sqlCom.Parameters.Add("@IdRuta", SqlDbType.Int).Value = IdRuta;
 
             DataSet ds = new DataSet();
 
@@ -87,8 +84,6 @@ namespace WebApi_TrazODS.Models
             sqlCnn.Close();
 
             return ds.Tables[0];
-
-
         }
 
 
@@ -171,7 +166,7 @@ namespace WebApi_TrazODS.Models
             SqlCommand sqlCom = new SqlCommand(sqlSentencia, sqlCnn);
             sqlCom.CommandType = CommandType.StoredProcedure;
 
-            sqlCom.Parameters.Add("@IdPunto", SqlDbType.Int).Value = IdPunto;
+            sqlCom.Parameters.Add("@IdRuta", SqlDbType.Int).Value = IdRuta;
 
 
             sqlCnn.Open();
