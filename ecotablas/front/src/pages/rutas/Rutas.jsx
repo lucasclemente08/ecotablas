@@ -304,7 +304,7 @@ const Rutas = () => {
           {/* Botón para modificar puntos */}
           <button
             onClick={() => setIsModifyPointsModalOpen(true)}
-            className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
+            className="mt-2 m-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
           >
             Modificar Puntos
           </button>

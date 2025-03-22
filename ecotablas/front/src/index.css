@@ -62,6 +62,68 @@ nav {
     -o-transform: rotate(360deg);
   }
 }
+/* 📌 Contenedor principal del panel de instrucciones */
+.leaflet-routing-container {
+  background: rgba(255, 255, 255, 0.95); /* Fondo blanco con ligera transparencia */
+  color: #333; /* Texto oscuro */
+  border-radius: 8px; /* Bordes más suaves */
+  display: flex;
+  flex-direction: column; /* Asegura buena estructura */
+  justify-content: space-between;
+  padding: 12px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  width: 320px; /* Controla el ancho */
+  max-height: 350px; /* Evita que se extienda demasiado */
+  overflow-y: auto; /* Scroll si hay muchas instrucciones */
+}
+
+/* 📌 Estilos de cada alternativa de ruta */
+.leaflet-routing-container .leaflet-routing-alt {
+  background: rgba(245, 245, 245, 0.9); /* Un gris claro para diferenciación */
+  color: #333;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-left: 4px solid #1db954; /* Línea verde estilo Ecotablas */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 📌 Estilos para las tablas dentro de las instrucciones */
+.leaflet-routing-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaflet-routing-container tr {
+  color: #222; /* Texto más oscuro para mayor contraste */
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid #ddd; /* Línea divisoria ligera */
+}
+
+.leaflet-routing-container td {
+  padding: 6px;
+  text-align: left;
+}
+
+/* 📌 Enlaces dentro del panel */
+.leaflet-routing-container a {
+  color: #1db954; /* Verde Ecotablas */
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.leaflet-routing-container a:hover {
+  text-decoration: underline;
+  color: #0a8f3e; /* Verde más oscuro al pasar el cursor */
+}
+
 
 .animate-spin {
   animation: spin 1s linear infinite;
