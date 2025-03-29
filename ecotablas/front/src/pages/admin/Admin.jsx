@@ -14,6 +14,19 @@ const Admin = () => {
   const [permissions, setPermissions] = useState({});
   const [currentUserRole, setCurrentUserRole] = useState('admin'); // Simula el rol actual del usuario
 const [modalEdit, setModalEdit] = useState(false);
+const [confirmModal, setConfirmModal] = useState(false);
+
+const [newRole, setNewRole] = useState('');
+
+
+const ConfirmRoleUpdate=(user,role)=>{
+  setSelectedUser(user);
+  console.log(user)
+  setNewRole(role);
+  setConfirmModal(true);
+}
+
+
   // Definir permisos predeterminados por rol
   const defaultRolePermissions = {
     admin: ['create', 'read', 'update', 'delete'],
@@ -124,19 +137,25 @@ fetchUsers();
     } catch (error) {
      console.error(`Error al actualizar permisos: ${error.message}`);
     }
+    finally{
+      setConfirmModal(false);
+      setSelectedUser(null);
+    }
   };
-  
-  // Actualizar rol de usuario
-  const updateRole = async (userId, newRole) => {
+
+  const updateRole = async () => {
     try {
-      const userRef = doc(db, 'usuarios', userId);
+      const userRef = doc(db, 'usuarios', selectedUser.id);
       await updateDoc(userRef, { role: newRole });
       setUsers(prevUsers =>
-        prevUsers.map(user => (user.id === userId ? { ...user, role: newRole } : user))
+        prevUsers.map(user => (user.id === selectedUser.id ? { ...user, role: newRole } : user))
       );
       toast.success('Rol actualizado!');
     } catch (error) {
       toast.error('Error actualizando rol:', error);
+    } finally {
+      setConfirmModal(false);
+      setSelectedUser(null);
     }
   };
 
@@ -204,7 +223,8 @@ fetchUsers();
         <select
         className="border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-700 shadow-sm transition duration-200 ease-in-out hover:bg-gray-100"
         value={item.role}
-        onChange={(e) => updateRole(item.id, e.target.value)}
+
+        onChange={(e) =>ConfirmRoleUpdate(item, e.target.value)}
       >
         <option value="admin">Admin</option>
         <option value="supervisor">Supervisor</option>
@@ -251,7 +271,18 @@ fetchUsers();
     <SectionLayout title="Gestión de Usuarios">
 
      <Toaster />
-
+     {confirmModal && (
+          <div className='fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center'>
+            <div className='bg-white p-5 rounded-lg shadow-lg'>
+              <h2 className='text-lg font-bold mb-4'>Confirmar Cambio de Rol</h2>
+              <p>¿Estás seguro de que deseas cambiar el rol de {selectedUser?.correo} a {newRole}?</p>
+              <div className='flex justify-end mt-4'>
+                <button onClick={() => setConfirmModal(false)} className='mr-2 px-4 py-2 bg-gray-500 text-white rounded'>Cancelar</button>
+                <button onClick={updateRole} className='px-4 py-2 bg-green-500 text-white rounded'>Confirmar</button>
+              </div>
+            </div>
+          </div>
+        )}
     <div className="">
 
     {modalEdit && selectedUser && (
