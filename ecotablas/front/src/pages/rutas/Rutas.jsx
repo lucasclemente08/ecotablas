@@ -4,8 +4,11 @@ import ModalRutas from "../../components/ModalRutas";
 import AddPointsModal from "../../components/AddPointsModal";
 import AssignEmployeesModal from "../../components/AssignEmployeesModal";
 import ModifyEmployeesModal from "../../components/ModifyEmployeesModal";
+import { MdOutlineEditLocationAlt } from "react-icons/md";
 import ModifyPointsModal from "../../components/ModifyPointsModal"; 
+import { FiEdit } from "react-icons/fi";
 import MapComponent from "../../components/MapComponent";
+import DeleteButton from "../../components/buttons/DeleteButton";
 import {
   getRoutes,
   createRoute,
@@ -294,46 +297,67 @@ const Rutas = () => {
 
       {/* Detalles de la ruta seleccionada */}
       {selectedRoute && (
-        <div className="mt-6 p-4 border rounded-lg shadow-md bg-white">
-          <h3 className="text-lg font-semibold text-gray-800">
-            Puntos de la Ruta: {selectedRoute.NombreRuta}
-          </h3>
-          <div className="mt-4">
-            <MapComponent points={routePoints} />
-          </div>
-          {/* Botón para modificar puntos */}
-          <button
-            onClick={() => setIsModifyPointsModalOpen(true)}
-            className="mt-2 m-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
+  <div className="mt-6 p-6 border rounded-lg shadow-lg bg-white">
+    {/* Encabezado de la ruta */}
+    <div className="flex justify-between items-center mb-4">
+      <h3 className="text-xl font-bold text-gray-800">
+        Ruta: <span className="text-blue-600">{selectedRoute.NombreRuta}</span>
+      </h3>
+      <div className="flex space-x-2">
+        <button
+          onClick={() => setIsModifyPointsModalOpen(true)}
+          className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-colors"
+        >
+          <MdOutlineEditLocationAlt className="mr-2" />
+          Modificar Puntos
+        </button>
+        <DeleteButton
+          id={selectedRoute.IdRuta}
+          endpoint="http://www.ecotablasapi.somee.com/api/Rutas/Delete"
+          updateList={() => {
+            const updatedRoutes = routes.filter(route => route.IdRuta !== selectedRoute.IdRuta);
+            setRoutes(updatedRoutes);
+            setFilteredRoutes(updatedRoutes);
+            setSelectedRoute(null);
+            setRoutePoints([]);
+            setAssignedEmployees([]);
+            toast.success("Ruta eliminada correctamente.");
+          }}
+        />
+      </div>
+    </div>
+
+    {/* Mapa */}
+    <div className="mt-4 border rounded-lg overflow-hidden">
+      <MapComponent points={routePoints} />
+    </div>
+
+    {/* Sección de empleados */}
+    <div className="mt-6 bg-gray-50 p-4 rounded-lg">
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-lg font-semibold text-gray-800">Empleados Asignados</h3>
+        <button
+          onClick={() => setIsModifyEmployeesModalOpen(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-colors"
+        >
+          <FiEdit className="mr-2" />
+          Modificar Empleados
+        </button>
+      </div>
+      
+      <ul className="mt-3 space-y-2">
+        {assignedEmployees.map((empleado) => (
+          <li 
+            key={empleado.IdEmpleado} 
+            className="bg-white p-3 rounded-lg shadow-sm border border-gray-100"
           >
-            Modificar Puntos
-          </button>
-          {/* Botón para eliminar ruta */}
-          <button
-            onClick={handleDeleteRoute}
-            className="mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
-          >
-            Eliminar Ruta
-          </button>
-                    {/* Mostrar empleados asignados */}
-                    <div className="mt-6">
-            <h3 className="text-lg font-semibold text-gray-800">Empleados Asignados</h3>
-            <ul className="mt-2">
-              {assignedEmployees.map((empleado) => (
-                <li key={empleado.IdEmpleado} className="text-gray-600">
-                  {getNombreEmpleado(empleado.IdEmpleado)}
-                </li>
-              ))}
-            </ul>
-            <button
-              onClick={() => setIsModifyEmployeesModalOpen(true)}
-              className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
-            >
-              Modificar Empleados
-            </button>
-          </div>
-        </div>
-      )}
+            {getNombreEmpleado(empleado.IdEmpleado)}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+)}
     </SectionLayout>
   );
 };

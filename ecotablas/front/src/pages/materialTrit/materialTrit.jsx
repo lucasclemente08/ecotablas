@@ -332,13 +332,16 @@ const MaterialTrit = () => {
     setData(sortedData);
     setSortConfig({ campo, direction });
   };
-  const titlesT = [
-    { label: "Volumen (kgs)", key: "VolumenT", type: "number" },
-    { label: "Volumen Inutil (kgs)", key: "VolumenTInutil", type: "number" },
-    { label: "Fecha", key: "Fecha", type: "date" ,hasActions: true },
-  
-  ];
+const titlesT = [
+  { label: "Volumen útil (kg)", key: "VolumenT", type: "number" },
+  { label: "Volumen inútil (kg)", key: "VolumenTInutil", type: "number" },
+  { label: "Fecha ingreso", key: "Fecha", type: "date", hasActions: true },
+];
 
+// Estilo para los encabezados (th)
+<th className="px-4 py-3 bg-gray-100 dark:bg-gray-700 font-semibold text-left sticky top-0">
+  {title.label}
+</th>
 
   
   const actions = [
@@ -485,6 +488,7 @@ const MaterialTrit = () => {
           </div>
 
           <TableComponent
+          
       data={data}
       hasMaterial={true}
       titles={titlesT}

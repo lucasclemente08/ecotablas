@@ -145,31 +145,58 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
     }));
   };
   const titlesT = [
-    { key: "Nombre", label: "Nombre" },
-    { key: "Direccion", label: "Dirección" },
-    { key: "Telefono", label: "Teléfono" },
-    { key: "Email", label: "Email" },
-    { key: "TipoPlastico", label: "Tipo de Plástico" },
-    { key: "Rubro", label: "Rubro" },
-    { key: "Web", label: "Web",
-      
-      render: (value) =>(
+    { 
+      key: "Nombre", 
+      label: "Nombre",
+      type: "text" // Texto alineado a la izquierda
+    },
+    { 
+      key: "Direccion", 
+      label: "Dirección",
+      type: "text" // Texto alineado a la izquierda
+    },
+    { 
+      key: "Telefono", 
+      label: "Teléfono",
+      type: "number" // Números alineados a la derecha
+    },
+    { 
+      key: "Email", 
+      label: "Email",
+      type: "text" // Texto alineado a la izquierda
+    },
+    { 
+      key: "TipoPlastico", 
+      label: "Tipo de Plástico",
+      type: "text" // Texto alineado a la izquierda
+    },
+    { 
+      key: "Rubro", 
+      label: "Rubro",
+      type: "text" // Texto alineado a la izquierda
+    },
+    { 
+      key: "Web", 
+      label: "Web",
+      type: "text", // Texto alineado a la izquierda (aunque el render personalizado sobrescribe esto)
+      render: (value) => (
         value ? (
-      <td className=" font-normal px-4 py-2">
-              <a
-                href={value}
-                className="text-blue-600 font-normal hover:underline"
-              >
-                {value}
-              </a>
-            </td>
-       ):
-      "No disponible"
+          <a
+            href={value}
+            className="text-blue-600 font-normal hover:underline"
+          >
+            {value}
+          </a>
+        ) : "No disponible"
       ),
-      hasActions: true },
-      { key: "DonacionesDisponibles", label: "Donaciones Disponibles" },
-
-  ];  
+      hasActions: true 
+    },
+    { 
+      key: "DonacionesDisponibles", 
+      label: "Donaciones Disponibles",
+      type: "text" // Números alineados a la derecha
+    },
+  ];
   const actions = [
     {
       allowedRoles: ["admin","supervisor", ],
@@ -292,6 +319,7 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
       sortConfig={sortConfig}
       onSort={handleSort}
       actions={actions}
+      hasMaterial={true}
     />
 
       {/* <tbody>

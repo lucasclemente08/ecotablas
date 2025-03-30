@@ -18,7 +18,7 @@ const ModifyPointsModal = ({ isOpen, onClose, routeId, onModifyPoints }) => {
     if (isOpen && routeId) {
       const fetchCurrentPoints = async () => {
         try {
-          const response = await axios.get(`http://www.ecotablasapi.somee.com/api/ListarPorId/${routeId}`);
+          const response = await axios.get(`http://www.ecotablasapi.somee.com/api/PuntosRuta/ListarPorId/${routeId}`);
           setPoints(response.data || []);
         } catch (error) {
           console.error("Error al cargar los puntos actuales:", error);

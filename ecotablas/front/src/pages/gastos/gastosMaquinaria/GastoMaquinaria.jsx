@@ -572,6 +572,7 @@ return link;
       sortConfig={sortConfig}
       onSort={handleSort}
       actions={actions}
+      hasMaterial={true}
     />
 
         )

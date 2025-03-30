@@ -277,7 +277,7 @@ fetchUsers();
         actions={actions}
         itemsPerPage={5}
         isLoading={loading}
-       
+        hasMaterial={true}
         />
     </div>
     </SectionLayout>

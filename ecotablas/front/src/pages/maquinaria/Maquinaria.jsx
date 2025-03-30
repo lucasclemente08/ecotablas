@@ -537,7 +537,7 @@ const [showPieChart, setShowPieChart] = useState(false);
           </div>
 
         {modalAbierto && (
-          <AddModal
+          <AddModalWithSelect
             title="Agregar Maquinaria"
             fields={fields}
             handleChange={handleChange}
@@ -707,6 +707,7 @@ data={data}
 titles={titlesT}
 sortConfig={sortConfig}
 onSort={handleSort}
+hasMaterial={true}
 actions={actions}
 />
   ) : (

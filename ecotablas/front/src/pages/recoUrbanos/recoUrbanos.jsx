@@ -325,7 +325,7 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
                     onClick={() => handleEdit(location)}
                     className="bg-yellow-700 ml-2 flex justify-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
                   >
-                    Modificar  <MdOutlineEditLocationAlt className="m-1" />
+                   <MdOutlineEditLocationAlt className="m-1" /> Modificar  
                   </button>
                   <DeleteButton
                     id={location.IdUbicacion}
@@ -515,6 +515,7 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
       sortConfig={sortConfig}
       onSort={handleSort}
       actions={actions}
+      hasMaterial={true}
     />
       </div>
       )}

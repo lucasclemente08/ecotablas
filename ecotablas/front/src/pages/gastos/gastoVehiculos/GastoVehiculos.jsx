@@ -697,6 +697,7 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
           titles={titlesT}
           sortConfig={sortConfig}
           onSort={handleSort}
+          hasMaterial={true}
           actions={actions}
         />
     
