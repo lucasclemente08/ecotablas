@@ -111,7 +111,6 @@ const GastoVehiculos = () => {
         // Guardar el archivo en un estado separado
         setComprobante(selectedFile);
 
-        // Si necesitas manejar el archivo en formValues:
         setFormValues((prevValues) => ({
             ...prevValues,
             [name]: selectedFile.name, // Guarda solo el nombre del archivo

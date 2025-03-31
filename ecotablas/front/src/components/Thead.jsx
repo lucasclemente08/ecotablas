@@ -40,7 +40,7 @@ const TablaHead = ({ titles, onSort, sortConfig, hasMaterial }) => {
         
         {hasMaterial && (
           <th className="px-4 py-3 text-sm font-semibold text-gray-100 uppercase tracking-wider text-center border-r border-gray-600 last:border-r-0">
-            ACCIONES
+            Acciones
           </th>
         )}
       </tr>
