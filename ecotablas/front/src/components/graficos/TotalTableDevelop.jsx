@@ -16,8 +16,8 @@ const TotalTableDevelop = () => {
 
   const parseFecha = (fecha) => {
     try {
-      const [day, month, year] = fecha.split("/");
-      return `${year}-${month}-${day}`;
+      const date = new Date(fecha); // Esto maneja fechas en formato ISO 8601
+      return date.toISOString().slice(0, 10); // Regresa la fecha en formato 'yyyy-mm-dd'
     } catch (error) {
       console.error("Error parsing fecha:", fecha);
       return null;

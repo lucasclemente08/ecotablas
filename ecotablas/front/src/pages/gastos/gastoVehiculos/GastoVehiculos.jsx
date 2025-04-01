@@ -69,7 +69,7 @@ const GastoVehiculos = () => {
 
   const [formValues, setFormValues] = useState({
     TipoComprobante: "",
-    Comprobante: "comprobante",
+    Comprobante: null, 
     TipoGasto: "",
     IdVehiculo: "",
     Proveedor: "",
@@ -88,7 +88,7 @@ const GastoVehiculos = () => {
       )
       .then((response) => {
         setDataV(response.data);
-
+        console.log("Gastos de vehículos:", response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -106,7 +106,7 @@ const GastoVehiculos = () => {
     if (files && files[0]) {
         // Si se seleccionó un archivo
         const selectedFile = files[0];
-        console.log("Archivo seleccionado:", selectedFile.name);
+     
 
         // Guardar el archivo en un estado separado
         setComprobante(selectedFile);
@@ -132,7 +132,7 @@ const GastoVehiculos = () => {
     setGastoid(gastoSeguro.IdVehiculo || "");
     setFormValues({
       TipoComprobante: gastoSeguro.TipoComprobante || "",
-      Comprobante: "",
+     comprobante: gastoSeguro.Comprobante || "",
       TipoGasto: gastoSeguro.TipoGasto || "",
       IdVehiculo: gastoSeguro.IdVehiculo || "",
       Proveedor: gastoSeguro.Proveedor || "",
@@ -311,29 +311,59 @@ const GastoVehiculos = () => {
     { field: "Fecha", label: "Fecha" },
     { field: "Proveedor", label: "Proveedor" },
   ];
-  const handleEditSubmit = (e) => {
-    e.preventDefault();
 
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+  
     if (!gastoId) {
       toast.error("Error: No se encontró el ID del gasto.");
       return;
     }
-    console.log("Gasto ID:", gastoId);
-    axios
-      .put(
-        `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
-        formValues
-      )
-      .then((response) => {
-        toast.success("Gasto actualizado con éxito"); // Notificación de éxito
-    fetchMaterials();
-        cerrarModalEdit();
-      })
-      .catch((error) => {
-        console.error("Error al actualizar el gasto:", error);
-        toast.error("Error al actualizar el gasto"); // Notificación de error
-      });
+  
+    if (!comprobante) { // Verifica si hay un archivo seleccionado
+      toast.error("Error: No se ha seleccionado un archivo para cargar.");
+      return;
+    }
+  
+    try {
+      const link = await uploadToDropbox(comprobante); // Usa el archivo almacenado en 'comprobante'
+  
+      if (!link) {
+        toast.error("Error: No se pudo generar el enlace para el comprobante.");
+        return;
+      }
+  
+      // Crea un objeto con los datos que deseas enviar a la API
+      const updatedFormValues = {
+        ...formValues,
+        Comprobante: link, // Usa la URL devuelta por uploadToDropbox
+      };
+  
+      // No incluyas el archivo 'comprobante' directamente en updatedFormValues
+      // En su lugar, puedes enviarlo por separado si tu API lo requiere
+  
+      axios
+        .put(
+          `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
+          updatedFormValues
+        )
+        .then((response) => {
+          toast.success("Gasto actualizado con éxito");
+          fetchMaterials();
+          cerrarModalEdit();
+        })
+        .catch((error) => {
+          console.error("Error al actualizar el gasto:", error);
+          toast.error("Error al actualizar el gasto");
+        });
+    } catch (error) {
+      console.error("Error en la subida del comprobante:", error);
+      toast.error("Error al subir el comprobante");
+    }
   };
+  
+
   const cerrarModalEdit = () => setModalEdit(false);
 
   const titles = [

@@ -592,20 +592,7 @@ return link;
           <GastoMaquinariaDatePicker />
           </div>
         </div>
-
           </div>
-
-
-
-
-
-
-
-
-
-
-
-
 ) : null}
 
     </SectionLayout>
