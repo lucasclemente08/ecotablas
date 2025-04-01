@@ -10,7 +10,6 @@ import {
 } from "../../features/tablasProducidasSlice";
 import SectionLayout from "../../layout/SectionLayout";
 
-
 import TableComponent from "../../components/TableComponent";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import { BsClipboardDataFill } from "react-icons/bs";
@@ -30,10 +29,12 @@ import { v4 as uuidv4 } from "uuid";
 
 const TablasProducidas = () => {
   const dispatch = useDispatch();
-  const {tablas: data, loading, error } = useSelector(
-    (state) => state.tablasProducidas,
-  );
-  const [selectedDate, setSelectedDate] = useState("");  // Store the selected date
+  const {
+    tablas: data,
+    loading,
+    error,
+  } = useSelector((state) => state.tablasProducidas);
+  const [selectedDate, setSelectedDate] = useState(""); // Store the selected date
   const [mensaje, setMensaje] = useState("");
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
@@ -42,7 +43,7 @@ const TablasProducidas = () => {
   const [tablaId, setTablaId] = useState(null);
   const [originalMaterials, setOriginalMaterials] = useState([]);
   const [filteredMaterials, setFilteredMaterials] = useState([]);
-  
+
   const [formValues, setFormValues] = useState({
     FechaProduccion: "",
     Dimensiones: "",
@@ -79,9 +80,8 @@ const TablasProducidas = () => {
      };
 
   const abrirModalEdit = (tabla) => {
-    
     setTablaId(tabla.ID_Tabla);
-   
+
     setFormValues({
       FechaProduccion: tabla.FechaProduccion,
       Dimensiones: tabla.Dimensiones,
@@ -122,15 +122,12 @@ const TablasProducidas = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-;
     await editTablas({ tablaId, formValues });
     toast.success("Registro editado con éxito!");
     setFilteredMaterials((prevMaterials) =>
       prevMaterials.map((data) =>
-        data.ID_Tabla ===tablaId
-          ? { ...data, ...formValues }
-          : data
-      )
+        data.ID_Tabla === tablaId ? { ...data, ...formValues } : data,
+      ),
     );
     cerrarModalEdit();
   };
@@ -178,20 +175,25 @@ const totalItems = filteredMaterials.length;
       console.error("Error al cambiar el estado:", error);
     }
   };
-  
+
   const filterByDate = () => {
     const selectedDateObj = new Date(selectedDate);
     const filteredItems = data.filter((item) => {
       const itemDate = new Date(item.FechaProduccion);
-      return itemDate.toISOString().slice(0, 10) === selectedDateObj.toISOString().slice(0, 10);
+      return (
+        itemDate.toISOString().slice(0, 10) ===
+        selectedDateObj.toISOString().slice(0, 10)
+      );
     });
 
-    setCurrentItems(filteredItems);  // Update displayed items
+    setCurrentItems(filteredItems); // Update displayed items
   };
- 
+
   const fetchMaterials = async () => {
     try {
-      const response = await fetch("http://www.ecotablasapi.somee.com/api/TablaProducidas/ListarTodo"); // Reemplaza "URL_DEL_ENDPOINT" con la URL de tu API
+      const response = await fetch(
+        "http://www.ecotablasapi.somee.com/api/TablaProducidas/ListarTodo",
+      ); // Reemplaza "URL_DEL_ENDPOINT" con la URL de tu API
       if (!response.ok) {
         throw new Error("Error al obtener los datos.");
       }
@@ -206,41 +208,24 @@ const totalItems = filteredMaterials.length;
       // Opcional: acciones después de completar la solicitud
     }
   };
-  
+
   useEffect(() => {
     fetchMaterials();
   }, []);
-  
 
-
-
-
-
-
-
-
-
-  
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   const [dataT, setDataT] = useState(filteredMaterials);
- 
- 
-
-
 
   useEffect(() => {
-
     setDataT(filteredMaterials);
   }, [filteredMaterials]);
 
-
   const handleSort = (campo) => {
- 
     let direction = "asc";
     if (sortConfig.campo === campo && sortConfig.direction === "asc") {
       direction = "desc";
     }
-  
+
     const sortedData = [...filteredMaterials].sort((a, b) => {
       if (a[campo] < b[campo]) {
         return direction === "asc" ? -1 : 1;
@@ -250,11 +235,10 @@ const totalItems = filteredMaterials.length;
       }
       return 0;
     });
-  
+
     setDataT(sortedData);
     setSortConfig({ campo, direction });
   };
-
 
   const titlesT = [
     { label: "Fecha de Producción", key: "FechaProduccion", type:"date",
@@ -270,16 +254,10 @@ const totalItems = filteredMaterials.length;
     { label: "Peso (kgs)", key: "Peso", type: "number" },
     { label: "Código de Identificación", key: "CodigoIdentificacion", type: "text",hasActions:true},
   ];
-  
-
 
   const actions = [
-
-
-
-    
     {
-      allowedRoles: ["admin","supervisor" ],
+      allowedRoles: ["admin", "supervisor"],
       render: (item) => (
         <div className="flex items-center justify-start gap-2 py-1">
              
@@ -302,11 +280,9 @@ const totalItems = filteredMaterials.length;
     },
   ];
 
-
-
   return (
     <SectionLayout title="Tablas Producidas">
-    <Toaster />
+      <Toaster />
 
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">     
 

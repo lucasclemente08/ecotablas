@@ -39,7 +39,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           )}
         </button>
       </div>
-
       {/* Logo y Título */}
       <div className="flex flex-col items-center mt-4">
         <Link to="/">
@@ -61,15 +60,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </h1>
         </Link>
       </div>
-
       {/* Enlaces */}
       <div className="flex flex-col items-center mt-4">
         <Links isOpen={isOpen} />
-            
-
-      
-      </div>  <ReportButton isOpen={isOpen} />
-
+      </div>{" "}
+      <ReportButton isOpen={isOpen} />
       {/* Botón de cerrar sesión */}
       <div className="mt-auto flex justify-center mb-4">
         <button

@@ -16,15 +16,13 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
     try {
       const response = await axios.delete(`${endpoint}/${id}`);
 
-        updateList();
-        closeModal();
-      
-
-      
+      updateList();
+      closeModal();
     } catch (error) {
-      console.error("Error al eliminar:", error.response?.data || error.message);
-      
-     
+      console.error(
+        "Error al eliminar:",
+        error.response?.data || error.message,
+      );
     } finally {
       setIsLoading(false);
     }
@@ -80,10 +78,6 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
           </div>
         </div>
       )}
-
-
-    
-
     </>
   );
 };

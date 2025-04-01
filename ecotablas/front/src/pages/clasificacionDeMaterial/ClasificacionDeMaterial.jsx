@@ -13,7 +13,7 @@ import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import LoadingTable from "../../components/LoadingTable";
 import TablaHead from "../../components/Thead";
 
-import { Toaster, toast } from 'sonner';
+import { Toaster, toast } from "sonner";
 import Pagination from "../../components/Pagination";
 import VolumenChart from "../../components/volumen/VolumenChart";
 import FilterButton from "../../components/buttons/FilterButton";
@@ -26,9 +26,7 @@ import {
   addMaterialTrit,
   editMaterialTrit,
 } from "../../api/materialTritAPI";
-import {
-editMaterialClas,
-} from "../../api/MaterialClasAPI";
+import { editMaterialClas } from "../../api/MaterialClasAPI";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 const ClasificacionDeMaterial = () => {
   const [materials, setMaterials] = useState([]);
@@ -38,7 +36,7 @@ const ClasificacionDeMaterial = () => {
   const [mensaje, setMensaje] = useState("");
   const [originalMaterials, setOriginalMaterials] = useState([]);
   const [materialId, setMaterialId] = useState(null);
-  const [modalTriturado, setModalTriturado] = useState(false); 
+  const [modalTriturado, setModalTriturado] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [filteredMaterials, setFilteredMaterials] = useState([]);
   const [formValues, setFormValues] = useState({
@@ -48,7 +46,6 @@ const ClasificacionDeMaterial = () => {
     FechaC: "",
     Estado: 1,
   });
- 
 
   const [trituradoValues, setTrituradoValues] = useState({
     VolumenT: "",
@@ -68,7 +65,7 @@ const ClasificacionDeMaterial = () => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); 
+  const [itemsPerPage] = useState(5);
 
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => { 
@@ -108,14 +105,14 @@ const ClasificacionDeMaterial = () => {
      };
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     axios
       .post(
         "http://www.ecotablasapi.somee.com/api/MaterialClas/Insertar",
         formValues,
       )
       .then(() => {
-        toast.success("¡Material añadido con existo!")
+        toast.success("¡Material añadido con existo!");
         cerrarModal();
         fetchMaterials();
       })
@@ -125,7 +122,11 @@ const ClasificacionDeMaterial = () => {
   const abrirModalTriturado = (id) => {
     const fechaActual = new Date().toISOString();
     setMaterialId(id);
-    setTrituradoValues({ ...trituradoValues, Fecha: fechaActual, IdMaterialClasificado: id,});
+    setTrituradoValues({
+      ...trituradoValues,
+      Fecha: fechaActual,
+      IdMaterialClasificado: id,
+    });
     setModalTriturado(true);
   };
 
@@ -147,22 +148,24 @@ const ClasificacionDeMaterial = () => {
     } else if (!trituradoValues.VolumenTInutil) {
       toast.error("El volumen inutil es obligatorio.");
       isValid = false;
-    } 
+    }
     return isValid;
   };
 
   const handleSubmitTriturado = async () => {
     if (!validateTrituradoForm()) return;
-  
+
     try {
       await addMaterialTrit(trituradoValues);
       toast.success("Lote enviado a trituración!");
       // Luego, actualiza el estado a 2
       const materialActualizado = {
-        ...filteredMaterials.find((m) => m.IdMaterialClasificado === materialId),
+        ...filteredMaterials.find(
+          (m) => m.IdMaterialClasificado === materialId,
+        ),
         Estado: 2, // Establecer el estado a 2
       };
-     
+
       await editMaterialClas(materialId, materialActualizado);
 
       setModalTriturado(false);
@@ -175,37 +178,37 @@ const ClasificacionDeMaterial = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-  
+
     if (
       !formValues.VolumenUtil ||
       !formValues.VolumenInutil ||
       !formValues.IdIngresoMaterial ||
       !formValues.FechaC
     ) {
-      toast('Todos los campos son obligatorios!', {
+      toast("Todos los campos son obligatorios!", {
         duration: 4000,
-        style: { background: '#3b82f6', color: '#fff' },
-        iconTheme: { primary: '#fff', secondary: '#2563eb' },
+        style: { background: "#3b82f6", color: "#fff" },
+        iconTheme: { primary: "#fff", secondary: "#2563eb" },
       });
-      return; 
+      return;
     }
-  
+
     axios
       .put(
         `http://www.ecotablasapi.somee.com/api/MaterialClas/Modificar/${materialId}`,
-        formValues
+        formValues,
       )
       .then(() => {
         setModalEdit(false);
-  
+
         setFilteredMaterials((prevMaterials) =>
           prevMaterials.map((data) =>
             data.IdIngresoMaterial === materialId
               ? { ...data, ...formValues }
-              : data
-          )
+              : data,
+          ),
         );
-  
+
         toast.success("Material actualizado!", { autoClose: 3000 });
       })
       .catch((error) => {
@@ -213,7 +216,7 @@ const ClasificacionDeMaterial = () => {
         toast.error("Hubo un error al actualizar.", { autoClose: 3000 }); // ⬅️ Agregué un toast de error
       });
   };
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prevState) => ({
@@ -250,32 +253,31 @@ const ClasificacionDeMaterial = () => {
     fetchMaterials();
   }, []);
 
-  const [showTable, setShowTable] = useState(true); 
+  const [showTable, setShowTable] = useState(true);
 
   const toggleView = () => {
-    setShowTable(!showTable);  
+    setShowTable(!showTable);
   };
 
-
   // Paginación
-  const totalItems =filteredMaterials.length;
+  const totalItems = filteredMaterials.length;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredMaterials.slice(indexOfFirstItem, indexOfLastItem);
-
-
+  const currentItems = filteredMaterials.slice(
+    indexOfFirstItem,
+    indexOfLastItem,
+  );
 
   const filterByDate = () => {
     const filteredItems = filteredMaterials.filter((item) => {
-      const itemDate = new Date(item.FechaC).toISOString().slice(0, 10); 
+      const itemDate = new Date(item.FechaC).toISOString().slice(0, 10);
       return itemDate === selectedDate;
     });
-  
-    setFilteredMaterials(filteredItems);
-    setCurrentPage(1); 
-  };
 
+    setFilteredMaterials(filteredItems);
+    setCurrentPage(1);
+  };
 
   const title = [
     "Volumen Util (kgs)",
@@ -293,10 +295,9 @@ const ClasificacionDeMaterial = () => {
     {
       name: "VolumenUtil",
       label: "Volumen Util",
- 
+
       type: "text",
       placeholder: "VolumenUtil *",
-   
     },
     {
       name: "VolumenInutil",
@@ -323,22 +324,19 @@ const ClasificacionDeMaterial = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
 
-  
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   const [data, setData] = useState(filteredMaterials);
- 
+
   useEffect(() => {
     setData(filteredMaterials);
   }, [filteredMaterials]);
 
-
   const handleSort = (campo) => {
- 
     let direction = "asc";
     if (sortConfig.campo === campo && sortConfig.direction === "asc") {
       direction = "desc";
     }
-  
+
     const sortedData = [...filteredMaterials].sort((a, b) => {
       if (a[campo] < b[campo]) {
         return direction === "asc" ? -1 : 1;
@@ -348,11 +346,11 @@ const ClasificacionDeMaterial = () => {
       }
       return 0;
     });
-  
+
     setData(sortedData);
     setSortConfig({ campo, direction });
   };
-  
+
   const titlesT = [
     { key: "VolumenUtil", label: "Volumen Útil (kgs)", type: "number" },
     { key: "VolumenInutil", label: "Volumen Inútil (kgs)", type: "number" },
@@ -360,29 +358,25 @@ const ClasificacionDeMaterial = () => {
     { key: "FechaC", label: "Fecha de Creación", type: "date", hasActions:true },
   
   ];
-  
-  
 
   const actions = [
-
     {
-      allowedRoles: ["admin", "supervisor","empleado"],
+      allowedRoles: ["admin", "supervisor", "empleado"],
       render: (material) => (
         <div className="flex items-center justify-start gap-2 py-1">
-           <button
-          onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
-          className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-        >
-          <GrLinkNext className="m-1" />
-          Terminado
-        </button>
+          <button
+            onClick={() => abrirModalTriturado(material.IdMaterialClasificado)}
+            className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <GrLinkNext className="m-1" />
+            Terminado
+          </button>
         </div>
       ),
     },
 
-
     {
-      allowedRoles: ["admin","supervisor", ],
+      allowedRoles: ["admin", "supervisor"],
       render: (material) => (
     <div className="flex items-center justify-start gap-2 py-1">
         <button
@@ -405,7 +399,6 @@ const ClasificacionDeMaterial = () => {
 
   return (
     <>
-
       <SectionLayout title="Materiales Clasificados">
       <Toaster />
 
@@ -420,11 +413,11 @@ const ClasificacionDeMaterial = () => {
         />
 
 
-        <PdfGenerator
-          columns={columns}
-          data={filteredMaterials}
-          title="Reporte de Materiales Clasificados"
-        />
+          <PdfGenerator
+            columns={columns}
+            data={filteredMaterials}
+            title="Reporte de Materiales Clasificados"
+          />
 
 <button
         onClick={toggleView}
@@ -514,31 +507,27 @@ const ClasificacionDeMaterial = () => {
 
 
             <TableComponent
-      data={data}
-      titles={titlesT}
-      hasMaterial={true}
-      sortConfig={sortConfig}
-      onSort={handleSort}
-      actions={actions}
-    />
+              data={data}
+              titles={titlesT}
+              hasMaterial={true}
+              sortConfig={sortConfig}
+              onSort={handleSort}
+              actions={actions}
+            />
+          </div>
+        ) : (
+          <div className="flex-1 flex flex-col gap-4 p-4">
+            <DateFilter onFilter={handleFilter} />
 
-        </div>    
-
-):(
-
-  <div className="flex-1 flex flex-col gap-4 p-4">
-  <DateFilter onFilter={handleFilter} />
-
-  <VolumenChart dateRange={dateRange} />
-</div>
-     
-)
-}
-<NextProcess  linkTo="/materialTri"
-  hoverText="Ir al siguiente proceso"/>
-            </SectionLayout>
-            </>
-
+            <VolumenChart dateRange={dateRange} />
+          </div>
+        )}
+        <NextProcess
+          linkTo="/materialTri"
+          hoverText="Ir al siguiente proceso"
+        />
+      </SectionLayout>
+    </>
   );
 };
 

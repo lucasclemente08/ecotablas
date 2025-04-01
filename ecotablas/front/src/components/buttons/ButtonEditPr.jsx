@@ -31,13 +31,16 @@ const ButtonEdit = ({
       className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center"
       role="dialog"
       aria-labelledby="modal-title"
- 
     >
-      <div className="bg-gray-500 opacity-75 fixed inset-0" aria-hidden="true"></div>
       <div
-        className="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
-      >
-        <h3 id="modal-title" className="text-lg leading-6 font-medium text-gray-900">
+        className="bg-gray-500 opacity-75 fixed inset-0"
+        aria-hidden="true"
+      ></div>
+      <div className="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+        <h3
+          id="modal-title"
+          className="text-lg leading-6 font-medium text-gray-900"
+        >
           Editar {title}
         </h3>
         <form onSubmit={handleEditSubmit}>
@@ -72,7 +75,7 @@ const ButtonEdit = ({
           {/* {error && <div className="text-red-500 mt-2">{error}</div>} */}
           <div className="mt-5 sm:mt-6">
             <button
-            onClick={handleEditSubmit}
+              onClick={handleEditSubmit}
               type="submit"
               className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
             >

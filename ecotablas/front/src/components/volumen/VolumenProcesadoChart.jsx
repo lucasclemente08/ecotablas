@@ -26,15 +26,12 @@ const VolumenProcesadoChart = ({ dateRange }) => {
     const endDate = dateRange?.endDate || today;
 
     axios
-      .get(
-        "http://www.ecotablasapi.somee.com/api/Volumen/ObtenerVolumen",
-        {
-          params: {
-            fechaInicio: startDate,
-            fechaFin: endDate,
-          },
+      .get("http://www.ecotablasapi.somee.com/api/Volumen/ObtenerVolumen", {
+        params: {
+          fechaInicio: startDate,
+          fechaFin: endDate,
         },
-      )
+      })
       .then((response) => {
         const data = response.data;
         setVolumenData(data);

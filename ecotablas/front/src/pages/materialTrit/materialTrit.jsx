@@ -17,15 +17,13 @@ import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextProcess from "../../components/buttons/NextProcess";
 import VolumenTrituradoChart from "../../components/volumen/VolumenTrituradoChart";
 
-
-import { Toaster, toast } from 'sonner';
+import { Toaster, toast } from "sonner";
 import SectionLayout from "../../layout/SectionLayout";
 import { FiEdit } from "react-icons/fi";
 import LoadingTable from "../../components/LoadingTable";
 // import { addTolva } from "../../features/tolvaSlice";
 import { useSelector, useDispatch } from "react-redux";
-import {addTolva} from "../../api/TolvaAPI";
-
+import { addTolva } from "../../api/TolvaAPI";
 
 import {
   getAllMaterialTrit,
@@ -48,7 +46,7 @@ const MaterialTrit = () => {
   const [originalMaterials, setOriginalMaterials] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [filteredMaterials, setFilteredMaterials] = useState([]);
-  const [modalTolva,setModalTolva] = useState(false);
+  const [modalTolva, setModalTolva] = useState(false);
 
   const [formValues, setFormValues] = useState({
     VolumenT: "",
@@ -60,7 +58,7 @@ const MaterialTrit = () => {
 
   
   const [tolvaValues, setTolvaValues] = useState({
-    IdMaterialTriturado:"",
+    IdMaterialTriturado: "",
     HorarioInicio: "",
     CantidadCargada: "",
     TipoPlastico: "",
@@ -104,7 +102,11 @@ const MaterialTrit = () => {
   const abrirModalTolva = (id) => {
     const fechaActual = new Date().toISOString();
     setMaterialId(id);
-    setTolvaValues({ ...tolvaValues, IdMaterialTriturado: id, HorarioInicio: fechaActual,});
+    setTolvaValues({
+      ...tolvaValues,
+      IdMaterialTriturado: id,
+      HorarioInicio: fechaActual,
+    });
     setModalTolva(true);
   };
   
@@ -124,25 +126,23 @@ const MaterialTrit = () => {
  } ;
 
 
-    const validateTolvaForm = () => {
-      let isValid = true;
-      if (!tolvaValues.CantidadCargada) {
-        toast.error("La cantidad es obligatoria.");
-        isValid = false;
-      } else if (!tolvaValues.TipoPlastico) {
-        toast.error("El tipo de plástico es obligatorio.");
-        isValid = false;
-      } else if (!tolvaValues.Proporcion) {
-        toast.error("La proporción es obligatoria.");
-        isValid = false;
-      } else if (!tolvaValues.Especificaciones) {
-        toast.error("Las especificaciones son obligatorias.");
-        isValid = false;
-      } 
-      return isValid;
-    };
-
-
+  const validateTolvaForm = () => {
+    let isValid = true;
+    if (!tolvaValues.CantidadCargada) {
+      toast.error("La cantidad es obligatoria.");
+      isValid = false;
+    } else if (!tolvaValues.TipoPlastico) {
+      toast.error("El tipo de plástico es obligatorio.");
+      isValid = false;
+    } else if (!tolvaValues.Proporcion) {
+      toast.error("La proporción es obligatoria.");
+      isValid = false;
+    } else if (!tolvaValues.Especificaciones) {
+      toast.error("Las especificaciones son obligatorias.");
+      isValid = false;
+    }
+    return isValid;
+  };
 
   const abrirModal = () => {
     setModalAbierto(true);
@@ -170,7 +170,7 @@ const MaterialTrit = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchMaterials();
   }, []);
@@ -180,7 +180,7 @@ const MaterialTrit = () => {
     if (!formValues.VolumenT) {
       toast.error("Volumen es obligatorio.");
       isValid = false;
-    } else if(!formValues.VolumenTInutil) {
+    } else if (!formValues.VolumenTInutil) {
       toast.error("Volumen Inutil es obligatorio.");
       isValid = false;
     } else if (!formValues.Fecha) {
@@ -197,7 +197,7 @@ const MaterialTrit = () => {
         formValues,
       )
       .then(() => {
-        toast.success("Material cargado")
+        toast.success("Material cargado");
         cerrarModal();
         fetchMaterials();
       })
@@ -219,11 +219,11 @@ const MaterialTrit = () => {
 
   const handleSubmitTolva = async () => {
     if (!validateTolvaForm()) return;
-  
+
     try {
       await addTolva(tolvaValues);
       toast.success("Lote enviado a tolva");
-  
+
       // Luego, actualiza el estado a 2
       const materialActualizado = {
         ...filteredMaterials.find((m) => m.IdMaterialTriturado === materialId),
@@ -255,7 +255,12 @@ const MaterialTrit = () => {
     }));
   };
 
-  const title = ["Volumen Util", "Volumen Inutil", "Fecha de ingreso", "Acciones"];
+  const title = [
+    "Volumen Util",
+    "Volumen Inutil",
+    "Fecha de ingreso",
+    "Acciones",
+  ];
 
   const columns = [
     { header: "Volumen (kgs)", dataKey: "VolumenT" },
@@ -288,41 +293,42 @@ const MaterialTrit = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
 
-  const [showTable, setShowTable] = useState(true); 
+  const [showTable, setShowTable] = useState(true);
 
   const toggleView = () => {
-    setShowTable(!showTable);  
+    setShowTable(!showTable);
   };
 
   // Paginación
-  const totalItems =filteredMaterials.length;
+  const totalItems = filteredMaterials.length;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredMaterials.slice(indexOfFirstItem, indexOfLastItem);
-
-
+  const currentItems = filteredMaterials.slice(
+    indexOfFirstItem,
+    indexOfLastItem,
+  );
 
   const filterByDate = () => {
     const filteredItems = filteredMaterials.filter((item) => {
-      const itemDate = new Date(item.Fecha).toISOString().slice(0, 10); 
+      const itemDate = new Date(item.Fecha).toISOString().slice(0, 10);
       return itemDate === selectedDate;
     });
-  
-    setFilteredMaterials(filteredItems);
-    setCurrentPage(1); 
-  };
 
+    setFilteredMaterials(filteredItems);
+    setCurrentPage(1);
+  };
 
   const totalVolumen = filteredMaterials.reduce(
     (acc, material) =>
-      acc + parseFloat(material.VolumenT || 0) + parseFloat(material.VolumenTInutil || 0),
+      acc +
+      parseFloat(material.VolumenT || 0) +
+      parseFloat(material.VolumenTInutil || 0),
     0,
   );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
-
 
   const optionsTipoPlastico = [
     { value: "Unico", label: "Tipo-Único" },
@@ -330,23 +336,19 @@ const MaterialTrit = () => {
     // ... otras opciones
   ];
 
-
-  
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   const [data, setData] = useState(filteredMaterials);
- 
+
   useEffect(() => {
     setData(filteredMaterials);
   }, [filteredMaterials]);
 
-
   const handleSort = (campo) => {
- 
     let direction = "asc";
     if (sortConfig.campo === campo && sortConfig.direction === "asc") {
       direction = "desc";
     }
-  
+
     const sortedData = [...filteredMaterials].sort((a, b) => {
       if (a[campo] < b[campo]) {
         return direction === "asc" ? -1 : 1;
@@ -356,7 +358,7 @@ const MaterialTrit = () => {
       }
       return 0;
     });
-  
+
     setData(sortedData);
     setSortConfig({ campo, direction });
   };
@@ -366,18 +368,14 @@ const titlesT = [
   { label: "Fecha de Ingreso", key: "Fecha", type: "date", hasActions: true },
 ];
 
-// Estilo para los encabezados (th)
-<th className="px-4 py-3 bg-gray-100 dark:bg-gray-700 font-semibold text-left sticky top-0">
-  {title.label}
-</th>
+  // Estilo para los encabezados (th)
+  <th className="px-4 py-3 bg-gray-100 dark:bg-gray-700 font-semibold text-left sticky top-0">
+    {title.label}
+  </th>;
 
-  
   const actions = [
-
-
-
     {
-      allowedRoles: ["admin", "supervisor","empleado"],
+      allowedRoles: ["admin", "supervisor", "empleado"],
       render: (material) => (
         <div className="flex items-center justify-start gap-2 py-1">
            <button
@@ -390,8 +388,9 @@ const titlesT = [
         </div>
       ),
     },
-    
+
     {
+      allowedRoles: ["admin", "supervisor"],
       allowedRoles: ["admin", "supervisor"],
       render: (material) => (
         <div className="flex items-center justify-start gap-2 py-1">
@@ -455,11 +454,11 @@ const titlesT = [
           </div>
         </div>
 
-          {mensaje && (
-            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-              {mensaje}
-            </div>
-          )}
+        {mensaje && (
+          <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
+            {mensaje}
+          </div>
+        )}
 
           {modalAbierto && (
             <AddModalWithSelect
@@ -516,30 +515,25 @@ const titlesT = [
               </div>
               </div>
 
-          <TableComponent
-          
-      data={data}
-      hasMaterial={true}
-      titles={titlesT}
-      sortConfig={sortConfig}
-      onSort={handleSort}
-      actions={actions}
-    />
+            <TableComponent
+              data={data}
+              hasMaterial={true}
+              titles={titlesT}
+              sortConfig={sortConfig}
+              onSort={handleSort}
+              actions={actions}
+            />
+          </div>
+        ) : (
+          <div className="flex-1 flex flex-col gap-4 p-4">
+            <DateFilter onFilter={handleFilter} />
 
-        </div>   
-):(           
-  <div className="flex-1 flex flex-col gap-4 p-4">
-  <DateFilter onFilter={handleFilter} />
+            <VolumenTrituradoChart dateRange={dateRange} />
+          </div>
+        )}
 
-  <VolumenTrituradoChart dateRange={dateRange} />
-</div>
-)
-}
-
-<NextProcess  linkTo="/tolva"
-  hoverText="Ir al siguiente proceso"/>
-  </SectionLayout>
-
+        <NextProcess linkTo="/tolva" hoverText="Ir al siguiente proceso" />
+      </SectionLayout>
     </>
   );
 };

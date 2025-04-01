@@ -5,7 +5,7 @@ import PdfGenerator from "../../components/buttons/PdfGenerator";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
-import { Toaster, toast } from 'sonner';
+import { Toaster, toast } from "sonner";
 import TableComponent from "../../components/TableComponent";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { FaChartPie } from "react-icons/fa";
@@ -15,7 +15,6 @@ import builderApiUrl from "../../utils/BuilderApi";
 import { FiEdit, FiPlus, FiRefreshCw, FiEye } from "react-icons/fi";
 import MaquinariaChart from "../../components/graficos/MaquinariaChart";
 import ModalReparacion from "../../components/ModalReparacion";
-
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -27,13 +26,17 @@ import {
   editMaquinarias,
   deleteMaquinarias,
 } from "../../api/MaquinariasAPI";
-import { addReparacion, editReparacion, getReparacionByIdMaquinaria, } from "../../api/ReparacionesAPI";
+import {
+  addReparacion,
+  editReparacion,
+  getReparacionByIdMaquinaria,
+} from "../../api/ReparacionesAPI";
 import SectionLayout from "../../layout/SectionLayout";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 
 const Maquinaria = () => {
   const [maquinarias, setMaquinarias] = useState([]);
-  const [EstadoMaquinarias, setEstadoMaquinarias] = useState([]); 
+  const [EstadoMaquinarias, setEstadoMaquinarias] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -41,7 +44,7 @@ const Maquinaria = () => {
   const [modalEdit, setModalEdit] = useState(false);
   const [modalReparacion, setModalReparacion] = useState(false);
   const [reparaciones, setReparaciones] = useState([]);
-const [showPieChart, setShowPieChart] = useState(false);
+  const [showPieChart, setShowPieChart] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [showTable, setShowTable] = useState(true);
   const [modalDetallesReparacion, setModalDetallesReparacion] = useState(false);
@@ -79,14 +82,14 @@ const [showPieChart, setShowPieChart] = useState(false);
     });
     setModalEdit(true);
   };
- 
+
   const abrirModalDetallesReparacion = async (maquinaria) => {
     try {
       const id = maquinaria.Id;
       // Llama al servicio para obtener los datos por ID de maquinaria
       const response = await getReparacionByIdMaquinaria(id);
       const reparacion = response.data;
-  
+
       // Actualiza el estado con los valores obtenidos
       setReparacionValues({
         Id: reparacion.Id || "",
@@ -96,7 +99,7 @@ const [showPieChart, setShowPieChart] = useState(false);
         IdEstadoReparacion: reparacion.IdEstadoReparacion || 1,
         Costo: reparacion.Costo || "",
       });
-  
+
       // Abre el modal
       setModalDetallesReparacion(true);
     } catch (error) {
@@ -104,7 +107,7 @@ const [showPieChart, setShowPieChart] = useState(false);
       // Puedes mostrar una alerta o manejar el error de forma personalizada
     }
   };
-  
+
   const cerrarModalDetallesReparacion = () => {
     setModalDetallesReparacion(false);
     // Opcional: Reinicia los valores del estado
@@ -179,7 +182,7 @@ const [showPieChart, setShowPieChart] = useState(false);
       const response = await axios.post(`${BASE_URL}/Insertar`, formValues);
       if (response) {
         await fetchMaquinarias();
-        
+
         toast.success("Inserción exitosa");
       } else {
         toast.error("Error: no se recibió un dato válido de la API.");
@@ -223,7 +226,7 @@ const [showPieChart, setShowPieChart] = useState(false);
     } else if (!reparacionValues.FechaInicio) {
       toast.error("La fecha de inicio es obligatoria.");
       isValid = false;
-    }  else if (!reparacionValues.Costo) {
+    } else if (!reparacionValues.Costo) {
       toast.error("El costo es obligatorio.");
       isValid = false;
     }
@@ -235,14 +238,13 @@ const [showPieChart, setShowPieChart] = useState(false);
     if (!validateReparacionForm()) return;
 
     try {
-
       await addReparacion(reparacionValues);
       toast.success("Reparación agregada exitosamente");
 
       // Luego, actualiza el estado de la maquinaria a 3 (en reparación)
       const maquinariaActualizada = {
         ...maquinarias.find((m) => m.Id === maquinariaId),
-        IdEstado: 3, 
+        IdEstado: 3,
       };
 
       await editMaquinarias(maquinariaId, maquinariaActualizada);
@@ -361,15 +363,17 @@ const [showPieChart, setShowPieChart] = useState(false);
         ...reparacionValues,
         IdEstadoReparacion: 2,
       });
-  
+
       const maquinariaActual = maquinarias.find(
-        (m) => m.Id === reparacionValues.IdMaquinaria
+        (m) => m.Id === reparacionValues.IdMaquinaria,
       );
-  
+
       if (!maquinariaActual) {
-        throw new Error("No se encontró la maquinaria asociada a esta reparación.");
+        throw new Error(
+          "No se encontró la maquinaria asociada a esta reparación.",
+        );
       }
-  
+
       // Actualiza el estado de la maquinaria a 1
       await editMaquinarias(reparacionValues.IdMaquinaria, {
         ...maquinariaActual,
@@ -380,7 +384,7 @@ const [showPieChart, setShowPieChart] = useState(false);
         ...prev,
         IdEstadoReparacion: 2,
       }));
-  
+
       toast.success("La reparación ha sido marcada como terminada.");
       await fetchMaquinarias(); // Actualiza la lista
       setModalDetallesReparacion(false); // Cierra el modal después de la acción
@@ -390,8 +394,6 @@ const [showPieChart, setShowPieChart] = useState(false);
     }
   };
 
-
-
   const handleShowTable = () => {
     setShowTable(true);
     setShowPieChart(false);
@@ -399,19 +401,17 @@ const [showPieChart, setShowPieChart] = useState(false);
 
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   const [data, setData] = useState(maquinarias);
- 
+
   useEffect(() => {
     setData(maquinarias);
   }, [maquinarias]);
 
-
   const handleSort = (campo) => {
- 
     let direction = "asc";
     if (sortConfig.campo === campo && sortConfig.direction === "asc") {
       direction = "desc";
     }
-  
+
     const sortedData = [...maquinarias].sort((a, b) => {
       if (a[campo] < b[campo]) {
         return direction === "asc" ? -1 : 1;
@@ -421,7 +421,7 @@ const [showPieChart, setShowPieChart] = useState(false);
       }
       return 0;
     });
-  
+
     setData(sortedData);
     setSortConfig({ campo, direction });
   };
@@ -430,21 +430,26 @@ const [showPieChart, setShowPieChart] = useState(false);
     { label: "Nombre", key: "Nombre", type: "text" },
     { label: "Tipo", key: "Tipo", type: "text" },
     { label: "Modelo", key: "Modelo", type: "text" },
-    { 
-      label: "Estado", 
-      key: "IdEstado", 
+    {
+      label: "Estado",
+      key: "IdEstado",
       render: (value) => (
         <div className={`${estadoStyles[value]} w-full h-full flex items-center justify-center`}>
         {getNombreEstado(value)}
       </div>
       ),
     },
-    { label: "Fecha de Adquisición", key: "fecha_adquisicion", type: "date", hasActions: true },
+    {
+      label: "Fecha de Adquisición",
+      key: "fecha_adquisicion",
+      type: "date",
+      hasActions: true,
+    },
   ];
 
   const actions = [
     {
-        allowedRoles: ["admin","supervisor", ],
+      allowedRoles: ["admin", "supervisor"],
       render: (maquinaria) => (
         <div className="flex items-center justify-start gap-2 py-1">
 
@@ -496,228 +501,227 @@ const [showPieChart, setShowPieChart] = useState(false);
       ),
     },
   ];
-  
 
   return (
     <>
-    <SectionLayout>
-      <div className="p-4 w-full">
+      <SectionLayout>
+        <div className="p-4 w-full">
+          <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
 
-        <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
+          <div className=" flex">
+            <AddButtonWa abrirModal={abrirModal} title={" Añadir Maquinaria"} />
+            <PdfGenerator
+              columns={columns}
+              data={maquinarias}
+              title="Reporte de Maquinarias"
+            />
 
+            <DataView ShowTable={handleShowTable} />
 
-        <div className=" flex">
-
-        <AddButtonWa abrirModal={abrirModal} title={" Añadir Maquinaria"} />
-        <PdfGenerator
-          columns={columns}
-          data={maquinarias}
-          title="Reporte de Maquinarias"
-          />
-
-          
-
-<DataView ShowTable={handleShowTable} />
-
-<button
-        aria-label="Ver gráfico circular"
-        className={`p-2  ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? "bg-blue-600" : "bg-gray-500"}`}
-        onClick={() => {
-          setShowPieChart(true);
-          setShowTable(false);
-        }}
-      >
-        Ver Gráfico Circular <FaChartPie className="ml-2" />
-      </button>
-
+            <button
+              aria-label="Ver gráfico circular"
+              className={`p-2  ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? "bg-blue-600" : "bg-gray-500"}`}
+              onClick={() => {
+                setShowPieChart(true);
+                setShowTable(false);
+              }}
+            >
+              Ver Gráfico Circular <FaChartPie className="ml-2" />
+            </button>
           </div>
 
-        {modalAbierto && (
-          <AddModalWithSelect
-            title="Agregar Maquinaria"
-            fields={fields}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-            cerrarModal={cerrarModal}
-            values={formValues}
-          />
-        )}
-        {modalEdit && (
-          <ButtonEdit
-            title="Modificar Maquinaria"
-            fields={fields}
-            id={maquinariaId}
-            formValues={formValues}
-            handleChange={handleChange}
-            handleEditSubmit={handleEditSubmit}
-            cerrarModalEdit={cerrarModalEdit}
-          />
-        )}
+          {modalAbierto && (
+            <AddModalWithSelect
+              title="Agregar Maquinaria"
+              fields={fields}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+              cerrarModal={cerrarModal}
+              values={formValues}
+            />
+          )}
+          {modalEdit && (
+            <ButtonEdit
+              title="Modificar Maquinaria"
+              fields={fields}
+              id={maquinariaId}
+              formValues={formValues}
+              handleChange={handleChange}
+              handleEditSubmit={handleEditSubmit}
+              cerrarModalEdit={cerrarModalEdit}
+            />
+          )}
 
-        {modalReparacion && (
-          <AddModalWithSelect
-            title="Agregar Reparación"
-            fields={[
-              {
-                name: "Detalle",
-                label: "Detalle",
-                type: "text",
-                placeholder: "Detalle *",
-              },
-              {
-                name: "FechaInicio",
-                label: "Fecha de Inicio",
-                type: "date",
-                placeholder: "Fecha *",
-              },
-              {
-                name: "Costo",
-                label: "Costo",
-                type: "number",
-                placeholder: "Costo *",
-              },
-            ]}
-            handleChange={handleChangeReparacion}
-            handleSubmit={handleSubmitReparacion}
-            cerrarModal={cerrarModalReparacion}
-            values={reparacionValues}
-          />
-        )}
+          {modalReparacion && (
+            <AddModalWithSelect
+              title="Agregar Reparación"
+              fields={[
+                {
+                  name: "Detalle",
+                  label: "Detalle",
+                  type: "text",
+                  placeholder: "Detalle *",
+                },
+                {
+                  name: "FechaInicio",
+                  label: "Fecha de Inicio",
+                  type: "date",
+                  placeholder: "Fecha *",
+                },
+                {
+                  name: "Costo",
+                  label: "Costo",
+                  type: "number",
+                  placeholder: "Costo *",
+                },
+              ]}
+              handleChange={handleChangeReparacion}
+              handleSubmit={handleSubmitReparacion}
+              cerrarModal={cerrarModalReparacion}
+              values={reparacionValues}
+            />
+          )}
 
-{modalDetallesReparacion && (
-        <ModalReparacion
-          title="Detalles de Reparación"
-          content={
-            reparacionValues ? (
-              <div>
-                <p><strong>Detalle:</strong> {reparacionValues.Detalle}</p>
-                <p><strong>Fecha de Inicio:</strong> {reparacionValues.FechaInicio}</p>
-                <p><strong>Costo:</strong> {reparacionValues.Costo}</p>
-                <button onClick={terminarReparacion} 
-                className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
-              Terminar Reparación
-            </button>
-              </div>
+          {modalDetallesReparacion && (
+            <ModalReparacion
+              title="Detalles de Reparación"
+              content={
+                reparacionValues ? (
+                  <div>
+                    <p>
+                      <strong>Detalle:</strong> {reparacionValues.Detalle}
+                    </p>
+                    <p>
+                      <strong>Fecha de Inicio:</strong>{" "}
+                      {reparacionValues.FechaInicio}
+                    </p>
+                    <p>
+                      <strong>Costo:</strong> {reparacionValues.Costo}
+                    </p>
+                    <button
+                      onClick={terminarReparacion}
+                      className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                      Terminar Reparación
+                    </button>
+                  </div>
+                ) : (
+                  <p>No hay información disponible sobre esta reparación.</p>
+                )
+              }
+              cerrarModal={cerrarModalDetallesReparacion}
+            />
+          )}
+          <div className="overflow-x-auto">
+            {showTable ? (
+              //     <table className="min-w-full bg-white rounded-lg shadow-md">
+              //       {/* Cargando */}
+              //       <LoadingTable loading={loading} />
+
+              //       {/* Encabezado */}
+              //       <TablaHead titles={title} />
+
+              //       {/* Cuerpo */}
+              //       <tbody>
+              //         {maquinarias.map((maquinaria) => (
+              //           <tr
+              //             key={maquinaria.Id}
+              //             className="hover:bg-gray-100 text-sm md:text-base"
+              //           >
+              //             {/* Nombre */}
+              //             <td className="border-b py-2 px-4 text-left">{maquinaria.Nombre}</td>
+
+              //             {/* Tipo */}
+              //             <td className="border-b py-2 px-4 text-left">{maquinaria.Tipo}</td>
+
+              //             {/* Modelo */}
+              //             <td className="border-b py-2 px-4 text-left">{maquinaria.Modelo}</td>
+
+              //             {/* Estado */}
+              //             <td
+              //               className={`border-b py-2 px-4 text-center ${
+              //                 estadoStyles[maquinaria.IdEstado]
+              //               }`}
+              //             >
+              //               {getNombreEstado(maquinaria.IdEstado)}
+              //             </td>
+
+              //             {/* Fecha de adquisición */}
+              //             <td className="border-b py-2 px-4 text-right">
+              //               {maquinaria.fecha_adquisicion.slice(0,10)}
+              //             </td>
+
+              //             {/* Acciones */}
+              //             <td className="border-b py-2 px-4 flex flex-wrap justify-center gap-2">
+              //               {/* Ver Reparación */}
+              //               {maquinaria.IdEstado === 3 && (
+              //                 <button
+              //   className="bg-blue-500 text-white p-2 rounded"
+              //   onClick={() => abrirModalDetallesReparacion(maquinaria.Id)}
+              // >
+              //   Ver Reparaciones
+              // </button>
+              //               )}
+
+              //               {/* Modificar */}
+              //               <button
+              //                 onClick={() => abrirModalEdit(maquinaria)}
+              //                 className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+              //               >
+              //                 <FiEdit />
+              //                 Modificar
+              //               </button>
+
+              //               {/* Agregar Reparación */}
+              //               {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
+              //                 <button
+              //                   onClick={() => abrirModalReparacion(maquinaria.Id)}
+              //                   className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+              //                 >
+              //                   <FiPlus />
+              //                   Agregar Reparación
+              //                 </button>
+              //               )}
+
+              //               {/* Cambiar Estado */}
+              //               {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
+              //                 <button
+              //                   onClick={() => handleChangeState(maquinaria)}
+              //                   className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded flex items-center gap-2"
+              //                 >
+              //                   <FiRefreshCw />
+              //                   Cambiar Estado
+              //                 </button>
+              //               )}
+
+              //               {/* Botón de Borrar */}
+              //               <DeleteButton
+              //                 id={maquinaria.Id}
+              //                 endpoint={`${BASE_URL}/Borrar`}
+              //                 updateList={fetchMaquinarias}
+              //               />
+              //             </td>
+              //           </tr>
+              //         ))}
+              //       </tbody>
+              //     </table>
+              <TableComponent
+                data={data}
+                titles={titlesT}
+                sortConfig={sortConfig}
+                onSort={handleSort}
+                hasMaterial={true}
+                actions={actions}
+              />
             ) : (
-              <p>No hay información disponible sobre esta reparación.</p>
-            )
-          }
-          cerrarModal={cerrarModalDetallesReparacion}
-        />
-      )}
-      <div className="overflow-x-auto">
-  {showTable ? (
-//     <table className="min-w-full bg-white rounded-lg shadow-md">
-//       {/* Cargando */}
-//       <LoadingTable loading={loading} />
-
-//       {/* Encabezado */}
-//       <TablaHead titles={title} />
-      
-//       {/* Cuerpo */}
-//       <tbody>
-//         {maquinarias.map((maquinaria) => (
-//           <tr
-//             key={maquinaria.Id}
-//             className="hover:bg-gray-100 text-sm md:text-base"
-//           >
-//             {/* Nombre */}
-//             <td className="border-b py-2 px-4 text-left">{maquinaria.Nombre}</td>
-            
-//             {/* Tipo */}
-//             <td className="border-b py-2 px-4 text-left">{maquinaria.Tipo}</td>
-            
-//             {/* Modelo */}
-//             <td className="border-b py-2 px-4 text-left">{maquinaria.Modelo}</td>
-            
-//             {/* Estado */}
-//             <td
-//               className={`border-b py-2 px-4 text-center ${
-//                 estadoStyles[maquinaria.IdEstado]
-//               }`}
-//             >
-//               {getNombreEstado(maquinaria.IdEstado)}
-//             </td>
-            
-//             {/* Fecha de adquisición */}
-//             <td className="border-b py-2 px-4 text-right">
-//               {maquinaria.fecha_adquisicion.slice(0,10)}
-//             </td>
-            
-//             {/* Acciones */}
-//             <td className="border-b py-2 px-4 flex flex-wrap justify-center gap-2">
-//               {/* Ver Reparación */}
-//               {maquinaria.IdEstado === 3 && (
-//                 <button
-//   className="bg-blue-500 text-white p-2 rounded"
-//   onClick={() => abrirModalDetallesReparacion(maquinaria.Id)}
-// >
-//   Ver Reparaciones
-// </button>
-//               )}
-              
-//               {/* Modificar */}
-//               <button
-//                 onClick={() => abrirModalEdit(maquinaria)}
-//                 className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
-//               >
-//                 <FiEdit />
-//                 Modificar
-//               </button>
-              
-//               {/* Agregar Reparación */}
-//               {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
-//                 <button
-//                   onClick={() => abrirModalReparacion(maquinaria.Id)}
-//                   className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
-//                 >
-//                   <FiPlus />
-//                   Agregar Reparación
-//                 </button>
-//               )}
-              
-//               {/* Cambiar Estado */}
-//               {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
-//                 <button
-//                   onClick={() => handleChangeState(maquinaria)}
-//                   className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded flex items-center gap-2"
-//                 >
-//                   <FiRefreshCw />
-//                   Cambiar Estado
-//                 </button>
-//               )}
-              
-//               {/* Botón de Borrar */}
-//               <DeleteButton
-//                 id={maquinaria.Id}
-//                 endpoint={`${BASE_URL}/Borrar`}
-//                 updateList={fetchMaquinarias}
-//               />
-//             </td>
-//           </tr>
-//         ))}
-//       </tbody>
-//     </table>
-<TableComponent
-data={data}
-titles={titlesT}
-sortConfig={sortConfig}
-onSort={handleSort}
-hasMaterial={true}
-actions={actions}
-/>
-  ) : (
-    <div>
-      <MaquinariaChart />
-    </div>
-  )}
-</div>
-
-      </div>
-      
-    
-    </SectionLayout>
-  </>
+              <div>
+                <MaquinariaChart />
+              </div>
+            )}
+          </div>
+        </div>
+      </SectionLayout>
+    </>
   );
 };
 

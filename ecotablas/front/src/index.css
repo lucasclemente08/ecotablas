@@ -64,7 +64,12 @@ nav {
 }
 /* 📌 Contenedor principal del panel de instrucciones */
 .leaflet-routing-container {
-  background: rgba(255, 255, 255, 0.95); /* Fondo blanco con ligera transparencia */
+  background: rgba(
+    255,
+    255,
+    255,
+    0.95
+  ); /* Fondo blanco con ligera transparencia */
   color: #333; /* Texto oscuro */
   border-radius: 8px; /* Bordes más suaves */
   display: flex;
@@ -124,12 +129,10 @@ nav {
   color: #0a8f3e; /* Verde más oscuro al pasar el cursor */
 }
 
-
 .animate-spin {
   animation: spin 1s linear infinite;
   -webkit-animation: spin 1s linear infinite;
 }
-
 
 .Toastify__toast-container {
   z-index: 9999 !important;

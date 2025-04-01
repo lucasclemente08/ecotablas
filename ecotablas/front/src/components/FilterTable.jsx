@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const FilterTable = ({ data, columns, onFilteredDataChange }) => {
   const [filters, setFilters] = useState({});
@@ -7,7 +7,7 @@ const FilterTable = ({ data, columns, onFilteredDataChange }) => {
   const applyFilter = (field, filterType) => {
     setFilters((prevFilters) => {
       const updatedFilters = { ...prevFilters };
-      updatedFilters[field] = { filterType, value: '' }; // No necesitamos valor por ahora, solo el tipo de filtro
+      updatedFilters[field] = { filterType, value: "" }; // No necesitamos valor por ahora, solo el tipo de filtro
       return updatedFilters;
     });
   };
@@ -25,14 +25,14 @@ const FilterTable = ({ data, columns, onFilteredDataChange }) => {
         const fieldValue = item[field];
 
         switch (filterType) {
-          case 'greaterThan':
+          case "greaterThan":
             return Number(fieldValue) > 100; // Usa el valor adecuado que quieras para el filtro "mayor que"
-          case 'lessThan':
+          case "lessThan":
             return Number(fieldValue) < 100; // Usa el valor adecuado que quieras para el filtro "menor que"
-          case 'recent':
-            return new Date(fieldValue) >= new Date('2023-01-01'); // Ejemplo de fecha reciente
-          case 'alphabetical':
-            return fieldValue.toString().toLowerCase().includes('a'); // Filtro alfabético de ejemplo
+          case "recent":
+            return new Date(fieldValue) >= new Date("2023-01-01"); // Ejemplo de fecha reciente
+          case "alphabetical":
+            return fieldValue.toString().toLowerCase().includes("a"); // Filtro alfabético de ejemplo
           default:
             return true;
         }
@@ -52,25 +52,25 @@ const FilterTable = ({ data, columns, onFilteredDataChange }) => {
                 {col.label}
                 <div className="mt-2 flex gap-2">
                   <button
-                    onClick={() => applyFilter(col.field, 'greaterThan')}
+                    onClick={() => applyFilter(col.field, "greaterThan")}
                     className="bg-blue-500 text-white p-2 rounded"
                   >
                     Mayor que
                   </button>
                   <button
-                    onClick={() => applyFilter(col.field, 'lessThan')}
+                    onClick={() => applyFilter(col.field, "lessThan")}
                     className="bg-blue-500 text-white p-2 rounded"
                   >
                     Menor que
                   </button>
                   <button
-                    onClick={() => applyFilter(col.field, 'recent')}
+                    onClick={() => applyFilter(col.field, "recent")}
                     className="bg-blue-500 text-white p-2 rounded"
                   >
                     Más reciente
                   </button>
                   <button
-                    onClick={() => applyFilter(col.field, 'alphabetical')}
+                    onClick={() => applyFilter(col.field, "alphabetical")}
                     className="bg-blue-500 text-white p-2 rounded"
                   >
                     Alfabético

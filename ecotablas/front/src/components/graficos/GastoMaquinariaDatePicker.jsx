@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement } from "chart.js";
+import {
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+} from "chart.js";
 import DatePicker from "react-datepicker"; // Necesita instalar react-datepicker
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -39,7 +45,9 @@ const GastoMaquinariaDatePicker = () => {
     if (startDate || endDate) {
       tempData = tempData.filter((item) => {
         const date = new Date(item.Fecha);
-        return (!startDate || date >= startDate) && (!endDate || date <= endDate);
+        return (
+          (!startDate || date >= startDate) && (!endDate || date <= endDate)
+        );
       });
     }
 
@@ -57,7 +65,8 @@ const GastoMaquinariaDatePicker = () => {
     filteredData.forEach((item) => {
       const date = new Date(item.Fecha);
       const month = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
-      groupedByDate[month] = (groupedByDate[month] || 0) + parseFloat(item.Monto);
+      groupedByDate[month] =
+        (groupedByDate[month] || 0) + parseFloat(item.Monto);
     });
 
     const labels = Object.keys(groupedByDate).sort();

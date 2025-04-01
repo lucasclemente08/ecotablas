@@ -4,11 +4,11 @@ import TablaHead from "./Thead";
 import LoadingTable from "./LoadingTable";
 import { useRole } from "../context/RoleContext";
 
-const TableComponent = ({ 
-  data, 
-  titles, 
-  sortConfig, 
-  onSort, 
+const TableComponent = ({
+  data,
+  titles,
+  sortConfig,
+  onSort,
   actions,
   hasMaterial,
   itemsPerPage = 5,
@@ -16,7 +16,6 @@ const TableComponent = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const { role: userRole } = useRole();
-
 
   // Calcular datos paginados
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -31,21 +30,21 @@ const TableComponent = ({
 
   // Determinar alineación basada en el tipo de dato
   const getCellAlignment = (type) => {
-    switch(type) {
-      case 'number':
-        return 'text-right';
-      case 'date':
-        return 'text-center';
+    switch (type) {
+      case "number":
+        return "text-right";
+      case "date":
+        return "text-center";
       default:
-        return 'text-left';
+        return "text-left";
     }
   };
 
   // Formatear valores según tipo
   const formatCellValue = (value, title) => {
     if (value === null || value === undefined) return "N/A";
-    
-    switch(title.type) {
+
+    switch (title.type) {
       case "date":
         return value ? value.slice(0, 10) : "Fecha no disponible";
       case "number":
@@ -63,19 +62,19 @@ const TableComponent = ({
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border-0">
-            <TablaHead 
-              titles={titles} 
-              onSort={onSort} 
-              sortConfig={sortConfig} 
-              hasMaterial={hasMaterial} 
+            <TablaHead
+              titles={titles}
+              onSort={onSort}
+              sortConfig={sortConfig}
+              hasMaterial={hasMaterial}
             />
             <tbody>
               {data && data.length > 0 ? (
                 paginatedData.map((item, rowIndex) => (
-                  <tr 
-                    key={item.id || item.Id} 
+                  <tr
+                    key={item.id || item.Id}
                     className={`
-                      ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                      ${rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"}
                       border-b border-gray-200
                       transition-colors duration-200 ease-in-out
                       hover:bg-blue-50
@@ -83,8 +82,8 @@ const TableComponent = ({
                     `}
                   >
                     {titles.map((title) => (
-                      <td 
-                        key={title.key} 
+                      <td
+                        key={title.key}
                         className={`
                           py-3 px-4 text-gray-700
                           ${getCellAlignment(title.type)}
@@ -92,36 +91,38 @@ const TableComponent = ({
                           border-r border-gray-200 last:border-r-0
                         `}
                       >
-                        {title.render 
+                        {title.render
                           ? title.render(item[title.key], item)
-                          : formatCellValue(item[title.key], title)
-                        }
+                          : formatCellValue(item[title.key], title)}
                       </td>
                     ))}
-                    
+
                     {/* Columnas de acciones */}
-                    {actions && actions.some(action => 
-                      Array.isArray(action.allowedRoles) && 
-                      action.allowedRoles.includes(userRole)
-                    ) && (
-                      <td className="py-3 px-4 text-gray-700 group-hover:text-gray-900 border-r border-gray-200 last:border-r-0">
-                        <div className="flex justify-center space-x-2">
-                          {actions.map((action, index) => (
-                            action.allowedRoles.includes(userRole) && (
-                              <div key={index}>
-                                {action.render ? action.render(item) : null}
-                              </div>
-                            )
-                          ))}
-                        </div>
-                      </td>
-                    )}
+                    {actions &&
+                      actions.some(
+                        (action) =>
+                          Array.isArray(action.allowedRoles) &&
+                          action.allowedRoles.includes(userRole),
+                      ) && (
+                        <td className="py-3 px-4 text-gray-700 group-hover:text-gray-900 border-r border-gray-200 last:border-r-0">
+                          <div className="flex justify-center space-x-2">
+                            {actions.map(
+                              (action, index) =>
+                                action.allowedRoles.includes(userRole) && (
+                                  <div key={index}>
+                                    {action.render ? action.render(item) : null}
+                                  </div>
+                                ),
+                            )}
+                          </div>
+                        </td>
+                      )}
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td 
-                    colSpan={titles.length + (actions ? 1 : 0)} 
+                  <td
+                    colSpan={titles.length + (actions ? 1 : 0)}
                     className="text-center py-4 text-gray-500"
                   >
                     No hay datos disponibles

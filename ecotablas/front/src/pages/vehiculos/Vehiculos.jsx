@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Home from "../home/Home";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
-import { Toaster, toast } from 'sonner';
+import { Toaster, toast } from "sonner";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import TableComponent from "../../components/TableComponent";
@@ -20,7 +20,11 @@ import {
   editVehiculos,
   deleteVehiculos,
 } from "../../api/VehiculosAPI";
-import { addReparacion, editReparacion, getReparacionByIdVehiculo,} from "../../api/ReparacionesAPI";
+import {
+  addReparacion,
+  editReparacion,
+  getReparacionByIdVehiculo,
+} from "../../api/ReparacionesAPI";
 import SectionLayout from "../../layout/SectionLayout";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 
@@ -60,8 +64,9 @@ const Vehiculos = () => {
     Costo: "",
   });
 
-  const BASE_URL = ("http://www.ecotablasapi.somee.com/api/Vehiculos");
-  const BASE_URL_State = ("http://www.ecotablasapi.somee.com/api/EstadosVehiculos");
+  const BASE_URL = "http://www.ecotablasapi.somee.com/api/Vehiculos";
+  const BASE_URL_State =
+    "http://www.ecotablasapi.somee.com/api/EstadosVehiculos";
 
   const abrirModalEdit = (vehiculo) => {
     setVehiculoId(vehiculo.IdVehiculo);
@@ -78,7 +83,6 @@ const Vehiculos = () => {
       NumeroPlaca: vehiculo.NumeroPlaca,
       NumeroIdentificador: vehiculo.NumeroIdentificador,
       IdEstado: 1,
-
     });
     setModalEdit(true);
   };
@@ -114,7 +118,7 @@ const Vehiculos = () => {
       // Llama al servicio para obtener los datos por ID
       const response = await getReparacionByIdVehiculo(id);
       const reparacion = response.data;
-  
+
       // Actualiza el estado con los valores obtenidos
       setReparacionValues({
         Id: reparacion.Id || "",
@@ -124,7 +128,7 @@ const Vehiculos = () => {
         IdEstadoReparacion: reparacion.IdEstadoReparacion || 1,
         Costo: reparacion.Costo || "",
       });
-  
+
       // Abre el modal
       setModalDetallesReparacion(true);
     } catch (error) {
@@ -132,7 +136,7 @@ const Vehiculos = () => {
       // Puedes mostrar una alerta o manejar el error de forma personalizada
     }
   };
-  
+
   const cerrarModalDetallesReparacion = () => {
     setModalDetallesReparacion(false);
     // Opcional: Reinicia los valores del estado
@@ -146,7 +150,6 @@ const Vehiculos = () => {
     });
   };
 
-
   const terminarReparacion = async () => {
     try {
       // Actualiza el estado de la reparación a 2 (terminada)
@@ -154,15 +157,17 @@ const Vehiculos = () => {
         ...reparacionValues,
         IdEstadoReparacion: 2,
       });
-  
+
       const vehiculoActual = vehiculos.find(
-        (v) => v.IdVehiculo === reparacionValues.IdVehiculo
+        (v) => v.IdVehiculo === reparacionValues.IdVehiculo,
       );
-  
+
       if (!vehiculoActual) {
-        throw new Error("No se encontró el vehiculo asociado a esta reparación.");
+        throw new Error(
+          "No se encontró el vehiculo asociado a esta reparación.",
+        );
       }
-  
+
       // Actualiza el estado de la maquinaria a 1
       await editVehiculos(reparacionValues.IdVehiculo, {
         ...vehiculoActual,
@@ -173,7 +178,7 @@ const Vehiculos = () => {
         ...prev,
         IdEstadoReparacion: 2,
       }));
-  
+
       toast.success("La reparación ha sido marcada como terminada.");
       await fetchVehiculos(); // Actualiza la lista
       setModalDetallesReparacion(false); // Cierra el modal después de la acción
@@ -352,7 +357,7 @@ const Vehiculos = () => {
     { header: "Color", dataKey: "Color" },
     { header: "Tipo", dataKey: "Tipo" },
     { header: "Combustible", dataKey: "Combustible" },
-    { header: "Patente", dataKey: "NumeroPlaca"},
+    { header: "Patente", dataKey: "NumeroPlaca" },
     { header: "Numero de Identificación", dataKey: "NumeroIdentificador" },
     { header: "Estado", dataKey: "IdEstado" },
     { header: "Fecha de Última Inspección", dataKey: "FechaUltimaInspeccion" },
@@ -369,8 +374,8 @@ const Vehiculos = () => {
     NumeroIdentificador: vehiculo.NumeroIdentificador,
     IdEstado: vehiculo.IdEstado,
     FechaUltimaInspeccion: vehiculo.FechaUltimaInspeccion
-    ? vehiculo.FechaUltimaInspeccion.slice(0, 10)
-    : "Fecha no disponible", // Manejo de fechas
+      ? vehiculo.FechaUltimaInspeccion.slice(0, 10)
+      : "Fecha no disponible", // Manejo de fechas
   }));
 
   const fields = [
@@ -428,7 +433,6 @@ const Vehiculos = () => {
       type: "date",
       placeholder: "Fecha *",
     },
-
   ];
 
   const estadoStyles = {
@@ -451,19 +455,17 @@ const Vehiculos = () => {
 
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   const [data, setData] = useState(vehiculos);
- 
+
   useEffect(() => {
     setData(vehiculos);
   }, [vehiculos]);
 
-
   const handleSort = (campo) => {
- 
     let direction = "asc";
     if (sortConfig.campo === campo && sortConfig.direction === "asc") {
       direction = "desc";
     }
-  
+
     const sortedData = [...vehiculos].sort((a, b) => {
       if (a[campo] < b[campo]) {
         return direction === "asc" ? -1 : 1;
@@ -473,7 +475,7 @@ const Vehiculos = () => {
       }
       return 0;
     });
-  
+
     setData(sortedData);
     setSortConfig({ campo, direction });
   };
@@ -505,22 +507,31 @@ const Vehiculos = () => {
     { label: "Tipo", key: "Tipo", type: "text" },
     { label: "Combustible", key: "Combustible", type: "text" },
     { label: "Patente", key: "NumeroPlaca", type: "text" },
-    { label: "Numero de Identificación", key: "NumeroIdentificador", type: "text" },
-    { 
-      label: "Estado", 
-      key: "IdEstado", 
+    {
+      label: "Numero de Identificación",
+      key: "NumeroIdentificador",
+      type: "text",
+    },
+    {
+      label: "Estado",
+      key: "IdEstado",
       render: (value) => (
         <div className={`${estadoStyles[value]} w-full h-full flex items-center justify-center`}>
         {getNombreEstado(value)}
       </div>
       ),
     },
-    { label: "Fecha de última inspección", key: "FechaUltimaInspeccion", type: "date", hasActions: true },
+    {
+      label: "Fecha de última inspección",
+      key: "FechaUltimaInspeccion",
+      type: "date",
+      hasActions: true,
+    },
   ];
 
   const actions = [
     {
-      allowedRoles: ["admin","supervisor", ],
+      allowedRoles: ["admin", "supervisor"],
       render: (vehiculo) => (
         <div className="flex items-center justify-start gap-2 py-1">
 
@@ -572,14 +583,12 @@ const Vehiculos = () => {
       ),
     },
   ];
-  
 
   return (
     <>
-    <SectionLayout title="Vehiculos">
-    <Toaster />
+      <SectionLayout title="Vehiculos">
+        <Toaster />
         <div className="p-4 w-full">
-          
           <AddButtonWa abrirModal={abrirModal} title={" Añadir Vehiculo"} />
           <PdfGenerator
             columns={columns}
@@ -643,26 +652,35 @@ const Vehiculos = () => {
             />
           )}
           {modalDetallesReparacion && (
-        <ModalReparacion
-          title="Detalles de Reparación"
-          content={
-            reparacionValues ? (
-              <div>
-                <p><strong>Detalle:</strong> {reparacionValues.Detalle}</p>
-                <p><strong>Fecha de Inicio:</strong> {reparacionValues.FechaInicio}</p>
-                <p><strong>Costo:</strong> {reparacionValues.Costo}</p>
-                <button onClick={terminarReparacion} 
-                className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
-              Terminar Reparación
-            </button>
-              </div>
-            ) : (
-              <p>No hay información disponible sobre esta reparación.</p>
-            )
-          }
-          cerrarModal={cerrarModalDetallesReparacion}
-        />
-      )}
+            <ModalReparacion
+              title="Detalles de Reparación"
+              content={
+                reparacionValues ? (
+                  <div>
+                    <p>
+                      <strong>Detalle:</strong> {reparacionValues.Detalle}
+                    </p>
+                    <p>
+                      <strong>Fecha de Inicio:</strong>{" "}
+                      {reparacionValues.FechaInicio}
+                    </p>
+                    <p>
+                      <strong>Costo:</strong> {reparacionValues.Costo}
+                    </p>
+                    <button
+                      onClick={terminarReparacion}
+                      className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                      Terminar Reparación
+                    </button>
+                  </div>
+                ) : (
+                  <p>No hay información disponible sobre esta reparación.</p>
+                )
+              }
+              cerrarModal={cerrarModalDetallesReparacion}
+            />
+          )}
           <div className="overflow-x-auto">
             {/* <table className="min-w-full bg-white rounded-lg shadow-md">
               <LoadingTable loading={loading} />
@@ -752,17 +770,16 @@ const Vehiculos = () => {
             </table> */}
 
             <TableComponent
-data={data}
-titles={titlesT}
-sortConfig={sortConfig}
-onSort={handleSort}
-actions={actions}
-hasMaterial={true}
-/>
+              data={data}
+              titles={titlesT}
+              sortConfig={sortConfig}
+              onSort={handleSort}
+              actions={actions}
+              hasMaterial={true}
+            />
           </div>
         </div>
-    
-    </SectionLayout>
+      </SectionLayout>
     </>
   );
 };

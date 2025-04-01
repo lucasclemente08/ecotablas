@@ -12,7 +12,15 @@ import {
 import axios from "axios";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ChartDataLabels,
+);
 
 const DonantesChart = () => {
   const [locations, setLocations] = useState([]);
@@ -28,7 +36,7 @@ const DonantesChart = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://www.ecotablasapi.somee.com/api/UbicacionesMapa/ListarTodo"
+        "http://www.ecotablasapi.somee.com/api/UbicacionesMapa/ListarTodo",
       );
       const data = response.data || [];
       setLocations(data);
@@ -50,13 +58,13 @@ const DonantesChart = () => {
         }
         return acc;
       },
-      { empresa: 0, urbanos: 0, particular: 0 }
+      { empresa: 0, urbanos: 0, particular: 0 },
     );
 
     // Actualizar los datos para el gráfico
     setChartData({
       labels: ["Empresa", "Urbanos", "Particular"],
-  
+
       datasets: [
         {
           label: "Cantidad por tipo de donante",
@@ -65,7 +73,6 @@ const DonantesChart = () => {
           borderColor: ["#388E3C", "#1976D2", "#FFA000"],
 
           borderWidth: 1,
-          
         },
       ],
     });
@@ -89,7 +96,7 @@ const DonantesChart = () => {
                 x: {
                   ticks: { font: { size: 15 } },
                   color: "#FFFFFF",
-                  barPercentage: 0.4,  // Reduce el tamaño de las barras
+                  barPercentage: 0.4, // Reduce el tamaño de las barras
                 },
                 y: {
                   color: "#FFFFFF",
@@ -108,7 +115,7 @@ const DonantesChart = () => {
                     weight: "bold",
                     size: 16,
                   },
-                  
+
                   align: "top", // Muestra los números arriba de las barras
                   anchor: "center ", // Ajusta la posición de los números
                   formatter: (value) => value, // Solo muestra el número

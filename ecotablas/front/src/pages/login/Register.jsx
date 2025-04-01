@@ -14,13 +14,11 @@ const Register = () => {
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
 
-
-
   const saveUserToFirestore = async (user) => {
     try {
       const userDocRef = doc(db, "usuarios", user.uid); // Referencia al documento del usuario
       const userDoc = await getDoc(userDocRef); // Verifica si el documento ya existe
-  
+
       if (!userDoc.exists()) {
         // Solo guardar si el documento no existe
         console.log("Guardando nuevo usuario...");
@@ -35,8 +33,6 @@ const Register = () => {
       console.error("Error al guardar el usuario en Firestore:", error);
     }
   };
-  
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +42,7 @@ const Register = () => {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         formData.correo,
-        formData.contrasena
+        formData.contrasena,
       );
       const user = userCredential.user;
 
@@ -54,7 +50,7 @@ const Register = () => {
 
       // Redirigir al flujo de autenticación de Dropbox
       window.location.replace(
-        `https://www.dropbox.com/oauth2/authorize?client_id=${clientId}&response_type=code&token_access_type=offline&redirect_uri=http://localhost:5173/gastos/vehiculos`
+        `https://www.dropbox.com/oauth2/authorize?client_id=${clientId}&response_type=code&token_access_type=offline&redirect_uri=http://localhost:5173/gastos/vehiculos`,
       );
     } catch (error) {
       setErrors((prevErrors) => [...prevErrors, error.message]);

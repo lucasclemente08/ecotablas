@@ -249,7 +249,7 @@ const MaterialProc = () => {
               ))}
             </tbody>
           </table>
-  
+
           <div className="flex justify-between items-center bg-gray-700">
             <button
               onClick={() => paginate(currentPage - 1)}

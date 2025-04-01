@@ -24,5 +24,4 @@ export const editTablas = (id, data) =>
     .then((res) => console.log("Respuesta del backend:", res))
     .catch((err) => console.error("Error en la petición:", err));
 
-
 export const deleteTablas = (id) => axios.delete(`${BASE_URL}/Borrar/${id}`);

@@ -37,75 +37,193 @@ import Admin from "./pages/admin/admin";
 import { RoleProvider } from "./context/RoleContext";
 
 const routesConfig = [
-  { path: "/", element: <Estadisticas />, protected: true, roles: ["admin", "editor","empleado"] },
+  {
+    path: "/",
+    element: <Estadisticas />,
+    protected: true,
+    roles: ["admin", "editor", "empleado"],
+  },
   { path: "/login", element: <Login />, protected: false },
   { path: "/register", element: <Register />, protected: false },
-  { path: "/empleados", element: <Empleados />, protected: true, roles: ["admin", "editor","viewer"] },
-  { path: "/plasticos", element: <Tablas />, protected: true, roles: ["admin", "editor","viewer"] },
-  { path: "/material", element: <Material />, protected: true, roles: ["admin", "editor"] },
-  { path: "/materialTri", element: <MaterialTrit />, protected: true, roles: ["admin", "editor"] },
-  { path: "/tablas", element: <TablasProducidas />, protected: true, roles: ["admin", "editor"] },
-  { path: "/areas", element: <Areas />, protected: true, roles: ["admin", "editor"] },
-  { path: "/materialProc", element: <MaterialProc />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
-  { path: "/recoleccion", element: <RecoUrbanos />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
-  { path: "/clasificacion", element: <ClasificacionDeMaterial />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
-  { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true, roles: ["admin", "editor"] },
-  { path: "/entrada/material", element: <EntradasDeMaterial />, protected: true, roles: ["admin", "editor", "viewer"] },
-  { path: "/rutas", element: <Rutas/>, protected: true, roles: ["admin", "editor", "viewer"] },
-  { path: "/empresa", element: <EmpresaDonante/>, protected: true, roles: ["admin", "editor", "viewer"] },
-  { path: "/vehiculos", element: <Vehiculos/>, protected: true, roles: ["admin", "editor", "viewer"] },
+  {
+    path: "/empleados",
+    element: <Empleados />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  },
+  {
+    path: "/plasticos",
+    element: <Tablas />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  },
+  {
+    path: "/material",
+    element: <Material />,
+    protected: true,
+    roles: ["admin", "editor"],
+  },
+  {
+    path: "/materialTri",
+    element: <MaterialTrit />,
+    protected: true,
+    roles: ["admin", "editor"],
+  },
+  {
+    path: "/tablas",
+    element: <TablasProducidas />,
+    protected: true,
+    roles: ["admin", "editor"],
+  },
+  {
+    path: "/areas",
+    element: <Areas />,
+    protected: true,
+    roles: ["admin", "editor"],
+  },
+  {
+    path: "/materialProc",
+    element: <MaterialProc />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  }, // Viewer permitido
+  {
+    path: "/recoleccion",
+    element: <RecoUrbanos />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  }, // Viewer permitido
+  {
+    path: "/clasificacion",
+    element: <ClasificacionDeMaterial />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  }, // Viewer permitido
+  {
+    path: "/gastos/vehiculos",
+    element: <GastoVehiculos />,
+    protected: true,
+    roles: ["admin", "editor"],
+  },
+  {
+    path: "/entrada/material",
+    element: <EntradasDeMaterial />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  },
+  {
+    path: "/rutas",
+    element: <Rutas />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  },
+  {
+    path: "/empresa",
+    element: <EmpresaDonante />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  },
+  {
+    path: "/vehiculos",
+    element: <Vehiculos />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  },
 
-  { path: "/volumen", element: <Volumen/>, protected: true, roles: ["admin", "editor", "viewer"] },
+  {
+    path: "/volumen",
+    element: <Volumen />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  },
 
+  {
+    path: "/tolva",
+    element: <Tolva />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  }, // Viewer permitido
+  // Viewer permitido
+  {
+    path: "/maquinaria",
+    element: <Maquinarias />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  },
+  {
+    path: "/gastos/vehiculos",
+    element: <GastoVehiculos />,
+    protected: true,
+    roles: ["admin", "editor"],
+  },
+  { path: "/rutas", element: <Rutas /> },
 
-  { path: "/tolva", element: <Tolva />, protected: true, roles: ["admin", "editor", "viewer"] }, // Viewer permitido
-   // Viewer permitido
-  { path: "/maquinaria", element: <Maquinarias />, protected: true, roles: ["admin", "editor","viewer"] },
-  { path: "/gastos/vehiculos", element: <GastoVehiculos />, protected: true, roles: ["admin", "editor"] },
-  {path: "/rutas", element: <Rutas/>},
+  {
+    path: "/gastos/maquinaria",
+    element: <GastoMaquinaria />,
+    protected: true,
+    roles: ["admin", "editor"],
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
+    protected: true,
+    roles: ["admin", "editor"],
+  },
 
-  { path: "/gastos/maquinaria", element: <GastoMaquinaria />, protected: true, roles: ["admin", "editor"] },
-  { path: "/profile", element: <Profile />, protected: true, roles: ["admin", "editor"] },
-  
-  { path: "/reportes", element: <Reportes />, protected: true, roles: ["admin", "editor"] },
+  {
+    path: "/reportes",
+    element: <Reportes />,
+    protected: true,
+    roles: ["admin", "editor"],
+  },
   { path: "/admin", element: <Admin />, protected: true, roles: ["admin"] },
-  { path: "/permisos", element: <Permisos />, protected: true, roles: ["admin", "editor","viewer","empleado"] },
-  { path: "/verificacion", element: <PermisosCallback />, protected: true, roles: ["admin", "editor","viewer"] },
+  {
+    path: "/permisos",
+    element: <Permisos />,
+    protected: true,
+    roles: ["admin", "editor", "viewer", "empleado"],
+  },
+  {
+    path: "/verificacion",
+    element: <PermisosCallback />,
+    protected: true,
+    roles: ["admin", "editor", "viewer"],
+  },
 ];
-
-
 
 function App() {
   return (
     <Provider store={store}>
       <AuthProvider>
-              <RoleProvider>
-
-        <Router>
-          <div className="bg-slate-900 flex flex-col min-h-screen">
-            <Routes>
-              {routesConfig.map(({ path, element, protected: isProtected, roles }) => (
-                <Route
-                key={path}
-                path={path}
-                element={
-                  isProtected ? (
-                    <ProtectedRoute roles={roles}>{element}</ProtectedRoute>
-                  ) : (
-                    element
-                  )
-                }
-                />
-              ))}
-            
-            </Routes>
-          </div>
-        </Router>
-              </RoleProvider>
+        <RoleProvider>
+          <Router>
+            <div className="bg-slate-900 flex flex-col min-h-screen">
+              <Routes>
+                {routesConfig.map(
+                  ({ path, element, protected: isProtected, roles }) => (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={
+                        isProtected ? (
+                          <ProtectedRoute roles={roles}>
+                            {element}
+                          </ProtectedRoute>
+                        ) : (
+                          element
+                        )
+                      }
+                    />
+                  ),
+                )}
+              </Routes>
+            </div>
+          </Router>
+        </RoleProvider>
       </AuthProvider>
     </Provider>
   );
 }
-
 
 export default App;

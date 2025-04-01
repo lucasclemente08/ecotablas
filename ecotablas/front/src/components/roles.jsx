@@ -1,13 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const roles = () => {
-  
-  
-    return (
-    <>
-    
-    </>
-  )
-}
+  return <></>;
+};
 
-export default roles
+export default roles;

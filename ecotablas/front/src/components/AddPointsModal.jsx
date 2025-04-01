@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvent } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvent,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Toaster, toast } from "sonner";
 import axios from "axios";
@@ -65,14 +71,18 @@ const AddPointsModal = ({ isOpen, onClose, routeId, onSavePoints }) => {
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed inset-0 z-10 flex items-center justify-center ${isOpen ? "visible" : "invisible"}`}>
+    <div
+      className={`fixed inset-0 z-10 flex items-center justify-center ${isOpen ? "visible" : "invisible"}`}
+    >
       <Toaster richColors position="top-right" />
       {/* Fondo oscuro semi-transparente */}
       <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
 
       {/* Contenedor del modal */}
       <div className="relative bg-white rounded-lg p-6 shadow-lg w-11/12 max-w-lg">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Agregar Puntos</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          Agregar Puntos
+        </h2>
 
         {/* Mapa */}
         <div className="mt-4">
@@ -97,15 +107,21 @@ const AddPointsModal = ({ isOpen, onClose, routeId, onSavePoints }) => {
 
         {/* Lista de puntos agregados */}
         <div className="mt-4">
-          <h3 className="text-lg font-semibold text-gray-800">Puntos agregados:</h3>
+          <h3 className="text-lg font-semibold text-gray-800">
+            Puntos agregados:
+          </h3>
           {points.length === 0 ? (
             <p className="text-sm text-gray-600">No hay puntos agregados.</p>
           ) : (
             <ul className="mt-2">
               {points.map((punto, index) => (
-                <li key={index} className="flex items-center justify-between text-sm text-gray-600">
+                <li
+                  key={index}
+                  className="flex items-center justify-between text-sm text-gray-600"
+                >
                   <span>
-                    Punto {punto.Orden}: Lat {punto.Latitud}, Lng {punto.Longitud}
+                    Punto {punto.Orden}: Lat {punto.Latitud}, Lng{" "}
+                    {punto.Longitud}
                   </span>
                   <button
                     onClick={() => handleRemovePoint(index)}

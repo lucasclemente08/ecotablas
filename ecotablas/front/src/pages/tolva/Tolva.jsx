@@ -9,7 +9,7 @@ import NextProcess from "../../components/buttons/NextProcess";
 import { GrLinkNext } from "react-icons/gr";
 import { BsClipboardDataFill } from "react-icons/bs";
 import TableComponent from "../../components/TableComponent";
-import { Toaster, toast } from 'sonner';
+import { Toaster, toast } from "sonner";
 import { FiEdit } from "react-icons/fi";
 
 import Pagination from "../../components/Pagination";
@@ -22,13 +22,9 @@ import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
 import ReportButton from "../../components/buttons/ReportButton";
-import { addTablas, } from "../../api/TablasProducidaAPI";
+import { addTablas } from "../../api/TablasProducidaAPI";
 import { v4 as uuidv4 } from "uuid";
-import {
-  getAllTolva,
-  addTolva,
-  editTolva,
-} from "../../api/TolvaAPI";
+import { getAllTolva, addTolva, editTolva } from "../../api/TolvaAPI";
 
 const Tolva = () => {
   const dispatch = useDispatch();
@@ -52,13 +48,13 @@ const Tolva = () => {
     Estado: 1,
     IdMaterialTriturado: 2,
   });
-  
-const GenerateIdentificationCode = (size, large) => {
-  const now = new Date();
-  const hours = String(now.getHours()).padStart(2, "0");
-  const codeUID = uuidv4().replace(/-/g, "").slice(0, 8);
-  return `${size}_${large}_${hours}_${codeUID}`;
-};
+
+  const GenerateIdentificationCode = (size, large) => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const codeUID = uuidv4().replace(/-/g, "").slice(0, 8);
+    return `${size}_${large}_${hours}_${codeUID}`;
+  };
 
   const [tablaValues, setTablaValues] = useState({
     FechaProduccion: "",
@@ -75,14 +71,12 @@ const GenerateIdentificationCode = (size, large) => {
     setDateRange(dates);
   };
 
-
   const abrirModal = () => {
     const fechaActual = new Date().toISOString();
 
     setFormValues({
       ...formValues,
       HorarioInicio: fechaActual,
-
     });
     setModalAbierto(true);
   };
@@ -141,11 +135,11 @@ const GenerateIdentificationCode = (size, large) => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchMaterials();
   }, []);
-  
+
   const abrirModalTabla = (id) => {
     const fechaActual = new Date().toISOString();
 
@@ -153,10 +147,9 @@ const GenerateIdentificationCode = (size, large) => {
       ...tablaValues,
       IdTolva: id,
       FechaProduccion: fechaActual,
-
     });
 
-    setMaterialId(id); 
+    setMaterialId(id);
     setModalTabla(true);
   };
 
@@ -179,7 +172,7 @@ const GenerateIdentificationCode = (size, large) => {
     } else if (!tablaValues.Peso) {
       toast.error("El peso es obligatorio.");
       isValid = false;
-    } 
+    }
     return isValid;
   };
 
@@ -201,7 +194,7 @@ const GenerateIdentificationCode = (size, large) => {
     if (!formValues.HorarioInicio) {
       toast.error("El horario de inicio es obligatorio.");
       isValid = false;
-    } else if(!formValues.CantidadCargada) {
+    } else if (!formValues.CantidadCargada) {
       toast.error("La cantidad es obligatoria.");
       isValid = false;
     } else if (!formValues.TipoPlastico) {
@@ -217,7 +210,7 @@ const GenerateIdentificationCode = (size, large) => {
       toast.error("El ID del material triturado es obligatorio.");
       isValid = false;
     }
-    
+
     return isValid;
   };
   const handleEditSubmit = async (e) => {
@@ -234,7 +227,6 @@ const GenerateIdentificationCode = (size, large) => {
     }
   };
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prevState) => ({
@@ -244,26 +236,29 @@ const GenerateIdentificationCode = (size, large) => {
   };
   const handleSubmitTabla = async () => {
     // Generar el código de identificación
-    const code = GenerateIdentificationCode(tablaValues.Peso, tablaValues.Dimensiones);
-  
+    const code = GenerateIdentificationCode(
+      tablaValues.Peso,
+      tablaValues.Dimensiones,
+    );
+
     // Validar el formulario antes de proceder
     if (!validateTablaForm()) return;
-  
+
     try {
       // Asegúrate de pasar correctamente los valores de tablaValues y el nuevo campo CódigoIdentificacion
       await addTablas({ ...tablaValues, CodigoIdentificacion: code });
-  
+
       toast.success("¡Tabla producida!");
-  
+
       // Actualizar el estado de la tolva a 2
       const materialActualizado = {
         ...filteredMaterials.find((m) => m.IdTolva === materialId),
         Estado: 2, // Establecer el estado a 2
       };
-  
+
       // Editar el material
       await editTolva(materialId, materialActualizado);
-  
+
       setModalTabla(false);
       fetchMaterials(); // Refrescar la lista para mostrar cambios
     } catch (error) {
@@ -271,10 +266,10 @@ const GenerateIdentificationCode = (size, large) => {
       console.error("Error al terminar el proceso:", error);
     }
   };
-  
+
   const handleChangeTabla = (e) => {
     const { name, value } = e.target;
-    
+
     setTablaValues((prevState) => ({
       ...prevState,
       [name]: value,
@@ -282,34 +277,36 @@ const GenerateIdentificationCode = (size, large) => {
   };
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-  const totalItems =filteredMaterials.length;
+  const totalItems = filteredMaterials.length;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredMaterials.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredMaterials.slice(
+    indexOfFirstItem,
+    indexOfLastItem,
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
 
   const filterByDate = () => {
     const filteredItems = filteredMaterials.filter((item) => {
-      const itemDate = new Date(item.HorarioInicio).toISOString().slice(0, 10); 
+      const itemDate = new Date(item.HorarioInicio).toISOString().slice(0, 10);
       return itemDate === selectedDate;
     });
-  
+
     setFilteredMaterials(filteredItems);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const totalVolumen = filteredMaterials.reduce(
     (acc, material) => acc + parseFloat(material.CantidadCargada || 0),
-    0
+    0,
   );
 
   const optionsTipoPlastico = [
-    { value: 'Unico', label: 'Tipo-Único' },
-    { value: 'Mezcla', label: 'Tipo-Mezcla' },
-
+    { value: "Unico", label: "Tipo-Único" },
+    { value: "Mezcla", label: "Tipo-Mezcla" },
   ];
 
   const rows = filteredMaterials.map((material) => ({
@@ -329,22 +326,20 @@ const GenerateIdentificationCode = (size, large) => {
   ];
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
-  
+
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   const [data, setData] = useState(filteredMaterials);
- 
+
   useEffect(() => {
     setData(filteredMaterials);
   }, [filteredMaterials]);
 
-
   const handleSort = (campo) => {
- 
     let direction = "asc";
     if (sortConfig.campo === campo && sortConfig.direction === "asc") {
       direction = "desc";
     }
-  
+
     const sortedData = [...filteredMaterials].sort((a, b) => {
       if (a[campo] < b[campo]) {
         return direction === "asc" ? -1 : 1;
@@ -354,7 +349,7 @@ const GenerateIdentificationCode = (size, large) => {
       }
       return 0;
     });
-  
+
     setData(sortedData);
     setSortConfig({ campo, direction });
   };
@@ -376,32 +371,33 @@ const GenerateIdentificationCode = (size, large) => {
     { label: "Cantidad Cargada (kgs)", key: "CantidadCargada", type: "number" },
     { label: "Tipo de Plástico", key: "TipoPlastico", type: "text" },
     { label: "Proporción (%)", key: "Proporcion", type: "number" },
-    { label: "Especificaciones", key: "Especificaciones", type: "text",hasActions:true},
-   
-  ];
-  
-  const actions = [
-
-
     {
-      allowedRoles: ["admin", "supervisor","empleado"],
+      label: "Especificaciones",
+      key: "Especificaciones",
+      type: "text",
+      hasActions: true,
+    },
+  ];
+
+  const actions = [
+    {
+      allowedRoles: ["admin", "supervisor", "empleado"],
       render: (material) => (
         <div className="flex items-center justify-start gap-2 py-1">
-       <button
-              onClick={() => abrirModalTabla(material.IdTolva)}
-              className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              <GrLinkNext className="mr-2" />
-              Terminado
-            </button>
+          <button
+            onClick={() => abrirModalTabla(material.IdTolva)}
+            className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <GrLinkNext className="mr-2" />
+            Terminado
+          </button>
         </div>
       ),
     },
 
-
     {
-    allowedRoles: ["admin","supervisor", ],
-    
+      allowedRoles: ["admin", "supervisor"],
+
       render: (material) => (
         <div className="flex items-center justify-start gap-2 py-1">
   
@@ -421,8 +417,6 @@ const GenerateIdentificationCode = (size, large) => {
       ),
     },
   ];
-
-
 
   return (
     <SectionLayout title="Tolva">
@@ -455,12 +449,25 @@ const GenerateIdentificationCode = (size, large) => {
 
      
       {modalAbierto && (
-        <AddModalWithSelect 
+        <AddModalWithSelect
           title="Agregar Registro de Tolva"
           fields={[
-            { name: "HorarioInicio", label: "Horario de inicio", type: "datetime-local" },
-            { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
-            { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
+            {
+              name: "HorarioInicio",
+              label: "Horario de inicio",
+              type: "datetime-local",
+            },
+            {
+              name: "CantidadCargada",
+              label: "Cantidad cargada (kg)",
+              type: "number",
+            },
+            {
+              name: "TipoPlastico",
+              label: "Tipo de plástico",
+              type: "select",
+              options: optionsTipoPlastico,
+            },
             { name: "Proporcion", label: "Proporción cargada", type: "number" },
             { name: "Especificaciones", label: "Especificaciones", type: "text" },
           ]}
@@ -470,24 +477,45 @@ const GenerateIdentificationCode = (size, large) => {
           values={formValues}
         />
       )}
-{modalEdit && (
-  <ButtonEdit
-    title="Editar Registro de Tolva"
-    fields={[
-      { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number", placeholder: "Cantidad cargada *" },
-      { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
-      { name: "Proporcion", label: "Proporción cargada", type: "number", placeholder: "Proporción *" },
-      { name: "Especificaciones", label: "Especificaciones", type: "text", placeholder: "Especificaciones *" },
-    ]}
-    formValues={formValues}
-    handleChange={handleChange}
-    handleEditSubmit={handleEditSubmit}   
-    cerrarModalEdit={cerrarModalEdit}     
-  />
-)}
+      {modalEdit && (
+        <ButtonEdit
+          title="Editar Registro de Tolva"
+          fields={[
+            {
+              name: "CantidadCargada",
+              label: "Cantidad cargada (kg)",
+              type: "number",
+              placeholder: "Cantidad cargada *",
+            },
+            {
+              name: "TipoPlastico",
+              label: "Tipo de plástico",
+              type: "select",
+              options: optionsTipoPlastico,
+            },
+            {
+              name: "Proporcion",
+              label: "Proporción cargada",
+              type: "number",
+              placeholder: "Proporción *",
+            },
+            {
+              name: "Especificaciones",
+              label: "Especificaciones",
+              type: "text",
+              placeholder: "Especificaciones *",
+            },
+          ]}
+          formValues={formValues}
+          handleChange={handleChange}
+          handleEditSubmit={handleEditSubmit}
+          cerrarModalEdit={cerrarModalEdit}
+        />
+      )}
 
-{modalTabla &&
-          <AddModalWithSelect title="Terminar Tablas"
+      {modalTabla && (
+        <AddModalWithSelect
+          title="Terminar Tablas"
           fields={[
             {
               name: "Dimensiones",
@@ -497,15 +525,15 @@ const GenerateIdentificationCode = (size, large) => {
             },
             { name: "Peso", label: "Peso", type: "number" },
           ]}
-            handleChange={handleChangeTabla}
-            handleSubmit={handleSubmitTabla}
-            cerrarModal={cerrarModalTabla}
+          handleChange={handleChangeTabla}
+          handleSubmit={handleSubmitTabla}
+          cerrarModal={cerrarModalTabla}
           values={tablaValues}
-          />
-          }
+        />
+      )}
 
       {loading ? (
-        <LoadingTable loading={loading}  />
+        <LoadingTable loading={loading} />
       ) : (
         <>
 
@@ -536,8 +564,7 @@ const GenerateIdentificationCode = (size, large) => {
         </>
       )}
 
-<NextProcess  linkTo="/tablas"
-  hoverText="Ir al siguiente proceso"/>
+      <NextProcess linkTo="/tablas" hoverText="Ir al siguiente proceso" />
     </SectionLayout>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Pagination from "../../../components/Pagination"
-import { Toaster, toast } from 'sonner';
-
+import Pagination from "../../../components/Pagination";
+import { Toaster, toast } from "sonner";
 
 import TableComponent from "../../../components/TableComponent";
 import { FiEdit } from "react-icons/fi";
@@ -27,13 +26,12 @@ import GastoMaquinariaChart from "../../../components/graficos/GastoMaquinariaCh
 import GastoMaquinariaDatePicker from "../../../components/graficos/GastoMaquinariaDatePicker";
 import ButtonEdit from "../../../components/buttons/ButtonEditPr";
 
-
 const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
 
 const GastoMaquinaria = () => {
   const dispatch = useDispatch();
   const { gastos: dataM, loading } = useSelector(
-    (state) => state.gastoMaquinaria
+    (state) => state.gastoMaquinaria,
   );
 
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -45,7 +43,7 @@ const GastoMaquinaria = () => {
   const [showTable, setShowTable] = useState(true);
   const [modalEdit, setModalEdit] = useState(false);
   const [maquinaria, setMaquinaria] = useState([]);
-  const[gastoId,setGastoid]=useState([])
+  const [gastoId, setGastoid] = useState([]);
   const [pieData, setPieData] = useState({});
   const [showPieChart, setShowPieChart] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -76,12 +74,11 @@ const GastoMaquinaria = () => {
     });
      };
   const abrirModalEdit = (gasto) => {
-    
-    const gastoSeguro = gasto || {}; 
-    
-    setGastoid(gastoSeguro.IdGastoMaquinaria || ""); 
+    const gastoSeguro = gasto || {};
+
+    setGastoid(gastoSeguro.IdGastoMaquinaria || "");
     setFormValues({
-      tipoGasto: gastoSeguro.TipoGasto || "",       
+      tipoGasto: gastoSeguro.TipoGasto || "",
       tipoComprobante: gastoSeguro.TipoComprobante || "",
       Comprobante: gastoSeguro.Comprobante || "",
       proveedor: gastoSeguro.Proveedor || "",
@@ -89,7 +86,7 @@ const GastoMaquinaria = () => {
       fecha: gastoSeguro.Fecha || "",
       descripcion: gastoSeguro.Descripcion || "",
     });
-  
+
     setModalEdit(true);
   };
   
@@ -124,30 +121,25 @@ const GastoMaquinaria = () => {
       .catch((error) => console.error("Error fetching maquinaria:", error));
   };
 
-
-
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!gastoId) {
       toast.error("Error: No se encontró el ID del gasto.");
       return;
     }
-  
+
     try {
       await dispatch(updateGasto({ id: gastoId, ...formValues })).unwrap();
       toast.success("Gasto actualizado con éxito");
       await dispatch(fetchGastos());
-  
+
       cerrarModalEdit(); // Cierra el modal después de guardar
     } catch (error) {
       toast.error("Error al actualizar el gasto");
       console.error("Error al actualizar el gasto:", error);
     }
   };
-  
-  
-
 
   // Crear datos del gráfico circular
   useEffect(() => {
@@ -176,27 +168,26 @@ const GastoMaquinaria = () => {
     const { name, value, files } = e.target;
 
     if (files && files[0]) {
-        // Si se seleccionó un archivo
-        const selectedFile = files[0];
-        console.log("Archivo seleccionado:", selectedFile.name);
+      // Si se seleccionó un archivo
+      const selectedFile = files[0];
+      console.log("Archivo seleccionado:", selectedFile.name);
 
-        // Guardar el archivo en un estado separado
-        setComprobante(selectedFile);
+      // Guardar el archivo en un estado separado
+      setComprobante(selectedFile);
 
-        // Si necesitas manejar el archivo en formValues:
-        setFormValues((prevValues) => ({
-            ...prevValues,
-            [name]: selectedFile.name, // Guarda solo el nombre del archivo
-        }));
+      // Si necesitas manejar el archivo en formValues:
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        [name]: selectedFile.name, // Guarda solo el nombre del archivo
+      }));
     } else {
-        // Si es un campo de texto u otro tipo de input
-        setFormValues((prevValues) => ({
-            ...prevValues,
-            [name]: value,
-        }));
+      // Si es un campo de texto u otro tipo de input
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        [name]: value,
+      }));
     }
-};
-
+  };
 
   const optionsMaquinaria = maquinaria.map((machine) => ({
     value: machine.Id,
@@ -253,11 +244,12 @@ const GastoMaquinaria = () => {
     },
   ];
 
-
   const getAccessToken = async () => {
     const refreshToken = localStorage.getItem("dropboxRefreshToken");
     if (!refreshToken) {
-      toast.error("No se obtuvo el token, acceda desde el login correctamente.");
+      toast.error(
+        "No se obtuvo el token, acceda desde el login correctamente.",
+      );
       return null;
     }
 
@@ -298,9 +290,9 @@ const GastoMaquinaria = () => {
   const uploadToDropbox = async (file) => {
     const accessToken = await getAccessToken();
     if (!accessToken) return;
-  
+
     const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
-  
+
     try {
       const dropboxArgs = JSON.stringify({
         path: `/${file.name}`,
@@ -308,7 +300,7 @@ const GastoMaquinaria = () => {
         autorename: true,
         mute: false,
       });
-  
+
       // 1. Subir el archivo a Dropbox
       const uploadResponse = await fetch(uploadUrl, {
         method: "POST",
@@ -319,17 +311,21 @@ const GastoMaquinaria = () => {
         },
         body: file,
       });
-  
+
       if (!uploadResponse.ok) {
-        console.error("Error al subir el archivo a Dropbox:", await uploadResponse.text());
+        console.error(
+          "Error al subir el archivo a Dropbox:",
+          await uploadResponse.text(),
+        );
         return null;
       }
-  
+
       const fileData = await uploadResponse.json();
       const filePath = fileData.path_lower;
-  
+
       // 2. Verificar si ya existe un enlace compartido
-      const listLinksUrl = "https://api.dropboxapi.com/2/sharing/list_shared_links";
+      const listLinksUrl =
+        "https://api.dropboxapi.com/2/sharing/list_shared_links";
       const listResponse = await fetch(listLinksUrl, {
         method: "POST",
         headers: {
@@ -338,7 +334,7 @@ const GastoMaquinaria = () => {
         },
         body: JSON.stringify({ path: filePath }),
       });
-  
+
       if (listResponse.ok) {
         const listData = await listResponse.json();
         if (listData.links && listData.links.length > 0) {
@@ -347,9 +343,10 @@ const GastoMaquinaria = () => {
           return existingLink;
         }
       }
-  
+
       // 3. Crear un enlace compartido si no existe
-      const shareUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
+      const shareUrl =
+        "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
       const shareResponse = await fetch(shareUrl, {
         method: "POST",
         headers: {
@@ -361,59 +358,58 @@ const GastoMaquinaria = () => {
           settings: { requested_visibility: "public" }, // Asegura que sea visible públicamente
         }),
       });
-  
+
       if (!shareResponse.ok) {
-        console.error("Error al crear el enlace compartido:", await shareResponse.text());
+        console.error(
+          "Error al crear el enlace compartido:",
+          await shareResponse.text(),
+        );
         return null;
       }
-  
+
       const shareData = await shareResponse.json();
       const baseUrl = "https://www.dropbox.com/scl/fi/";
 
-      
-// Reemplaza la baseUrl, pero conserva el resto de la URL
-const sharedLink = shareData.url.replace(baseUrl, "").split('?')[0];
+      // Reemplaza la baseUrl, pero conserva el resto de la URL
+      const sharedLink = shareData.url.replace(baseUrl, "").split("?")[0];
 
-// Reconstruye la URL con el formato correcto
-const link = `${sharedLink}?dl=1`;
+      // Reconstruye la URL con el formato correcto
+      const link = `${sharedLink}?dl=1`;
 
-return link;
-
-
+      return link;
     } catch (error) {
       console.error("Error en la solicitud a Dropbox:", error);
       return null;
     }
   };
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     toast.success("Subiendo comprobante a dropbox");
-    const URL = await uploadToDropbox(comprobante );  
+    const URL = await uploadToDropbox(comprobante);
 
     if (URL) {
-  
       const updatedFormValues = { ...formValues, comprobante: URL };
 
-        axios
-            .post(
-                "http://www.ecotablasapi.somee.com/api/GastoMaquinaria/Create",
-                updatedFormValues
-            )
-            .then(() => {
-                toast.success("Gasto agregado con éxito");
-                dispatch(fetchGastos()); // Recargar la tabla
-                cerrarModal();
-            })
-            .catch((error) => {
-                console.error("Error al agregar el gasto:", error);
-                toast.error("Error al agregar el gasto.");
-            });
+      axios
+        .post(
+          "http://www.ecotablasapi.somee.com/api/GastoMaquinaria/Create",
+          updatedFormValues,
+        )
+        .then(() => {
+          toast.success("Gasto agregado con éxito");
+          dispatch(fetchGastos()); // Recargar la tabla
+          cerrarModal();
+        })
+        .catch((error) => {
+          console.error("Error al agregar el gasto:", error);
+          toast.error("Error al agregar el gasto.");
+        });
     } else {
-      console.error("No se pudo subir el archivo a dropbox")
-        toast.error("No se pudo subir el archivo a Dropbox.");
+      console.error("No se pudo subir el archivo a dropbox");
+      toast.error("No se pudo subir el archivo a Dropbox.");
     }
-};
+  };
   const columns = [
     { header: "Tipo de Gasto", dataKey: "tipoGasto" },
     { header: "Tipo de Comprobante", dataKey: "tipoComprobante" },
@@ -440,8 +436,6 @@ return link;
     setShowPieChart(false);
   };
 
-
-
   const titlesT = [
     { key: "TipoComprobante", label: "Tipo de Comprobante" },
     {
@@ -465,13 +459,11 @@ return link;
     { key: "Proveedor", label: "Proveedor" },
     { key: "Monto", label: "Monto", type: "number" },
     { key: "Fecha", label: "Fecha", type: "date" },
-    { key: "Descripcion", label: "Descripción",hasActions: true  },
-
+    { key: "Descripcion", label: "Descripción", hasActions: true },
   ];
   const actions = [
-
     {
-      allowedRoles: ["admin","supervisor", ],
+      allowedRoles: ["admin", "supervisor"],
       render: (item) => (
         <div className="flex items-center justify-start gap-2 py-1">
             <button
@@ -484,7 +476,7 @@ return link;
           <DeleteButton
             endpoint="http://www.ecotablasapi.somee.com/api/GastoMaquinaria/Delete"
             id={item.IdGastoMaquinaria}
-            updateList={(fetchGastos())}
+            updateList={fetchGastos()}
           />
         </div>
       ),
@@ -500,23 +492,21 @@ return link;
     responsive: true,
     maintainAspectRatio: false,
   };
-  const total=dataM.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
-  
+  const total = dataM.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0);
+
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   const [data, setData] = useState(dataM);
- 
+
   useEffect(() => {
     setData(dataM);
   }, [dataM]);
 
-
   const handleSort = (campo) => {
- 
     let direction = "asc";
     if (sortConfig.campo === campo && sortConfig.direction === "asc") {
       direction = "desc";
     }
-  
+
     const sortedData = [...dataM].sort((a, b) => {
       if (a[campo] < b[campo]) {
         return direction === "asc" ? -1 : 1;
@@ -526,113 +516,91 @@ return link;
       }
       return 0;
     });
-  
+
     setData(sortedData);
     setSortConfig({ campo, direction });
   };
-  
 
-  
-  
-  return   (
-<>
-    <SectionLayout title="Gasto de Maquinaria">
+  return (
+    <>
+      <SectionLayout title="Gasto de Maquinaria">
+        <Toaster />
 
+        <div className="flex">
+          <AddButtonWa
+            abrirModal={() => setModalAbierto(true)}
+            title="Añadir Gasto de Maquinaria"
+          />
+          <PdfGenerator
+            columns={columns}
+            data={dataM}
+            title="Reporte de Gastos de Maquinaria"
+          />
+          <DataView ShowTable={handleShowTable} f />
 
-    <Toaster />
+          <button
+            aria-label="Ver gráficos"
+            className={`p-2 ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? "bg-blue-600" : "bg-gray-500"}`}
+            onClick={() => {
+              setShowPieChart(true);
+              setShowTable(false);
+            }}
+          >
+            Ver Gráficos <FaChartPie className="ml-2" />
+          </button>
+        </div>
 
-      <div className="flex">
-        <AddButtonWa
-          abrirModal={() => setModalAbierto(true)}
-          title="Añadir Gasto de Maquinaria"
-        />
-        <PdfGenerator
-          columns={columns}
-          data={dataM}
-          title="Reporte de Gastos de Maquinaria"
-        />
-        <DataView ShowTable={handleShowTable} f />
-
-        <button
-          aria-label="Ver gráficos"
-          className={`p-2 ml-2 mt-2 mb-5 font-bold rounded flex items-center text-white ${showPieChart ? "bg-blue-600" : "bg-gray-500"}`}
-          onClick={() => {
-            setShowPieChart(true);
-            setShowTable(false);
-          }}
-        >
-          Ver Gráficos <FaChartPie className="ml-2" />
-        </button>
-      </div>
-
-      {modalAbierto && (
-        <AddModalWithSelect
-          title="Agregar Gasto de Maquinaria"
-          fields={fields}
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-          cerrarModal={cerrarModal}
-          values={formValues}
-          dropboxAccessToken={accessToken}
-        />
-      )}
-      {modalEdit && (
-        <ButtonEdit
-          title="Gasto de Maquinaria"
-          fields={fields}
-          formValues={formValues}
-          handleChange={handleChange}
-          handleEditSubmit={handleEditSubmit}
-          cerrarModalEdit={cerrarModalEdit}
-        />
-      )}
-      {showTable ? (
-        loading ? (
-          <LoadingTable loading={loading} />
-        ) : (
- <TableComponent
-      data={data}
-      titles={titlesT}
-      sortConfig={sortConfig}
-      onSort={handleSort}
-      actions={actions}
-      hasMaterial={true}
-    />
-
-        )
-      ) : showPieChart ? (
-
-  <div className="flex flex-row mt-4 content-center justify-center items-center h-96 ">
-          {/* <div className="mr-2  flex-1 min-w-[200px] max-w-[400px] mt-10 p-4 bg-gray-800 shadow-md rounded-md">
+        {modalAbierto && (
+          <AddModalWithSelect
+            title="Agregar Gasto de Maquinaria"
+            fields={fields}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            cerrarModal={cerrarModal}
+            values={formValues}
+            dropboxAccessToken={accessToken}
+          />
+        )}
+        {modalEdit && (
+          <ButtonEdit
+            title="Gasto de Maquinaria"
+            fields={fields}
+            formValues={formValues}
+            handleChange={handleChange}
+            handleEditSubmit={handleEditSubmit}
+            cerrarModalEdit={cerrarModalEdit}
+          />
+        )}
+        {showTable ? (
+          loading ? (
+            <LoadingTable loading={loading} />
+          ) : (
+            <TableComponent
+              data={data}
+              titles={titlesT}
+              sortConfig={sortConfig}
+              onSort={handleSort}
+              actions={actions}
+              hasMaterial={true}
+            />
+          )
+        ) : showPieChart ? (
+          <div className="flex flex-row mt-4 content-center justify-center items-center h-96 ">
+            {/* <div className="mr-2  flex-1 min-w-[200px] max-w-[400px] mt-10 p-4 bg-gray-800 shadow-md rounded-md">
           <div className="h-[370px]">
             
           <Pie data={pieData} options={pieOptions} />
             </div>
             <p className=" text-centermt-2 text-center text-gray-200 ">Total de gastos: ${total} </p>
           </div> */}
- <div className="flex-1 min-w-[800px] max-w-[800px] mt-10 p-4  shadow-md rounded-md">
-      
-          <div className="h-[400px]">
-          <GastoMaquinariaDatePicker />
+            <div className="flex-1 min-w-[800px] max-w-[800px] mt-10 p-4  shadow-md rounded-md">
+              <div className="h-[400px]">
+                <GastoMaquinariaDatePicker />
+              </div>
+            </div>
           </div>
-        </div>
-
-          </div>
-
-
-
-
-
-
-
-
-
-
-
-
-) : null}
-
-    </SectionLayout>
+        ) : null}
+      </SectionLayout>
     </>
   );
 };

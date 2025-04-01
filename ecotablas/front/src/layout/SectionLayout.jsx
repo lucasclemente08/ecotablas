@@ -17,7 +17,10 @@ const SectionLayout = ({ title, children }) => {
     <div className="bg-slate-900 min-h-screen flex">
       {/* Navbar móvil */}
       <div className="block md:hidden">
-        <Navbar isOpen={!isSidebarOpen} close={() => setSidebarOpen(!isSidebarOpen)} />
+        <Navbar
+          isOpen={!isSidebarOpen}
+          close={() => setSidebarOpen(!isSidebarOpen)}
+        />
       </div>
 
       {/* Sidebar fijo */}
@@ -26,7 +29,10 @@ const SectionLayout = ({ title, children }) => {
           isSidebarOpen ? "w-[250px]" : "w-[80px]"
         } transition-all duration-300`}
       >
-        <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setSidebarOpen(!isSidebarOpen)} />
+        <Sidebar
+          isOpen={isSidebarOpen}
+          toggleSidebar={() => setSidebarOpen(!isSidebarOpen)}
+        />
       </div>
 
       {/* Contenido principal */}
