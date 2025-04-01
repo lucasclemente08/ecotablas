@@ -432,9 +432,9 @@ const Vehiculos = () => {
   ];
 
   const estadoStyles = {
-    1: "bg-green-100 text-green-800", // Operativa
-    2: "bg-red-100 text-red-800", // Rota
-    3: "bg-yellow-100 text-yellow-800bg-red-100 text-red-800", // En Reparación
+    1: "bg-green-100 text-green-800 w-full h-full py-2 px-4 rounded flex items-center justify-center", // Operativa
+    2: "bg-red-100 text-red-800 w-full h-full py-2 px-4 rounded flex items-center justify-center",  // Rota
+    3: "bg-yellow-100 text-yellow-800 w-full h-full py-2 px-4 rounded flex items-center justify-center" // En Reparación
   };
 
   const stateVehiculo = async () => {
@@ -510,12 +510,9 @@ const Vehiculos = () => {
       label: "Estado", 
       key: "IdEstado", 
       render: (value) => (
-<td
-         className={`border-b py-2 px-4 full text-center ${estadoStyles[value]} `}>
-          
-          {getNombreEstado(value)
-          }
-        </td>
+        <div className={`${estadoStyles[value]} w-full h-full flex items-center justify-center`}>
+        {getNombreEstado(value)}
+      </div>
       ),
     },
     { label: "Fecha de última inspección", key: "FechaUltimaInspeccion", type: "date", hasActions: true },
@@ -525,8 +522,16 @@ const Vehiculos = () => {
     {
       allowedRoles: ["admin","supervisor", ],
       render: (vehiculo) => (
-        <td className="border-b flex flex-row justify-center gap-1">
-                     {vehiculo.IdEstado === 3 && (
+        <div className="flex items-center justify-start gap-2 py-1">
+
+                      <button
+                        onClick={() => abrirModalEdit(vehiculo)}
+                        className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        <FiEdit />
+                        Modificar
+                      </button>
+                      {vehiculo.IdEstado === 3 && (
                         <button
           className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-2 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
           onClick={() => abrirModalDetallesReparacion(vehiculo)}
@@ -535,14 +540,6 @@ const Vehiculos = () => {
           Ver Reparaciones
        </button>
                       )}
-                      
-                      <button
-                        onClick={() => abrirModalEdit(vehiculo)}
-                        className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-2 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
-                      >
-                        <FiEdit />
-                        Modificar
-                      </button>
                       
                       {(vehiculo.IdEstado === 1 || vehiculo.IdEstado === 2) && (
                         <button
@@ -558,7 +555,7 @@ const Vehiculos = () => {
                       {(vehiculo.IdEstado === 1 || vehiculo.IdEstado === 2) && (
                         <button
                           onClick={() => handleChangeState(vehiculo)}
-                          className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded flex items-center gap-1"
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
                         >
                           <FiRefreshCw />
                           Cambiar Estado
@@ -570,7 +567,7 @@ const Vehiculos = () => {
                         endpoint={`${BASE_URL}/Delete`}
                         updateList={fetchVehiculos}
                       />
-                    </td>
+                    </div>
 
       ),
     },

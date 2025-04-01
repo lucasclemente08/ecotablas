@@ -62,7 +62,19 @@ const EmpresaDonante = () => {
   }, [dispatch]);
   
   const abrirModal = () => setModalAbierto(true);
-  const cerrarModal = () => setModalAbierto(false);
+  const cerrarModal = () => { 
+    setModalAbierto(false);
+    formValues({
+    Nombre: "",
+    Direccion: "",
+    Telefono: "",
+    Email: "",
+    TipoPlastico: "",
+    Rubro: "",
+    Web: "",
+    CUIT: "",
+     });
+      };
   const abrirModalEdit = (empresa) => {
   
     setEmpresaId(empresa.Id_EmpresaDonante); // Asegurar que se guarde correctamente el ID
@@ -83,7 +95,18 @@ const EmpresaDonante = () => {
   
   const cerrarModalEdit = () => {
     setModalEdit(false);
-  }
+
+    setFormValues({
+      Nombre: "",
+      Direccion: "",
+      Telefono: "",
+      Email: "",
+      TipoPlastico: "",
+      Rubro: "",
+      Web: "",
+      CUIT: "",
+       });
+        };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formValues.Nombre || !formValues.Direccion || !formValues.Telefono) {
@@ -201,11 +224,11 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
     {
       allowedRoles: ["admin","supervisor", ],
       render: (item) => (
-        <td className="px-4 py-2 flex">
+        <div className="flex items-center justify-start gap-2 py-1">
 
         <button
           onClick={() => abrirModalEdit(item)}
-          className="bg-yellow-700 ml-2 flex justify-center items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105">
+          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
               <FiEdit  className="mr-1"/>
           Modificar
         </button>
@@ -214,7 +237,7 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
           updateList={() => dispatch(fetchEmpresaDonante())}
           id={item.Id_EmpresaDonante}
         />
-      </td>
+    </div>
       ),
     },
   ];
@@ -313,6 +336,8 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
           cerrarModalEdit={cerrarModalEdit}
         />
       )}
+
+<div className="overflow-x-auto">
       <TableComponent
       data={dataE}
       titles={titlesT}
@@ -321,7 +346,7 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
       actions={actions}
       hasMaterial={true}
     />
-
+ </div>    
       {/* <tbody>
         {currentItems.map((item) => (
           <tr key={item.Id_empresaDonante}>

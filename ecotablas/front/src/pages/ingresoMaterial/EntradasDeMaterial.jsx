@@ -4,6 +4,8 @@ import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { MdDateRange } from "react-icons/md";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import { FiEdit } from "react-icons/fi";
+import { FiFilter, FiCalendar, FiBarChart2, FiGrid } from "react-icons/fi";
+import { MdOutlinePictureAsPdf } from "react-icons/md";
 import TableComponent from "../../components/TableComponent";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import { BsClipboardDataFill } from "react-icons/bs";
@@ -33,6 +35,7 @@ const EntradasDeMaterial = () => {
   const [plasticos, setPlasticos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
+  const [originalMaterials, setOriginalMaterials] = useState([]);
   // const [currentItems,setCurrentItems]=useState([]);
   const [materialId, setMaterialId] = useState(null);
   const [modalClasificado, setModalClasificado] = useState(false); 
@@ -67,7 +70,16 @@ const EntradasDeMaterial = () => {
 
 
   const abrirModal = () => setModalAbierto(true);
-  const cerrarModal = () => setModalAbierto(false);
+  const cerrarModal = () => { 
+    setModalAbierto(false);
+    setFormValues({       VolumenM: "",
+      VolumenMInutil: "",
+      FechaIngresoM: "",
+      IdTipoPlastico: "",
+      Estado:  1, // Valor por defecto si está vacío
+      TipoDonante: "",
+       });
+      };
 
   const abrirModalEdit = (material) => {
     const MaterialSeguro = material || {};
@@ -87,7 +99,16 @@ const EntradasDeMaterial = () => {
   
   
 
-  const cerrarModalEdit = () => setModalEdit(false);
+  const cerrarModalEdit = () => 
+    {setModalEdit(false);
+      setFormValues({       VolumenM: "",
+        VolumenMInutil: "",
+        FechaIngresoM: "",
+        IdTipoPlastico: "",
+        Estado:  1, // Valor por defecto si está vacío
+        TipoDonante: "",
+       });
+      };
 
   const handleSubmit = () => {
     axios
@@ -153,7 +174,16 @@ const EntradasDeMaterial = () => {
     setModalClasificado(true);
   };
 
-  const cerrarModalClasificado = () => setModalClasificado(false);
+  const cerrarModalClasificado = () => { 
+    setModalClasificado(false);
+    setClasificacionValues ({ VolumenUtil: "",
+    VolumenInutil: "",
+    FechaC: "",
+    IdIngresoMaterial: "",
+    Estado: 1,
+     });
+    };
+
 
   const validateClasificadoForm = () => {
     let isValid = true;
@@ -215,6 +245,7 @@ const EntradasDeMaterial = () => {
         "http://www.ecotablasapi.somee.com/api/IngresoMat/ListarTodo",
       );
       setFilteredMaterials(response.data);
+      setOriginalMaterials(response.data); //
     } catch (error) {
       console.error("Error fetching materials:", error);
     } finally {
@@ -329,6 +360,8 @@ const getPlasticbyId =(id)=>{
     0,
   );
   // const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
 
   
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
@@ -361,11 +394,11 @@ const getPlasticbyId =(id)=>{
   };
   
   const titlesT = [
-    { key: "VolumenM", label: "Volumen Util (kgs)", type: "number" },
-    { key: "VolumenMInutil", label: "Volumen Inutil (kgs)", type: "number" },
-    { key: "FechaIngresoM", label: "Fecha de ingreso", type: "date" },
-    { key: "IdTipoPlastico", label: "Tipo de plásticos", type: "string" },
-    { key: "TipoDonante", label: "Tipo Donante", type: "string" ,hasActions: true },
+    { key: "VolumenM", label: "Volumen Útil (kgs)", type: "number" },
+    { key: "VolumenMInutil", label: "Volumen Inútil (kgs)", type: "number" },
+    { key: "FechaIngresoM", label: "Fecha de Ingreso", type: "date" },
+    { key: "IdTipoPlastico", label: "Tipo de Plásticos", type: "string" },
+    { key: "TipoDonante", label: "Tipo de Donante", type: "string" ,hasActions: true },
 // Para acciones como editar o eliminar
   ];
   
@@ -412,8 +445,8 @@ const getPlasticbyId =(id)=>{
 
       <Toaster />
 
-<div className="flex flex-wrap items-center gap-1 ">
-
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+      <div className="flex flex-wrap items-center gap-2">
         <AddButtonWa
           abrirModal={abrirModal}
           title={"Añadir Ingreso de Material"}
@@ -431,16 +464,30 @@ const getPlasticbyId =(id)=>{
         >
   {showTable ? <>Ver grafico <MdDateRange className="m-1" /> </> : <>Ver Tablas <BsClipboardDataFill className="m-1" /></>}
       </button>
-
-      <FilterButton
-        data={filteredMaterials}
-        dateField="FechaIngresoM"
-        onFilter={setFilteredMaterials}
-        onReset={() => setFilteredMaterials(filteredMaterials)}
-        onPageReset={() => setCurrentPage(1)}
-      />
-
+      </div>
+          {/* Grupo derecha (solo filtro) */}
+          <div className="flex flex-wrap items-center gap-2">
+          <FilterButton
+  data={originalMaterials} // Pasa los datos originales aquí
+  dateField="FechaIngresoM"
+  onFilter={(filtered) => {
+    setFilteredMaterials(filtered);
+    setCurrentPage(1);
+  }}
+  onReset={() => {
+    setFilteredMaterials(originalMaterials); // Restablece a los datos originales
+    setCurrentPage(1);
+  }}
+  onPageReset={() => setCurrentPage(1)}
+/>
+          </div>
         </div>
+
+          {mensaje && (
+            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
+              {mensaje}
+            </div>
+          )}
 
         {modalAbierto && (
           <AddModalWithSelect
@@ -482,17 +529,18 @@ const getPlasticbyId =(id)=>{
           )}
 {showTable ? (
         
-         <div className="overflow-x-auto">
-         <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
-           <h5>
-             <span class="text-gray-400">Total de materiales ingresados:</span>
-             {/* <span class="dark:text-white"> {totalItems}</span> */}
-           </h5>
-           <h5>
-             <span class="text-gray-400">Total volumen: </span>
-             <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
-           </h5>
-         </div>
+<div className="overflow-x-auto">
+  {/* Versión minimalista para fondo oscuro */}
+  <div className="mb-4 flex justify-center gap-6">
+    <div className="text-center">
+      <p className="text-sm text-gray-300">Total de materiales ingresados</p>
+      <p className="text-lg font-semibold text-white">{filteredMaterials.length}</p>
+    </div>
+    <div className="text-center">
+      <p className="text-sm text-gray-300">Volumen total</p>
+      <p className="text-lg font-semibold text-white">{totalVolumen.toFixed(2)} kg</p>
+    </div>
+  </div>
          <TableComponent
       data={data}
       hasMaterial={true}

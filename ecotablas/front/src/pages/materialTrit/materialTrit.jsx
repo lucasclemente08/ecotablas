@@ -12,6 +12,7 @@ import DateFilter from "../../components/DateFilter";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModal from "../../components/AddModal";
+import axios from "axios";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextProcess from "../../components/buttons/NextProcess";
 import VolumenTrituradoChart from "../../components/volumen/VolumenTrituradoChart";
@@ -44,6 +45,7 @@ const MaterialTrit = () => {
   const [materialId, setMaterialId] = useState(null);
   const [modalEdit, setModalEdit] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [originalMaterials, setOriginalMaterials] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [filteredMaterials, setFilteredMaterials] = useState([]);
   const [modalTolva,setModalTolva] = useState(false);
@@ -51,10 +53,12 @@ const MaterialTrit = () => {
   const [formValues, setFormValues] = useState({
     VolumenT: "",
     Fecha: "",
-    IdMaterialClasificado: "",
+    IdMaterialClasificado: 1,
     VolumenTInutil: "",
     Estado: 1,
   });
+
+  
   const [tolvaValues, setTolvaValues] = useState({
     IdMaterialTriturado:"",
     HorarioInicio: "",
@@ -85,7 +89,16 @@ const MaterialTrit = () => {
     setModalEdit(true);
   };
 
-  const cerrarModalEdit = () => setModalEdit(false);
+  const cerrarModalEdit = () => {
+    setModalEdit(false);
+    setFormValues({
+      VolumenT: "",
+      Fecha: "",
+      IdMaterialClasificado: 1,
+      VolumenTInutil: "",
+      Estado: 1,
+    });
+  };
 
 
   const abrirModalTolva = (id) => {
@@ -95,7 +108,20 @@ const MaterialTrit = () => {
     setModalTolva(true);
   };
   
-  const cerrarModalTolva = () => setModalTolva(false);
+  const cerrarModalTolva = () => {
+    setModalTolva(false)
+  
+  
+
+  setTolvaValues({IdMaterialTriturado:"",
+  HorarioInicio: "",
+  CantidadCargada: "",
+  TipoPlastico: "",
+  Proporcion: "",
+  Especificaciones: "",
+  Estado: 1,
+}); 
+ } ;
 
 
     const validateTolvaForm = () => {
@@ -123,13 +149,20 @@ const MaterialTrit = () => {
   };
   const cerrarModal = () => {
     setModalAbierto(false);
+    setFormValues({
+      VolumenT: "",
+      Fecha: "",
+      IdMaterialClasificado: 1,
+      VolumenTInutil: "",
+      Estado: 1,
+    });
   };
-
   const fetchMaterials = async () => {
     setLoading(true);
     try {
       const res = await getAllMaterialTrit();
       setFilteredMaterials(res.data);
+      setOriginalMaterials(res.data); // Guarda una copia de los datos originales
     } catch (error) {
       toast.error("Error al cargar los materiales.");
       console.error("Error fetching data: ", error);
@@ -160,7 +193,7 @@ const MaterialTrit = () => {
   const handleSubmit = () => {
     axios
       .post(
-        "http://localhost:61274/api/MaterialTrit/Insertar",
+        "http://www.ecotablasapi.somee.com/api/MaterialTrit/Insertar",
         formValues,
       )
       .then(() => {
@@ -249,12 +282,7 @@ const MaterialTrit = () => {
       placeholder: "Volumen *",
     },
     { name: "Fecha", label: "Fecha", type: "date", placeholder: "Fecha *" },
-    {
-      name: "IdMaterialClasificado",
-      label: "Material Triturado",
-      type: "text",
-      placeholder: "Material Triturado *",
-    },
+
   ];
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -333,9 +361,9 @@ const MaterialTrit = () => {
     setSortConfig({ campo, direction });
   };
 const titlesT = [
-  { label: "Volumen útil (kg)", key: "VolumenT", type: "number" },
-  { label: "Volumen inútil (kg)", key: "VolumenTInutil", type: "number" },
-  { label: "Fecha ingreso", key: "Fecha", type: "date", hasActions: true },
+  { label: "Volumen Útil (kgs)", key: "VolumenT", type: "number" },
+  { label: "Volumen Inútil (kgs)", key: "VolumenTInutil", type: "number" },
+  { label: "Fecha de Ingreso", key: "Fecha", type: "date", hasActions: true },
 ];
 
 // Estilo para los encabezados (th)
@@ -356,7 +384,7 @@ const titlesT = [
                           onClick={() => abrirModalTolva(material.IdMaterialTriturado)}
                           className="bg-green-600 ml-2 hover:bg-green-800 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
                           >
-                            <GrLinkNext />
+                            <GrLinkNext className="m-1" />
                             Terminado
                           </button>
         </div>
@@ -364,84 +392,68 @@ const titlesT = [
     },
     
     {
-      allowedRoles: ["admin","supervisor", ],
+      allowedRoles: ["admin", "supervisor"],
       render: (material) => (
-        <td
-        className={`border-b py-2 px-4 flex justify-center ${
-          modalAbierto ? "hidden" : ""
-        }`}
-                      >
-              
-  
-                        {modalTolva &&
-            <AddModalWithSelect title="Pasar a Extrucción/tolva"
-            fields={[
-              { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
-              { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
-              { name: "Proporcion", label: "Proporción cargada", type: "number" },
-              { name: "Especificaciones", label: "Especificaciones", type: "text" },
-            ]}
-              handleChange={handleChangeTolva}
-              handleSubmit={handleSubmitTolva}
-              cerrarModal={cerrarModalTolva}
-            values={tolvaValues}
-            />
-  
-            }
-  
-  
-  
-  
-  
-                        
-                        <button
-                          onClick={() => abrirModalEdit(material)}
-                          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                        >
-                          <FiEdit />
-                          Modificar
-                        </button>
-                        <DeleteButton
-                          id={material.IdMaterialTriturado}
-                          endpoint="http://www.ecotablasapi.somee.com/api/MaterialTrit/Borrar"
-                          updateList={fetchMaterials}
-                        />
-                      </td>
+        <div className="flex items-center justify-start gap-2 py-1">
+          <button
+            onClick={() => abrirModalEdit(material)}
+            className="bg-yellow-600 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105 ml-2"
+          >
+            <FiEdit />
+            Modificar
+          </button>
+          
+          <DeleteButton
+            id={material.IdMaterialTriturado}
+            endpoint="http://www.ecotablasapi.somee.com/api/MaterialTrit/Borrar"
+            updateList={fetchMaterials}
+            className="ml-2"
+          />
+        </div>
       ),
     },
   ];
 
   return (
     <>
-          <SectionLayout title="Materiales Triturados">
-          <div className="flex flex-wrap items-center gap-1 ">
-          <AddButtonWa
-            abrirModal={abrirModal}
-            title={" Añadir Materiales triturado"}
-          />
-
-          <PdfGenerator
-            columns={columns}
-            data={filteredMaterials}
-            title="Reporte de Materiales triturado"
-          />
-
-
+      <SectionLayout title="Materiales Triturados">
+      <Toaster />
+        {/* Contenedor principal de acciones */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+          
+          {/* Grupo de acciones izquierda (añadir, PDF y vista) */}
+          <div className="flex flex-wrap items-center gap-2">
+            <AddButtonWa abrirModal={abrirModal} title="Añadir Materiales Triturado" />
+            <PdfGenerator
+              columns={columns}
+              data={filteredMaterials}
+              title="Reporte de Materiales Triturados"
+            />
 <button
         onClick={toggleView}
         className="bg-blue-600 hover:bg-blue-700 flex justify-center items-center text-white font-bold py-2 mt-2 mb-5 px-4 rounded"
         >
   {showTable ? <>Ver grafico <MdDateRange className="m-1" /> </> : <>Ver Tablas <BsClipboardDataFill className="m-1" /></>}
       </button>
-
-      <FilterButton
-        data={filteredMaterials}
-        dateField="Fecha"
-        onFilter={setFilteredMaterials}
-        onReset={() => setFilteredMaterials(filteredMaterials)}
-        onPageReset={() => setCurrentPage(1)}
-      />
-              </div>
+          </div>
+  
+          {/* Grupo derecha (solo filtro) */}
+          <div className="flex flex-wrap items-center gap-2">
+          <FilterButton
+  data={originalMaterials} // Pasa los datos originales aquí
+  dateField="Fecha"
+  onFilter={(filtered) => {
+    setFilteredMaterials(filtered);
+    setCurrentPage(1);
+  }}
+  onReset={() => {
+    setFilteredMaterials(originalMaterials); // Restablece a los datos originales
+    setCurrentPage(1);
+  }}
+  onPageReset={() => setCurrentPage(1)}
+/>
+          </div>
+        </div>
 
           {mensaje && (
             <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
@@ -450,13 +462,29 @@ const titlesT = [
           )}
 
           {modalAbierto && (
-            <AddModal
+            <AddModalWithSelect
               title="Agregar Material Triturado"
               fields={fields}
               handleChange={handleChange}
               handleSubmit={handleSubmit}
               cerrarModal={cerrarModal}
               values={formValues}
+            />
+          )}
+
+{modalTolva && (
+            <AddModalWithSelect 
+              title="Pasar a Extrucción/tolva"
+              fields={[
+                { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
+                { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
+                { name: "Proporcion", label: "Proporción cargada", type: "number" },
+                { name: "Especificaciones", label: "Especificaciones", type: "text" },
+              ]}
+              handleChange={handleChangeTolva}
+              handleSubmit={handleSubmitTolva}
+              cerrarModal={cerrarModalTolva}
+              values={tolvaValues}
             />
           )}
             {modalEdit && (
@@ -475,17 +503,18 @@ const titlesT = [
          
 
 
-         <div className="overflow-x-auto">
-          <div class="flex  p-2  items-center   shadow-md bg-gray-700 text-white flex-1 space-x-4">
-            <h5>
-              <span class="text-gray-400">Total de materiales:</span>
-              <span class="dark:text-white"> {totalItems}</span>
-            </h5>
-            <h5>
-              <span class="text-gray-400">Total volumen: </span>
-              <span class="dark:text-white">{totalVolumen.toFixed(2)} kg</span>
-            </h5>
-          </div>
+<div className="overflow-x-auto">
+  {/* Versión minimalista para fondo oscuro */}
+  <div className="mb-4 flex justify-center gap-6">
+    <div className="text-center">
+              <p class="text-sm text-gray-300">Total de materiales</p>
+              <p class="text-lg font-semibold text-white"> {totalItems}</p>
+              </div>
+              <div className="text-center">
+              <p class="text-sm text-gray-300">Volumen total</p>
+              <p class="text-lg font-semibold text-white">{totalVolumen.toFixed(2)} kg</p>
+              </div>
+              </div>
 
           <TableComponent
           

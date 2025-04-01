@@ -1,80 +1,78 @@
 import { useState } from "react";
-import { FaSearch, FaArrowLeft } from "react-icons/fa";
+import { FaSearch, FaRedo } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function FilterButton({
-  data = [], // Lista completa de datos
-  dateField = "date", // Campo de la fecha en los objetos de la lista
-  onFilter = () => {}, // Callback para manejar los datos filtrados
-  onReset = () => {}, // Callback para manejar el restablecimiento
-  onPageReset = () => {}, // Callback para reiniciar la paginación
+  data = [],
+  dateField = "date",
+  onFilter = () => {},
+  onReset = () => {},
+  onPageReset = () => {},
 }) {
-  const [selectedDate, setSelectedDate] = useState(""); // Fecha seleccionada
-  const [isFiltering, setIsFiltering] = useState(false); // Alternar entre filtrado y restablecimiento
+  const [selectedDate, setSelectedDate] = useState("");
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const filterByDate = () => {
-    if (selectedDate) {
-      const filteredItems = data.filter((item) => {
-        const itemDate = new Date(item[dateField]).toISOString().slice(0, 10); // Formato YYYY-MM-DD
-        return itemDate === selectedDate;
-      });
-
-      if (filteredItems.length === 0) {
-        toast.info("No se encontraron resultados para la fecha seleccionada.");
-      }
-
-      onFilter(filteredItems); // Devuelve los datos filtrados
-      onPageReset(); // Reinicia la paginación
-      setIsFiltering(true); // Cambia al estado de filtrado
-    } else {
+    if (!selectedDate) {
       toast.warn("Por favor selecciona una fecha antes de buscar.");
+      return;
     }
+
+    const filteredItems = data.filter((item) => {
+      const itemDate = new Date(item[dateField]).toISOString().slice(0, 10);
+      return itemDate === selectedDate;
+    });
+
+    if (filteredItems.length === 0) {
+      toast.info("No se encontraron resultados para la fecha seleccionada.");
+      return;
+    }
+
+    onFilter(filteredItems);
+    onPageReset();
+    setIsFiltering(true);
+    toast.success(`Filtrado aplicado: ${filteredItems.length} resultados`);
   };
 
   const resetFilter = () => {
-    onReset(data); // Restablece los datos originales
-    setSelectedDate(""); // Limpia la fecha seleccionada
-    onPageReset(); // Reinicia la paginación
-    setIsFiltering(false); // Cambia al estado inicial
+    setSelectedDate("");
+    onReset();
+    onPageReset();
+    setIsFiltering(false);
+    toast.info("Filtro removido, mostrando todos los registros");
   };
 
   return (
-    <div className="flex mb-2 items-center justify-center">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-
+    <div className="flex items-center space-x-2">
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       <input
         type="date"
         value={selectedDate}
-        onChange={(e) => setSelectedDate(e.target.value)} // Actualiza la fecha seleccionada
-        className="p-2 ml-3 border border-gray-300 rounded"
+        onChange={(e) => setSelectedDate(e.target.value)}
+        className="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       />
+      
       <button
-        onClick={isFiltering ? resetFilter : filterByDate} // Alterna entre filtrar y restablecer
-        className={`flex p-2 ml-1 rounded text-white ${
-          isFiltering ? "bg-red-500" : "bg-blue-500"
+        onClick={filterByDate}
+        disabled={!selectedDate}
+        className={`flex items-center px-4 py-2 text-white rounded-lg bg-blue-600 hover:bg-blue-700 ${
+          !selectedDate ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >
-        {isFiltering ? (
-          <>
-            Volver a atrás <FaArrowLeft className="m-1" />
-          </>
-        ) : (
-          <>
-            Buscar por fecha <FaSearch className="m-1" />
-          </>
-        )}
+        <FaSearch className="mr-2" />
+        Buscar
       </button>
+      
+      {isFiltering && (
+        <button
+          onClick={resetFilter}
+          className="flex items-center px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
+        >
+          <FaRedo className="mr-2" />
+          Limpiar
+        </button>
+      )}
     </div>
   );
 }

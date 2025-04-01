@@ -35,6 +35,7 @@ const Tolva = () => {
   const [materials, setMaterials] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [originalMaterials, setOriginalMaterials] = useState([]);
   const [modalEdit, setModalEdit] = useState(false);
   const [materialId, setMaterialId] = useState(null);
   const [mensaje, setMensaje] = useState("");
@@ -49,7 +50,7 @@ const Tolva = () => {
     Proporcion: "",
     Especificaciones: "",
     Estado: 1,
-    IdMaterialTriturado: "",
+    IdMaterialTriturado: 2,
   });
   
 const GenerateIdentificationCode = (size, large) => {
@@ -87,6 +88,17 @@ const GenerateIdentificationCode = (size, large) => {
   };
   const cerrarModal = () => {
     setModalAbierto(false);
+
+    setFormValues({
+      HorarioInicio: "",
+    CantidadCargada: "",
+    TipoPlastico: "unico",
+    Proporcion: "",
+    Especificaciones: "",
+    Estado: 1,
+    IdMaterialTriturado: 2,
+
+  });
   };
   const abrirModalEdit = (material) => {
     setMaterialId(material.IdTolva);
@@ -101,13 +113,27 @@ const GenerateIdentificationCode = (size, large) => {
     });
     setModalEdit(true);
   };
-  const cerrarModalEdit = () => setModalEdit(false);
+  const cerrarModalEdit = () => { 
+    setModalEdit(false);
+
+    setFormValues({
+      HorarioInicio: "",
+    CantidadCargada: "",
+    TipoPlastico: "unico",
+    Proporcion: "",
+    Especificaciones: "",
+    Estado: 1,
+    IdMaterialTriturado: 2,
+
+  });
+   };
   
   const fetchMaterials = async () => {
     setLoading(true);
     try {
       const res = await getAllTolva();
       setFilteredMaterials(res.data);
+      setOriginalMaterials(res.data);
     } catch (error) {
       toast.error("Error al cargar los materiales.");
       console.error("Error fetching data: ", error);
@@ -134,7 +160,16 @@ const GenerateIdentificationCode = (size, large) => {
     setModalTabla(true);
   };
 
-  const cerrarModalTabla = () => setModalTabla(false); 
+  const cerrarModalTabla = () => { 
+    setModalTabla(false); 
+    setTablaValues({
+      FechaProduccion: "",
+    Dimensiones: "",
+    Peso: "",
+    CodigoIdentificacion: "",
+    Estado: 1,
+  });
+ };
 
   const validateTablaForm = () => {
     let isValid = true;
@@ -324,15 +359,21 @@ const GenerateIdentificationCode = (size, large) => {
     setSortConfig({ campo, direction });
   };
   const titlesT = [
-    { label: "Horario Inicio", key: "HorarioInicio",
+    { 
+      label: "Horario de Inicio", 
+      key: "HorarioInicio",
+      type: "date",
       render: (value) => (
-        <td className="border-b px-4 py-2 text-right">
-          <span className="font-semibold lg:hidden">Horario de Inicio: </span>
-          {value ? value.slice(0, 10) : "Sin horario"}
-        </td>
+        <td className="flex justify-center items-center" >
+              <span  className="font-semibold lg:hidden">Hora de Carga: </span>
+              {value ? `
+    ${new Date(value).toLocaleDateString()} 
+    ${new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+` : "Sin horario"}
+          </td>
       ),
     },
-    { label: "Cantidad Cargada (kg)", key: "CantidadCargada", type: "number" },
+    { label: "Cantidad Cargada (kgs)", key: "CantidadCargada", type: "number" },
     { label: "Tipo de Plástico", key: "TipoPlastico", type: "text" },
     { label: "Proporción (%)", key: "Proporcion", type: "number" },
     { label: "Especificaciones", key: "Especificaciones", type: "text",hasActions:true},
@@ -362,7 +403,7 @@ const GenerateIdentificationCode = (size, large) => {
     allowedRoles: ["admin","supervisor", ],
     
       render: (material) => (
-        <td className="border-b px-4 py-2 flex justify-center">
+        <div className="flex items-center justify-start gap-2 py-1">
   
           <button
             onClick={() => abrirModalEdit(material)}
@@ -376,7 +417,7 @@ const GenerateIdentificationCode = (size, large) => {
             endpoint="http://www.ecotablasapi.somee.com/api/Tolva/Delete"
             updateList={fetchMaterials}
           />
-        </td>
+         </div>
       ),
     },
   ];
@@ -386,18 +427,29 @@ const GenerateIdentificationCode = (size, large) => {
   return (
     <SectionLayout title="Tolva">
         <Toaster />
-       <div className="flex flex-wrap items-center gap-1 ">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+      {/* Grupo de acciones izquierda (añadir, PDF y vista) */}
+      <div className="flex flex-wrap items-center gap-2">
+        
       <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
       <PdfGenerator columns={columns} data={materials} title="Reporte de Tolva" />
-
-      <FilterButton
-        data={filteredMaterials}
-        dateField="HorarioInicio"
-        onFilter={setFilteredMaterials}
-        onReset={() => setFilteredMaterials(filteredMaterials)}
-        onPageReset={() => setCurrentPage(1)}
-      />
-
+      </div>
+          {/* Grupo derecha (solo filtro) */}
+          <div className="flex flex-wrap items-center gap-2">
+          <FilterButton
+  data={originalMaterials} // Pasa los datos originales aquí
+  dateField="HorarioInicio"
+  onFilter={(filtered) => {
+    setFilteredMaterials(filtered);
+    setCurrentPage(1);
+  }}
+  onReset={() => {
+    setFilteredMaterials(originalMaterials); // Restablece a los datos originales
+    setCurrentPage(1);
+  }}
+  onPageReset={() => setCurrentPage(1)}
+/>
+          </div>
 </div>
 
 
@@ -411,7 +463,6 @@ const GenerateIdentificationCode = (size, large) => {
             { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },
             { name: "Proporcion", label: "Proporción cargada", type: "number" },
             { name: "Especificaciones", label: "Especificaciones", type: "text" },
-            { name: "IdMaterialTriturado", label: "IdMaterialTriturado", type: "text" },
           ]}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
@@ -458,10 +509,20 @@ const GenerateIdentificationCode = (size, large) => {
       ) : (
         <>
 
-<div className="mt-4 text-white">
-            <p>Total de Volumen Cargado: {totalVolumen} kg</p>
-            <p>Total de Items: {totalItems}</p>
-          </div>
+<div className="overflow-x-auto">
+  {/* Versión minimalista para fondo oscuro */}
+  <div className="mb-4 flex justify-center gap-6">
+    <div className="text-center">
+              <p class="text-sm text-gray-300">Total de materiales</p>
+              <p class="text-lg font-semibold text-white"> {totalItems}</p>
+              </div>
+              <div className="text-center">
+              <p class="text-sm text-gray-300">Volumen total</p>
+              <p class="text-lg font-semibold text-white">{totalVolumen.toFixed(2)} kg</p>
+              </div>
+              </div>
+              </div>
+
 
  <TableComponent
       data={data}

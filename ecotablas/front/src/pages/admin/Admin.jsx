@@ -259,7 +259,12 @@ fetchUsers();
       ),
     },
   ];
-  
+  const formattedUsers = users.map(user => ({
+    ...user,
+    role: user.role ? 
+         user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase() 
+         : ''
+  }));
   const fields = [
     { name: "correo", label: "Correo", type: "email", }, // Solo lectura
  
@@ -299,12 +304,12 @@ fetchUsers();
 )}
 
 
-      <TableComponent
-        data={users}
-        titles={[
-          { key: 'correo', label: 'Correo' },
-          { key: 'role', label: 'Rol',hasActions: true},
-        ]}
+<TableComponent
+  data={formattedUsers}  // <-- Usamos los datos transformados
+  titles={[
+    { key: 'correo', label: 'Correo' },
+    { key: 'role', label: 'Rol', hasActions: true }
+  ]}
         actions={actions}
         itemsPerPage={5}
         isLoading={loading}

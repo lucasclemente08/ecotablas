@@ -63,7 +63,18 @@ const GastoMaquinaria = () => {
   const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
 
   // Cerrar Modal
-  const cerrarModal = () => setModalAbierto(false);
+  const cerrarModal = () => { 
+    setModalAbierto(false);
+    setFormValues({
+      tipoGasto: "",
+      tipoComprobante: "",
+      Comprobante: "",
+      proveedor: "",
+      monto: "",
+      fecha: "",
+      descripcion: "",
+    });
+     };
   const abrirModalEdit = (gasto) => {
     
     const gastoSeguro = gasto || {}; 
@@ -83,7 +94,20 @@ const GastoMaquinaria = () => {
   };
   
   
-  const cerrarModalEdit = () => setModalEdit(false);
+  const cerrarModalEdit = () => { 
+    
+    setModalEdit(false);
+
+    setFormValues({
+      tipoGasto: "",
+      tipoComprobante: "",
+      Comprobante: "",
+      proveedor: "",
+      monto: "",
+      fecha: "",
+      descripcion: "",
+    });
+     };
   // Fetch inicial de datos
   useEffect(() => {
     dispatch(fetchGastos());
@@ -449,7 +473,7 @@ return link;
     {
       allowedRoles: ["admin","supervisor", ],
       render: (item) => (
-        <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
+        <div className="flex items-center justify-start gap-2 py-1">
             <button
                         onClick={() => abrirModalEdit(item)}
                         className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
@@ -462,7 +486,7 @@ return link;
             id={item.IdGastoMaquinaria}
             updateList={(fetchGastos())}
           />
-        </td>
+        </div>
       ),
     },
   ];
