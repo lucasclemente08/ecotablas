@@ -20,7 +20,10 @@ const ReportButton = ({ isOpen }) => {
   };
 
   const PostReportes = () => {
-    const reporteConFecha = { ...report, FechaReporte: new Date().toISOString() };
+    const reporteConFecha = {
+      ...report,
+      FechaReporte: new Date().toISOString(),
+    };
 
     axios
       .post("http://localhost:61274/api/Reportes/CrearReporte", reporteConFecha)
@@ -37,7 +40,12 @@ const ReportButton = ({ isOpen }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!report.Titulo || !report.Descripcion || !report.Area || !report.FechaIncidente) {
+    if (
+      !report.Titulo ||
+      !report.Descripcion ||
+      !report.Area ||
+      !report.FechaIncidente
+    ) {
       setMessage("Por favor, completa todos los campos.");
       return;
     }
@@ -60,11 +68,16 @@ const ReportButton = ({ isOpen }) => {
         createPortal(
           <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-gray-900 bg-opacity-75">
             <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 relative">
-              <h2 className="text-xl font-bold text-black mb-4">Generar un reporte</h2>
+              <h2 className="text-xl font-bold text-black mb-4">
+                Generar un reporte
+              </h2>
               {message && <p className="mb-4 text-red-500">{message}</p>}
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                  <label className="block text-sm font-bold mb-2" htmlFor="Titulo">
+                  <label
+                    className="block text-sm font-bold mb-2"
+                    htmlFor="Titulo"
+                  >
                     Título
                   </label>
                   <input
@@ -78,7 +91,10 @@ const ReportButton = ({ isOpen }) => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-bold mb-2" htmlFor="Descripcion">
+                  <label
+                    className="block text-sm font-bold mb-2"
+                    htmlFor="Descripcion"
+                  >
                     Descripción
                   </label>
                   <textarea
@@ -92,7 +108,10 @@ const ReportButton = ({ isOpen }) => {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-bold mb-2" htmlFor="Area">
+                  <label
+                    className="block text-sm font-bold mb-2"
+                    htmlFor="Area"
+                  >
                     Área del problema
                   </label>
                   <select
@@ -104,14 +123,21 @@ const ReportButton = ({ isOpen }) => {
                   >
                     <option value="">Seleccione un área</option>
                     <option value="Lavado">Lavado de material</option>
-                    <option value="materialTriturado">Trituración de material</option>
-                    <option value="materialProcesado">Procesado de material</option>
+                    <option value="materialTriturado">
+                      Trituración de material
+                    </option>
+                    <option value="materialProcesado">
+                      Procesado de material
+                    </option>
                     <option value="CargaMaterial">Carga de material</option>
                   </select>
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-bold mb-2" htmlFor="FechaIncidente">
+                  <label
+                    className="block text-sm font-bold mb-2"
+                    htmlFor="FechaIncidente"
+                  >
                     Fecha del incidente
                   </label>
                   <input
@@ -142,7 +168,7 @@ const ReportButton = ({ isOpen }) => {
               </form>
             </div>
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

@@ -3,7 +3,12 @@ import { getEmpleados, assignEmployeesToRoute } from "../api/RutasAPI";
 import axios from "axios";
 import { toast } from "sonner";
 
-const ModifyEmployeesModal = ({ isOpen, onClose, routeId, onModifyEmployees }) => {
+const ModifyEmployeesModal = ({
+  isOpen,
+  onClose,
+  routeId,
+  onModifyEmployees,
+}) => {
   const [empleados, setEmpleados] = useState([]);
   const [selectedEmpleados, setSelectedEmpleados] = useState([]);
   const [empleadosR, setEmpleadosR] = useState([]);
@@ -26,7 +31,9 @@ const ModifyEmployeesModal = ({ isOpen, onClose, routeId, onModifyEmployees }) =
     if (isOpen && routeId) {
       const fetchAssignedEmployees = async () => {
         try {
-          const response = await axios.get(`http://www.ecotablasapi.somee.com/api/RutaxEmpleados/ListarPorId/${routeId}`);
+          const response = await axios.get(
+            `http://www.ecotablasapi.somee.com/api/RutaxEmpleados/ListarPorId/${routeId}`,
+          );
           const assigned = response.data || [];
           setSelectedEmpleados(assigned.map((emp) => emp.IdEmpleado)); // Actualizar empleados seleccionados
           setEmpleadosR(assigned); // Actualizar empleadosR
@@ -57,7 +64,7 @@ const ModifyEmployeesModal = ({ isOpen, onClose, routeId, onModifyEmployees }) =
       // Si el empleado no está seleccionado, lo agregamos
       setSelectedEmpleados([...selectedEmpleados, idEmpleado]);
     }
-  
+
     // Actualizar el array empleadosR
     setEmpleadosR((prevEmpleadosR) => {
       // Si el empleado ya está en empleadosR, lo eliminamos
@@ -72,7 +79,9 @@ const ModifyEmployeesModal = ({ isOpen, onClose, routeId, onModifyEmployees }) =
   // Eliminar empleados actuales antes de asignar nuevos
   const deleteCurrentEmployees = async () => {
     try {
-      await axios.delete(`http://www.ecotablasapi.somee.com/api/RutaxEmpleados/Delete/${routeId}`);
+      await axios.delete(
+        `http://www.ecotablasapi.somee.com/api/RutaxEmpleados/Delete/${routeId}`,
+      );
     } catch (error) {
       console.error("Error al eliminar empleados actuales:", error);
     }
@@ -84,22 +93,24 @@ const ModifyEmployeesModal = ({ isOpen, onClose, routeId, onModifyEmployees }) =
       toast.error("Por favor, selecciona al menos un empleado.");
       return;
     }
-  
+
     try {
       // Eliminar empleados actuales
       await deleteCurrentEmployees();
-  
+
       // Asignar nuevos empleados
       for (const empleadoRt of empleadosR) {
-        await axios.post("http://www.ecotablasapi.somee.com/api/RutaxEmpleados/Insertar", empleadoRt);
+        await axios.post(
+          "http://www.ecotablasapi.somee.com/api/RutaxEmpleados/Insertar",
+          empleadoRt,
+        );
       }
-  
+
       // Notificar al componente padre con los empleados actualizados
       onModifyEmployees(empleadosR);
-  
+
       // Cerrar el modal
       onClose();
-  
     } catch (error) {
       console.error("Error al modificar empleados:", error);
       toast.error("Hubo un problema al modificar los empleados.");
@@ -111,11 +122,15 @@ const ModifyEmployeesModal = ({ isOpen, onClose, routeId, onModifyEmployees }) =
   return (
     <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-lg p-6 w-11/12 max-w-lg">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Modificar Empleados</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          Modificar Empleados
+        </h2>
 
         {/* Lista de empleados */}
         <div className="mt-4">
-          <h3 className="text-lg font-semibold text-gray-800">Selecciona los empleados:</h3>
+          <h3 className="text-lg font-semibold text-gray-800">
+            Selecciona los empleados:
+          </h3>
           <ul className="mt-2">
             {empleados.map((empleado) => (
               <li key={empleado.IdEmpleado} className="flex items-center mt-2">

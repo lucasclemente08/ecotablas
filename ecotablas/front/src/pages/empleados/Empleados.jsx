@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FiEdit } from "react-icons/fi";
-import { Toaster, toast } from 'sonner';
+import { Toaster, toast } from "sonner";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import SectionLayout from "../../layout/SectionLayout";
@@ -64,8 +64,12 @@ const Empleados = () => {
     const filtered = empleadosData.filter(
       (empleado) =>
         empleado.DNI.includes(searchFilters.DNI) &&
-        empleado.Nombre.toLowerCase().includes(searchFilters.Nombre.toLowerCase()) &&
-        empleado.Apellido.toLowerCase().includes(searchFilters.Apellido.toLowerCase())
+        empleado.Nombre.toLowerCase().includes(
+          searchFilters.Nombre.toLowerCase(),
+        ) &&
+        empleado.Apellido.toLowerCase().includes(
+          searchFilters.Apellido.toLowerCase(),
+        ),
     );
     setFilteredEmpleados(filtered);
     if (filtered.length === 0) {
@@ -145,36 +149,48 @@ const Empleados = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormValues(prev => ({ ...prev, [name]: value }));
+    setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
   const verificarDNIExistente = (dni) => {
-    return empleadosData.some(empleado => empleado.DNI === dni);
+    return empleadosData.some((empleado) => empleado.DNI === dni);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (verificarDNIExistente(formValues.DNI)) {
-      toast.error('Ya existe un empleado con el mismo DNI');
+      toast.error("Ya existe un empleado con el mismo DNI");
       return;
     }
 
-    if (!formValues.Nombre || !formValues.Apellido || !formValues.DNI || 
-        !formValues.Calle || !formValues.Numero || !formValues.CodPostal || 
-        !formValues.FechaIngreso || !formValues.Telefono || !formValues.Mail || 
-        !formValues.IdArea) {
-      toast.error('Todos los campos requeridos deben ser completados');
+    if (
+      !formValues.Nombre ||
+      !formValues.Apellido ||
+      !formValues.DNI ||
+      !formValues.Calle ||
+      !formValues.Numero ||
+      !formValues.CodPostal ||
+      !formValues.FechaIngreso ||
+      !formValues.Telefono ||
+      !formValues.Mail ||
+      !formValues.IdArea
+    ) {
+      toast.error("Todos los campos requeridos deben ser completados");
       return;
     }
 
-    axios.post(`http://www.ecotablasapi.somee.com/api/Empleados/Insertar`, formValues)
+    axios
+      .post(
+        `http://www.ecotablasapi.somee.com/api/Empleados/Insertar`,
+        formValues,
+      )
       .then(() => {
         toast.success("Empleado agregado correctamente");
         cerrarModal();
         getEmpleados();
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error al agregar el empleado:", error);
         toast.error("Error al agregar el empleado");
       });
@@ -182,27 +198,39 @@ const Empleados = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    
-    if (!formValues.Nombre || !formValues.Apellido || !formValues.DNI || 
-        !formValues.Calle || !formValues.Numero || !formValues.CodPostal || 
-        !formValues.FechaIngreso || !formValues.Telefono || !formValues.Mail || 
-        !formValues.IdArea) {
-      toast.error('Todos los campos son obligatorios!');
+
+    if (
+      !formValues.Nombre ||
+      !formValues.Apellido ||
+      !formValues.DNI ||
+      !formValues.Calle ||
+      !formValues.Numero ||
+      !formValues.CodPostal ||
+      !formValues.FechaIngreso ||
+      !formValues.Telefono ||
+      !formValues.Mail ||
+      !formValues.IdArea
+    ) {
+      toast.error("Todos los campos son obligatorios!");
       return;
     }
 
     if (formValues.DNI.length > 8) {
-      toast.error('El DNI no puede tener más de 8 dígitos');
+      toast.error("El DNI no puede tener más de 8 dígitos");
       return;
     }
 
-    axios.put(`http://www.ecotablasapi.somee.com/api/Empleados/Modificar/${empleadoSeleccionadoId}`, formValues)
+    axios
+      .put(
+        `http://www.ecotablasapi.somee.com/api/Empleados/Modificar/${empleadoSeleccionadoId}`,
+        formValues,
+      )
       .then(() => {
         toast.success("Modificación exitosa");
         cerrarModalEdit();
         getEmpleados();
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error al modificar el empleado:", error);
         toast.error("Error al modificar el empleado");
       });
@@ -235,41 +263,41 @@ const Empleados = () => {
   ];
 
   const titlesT = [
-    { 
-      key: "Nombre", 
+    {
+      key: "Nombre",
       label: "Nombre",
-      type: "text" // Esto hará que se alinee a la izquierda
+      type: "text", // Esto hará que se alinee a la izquierda
     },
-    { 
-      key: "Apellido", 
+    {
+      key: "Apellido",
       label: "Apellido",
-      type: "text" // Texto a la izquierda
+      type: "text", // Texto a la izquierda
     },
-    { 
-      key: "DNI", 
+    {
+      key: "DNI",
       label: "DNI",
-      type: "number" // Números a la derecha
+      type: "number", // Números a la derecha
     },
-    { 
-      key: "CodPostal", 
+    {
+      key: "CodPostal",
       label: "Código Postal",
-      type: "number" // Números a la derecha
+      type: "number", // Números a la derecha
     },
-    { 
-      key: "FechaIngreso", 
+    {
+      key: "FechaIngreso",
       label: "Fecha de Ingreso",
-      type: "date" // Fechas centradas
+      type: "date", // Fechas centradas
     },
-    { 
-      key: "Telefono", 
+    {
+      key: "Telefono",
       label: "Teléfono",
-      type: "number" // Números a la derecha
+      type: "number", // Números a la derecha
     },
-    { 
-      key: "Mail", 
+    {
+      key: "Mail",
       label: "Email",
       type: "text", // Texto a la izquierda
-      render: (value) => value || "No disponible"
+      render: (value) => value || "No disponible",
     },
   ];
 
@@ -282,7 +310,7 @@ const Empleados = () => {
             onClick={() => abrirModalEdit(item)}
             className="bg-yellow-700 ml-2 flex justify-center items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
           >
-            <FiEdit className="mr-1"/>
+            <FiEdit className="mr-1" />
             Modificar
           </button>
           <DeleteButton
@@ -310,7 +338,9 @@ const Empleados = () => {
           type="text"
           placeholder="Buscar por DNI"
           value={searchFilters.DNI}
-          onChange={(e) => setSearchFilters({ ...searchFilters, DNI: e.target.value })}
+          onChange={(e) =>
+            setSearchFilters({ ...searchFilters, DNI: e.target.value })
+          }
           className="border p-2 w-full mt-2"
         />
 
@@ -320,14 +350,18 @@ const Empleados = () => {
               type="text"
               placeholder="Buscar por Nombre"
               value={searchFilters.Nombre}
-              onChange={(e) => setSearchFilters({ ...searchFilters, Nombre: e.target.value })}
+              onChange={(e) =>
+                setSearchFilters({ ...searchFilters, Nombre: e.target.value })
+              }
               className="border p-2 w-full mt-2"
             />
             <input
               type="text"
               placeholder="Buscar por Apellido"
               value={searchFilters.Apellido}
-              onChange={(e) => setSearchFilters({ ...searchFilters, Apellido: e.target.value })}
+              onChange={(e) =>
+                setSearchFilters({ ...searchFilters, Apellido: e.target.value })
+              }
               className="border p-2 w-full mt-2"
             />
           </>

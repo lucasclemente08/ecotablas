@@ -5,21 +5,18 @@ import { useState } from "react";
 const ActiveMachine = () => {
   const [maquinarias, setMaquinarias] = useState([]);
 
-
   // Función para obtener los datos de la API
   const fetchMaquinarias = async () => {
     try {
       const response = await fetch(
-        "http://www.ecotablasapi.somee.com/api/Maquinaria/ListarTodo"
+        "http://www.ecotablasapi.somee.com/api/Maquinaria/ListarTodo",
       );
       if (!response.ok) throw new Error("Error al obtener las maquinarias");
       const data = await response.json();
       setMaquinarias(data);
     } catch (error) {
       console.error(error);
-
     } finally {
-   
     }
   };
 
@@ -32,12 +29,9 @@ const ActiveMachine = () => {
     operativa: maquinarias.filter((m) => m.IdEstado === 1).length,
   };
 
-
-
-
   return (
     <div>
- <TotalCard
+      <TotalCard
         title="Maquinaria Operativa"
         value={estados.operativa}
         icon={<FaCogs />}

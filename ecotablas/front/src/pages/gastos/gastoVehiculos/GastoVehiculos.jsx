@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Pie, Line } from "react-chartjs-2";
-import Pagination from "../../../components/Pagination"
+import Pagination from "../../../components/Pagination";
 import FilterTable from "../../../components/FilterTable";
 import { FiEdit } from "react-icons/fi";
 import { HiMiniLink } from "react-icons/hi2";
@@ -16,7 +16,7 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
-import { Toaster, toast } from 'sonner';
+import { Toaster, toast } from "sonner";
 
 import SectionLayout from "../../../layout/SectionLayout";
 import TablaHead from "../../../components/Thead";
@@ -56,11 +56,11 @@ const GastoVehiculos = () => {
   const [modalEdit, setModalEdit] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [gastoEdit, setGastoEdit] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1 );
+  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [accessToken, setAccessToken] = useState(null);
   const [sortedData, setSortedData] = useState([]);
-   const[gastoId,setGastoid]=useState([])
+  const [gastoId, setGastoid] = useState([]);
   const [comprobante, setComprobante] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
 
@@ -69,12 +69,12 @@ const GastoVehiculos = () => {
 
   const [formValues, setFormValues] = useState({
     TipoComprobante: "",
-    Comprobante: null, 
+    Comprobante: null,
     TipoGasto: "",
     IdVehiculo: "",
     Proveedor: "",
     Monto: "",
-    Fecha: "", 
+    Fecha: "",
     Descripcion: "",
   });
 
@@ -83,9 +83,7 @@ const GastoVehiculos = () => {
   const fetchMaterials = () => {
     setLoading(true);
     axios
-      .get(
-        "http://www.ecotablasapi.somee.com/api/GastoVehiculos/ListarTodo",
-      )
+      .get("http://www.ecotablasapi.somee.com/api/GastoVehiculos/ListarTodo")
       .then((response) => {
         setDataV(response.data);
         console.log("Gastos de vehículos:", response.data);
@@ -98,41 +96,37 @@ const GastoVehiculos = () => {
       });
   };
 
-
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value, files } = e.target;
 
     if (files && files[0]) {
-        // Si se seleccionó un archivo
-        const selectedFile = files[0];
-     
+      // Si se seleccionó un archivo
+      const selectedFile = files[0];
 
-        // Guardar el archivo en un estado separado
-        setComprobante(selectedFile);
+      // Guardar el archivo en un estado separado
+      setComprobante(selectedFile);
 
-        setFormValues((prevValues) => ({
-            ...prevValues,
-            [name]: selectedFile.name, // Guarda solo el nombre del archivo
-        }));
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        [name]: selectedFile.name, // Guarda solo el nombre del archivo
+      }));
     } else {
-        // Si es un campo de texto u otro tipo de input
-        setFormValues((prevValues) => ({
-            ...prevValues,
-            [name]: value,
-        }));
+      // Si es un campo de texto u otro tipo de input
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        [name]: value,
+      }));
     }
-    
-};
-  
-  const abrirModalEdit = (gasto) => {
-    const gastoSeguro = gasto || {}; 
+  };
 
-    
+  const abrirModalEdit = (gasto) => {
+    const gastoSeguro = gasto || {};
+
     setGastoid(gastoSeguro.IdVehiculo || "");
     setFormValues({
       TipoComprobante: gastoSeguro.TipoComprobante || "",
-     comprobante: gastoSeguro.Comprobante || "",
+      comprobante: gastoSeguro.Comprobante || "",
       TipoGasto: gastoSeguro.TipoGasto || "",
       IdVehiculo: gastoSeguro.IdVehiculo || "",
       Proveedor: gastoSeguro.Proveedor || "",
@@ -140,11 +134,9 @@ const GastoVehiculos = () => {
       Fecha: gastoSeguro.Fecha || "",
       Descripcion: gastoSeguro.Descripcion || "",
     });
-  
+
     setModalEdit(true);
   };
-
-
 
   const fetchTrucks = () => {
     axios
@@ -164,16 +156,17 @@ const GastoVehiculos = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (formValues.Comprobante) {
-  
-      const URL = await uploadToDropbox(formValues.Comprobante);  
+      const URL = await uploadToDropbox(formValues.Comprobante);
 
       if (URL) {
-    
         const updatedFormValues = { ...formValues, Comprobante: URL };
         axios
-          .post("http://www.ecotablasapi.somee.com/api/GastoVehiculos/CrearGastoVehiculo", updatedFormValues)
+          .post(
+            "http://www.ecotablasapi.somee.com/api/GastoVehiculos/CrearGastoVehiculo",
+            updatedFormValues,
+          )
           .then((response) => {
             toast.success("Gasto agregado con éxito");
             fetchMaterials();
@@ -188,7 +181,7 @@ const GastoVehiculos = () => {
       }
     }
   };
-  
+
   useEffect(() => {
     const calculatePieData = () => {
       const categories = {};
@@ -243,7 +236,6 @@ const GastoVehiculos = () => {
     setShowTable(true);
     setShowPieChart(false);
   };
-  
 
   const fields = [
     {
@@ -312,41 +304,41 @@ const GastoVehiculos = () => {
     { field: "Proveedor", label: "Proveedor" },
   ];
 
-
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!gastoId) {
       toast.error("Error: No se encontró el ID del gasto.");
       return;
     }
-  
-    if (!comprobante) { // Verifica si hay un archivo seleccionado
+
+    if (!comprobante) {
+      // Verifica si hay un archivo seleccionado
       toast.error("Error: No se ha seleccionado un archivo para cargar.");
       return;
     }
-  
+
     try {
       const link = await uploadToDropbox(comprobante); // Usa el archivo almacenado en 'comprobante'
-  
+
       if (!link) {
         toast.error("Error: No se pudo generar el enlace para el comprobante.");
         return;
       }
-  
+
       // Crea un objeto con los datos que deseas enviar a la API
       const updatedFormValues = {
         ...formValues,
         Comprobante: link, // Usa la URL devuelta por uploadToDropbox
       };
-  
+
       // No incluyas el archivo 'comprobante' directamente en updatedFormValues
       // En su lugar, puedes enviarlo por separado si tu API lo requiere
-  
+
       axios
         .put(
           `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
-          updatedFormValues
+          updatedFormValues,
         )
         .then((response) => {
           toast.success("Gasto actualizado con éxito");
@@ -362,7 +354,6 @@ const GastoVehiculos = () => {
       toast.error("Error al subir el comprobante");
     }
   };
-  
 
   const cerrarModalEdit = () => setModalEdit(false);
 
@@ -377,8 +368,6 @@ const GastoVehiculos = () => {
     "Descripción",
     "Acciones",
   ];
-
-
 
   const titlesT = [
     { key: "TipoComprobante", label: "Tipo de Comprobante" },
@@ -403,39 +392,37 @@ const GastoVehiculos = () => {
     { key: "Proveedor", label: "Proveedor" },
     { key: "Monto", label: "Monto", type: "number" },
     { key: "Fecha", label: "Fecha", type: "date" },
-    { key: "Descripcion", label: "Descripción",hasActions: true  },
-
+    { key: "Descripcion", label: "Descripción", hasActions: true },
   ];
-
 
   const CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
   const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
-  
+
   const getAccessToken = async () => {
-    const refreshToken = localStorage.getItem('dropboxRefreshToken');
+    const refreshToken = localStorage.getItem("dropboxRefreshToken");
     if (!refreshToken) {
       console.error("No se encontró el refresh token en el localStorage.");
       return null;
     }
-  
-    const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
-      method: 'POST',
+
+    const response = await fetch("https://api.dropboxapi.com/oauth2/token", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        grant_type: 'refresh_token',
+        grant_type: "refresh_token",
         refresh_token: refreshToken,
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
       }),
     });
-  
+
     if (!response.ok) {
       console.error("Error al obtener el access token:", await response.text());
       return null;
     }
-  
+
     const data = await response.json();
     return data.access_token;
   };
@@ -452,9 +439,9 @@ const GastoVehiculos = () => {
   const uploadToDropbox = async (file) => {
     const accessToken = await getAccessToken();
     if (!accessToken) return;
-  
+
     const uploadUrl = "https://content.dropboxapi.com/2/files/upload";
-  
+
     try {
       const dropboxArgs = JSON.stringify({
         path: `/${file.name}`,
@@ -462,7 +449,7 @@ const GastoVehiculos = () => {
         autorename: true,
         mute: false,
       });
-  
+
       // 1. Subir el archivo a Dropbox
       const uploadResponse = await fetch(uploadUrl, {
         method: "POST",
@@ -473,17 +460,21 @@ const GastoVehiculos = () => {
         },
         body: file,
       });
-  
+
       if (!uploadResponse.ok) {
-        console.error("Error al subir el archivo a Dropbox:", await uploadResponse.text());
+        console.error(
+          "Error al subir el archivo a Dropbox:",
+          await uploadResponse.text(),
+        );
         return null;
       }
-  
+
       const fileData = await uploadResponse.json();
       const filePath = fileData.path_lower;
-  
+
       // 2. Verificar si ya existe un enlace compartido
-      const listLinksUrl = "https://api.dropboxapi.com/2/sharing/list_shared_links";
+      const listLinksUrl =
+        "https://api.dropboxapi.com/2/sharing/list_shared_links";
       const listResponse = await fetch(listLinksUrl, {
         method: "POST",
         headers: {
@@ -492,7 +483,7 @@ const GastoVehiculos = () => {
         },
         body: JSON.stringify({ path: filePath }),
       });
-  
+
       if (listResponse.ok) {
         const listData = await listResponse.json();
         if (listData.links && listData.links.length > 0) {
@@ -501,9 +492,10 @@ const GastoVehiculos = () => {
           return existingLink;
         }
       }
-  
+
       // 3. Crear un enlace compartido si no existe
-      const shareUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
+      const shareUrl =
+        "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
       const shareResponse = await fetch(shareUrl, {
         method: "POST",
         headers: {
@@ -515,50 +507,52 @@ const GastoVehiculos = () => {
           settings: { requested_visibility: "public" }, // Asegura que sea visible públicamente
         }),
       });
-  
+
       if (!shareResponse.ok) {
-        console.error("Error al crear el enlace compartido:", await shareResponse.text());
+        console.error(
+          "Error al crear el enlace compartido:",
+          await shareResponse.text(),
+        );
         return null;
       }
-  
+
       const shareData = await shareResponse.json();
       const baseUrl = "https://www.dropbox.com/scl/fi/";
-      const sharedLink = shareData.url.replace(baseUrl, "").split('?')[0];
-      
+      const sharedLink = shareData.url.replace(baseUrl, "").split("?")[0];
 
       const link = `${sharedLink}?dl=1`;
- 
-      return link;      
-  
+
+      return link;
     } catch (error) {
       console.error("Error en la solicitud a Dropbox:", error);
       return null;
     }
   };
-const indexOfLastItem = currentPage * itemsPerPage;
-const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-const currentItems = (filteredData.length > 0 ? filteredData : dataV).slice(
-  indexOfFirstItem,
-  indexOfLastItem
-);
-const totalPages = Math.ceil((filteredData.length > 0 ? filteredData.length : dataV.length) / itemsPerPage);
+  const currentItems = (filteredData.length > 0 ? filteredData : dataV).slice(
+    indexOfFirstItem,
+    indexOfLastItem,
+  );
+  const totalPages = Math.ceil(
+    (filteredData.length > 0 ? filteredData.length : dataV.length) /
+      itemsPerPage,
+  );
 
-const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   const [data, setData] = useState(dataV);
- 
+
   useEffect(() => {
     setData(dataV);
   }, [dataV]);
 
-
   const handleSort = (campo) => {
- 
     let direction = "asc";
     if (sortConfig.campo === campo && sortConfig.direction === "asc") {
       direction = "desc";
     }
-  
+
     const sortedData = [...dataV].sort((a, b) => {
       if (a[campo] < b[campo]) {
         return direction === "asc" ? -1 : 1;
@@ -568,23 +562,23 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
       }
       return 0;
     });
-  
+
     setData(sortedData);
     setSortConfig({ campo, direction });
   };
 
   const actions = [
     {
-      allowedRoles: ["admin","supervisor", ],
+      allowedRoles: ["admin", "supervisor"],
       render: (item) => (
         <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
-            <button
-                        onClick={() => abrirModalEdit(item)}
-                        className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        <FiEdit />
-                        Modificar
-                      </button>
+          <button
+            onClick={() => abrirModalEdit(item)}
+            className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FiEdit />
+            Modificar
+          </button>
           <DeleteButton
             endpoint="http://www.ecotablasapi.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
             id={item.IdGasto}
@@ -595,84 +589,83 @@ const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
     },
   ];
 
-const [lineData, setLineData] = useState({});
+  const [lineData, setLineData] = useState({});
 
-const calculateLineData = () => {
-  const groupedByDate = {};
+  const calculateLineData = () => {
+    const groupedByDate = {};
 
-  dataV.forEach((item) => {
-    const date = new Date(item.Fecha);
-    const month = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
-    groupedByDate[month] = (groupedByDate[month] || 0) + parseFloat(item.Monto);
-  });
+    dataV.forEach((item) => {
+      const date = new Date(item.Fecha);
+      const month = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
+      groupedByDate[month] =
+        (groupedByDate[month] || 0) + parseFloat(item.Monto);
+    });
 
-  const sortedKeys = Object.keys(groupedByDate).sort();
-  const labels = sortedKeys;
-  const data = sortedKeys.map((key) => groupedByDate[key]);
+    const sortedKeys = Object.keys(groupedByDate).sort();
+    const labels = sortedKeys;
+    const data = sortedKeys.map((key) => groupedByDate[key]);
 
-  return {
-    labels,
-    datasets: [
-      {
-        label: "Gastos Mensuales",
-        data,
-        fill: false,
-        borderColor: "#7DD3FC", // Color más claro (azul pastel)
-        backgroundColor: "#1D27FF", // Fondo a
-        tension: 0.4,
-      },
-    ],
+    return {
+      labels,
+      datasets: [
+        {
+          label: "Gastos Mensuales",
+          data,
+          fill: false,
+          borderColor: "#7DD3FC", // Color más claro (azul pastel)
+          backgroundColor: "#1D27FF", // Fondo a
+          tension: 0.4,
+        },
+      ],
+    };
   };
-};
 
-useEffect(() => {
-  setLineData(calculateLineData());
-}, [dataV]);
+  useEffect(() => {
+    setLineData(calculateLineData());
+  }, [dataV]);
 
-const lineOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: true, // Muestra la leyenda
-      position: "top", // Posición de la leyenda
-    },
-    tooltip: {
-      enabled: true, // Habilita los tooltips
-    },
-    // Configura el fondo del gráfico
-    backgroundColor: {
-      color: "#FFFFFF", // Fondo del gráfico (gris claro)
-    },
-  },
-  scales: {
-    x: {
-      title: {
-        display: true,
-        text: "Meses",
+  const lineOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true, // Muestra la leyenda
+        position: "top", // Posición de la leyenda
+      },
+      tooltip: {
+        enabled: true, // Habilita los tooltips
+      },
+      // Configura el fondo del gráfico
+      backgroundColor: {
+        color: "#FFFFFF", // Fondo del gráfico (gris claro)
       },
     },
-    y: {
-      title: {
-        display: true,
-        text: "Monto ($)",
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Meses",
+        },
       },
-      beginAtZero: true,
+      y: {
+        title: {
+          display: true,
+          text: "Monto ($)",
+        },
+        beginAtZero: true,
+      },
     },
-  },
-};
-const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
+  };
+  const total = dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0);
   return (
     <SectionLayout title="Gastos de Vehículos">
-
-<div className="flex flex-wrap items-center gap-1">
+      <div className="flex flex-wrap items-center gap-1">
         <AddButtonWa
           abrirModal={() => setModalAbierto(true)}
           title="Añadir gastos"
         />
         <PdfGenerator columns={titles} data={dataV} title="Reporte de gastos" />
         <DataView ShowTable={handleShowTable} />
-
 
         <button
           aria-label="Ver gráficos"
@@ -712,7 +705,6 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
           handleChange={handleChange}
           handleEditSubmit={handleEditSubmit} // Cambia el manejador al de edición
           cerrarModalEdit={cerrarModalEdit} // Cambia al cierre de modal de edición
-          
         />
       )}
 
@@ -720,110 +712,98 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
         loading ? (
           <LoadingTable loading={loading} />
         ) : (
-
           <TableComponent
-          data={data}
-          titles={titlesT}
-          sortConfig={sortConfig}
-          onSort={handleSort}
-          hasMaterial={true}
-          actions={actions}
-        />
-    
+            data={data}
+            titles={titlesT}
+            sortConfig={sortConfig}
+            onSort={handleSort}
+            hasMaterial={true}
+            actions={actions}
+          />
 
+          // // <tbody>
+          //   {sortedData.map((item, index) => (
+          //     <tr key={index} className="hover:bg-gray-100 text-sm md:text-base">
 
-    // // <tbody>
-    //   {sortedData.map((item, index) => (
-    //     <tr key={index} className="hover:bg-gray-100 text-sm md:text-base">
+          //       <td className="border-b py-3 px-4 text-left">
+          //         <span className="font-semibold lg:hidden">Tipo Comprobante: </span>
+          //         {item.TipoComprobante}
+          //       </td>
 
-    //       <td className="border-b py-3 px-4 text-left">
-    //         <span className="font-semibold lg:hidden">Tipo Comprobante: </span>
-    //         {item.TipoComprobante}
-    //       </td>
-          
-    //       {/* Comprobante */}
-    //       <td className="border-b py-3 px-4 text-left">
-    //         <span className="font-semibold lg:hidden">Comprobante: </span>
-    //         {item.Comprobante ? (
-    //           <a
-    //             href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
-    //             className="text-blue-500 flex items-center gap-1"
-    //             target="_blank"
-    //             rel="noopener noreferrer"
-    //           >
-    //             <HiMiniLink className="m-1" /> Comprobante
-    //           </a>
-    //         ) : (
-    //           "No disponible"
-    //         )}
-    //       </td>
-          
-    //       {/* Tipo de Gasto */}
-    //       <td className="border-b py-3 px-4 text-left">
-    //         <span className="font-semibold lg:hidden">Tipo Gasto: </span>
-    //         {item.TipoGasto}
-    //       </td>
-          
-    //       {/* Vehículo */}
-    //       <td className="border-b py-3 px-4 text-left">
-    //         <span className="font-semibold lg:hidden">Vehículo: </span>
-    //         {getVehicleById(item.IdVehiculo)}
-    //       </td>
-          
+          //       {/* Comprobante */}
+          //       <td className="border-b py-3 px-4 text-left">
+          //         <span className="font-semibold lg:hidden">Comprobante: </span>
+          //         {item.Comprobante ? (
+          //           <a
+          //             href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
+          //             className="text-blue-500 flex items-center gap-1"
+          //             target="_blank"
+          //             rel="noopener noreferrer"
+          //           >
+          //             <HiMiniLink className="m-1" /> Comprobante
+          //           </a>
+          //         ) : (
+          //           "No disponible"
+          //         )}
+          //       </td>
 
-    //       <td className="border-b py-3 px-4 text-left">
-    //         <span className="font-semibold lg:hidden">Proveedor: </span>
-    //         {item.Proveedor}
-    //       </td>
-        
-    //       <td className="border-b py-3 px-4 text-right">
-    //         <span className="font-semibold lg:hidden">Monto: </span>
-    //         ${item.Monto}
-    //       </td>
-          
+          //       {/* Tipo de Gasto */}
+          //       <td className="border-b py-3 px-4 text-left">
+          //         <span className="font-semibold lg:hidden">Tipo Gasto: </span>
+          //         {item.TipoGasto}
+          //       </td>
 
-    //       <td className="border-b py-3 px-4 text-right">
-    //         <span className="font-semibold lg:hidden">Fecha: </span>
-    //         {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
-    //       </td>
- 
-    //       <td className="border-b py-3 px-4 text-left">
-    //         <span className="font-semibold lg:hidden">Descripción: </span>
-    //         {item.Descripcion}
-    //       </td>
-      
-    //       <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
-         
-    //         <button
-    //           onClick={() => {
-    //             setGastoEdit(item);
-    //             setFormValues(item);
-    //             setModalEdit(true);
-    //           }}
-    //           className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-    //         >
-    //           <FiEdit className="m-1" />
-    //           Modificar
-    //         </button>
-            
-    //         {/* Borrar */}
-    //         <DeleteButton
-    //           endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
-    //           id={item.IdGasto}
-    //           updateList={fetchMaterials}
-    //         />
-    //       </td>
-    //     </tr>
-    //   ))}
-    // </tbody>
-  // </table>
+          //       {/* Vehículo */}
+          //       <td className="border-b py-3 px-4 text-left">
+          //         <span className="font-semibold lg:hidden">Vehículo: </span>
+          //         {getVehicleById(item.IdVehiculo)}
+          //       </td>
 
- 
+          //       <td className="border-b py-3 px-4 text-left">
+          //         <span className="font-semibold lg:hidden">Proveedor: </span>
+          //         {item.Proveedor}
+          //       </td>
 
+          //       <td className="border-b py-3 px-4 text-right">
+          //         <span className="font-semibold lg:hidden">Monto: </span>
+          //         ${item.Monto}
+          //       </td>
 
+          //       <td className="border-b py-3 px-4 text-right">
+          //         <span className="font-semibold lg:hidden">Fecha: </span>
+          //         {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
+          //       </td>
 
+          //       <td className="border-b py-3 px-4 text-left">
+          //         <span className="font-semibold lg:hidden">Descripción: </span>
+          //         {item.Descripcion}
+          //       </td>
 
+          //       <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
 
+          //         <button
+          //           onClick={() => {
+          //             setGastoEdit(item);
+          //             setFormValues(item);
+          //             setModalEdit(true);
+          //           }}
+          //           className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          //         >
+          //           <FiEdit className="m-1" />
+          //           Modificar
+          //         </button>
+
+          //         {/* Borrar */}
+          //         <DeleteButton
+          //           endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
+          //           id={item.IdGasto}
+          //           updateList={fetchMaterials}
+          //         />
+          //       </td>
+          //     </tr>
+          //   ))}
+          // </tbody>
+          // </table>
         )
       ) : showPieChart ? (
         <div className="flex flex-row mt-20 content-center justify-center items-center h-96 ">
@@ -834,20 +814,17 @@ const total=dataV.reduce((acc, curr) => acc + parseFloat(curr.Monto), 0)
             </div>
             <p className=" text-centermt-2 text-center text-gray-200 ">Total de gastos: ${total}</p>
           </div> */}
- <div className="flex-1 min-w-[700px] max-w-[00px]  p-4  shadow-md rounded-md">
-          {/* <h2 className="text-lg font-medium text-white text-center mb-4">
+          <div className="flex-1 min-w-[700px] max-w-[00px]  p-4  shadow-md rounded-md">
+            {/* <h2 className="text-lg font-medium text-white text-center mb-4">
             Gastos de Vehículos
           </h2> */}
-          <div className="h-[500px]  mb-4">
-        <GastoVehiculosDataPicker />
+            <div className="h-[500px]  mb-4">
+              <GastoVehiculosDataPicker />
+            </div>
           </div>
         </div>
-
-        </div>
       ) : (
-        <div className="w-full h-96">
-         
-        </div>
+        <div className="w-full h-96"></div>
       )}
     </SectionLayout>
   );

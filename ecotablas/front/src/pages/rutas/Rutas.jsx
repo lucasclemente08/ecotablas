@@ -5,7 +5,7 @@ import AddPointsModal from "../../components/AddPointsModal";
 import AssignEmployeesModal from "../../components/AssignEmployeesModal";
 import ModifyEmployeesModal from "../../components/ModifyEmployeesModal";
 import { MdOutlineEditLocationAlt } from "react-icons/md";
-import ModifyPointsModal from "../../components/ModifyPointsModal"; 
+import ModifyPointsModal from "../../components/ModifyPointsModal";
 import { FiEdit } from "react-icons/fi";
 import MapComponent from "../../components/MapComponent";
 import DeleteButton from "../../components/buttons/DeleteButton";
@@ -23,12 +23,14 @@ import { toast } from "sonner"; // Importar toast para mostrar mensajes
 const Rutas = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddPointsModalOpen, setIsAddPointsModalOpen] = useState(false);
-  const [isAssignEmployeesModalOpen, setIsAssignEmployeesModalOpen] = useState(false);
-  const [isModifyEmployeesModalOpen, setIsModifyEmployeesModalOpen] = useState(false);
+  const [isAssignEmployeesModalOpen, setIsAssignEmployeesModalOpen] =
+    useState(false);
+  const [isModifyEmployeesModalOpen, setIsModifyEmployeesModalOpen] =
+    useState(false);
   const [isModifyPointsModalOpen, setIsModifyPointsModalOpen] = useState(false);
   const [routes, setRoutes] = useState([]);
   const [selectedRoute, setSelectedRoute] = useState(null);
-  const [assignedEmployees, setAssignedEmployees] = useState([]); 
+  const [assignedEmployees, setAssignedEmployees] = useState([]);
   const [empleados, setEmpleados] = useState([]);
   const [routePoints, setRoutePoints] = useState([]);
   const [newRouteId, setNewRouteId] = useState(null);
@@ -57,35 +59,43 @@ const Rutas = () => {
 
   useEffect(() => {
     const fetchEmpleados = async () => {
-      const response = await axios.get("http://www.ecotablasapi.somee.com/api/Empleados/ListarTodo");
+      const response = await axios.get(
+        "http://www.ecotablasapi.somee.com/api/Empleados/ListarTodo",
+      );
       setEmpleados(response.data || []);
     };
     fetchEmpleados();
   }, []);
   const getNombreEmpleado = (idEmpleado) => {
     const empleado = empleados.find((e) => e.IdEmpleado === idEmpleado);
-    return empleado ? `${empleado.Nombre} ${empleado.Apellido} (${empleado.DNI})` : "Desconocido";
+    return empleado
+      ? `${empleado.Nombre} ${empleado.Apellido} (${empleado.DNI})`
+      : "Desconocido";
   };
-  {assignedEmployees.map((empleado) => (
-    <li key={empleado.IdEmpleado} className="text-gray-600">
-      {getNombreEmpleado(empleado.IdEmpleado)}
-    </li>
-  ))}
+  {
+    assignedEmployees.map((empleado) => (
+      <li key={empleado.IdEmpleado} className="text-gray-600">
+        {getNombreEmpleado(empleado.IdEmpleado)}
+      </li>
+    ));
+  }
   const handleSaveRoute = async (route) => {
     try {
       // Crear la ruta en el backend
-      const response = await axios.post("http://www.ecotablasapi.somee.com/api/Rutas/Insertar", route);
+      const response = await axios.post(
+        "http://www.ecotablasapi.somee.com/api/Rutas/Insertar",
+        route,
+      );
       console.log("Ruta creada exitosamente");
-  
+
       // Obtener el IdRuta de la respuesta
       const idRuta = response.data.IdRuta;
       setNewRouteId(idRuta); // Guardar el ID de la ruta
       console.log("ID de la nueva ruta:", idRuta);
-  
+
       // Cerrar el modal de creación de ruta y abrir el modal de agregar puntos
       setIsModalOpen(false);
       setIsAddPointsModalOpen(true);
-  
     } catch (error) {
       console.error("Error al crear la ruta:", error);
       alert("Hubo un error al crear la ruta. Por favor, inténtalo de nuevo.");
@@ -94,20 +104,21 @@ const Rutas = () => {
   // Maneja el guardado de puntos
   const handleSavePoints = async (points) => {
     console.log("Puntos a guardar:", points);
-  
+
     try {
       // Enviar los puntos uno por uno
       for (const punto of points) {
-        await axios.post("http://www.ecotablasapi.somee.com/api/PuntosRuta/Insertar", punto);
-       
+        await axios.post(
+          "http://www.ecotablasapi.somee.com/api/PuntosRuta/Insertar",
+          punto,
+        );
       }
       toast.success("Punto guardado exitosamente.");
       // Cerrar el modal de agregar puntos
       setIsAddPointsModalOpen(false);
-     
+
       // Abrir el modal de asignar empleados
       setIsAssignEmployeesModalOpen(true);
-  
     } catch (error) {
       console.error("Error al guardar los puntos:", error);
       toast.error("Hubo un problema al guardar los puntos.");
@@ -133,13 +144,12 @@ const Rutas = () => {
       toast.success("Empleado asignado exitosamente.");
       setNewRouteId(null);
 
-      
-
       window.location.reload();
-
     } catch (error) {
       console.error("Error al asignar empleados:", error);
-      alert("Hubo un error al asignar empleados. Por favor, inténtalo de nuevo.");
+      alert(
+        "Hubo un error al asignar empleados. Por favor, inténtalo de nuevo.",
+      );
     }
   };
 
@@ -148,10 +158,10 @@ const Rutas = () => {
     try {
       // Actualizar el estado de empleados asignados
       setAssignedEmployees(empleadosR);
-  
+
       // Cerrar el modal
       setIsModifyEmployeesModalOpen(false);
-  
+
       toast.success("Empleados modificados correctamente.");
     } catch (error) {
       console.error("Error al modificar empleados:", error);
@@ -163,11 +173,15 @@ const Rutas = () => {
 
     try {
       // Eliminar la ruta (esto debería activar la eliminación en cascada en la BD)
-      await axios.delete(`http://www.ecotablasapi.somee.com/api/Rutas/Delete/${selectedRoute.IdRuta}`);
+      await axios.delete(
+        `http://www.ecotablasapi.somee.com/api/Rutas/Delete/${selectedRoute.IdRuta}`,
+      );
       toast.success("Ruta eliminada correctamente.");
 
       // Actualizar la lista de rutas
-      const updatedRoutes = routes.filter((route) => route.IdRuta !== selectedRoute.IdRuta);
+      const updatedRoutes = routes.filter(
+        (route) => route.IdRuta !== selectedRoute.IdRuta,
+      );
       setRoutes(updatedRoutes);
       setFilteredRoutes(updatedRoutes);
 
@@ -181,18 +195,21 @@ const Rutas = () => {
     }
   };
 
-
   const handleRouteClick = async (route) => {
     // Establecer la ruta seleccionada
     setSelectedRoute(route);
-  
+
     try {
       // Obtener los puntos de la ruta usando ListarPorId
-      const pointsResponse = await axios.get(`http://www.ecotablasapi.somee.com/api/PuntosRuta/ListarPorId/${route.IdRuta}`);
+      const pointsResponse = await axios.get(
+        `http://www.ecotablasapi.somee.com/api/PuntosRuta/ListarPorId/${route.IdRuta}`,
+      );
       setRoutePoints(pointsResponse.data || []);
       console.log(pointsResponse);
       // Obtener los empleados asignados usando ListarPorId
-      const employeesResponse = await axios.get(`http://www.ecotablasapi.somee.com/api/RutaxEmpleados/ListarPorId/${route.IdRuta}`);
+      const employeesResponse = await axios.get(
+        `http://www.ecotablasapi.somee.com/api/RutaxEmpleados/ListarPorId/${route.IdRuta}`,
+      );
       setAssignedEmployees(employeesResponse.data || []);
       console.log("Empleados asignados:", employeesResponse.data);
     } catch (error) {
@@ -219,12 +236,15 @@ const Rutas = () => {
 
   return (
     <SectionLayout title={"Rutas y Empleados"}>
-      <AddButtonWa abrirModal={() => setIsModalOpen(true)} title={"Agregar Ruta"} />
+      <AddButtonWa
+        abrirModal={() => setIsModalOpen(true)}
+        title={"Agregar Ruta"}
+      />
 
       {/* Modal de creación de ruta */}
       <ModalRutas
         isOpen={isModalOpen}
-        onClose={() => { 
+        onClose={() => {
           setIsModalOpen(false);
           setNewRouteId(null); // Reiniciar el ID de la ruta
           setSelectedRoute(null); // Reiniciar la ruta seleccionada
@@ -243,13 +263,12 @@ const Rutas = () => {
         routeId={newRouteId}
         onSavePoints={handleSavePoints}
       />
-            <ModifyPointsModal
+      <ModifyPointsModal
         isOpen={isModifyPointsModalOpen}
         onClose={() => setIsModifyPointsModalOpen(false)}
         routeId={selectedRoute?.IdRuta}
         onModifyPoints={handleModifyPoints}
       />
-
 
       {/* Modal de asignar empleados */}
       <AssignEmployeesModal
@@ -269,7 +288,9 @@ const Rutas = () => {
         onModifyEmployees={handleModifyEmployees}
       />
 
-      <h2 className="text-xl font-semibold mt-6 text-gray-400">Rutas Disponibles</h2>
+      <h2 className="text-xl font-semibold mt-6 text-gray-400">
+        Rutas Disponibles
+      </h2>
 
       <div className="mt-4">
         <input
@@ -287,8 +308,12 @@ const Rutas = () => {
                 className="p-4 border bg-slate-100 border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 cursor-pointer"
                 onClick={() => handleRouteClick(route)}
               >
-                <h3 className="text-lg font-semibold text-gray-800">{route.NombreRuta}</h3>
-                <p className="text-gray-600">{new Date(route.Fecha).toLocaleDateString()}</p>
+                <h3 className="text-lg font-semibold text-gray-800">
+                  {route.NombreRuta}
+                </h3>
+                <p className="text-gray-600">
+                  {new Date(route.Fecha).toLocaleDateString()}
+                </p>
               </div>
             ))}
           </div>
@@ -297,67 +322,72 @@ const Rutas = () => {
 
       {/* Detalles de la ruta seleccionada */}
       {selectedRoute && (
-  <div className="mt-6 p-6 border rounded-lg shadow-lg bg-white">
-    {/* Encabezado de la ruta */}
-    <div className="flex justify-between items-center mb-4">
-      <h3 className="text-xl font-bold text-gray-800">
-        Ruta: <span className="text-blue-600">{selectedRoute.NombreRuta}</span>
-      </h3>
-      <div className="flex space-x-2">
-        <button
-          onClick={() => setIsModifyPointsModalOpen(true)}
-          className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-colors"
-        >
-          <MdOutlineEditLocationAlt className="mr-2" />
-          Modificar Puntos
-        </button>
-        <DeleteButton
-          id={selectedRoute.IdRuta}
-          endpoint="http://www.ecotablasapi.somee.com/api/Rutas/Delete"
-          updateList={() => {
-            const updatedRoutes = routes.filter(route => route.IdRuta !== selectedRoute.IdRuta);
-            setRoutes(updatedRoutes);
-            setFilteredRoutes(updatedRoutes);
-            setSelectedRoute(null);
-            setRoutePoints([]);
-            setAssignedEmployees([]);
-            toast.success("Ruta eliminada correctamente.");
-          }}
-        />
-      </div>
-    </div>
+        <div className="mt-6 p-6 border rounded-lg shadow-lg bg-white">
+          {/* Encabezado de la ruta */}
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-gray-800">
+              Ruta:{" "}
+              <span className="text-blue-600">{selectedRoute.NombreRuta}</span>
+            </h3>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => setIsModifyPointsModalOpen(true)}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-colors"
+              >
+                <MdOutlineEditLocationAlt className="mr-2" />
+                Modificar Puntos
+              </button>
+              <DeleteButton
+                id={selectedRoute.IdRuta}
+                endpoint="http://www.ecotablasapi.somee.com/api/Rutas/Delete"
+                updateList={() => {
+                  const updatedRoutes = routes.filter(
+                    (route) => route.IdRuta !== selectedRoute.IdRuta,
+                  );
+                  setRoutes(updatedRoutes);
+                  setFilteredRoutes(updatedRoutes);
+                  setSelectedRoute(null);
+                  setRoutePoints([]);
+                  setAssignedEmployees([]);
+                  toast.success("Ruta eliminada correctamente.");
+                }}
+              />
+            </div>
+          </div>
 
-    {/* Mapa */}
-    <div className="mt-4 border rounded-lg overflow-hidden">
-      <MapComponent points={routePoints} />
-    </div>
+          {/* Mapa */}
+          <div className="mt-4 border rounded-lg overflow-hidden">
+            <MapComponent points={routePoints} />
+          </div>
 
-    {/* Sección de empleados */}
-    <div className="mt-6 bg-gray-50 p-4 rounded-lg">
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="text-lg font-semibold text-gray-800">Empleados Asignados</h3>
-        <button
-          onClick={() => setIsModifyEmployeesModalOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-colors"
-        >
-          <FiEdit className="mr-2" />
-          Modificar Empleados
-        </button>
-      </div>
-      
-      <ul className="mt-3 space-y-2">
-        {assignedEmployees.map((empleado) => (
-          <li 
-            key={empleado.IdEmpleado} 
-            className="bg-white p-3 rounded-lg shadow-sm border border-gray-100"
-          >
-            {getNombreEmpleado(empleado.IdEmpleado)}
-          </li>
-        ))}
-      </ul>
-    </div>
-  </div>
-)}
+          {/* Sección de empleados */}
+          <div className="mt-6 bg-gray-50 p-4 rounded-lg">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Empleados Asignados
+              </h3>
+              <button
+                onClick={() => setIsModifyEmployeesModalOpen(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-colors"
+              >
+                <FiEdit className="mr-2" />
+                Modificar Empleados
+              </button>
+            </div>
+
+            <ul className="mt-3 space-y-2">
+              {assignedEmployees.map((empleado) => (
+                <li
+                  key={empleado.IdEmpleado}
+                  className="bg-white p-3 rounded-lg shadow-sm border border-gray-100"
+                >
+                  {getNombreEmpleado(empleado.IdEmpleado)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
     </SectionLayout>
   );
 };

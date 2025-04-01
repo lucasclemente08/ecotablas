@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, provider,db } from "../../firebase/firebase";
+import { auth, provider, db } from "../../firebase/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { doc,getDoc,setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 const Login = () => {
   const [errors, setErrors] = useState([]);
   const [email, setEmail] = useState("");
@@ -14,10 +14,8 @@ const Login = () => {
     email: "",
   });
 
-const userId=import.meta.env.VITE_DROPBOX_CLIENT_ID;
-const dropboxSecret=import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
-
-
+  const userId = import.meta.env.VITE_DROPBOX_CLIENT_ID;
+  const dropboxSecret = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
 
   const navigate = useNavigate();
 
@@ -28,32 +26,31 @@ const dropboxSecret=import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
 
     try {
       signInWithEmailAndPassword(auth, email, password)
-        .then(async(userCredential) => {
+        .then(async (userCredential) => {
           setUser({
             uid: userCredential.user.uid,
             email: userCredential.user.email,
           });
 
           if (!user || !user.email) {
-            console.error("Error: El objeto 'user' o la propiedad 'email' no están definidos.");
+            console.error(
+              "Error: El objeto 'user' o la propiedad 'email' no están definidos.",
+            );
             return;
           }
-    
+
           const infoUser = user.uid;
           const docuRef = doc(db, `usuarios/${infoUser}`); // Asegúrate de que 'doc' esté definido
-    
-  
-            // Verificar si el usuario ya existe
-            const docSnap = await getDoc(docuRef);
-            if (!docSnap.exists()) {
-              // Si no existe, guardarlo en la base de datos
-              await setDoc(docuRef, {
-                correo: user.email, // Aseguramos que 'email' esté definido
-                role: "viewer",
-              });
-            
-            }
 
+          // Verificar si el usuario ya existe
+          const docSnap = await getDoc(docuRef);
+          if (!docSnap.exists()) {
+            // Si no existe, guardarlo en la base de datos
+            await setDoc(docuRef, {
+              correo: user.email, // Aseguramos que 'email' esté definido
+              role: "viewer",
+            });
+          }
 
           navigate("/permisos");
         })
@@ -68,22 +65,23 @@ const dropboxSecret=import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
     setLoading(false);
   };
 
-  
   const handleClick = () => {
     signInWithPopup(auth, provider)
       .then(async (result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const user = result.user;
-  
+
         if (!user || !user.email) {
-          console.error("Error: El objeto 'user' o la propiedad 'email' no están definidos.");
+          console.error(
+            "Error: El objeto 'user' o la propiedad 'email' no están definidos.",
+          );
           return;
         }
-  
+
         const infoUser = user.uid;
         const docuRef = doc(db, `usuarios/${infoUser}`); // Asegúrate de que 'doc' esté definido
-  
+
         try {
           // Verificar si el usuario ya existe
           const docSnap = await getDoc(docuRef);
@@ -94,7 +92,7 @@ const dropboxSecret=import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
               role: "viewer",
             });
           }
-  
+
           // Navegar a la página de permisos
           navigate("/permisos");
         } catch (dbError) {
@@ -107,11 +105,11 @@ const dropboxSecret=import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
         const errorMessage = error.message;
         const email = error.customData?.email; // Manejar el caso donde 'customData' pueda ser undefined
         const credential = GoogleAuthProvider.credentialFromError(error);
-  
+
         console.error("Error en la autenticación:", errorCode, errorMessage);
       });
   };
-  
+
   return (
     <div className="relative bg-slate-900 flex h-full  w-full md:p-5 font-aeonik ">
       <div className="p-10 h-3/4 text-white w-full md:w-1/2 xl:w-1/3 mx-auto  rounded-xl bg-light-gray ">

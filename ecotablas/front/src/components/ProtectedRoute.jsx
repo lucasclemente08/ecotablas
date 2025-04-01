@@ -12,7 +12,6 @@ const ProtectedRoute = ({ children, roles = [] }) => {
   const effectiveUser = user || (storedUser ? JSON.parse(storedUser) : null);
   const effectiveRole = role || storedRole;
 
-
   if (!effectiveUser) {
     // Si el usuario no está autenticado, redirige a la página de inicio de sesión
     return <Navigate to="/login" replace />;

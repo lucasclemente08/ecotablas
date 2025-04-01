@@ -26,55 +26,42 @@ const Estadisticas = () => {
       .then((response) => response.json())
       .then((data) => setTablasProducidas(data))
       .catch((error) =>
-        console.error("Error al obtener tablas producidas:", error)
+        console.error("Error al obtener tablas producidas:", error),
       );
-
-   
-
-    
   }, []);
 
   const parseFecha = (fecha) => {
     const [day, month, year] = fecha.split("/");
     return `${year}-${month}-${day}`;
   };
-    
+
   useEffect(() => {
     const hoy = new Date().toISOString().slice(0, 10);
-  const maquinarias=getAllMaquinarias()
+    const maquinarias = getAllMaquinarias();
 
     const producidasHoy = tablasProducidas.filter((item) => {
       const fechaItem = parseFecha(item.FechaProduccion);
       return fechaItem === hoy;
     });
 
-    console.log(producidasHoy.length)
-  
+    console.log(producidasHoy.length);
+
     setTablasProducidasHoy(producidasHoy.length);
   }, [tablasProducidas]);
 
-
-
-
   return (
     <SectionLayout title="">
+      <div className="flex flex-wrap justify-center gap-6 mb-8">
+        {/* Total Material Ingresado */}
+        <TotalIncomeMaterial />
 
-<div className="flex flex-wrap justify-center gap-6 mb-8">
-      {/* Total Material Ingresado */}
-    <TotalIncomeMaterial />
-   
-<TotalTableDevelop/>
- 
+        <TotalTableDevelop />
 
+        <ActiveCars />
 
-    
-    <ActiveCars />
-
-   <ActiveMachine />
-      {/* Maquinaria Operativa */}
-
-    </div>
-
+        <ActiveMachine />
+        {/* Maquinaria Operativa */}
+      </div>
 
       <div className="flex flex-wrap justify-center items-start gap-6">
         {/* Maquinaria Chart */}
@@ -97,14 +84,10 @@ const Estadisticas = () => {
           <GastoVehiculoChart />
         </ChartCard>
       </div>
-   
 
       {/* Totales */}
-  
     </SectionLayout>
   );
 };
-
-
 
 export default Estadisticas;

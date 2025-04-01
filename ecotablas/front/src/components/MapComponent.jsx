@@ -10,7 +10,7 @@ const RoutingMachine = ({ points, showInstructions }) => {
 
   useEffect(() => {
     if (points.length < 2) return;
-  
+
     const routingControl = L.Routing.control({
       waypoints: points.map((p) => L.latLng(p.Latitud, p.Longitud)),
       lineOptions: { styles: [{ color: "green", weight: 5 }] },
@@ -18,7 +18,7 @@ const RoutingMachine = ({ points, showInstructions }) => {
       routeWhileDragging: true,
       router: L.Routing.osrmv1({ language: "es" }),
     }).addTo(map);
-  
+
     // Agregar lógica para manejar la visibilidad
     setTimeout(() => {
       const container = document.querySelector(".leaflet-routing-container");
@@ -26,10 +26,10 @@ const RoutingMachine = ({ points, showInstructions }) => {
         container.style.display = showInstructions ? "block" : "none";
       }
     }, 500);
-  
+
     return () => map.removeControl(routingControl);
   }, [points, map, showInstructions]);
-  
+
   return null;
 };
 
@@ -58,19 +58,22 @@ const MapComponent = ({ points = [], onMapClick }) => {
         onClick={onMapClick}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <RoutingMachine points={orderedPoints} showInstructions={showInstructions} />
+        <RoutingMachine
+          points={orderedPoints}
+          showInstructions={showInstructions}
+        />
 
         {orderedPoints.map((punto) => (
-  <Marker key={punto.id} position={[punto.Latitud, punto.Longitud]}>
-    <Popup>Punto {punto.Orden}</Popup>
-  </Marker>
-))}
-
+          <Marker key={punto.id} position={[punto.Latitud, punto.Longitud]}>
+            <Popup>Punto {punto.Orden}</Popup>
+          </Marker>
+        ))}
       </MapContainer>
 
       <button
         className="px-4 py-2 mt-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-all duration-300"
-        onClick={() => setShowInstructions((prev) => !prev)}>
+        onClick={() => setShowInstructions((prev) => !prev)}
+      >
         {showInstructions ? "Ocultar Instrucciones" : "Mostrar Instrucciones"}
       </button>
     </>

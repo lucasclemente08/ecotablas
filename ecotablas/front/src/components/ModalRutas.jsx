@@ -18,17 +18,20 @@ const ModalRutas = ({ isOpen, onClose, onSave }) => {
     onSave(newRoute); // Pasa la ruta creada al componente padre
   };
 
-
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed inset-0 z-10 flex items-center justify-center ${isOpen ? "visible" : "invisible"}`}>
+    <div
+      className={`fixed inset-0 z-10 flex items-center justify-center ${isOpen ? "visible" : "invisible"}`}
+    >
       {/* Fondo oscuro semi-transparente */}
       <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
 
       {/* Contenedor del modal */}
       <div className="relative bg-white rounded-lg p-6 shadow-lg w-11/12 max-w-lg">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Agregar Ruta</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          Agregar Ruta
+        </h2>
 
         {/* Inputs */}
         <input

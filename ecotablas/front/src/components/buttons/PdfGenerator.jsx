@@ -70,9 +70,13 @@ const PdfGenerator = ({ columns, data, title }) => {
         doc.text(
           `Página ${doc.internal.getCurrentPageInfo().pageNumber} de ${pageCount}`,
           data.settings.margin.left,
-          pageHeight - 10
+          pageHeight - 10,
         );
-        doc.text("Gestión de Ecotablas ", data.settings.margin.left, pageHeight - 5);
+        doc.text(
+          "Gestión de Ecotablas ",
+          data.settings.margin.left,
+          pageHeight - 5,
+        );
       },
     });
 

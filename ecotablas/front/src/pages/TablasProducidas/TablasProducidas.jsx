@@ -10,7 +10,6 @@ import {
 } from "../../features/tablasProducidasSlice";
 import SectionLayout from "../../layout/SectionLayout";
 
-
 import TableComponent from "../../components/TableComponent";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
 import { BsClipboardDataFill } from "react-icons/bs";
@@ -22,23 +21,25 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
-import { Toaster, toast } from 'sonner';
-import { editTablas, } from "../../api/TablasProducidaAPI";
+import { Toaster, toast } from "sonner";
+import { editTablas } from "../../api/TablasProducidaAPI";
 import { v4 as uuidv4 } from "uuid";
 
 const TablasProducidas = () => {
   const dispatch = useDispatch();
-  const {tablas: data, loading, error } = useSelector(
-    (state) => state.tablasProducidas,
-  );
-  const [selectedDate, setSelectedDate] = useState("");  // Store the selected date
+  const {
+    tablas: data,
+    loading,
+    error,
+  } = useSelector((state) => state.tablasProducidas);
+  const [selectedDate, setSelectedDate] = useState(""); // Store the selected date
   const [mensaje, setMensaje] = useState("");
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
-  const [currentItems, setCurrentItems] = useState([])
+  const [currentItems, setCurrentItems] = useState([]);
   const [tablaId, setTablaId] = useState(null);
   const [filteredMaterials, setFilteredMaterials] = useState([]);
-  
+
   const [formValues, setFormValues] = useState({
     FechaProduccion: "",
     Dimensiones: "",
@@ -65,9 +66,8 @@ const TablasProducidas = () => {
   const cerrarModal = () => setModalAbierto(false);
 
   const abrirModalEdit = (tabla) => {
-    
     setTablaId(tabla.ID_Tabla);
-   
+
     setFormValues({
       FechaProduccion: tabla.FechaProduccion,
       Dimensiones: tabla.Dimensiones,
@@ -98,15 +98,12 @@ const TablasProducidas = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-;
     await editTablas({ tablaId, formValues });
     toast.success("Registro editado con éxito!");
     setFilteredMaterials((prevMaterials) =>
       prevMaterials.map((data) =>
-        data.ID_Tabla ===tablaId
-          ? { ...data, ...formValues }
-          : data
-      )
+        data.ID_Tabla === tablaId ? { ...data, ...formValues } : data,
+      ),
     );
     cerrarModalEdit();
   };
@@ -119,7 +116,6 @@ const TablasProducidas = () => {
     }));
   };
 
-  
   // const totalPages = Math.ceil(data.length / itemsPerPage);
   // const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -153,26 +149,30 @@ const TablasProducidas = () => {
       console.error("Error al cambiar el estado:", error);
     }
   };
-  
+
   const filterByDate = () => {
     const selectedDateObj = new Date(selectedDate);
     const filteredItems = data.filter((item) => {
       const itemDate = new Date(item.FechaProduccion);
-      return itemDate.toISOString().slice(0, 10) === selectedDateObj.toISOString().slice(0, 10);
+      return (
+        itemDate.toISOString().slice(0, 10) ===
+        selectedDateObj.toISOString().slice(0, 10)
+      );
     });
 
-    setCurrentItems(filteredItems);  // Update displayed items
+    setCurrentItems(filteredItems); // Update displayed items
   };
- 
+
   const fetchMaterials = async () => {
     try {
-      const response = await fetch("http://www.ecotablasapi.somee.com/api/TablaProducidas/ListarTodo"); // Reemplaza "URL_DEL_ENDPOINT" con la URL de tu API
+      const response = await fetch(
+        "http://www.ecotablasapi.somee.com/api/TablaProducidas/ListarTodo",
+      ); // Reemplaza "URL_DEL_ENDPOINT" con la URL de tu API
       if (!response.ok) {
         throw new Error("Error al obtener los datos.");
       }
       const data = await response.json();
       setFilteredMaterials(data);
-      console.log(data);
     } catch (error) {
       toast.error("Error al cargar los materiales.");
       console.error("Error fetching data: ", error);
@@ -180,41 +180,24 @@ const TablasProducidas = () => {
       // Opcional: acciones después de completar la solicitud
     }
   };
-  
+
   useEffect(() => {
     fetchMaterials();
   }, []);
-  
 
-
-
-
-
-
-
-
-
-  
   const [sortConfig, setSortConfig] = useState({ campo: "", direction: "asc" });
   const [dataT, setDataT] = useState(filteredMaterials);
- 
- 
-
-
 
   useEffect(() => {
-
     setDataT(filteredMaterials);
   }, [filteredMaterials]);
 
-
   const handleSort = (campo) => {
- 
     let direction = "asc";
     if (sortConfig.campo === campo && sortConfig.direction === "asc") {
       direction = "desc";
     }
-  
+
     const sortedData = [...filteredMaterials].sort((a, b) => {
       if (a[campo] < b[campo]) {
         return direction === "asc" ? -1 : 1;
@@ -224,95 +207,90 @@ const TablasProducidas = () => {
       }
       return 0;
     });
-  
+
     setDataT(sortedData);
     setSortConfig({ campo, direction });
   };
 
-
   const titlesT = [
-    { label: "Fecha de Producción", key: "FechaProduccion", 
-      
-       
+    {
+      label: "Fecha de Producción",
+      key: "FechaProduccion",
+
       render: (value) => (
         <td className="px-4 py-2 text-left">
-        {value ? value.slice(0, 10) : "Fecha no disponible"}
-      </td>
-        )
+          {value ? value.slice(0, 10) : "Fecha no disponible"}
+        </td>
+      ),
     },
     { label: "Dimensiones", key: "Dimensiones", type: "text" },
     { label: "Peso", key: "Peso", type: "number" },
-    { label: "Código de Identificación", key: "CodigoIdentificacion", type: "text",hasActions:true},
+    {
+      label: "Código de Identificación",
+      key: "CodigoIdentificacion",
+      type: "text",
+      hasActions: true,
+    },
   ];
-  
-
 
   const actions = [
-
-
-
-    
     {
-      allowedRoles: ["admin","supervisor" ],
+      allowedRoles: ["admin", "supervisor"],
       render: (item) => (
         <td className="px-4 py-2 flex justify-center">
-             
-        <button
-          onClick={() => abrirModalEdit(item)}
-          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-        >
-          <FiEdit  className="mr-2"/>
-          Modificar
-        </button>
-        <DeleteButton
-          id={item.ID_Tabla}
-          endpoint={
-            "http://www.ecotablasapi.somee.com/api/TablaProducidas/Borrar"
-          }
-          updateList={fetchMaterials}
-        />
-      </td>
+          <button
+            onClick={() => abrirModalEdit(item)}
+            className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FiEdit className="mr-2" />
+            Modificar
+          </button>
+          <DeleteButton
+            id={item.ID_Tabla}
+            endpoint={
+              "http://www.ecotablasapi.somee.com/api/TablaProducidas/Borrar"
+            }
+            updateList={fetchMaterials}
+          />
+        </td>
       ),
     },
   ];
 
-
-
   return (
     <SectionLayout title="Tablas Producidas">
-    <Toaster />
+      <Toaster />
 
-      <div className="flex items-center">        
-      <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />
-      <PdfGenerator
-        columns={columns}
-        data={data}
-        title="Reporte de Tablas Producidas"
-      />
+      <div className="flex items-center">
+        <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />
+        <PdfGenerator
+          columns={columns}
+          data={data}
+          title="Reporte de Tablas Producidas"
+        />
 
-      <div className=" flex items-center justify-center">
-      <input
-        type="date"
-        onChange={(e) => setSelectedDate(e.target.value)}  // Update the selected date state
-        className="mb-2 p-2 border border-gray-300 rounded"
-      />
+        <div className=" flex items-center justify-center">
+          <input
+            type="date"
+            onChange={(e) => setSelectedDate(e.target.value)} // Update the selected date state
+            className="mb-2 p-2 border border-gray-300 rounded"
+          />
 
-
-      <button 
-        onClick={filterByDate}  // Trigger the filter when clicked
-        className="p-2.5 flex items-center mb-2   ml-2 bg-blue-500 text-white rounded"
-      >
-       <FaSearch className="mr-2 " />   Buscar por fecha 
-      </button>
-      {/* <button 
+          <button
+            onClick={filterByDate} // Trigger the filter when clicked
+            className="p-2.5 flex items-center mb-2   ml-2 bg-blue-500 text-white rounded"
+          >
+            <FaSearch className="mr-2 " /> Buscar por fecha
+          </button>
+          {/* <button 
         onClick={setCurrentItems(data)}  // Trigger the filter when clicked
         className="p-3   ml-2 bg-slate-400 text-white rounded"
       >
         Limpiar busqueda
       </button> */}
-    </div>
-    </div>
-  
+        </div>
+      </div>
+
       {modalAbierto && (
         <AddModalWithSelect
           title="Agregar Tabla Producida"
@@ -360,16 +338,14 @@ const TablasProducidas = () => {
         <LoadingTable loading={loading} />
       ) : (
         <>
-
-<TableComponent
-      data={dataT}
-      titles={titlesT}
-      sortConfig={sortConfig}
-      onSort={handleSort}
-      actions={actions}
-      hasMaterial={true}
-    />
-
+          <TableComponent
+            data={dataT}
+            titles={titlesT}
+            sortConfig={sortConfig}
+            onSort={handleSort}
+            actions={actions}
+            hasMaterial={true}
+          />
 
           {/* <table className="table-auto w-full bg-white rounded-lg shadow-lg">
             <TablaHead titles={titles} />
@@ -385,15 +361,13 @@ const TablasProducidas = () => {
               ))}
             </tbody>
           </table> */}
-{/*          
+          {/*          
           <div className="mt-4 text-white">
             <p>Total Peso: {totalPeso} kg</p>
             <p>Total de Items: {totalItems}</p>
           </div> */}
         </>
       )}
-
-
     </SectionLayout>
   );
 };

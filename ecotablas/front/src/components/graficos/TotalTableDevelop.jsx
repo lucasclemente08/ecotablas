@@ -6,7 +6,9 @@ import { fetchTablasProducidas } from "../../features/tablasProducidasSlice";
 
 const TotalTableDevelop = () => {
   const dispatch = useDispatch();
-  const { data, loading, error } = useSelector((state) => state.tablasProducidas);
+  const { data, loading, error } = useSelector(
+    (state) => state.tablasProducidas,
+  );
 
   const [total, setTotal] = useState(0);
 
@@ -35,8 +37,6 @@ const TotalTableDevelop = () => {
 
     setTotal(producidasHoy.length);
   }, [data]);
-
- 
 
   return (
     <TotalCard

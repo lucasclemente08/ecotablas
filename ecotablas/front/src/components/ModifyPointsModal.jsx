@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvent } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvent,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { toast } from "sonner";
 import axios from "axios";
@@ -18,7 +24,9 @@ const ModifyPointsModal = ({ isOpen, onClose, routeId, onModifyPoints }) => {
     if (isOpen && routeId) {
       const fetchCurrentPoints = async () => {
         try {
-          const response = await axios.get(`http://www.ecotablasapi.somee.com/api/PuntosRuta/ListarPorId/${routeId}`);
+          const response = await axios.get(
+            `http://www.ecotablasapi.somee.com/api/PuntosRuta/ListarPorId/${routeId}`,
+          );
           setPoints(response.data || []);
         } catch (error) {
           console.error("Error al cargar los puntos actuales:", error);
@@ -63,7 +71,9 @@ const ModifyPointsModal = ({ isOpen, onClose, routeId, onModifyPoints }) => {
   // Eliminar puntos actuales antes de asignar nuevos
   const deleteCurrentPoints = async () => {
     try {
-      await axios.delete(`http://www.ecotablasapi.somee.com/api/PuntosRuta/Delete/${routeId}`);
+      await axios.delete(
+        `http://www.ecotablasapi.somee.com/api/PuntosRuta/Delete/${routeId}`,
+      );
     } catch (error) {
       console.error("Error al eliminar puntos actuales:", error);
       toast.error("Hubo un problema al eliminar los puntos actuales.");
@@ -87,7 +97,10 @@ const ModifyPointsModal = ({ isOpen, onClose, routeId, onModifyPoints }) => {
 
       // Asignar nuevos puntos
       for (const punto of points) {
-        await axios.post("http://www.ecotablasapi.somee.com/api/PuntosRuta/Insertar", punto);
+        await axios.post(
+          "http://www.ecotablasapi.somee.com/api/PuntosRuta/Insertar",
+          punto,
+        );
       }
 
       onModifyPoints(points); // Notifica al componente padre
@@ -104,7 +117,9 @@ const ModifyPointsModal = ({ isOpen, onClose, routeId, onModifyPoints }) => {
     <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
       {/* Contenedor del modal */}
       <div className="bg-white rounded-lg p-6 w-11/12 max-w-lg">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Modificar Puntos de Ruta</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          Modificar Puntos de Ruta
+        </h2>
 
         {/* Mapa */}
         <div className="mt-4">
@@ -129,15 +144,21 @@ const ModifyPointsModal = ({ isOpen, onClose, routeId, onModifyPoints }) => {
 
         {/* Lista de puntos agregados */}
         <div className="mt-4">
-          <h3 className="text-lg font-semibold text-gray-800">Puntos agregados:</h3>
+          <h3 className="text-lg font-semibold text-gray-800">
+            Puntos agregados:
+          </h3>
           {points.length === 0 ? (
             <p className="text-sm text-gray-600">No hay puntos agregados.</p>
           ) : (
             <ul className="mt-2">
               {points.map((punto, index) => (
-                <li key={index} className="flex items-center justify-between text-sm text-gray-600">
+                <li
+                  key={index}
+                  className="flex items-center justify-between text-sm text-gray-600"
+                >
                   <span>
-                    Punto {punto.Orden}: Lat {punto.Latitud}, Lng {punto.Longitud}
+                    Punto {punto.Orden}: Lat {punto.Latitud}, Lng{" "}
+                    {punto.Longitud}
                   </span>
                   <button
                     onClick={() => handleRemovePoint(index)}

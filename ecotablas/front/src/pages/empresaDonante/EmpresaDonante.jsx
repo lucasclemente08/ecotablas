@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-
 import { FiEdit } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -19,15 +18,13 @@ import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
 import axios from "axios";
-import TableComponent from "../../components/TableComponent"
-import { Toaster, toast } from 'sonner';
+import TableComponent from "../../components/TableComponent";
+import { Toaster, toast } from "sonner";
 const EmpresaDonante = () => {
   const dispatch = useDispatch();
-  const { data:data,  error } = useSelector((state) => state.empresaDonante);
+  const { data: data, error } = useSelector((state) => state.empresaDonante);
 
-
-
-  const [loading,setloading] = useState(true)
+  const [loading, setloading] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [empresaId, setEmpresaId] = useState(null);
@@ -51,22 +48,20 @@ const EmpresaDonante = () => {
     { header: "Rubro", accessor: "rubro" },
     { header: "Web", accessor: "web" },
     { header: "Cuit", accessor: "Cuit" },
-
   ];
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
 
   useEffect(() => {
-    setloading(false)
+    setloading(false);
     dispatch(fetchEmpresaDonante());
   }, [dispatch]);
-  
+
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => setModalAbierto(false);
   const abrirModalEdit = (empresa) => {
-  
     setEmpresaId(empresa.Id_EmpresaDonante); // Asegurar que se guarde correctamente el ID
-  console.log(empresaId)
+    console.log(empresaId);
     setFormValues({
       Nombre: empresa.Nombre || "",
       Direccion: empresa.Direccion || "",
@@ -80,52 +75,53 @@ const EmpresaDonante = () => {
     });
     setModalEdit(true);
   };
-  
+
   const cerrarModalEdit = () => {
     setModalEdit(false);
-  }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formValues.Nombre || !formValues.Direccion || !formValues.Telefono) {
       toast.error("Por favor completa todos los campos requeridos");
       return;
     }
-axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", formValues,)
-  .then((response) => {
-    // Verificar si la respuesta es exitosa
-    if (response && response.data) {
-      fetchEmpresaDonante();
-      toast.success("Inserción exitosa");
-    } else {
-      toast.error("Error: no se recibió un dato válido de la API.");
-    }
-  })
-  .catch((error) => {
-    toast.error(`Error en la solicitud: ${error.message}`);
-  })
-  .finally(() => {
-  
-    cerrarModal();
-  });
-  }
-
+    axios
+      .post(
+        "http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar",
+        formValues,
+      )
+      .then((response) => {
+        // Verificar si la respuesta es exitosa
+        if (response && response.data) {
+          fetchEmpresaDonante();
+          toast.success("Inserción exitosa");
+        } else {
+          toast.error("Error: no se recibió un dato válido de la API.");
+        }
+      })
+      .catch((error) => {
+        toast.error(`Error en la solicitud: ${error.message}`);
+      })
+      .finally(() => {
+        cerrarModal();
+      });
+  };
 
   const handleEditSubmit = (e) => {
-  
     e.preventDefault();
     if (!formValues.Nombre || !formValues.Direccion || !formValues.Telefono) {
-      toast.error('Por favor completa todos los campos requeridos');
+      toast.error("Por favor completa todos los campos requeridos");
     }
-  
+
     axios
       .put(
         `http://www.ecotablasapi.somee.com/api/EmpresaDonante/Modificar/${empresaId}`,
-        formValues
+        formValues,
       )
       .then(() => {
         setModalEdit(false);
-     fetchEmpresaDonante();
-  
+        fetchEmpresaDonante();
+
         toast.success("Material actualizado!", { autoClose: 3000 });
       })
       .catch((error) => {
@@ -133,9 +129,6 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
         toast.error("Hubo un error al actualizar.", { autoClose: 3000 }); // ⬅️ Agregué un toast de error
       });
   };
-  
-
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -145,76 +138,74 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
     }));
   };
   const titlesT = [
-    { 
-      key: "Nombre", 
+    {
+      key: "Nombre",
       label: "Nombre",
-      type: "text" // Texto alineado a la izquierda
+      type: "text", // Texto alineado a la izquierda
     },
-    { 
-      key: "Direccion", 
+    {
+      key: "Direccion",
       label: "Dirección",
-      type: "text" // Texto alineado a la izquierda
+      type: "text", // Texto alineado a la izquierda
     },
-    { 
-      key: "Telefono", 
+    {
+      key: "Telefono",
       label: "Teléfono",
-      type: "number" // Números alineados a la derecha
+      type: "number", // Números alineados a la derecha
     },
-    { 
-      key: "Email", 
+    {
+      key: "Email",
       label: "Email",
-      type: "text" // Texto alineado a la izquierda
+      type: "text", // Texto alineado a la izquierda
     },
-    { 
-      key: "TipoPlastico", 
+    {
+      key: "TipoPlastico",
       label: "Tipo de Plástico",
-      type: "text" // Texto alineado a la izquierda
+      type: "text", // Texto alineado a la izquierda
     },
-    { 
-      key: "Rubro", 
+    {
+      key: "Rubro",
       label: "Rubro",
-      type: "text" // Texto alineado a la izquierda
+      type: "text", // Texto alineado a la izquierda
     },
-    { 
-      key: "Web", 
+    {
+      key: "Web",
       label: "Web",
       type: "text", // Texto alineado a la izquierda (aunque el render personalizado sobrescribe esto)
-      render: (value) => (
+      render: (value) =>
         value ? (
-          <a
-            href={value}
-            className="text-blue-600 font-normal hover:underline"
-          >
+          <a href={value} className="text-blue-600 font-normal hover:underline">
             {value}
           </a>
-        ) : "No disponible"
-      ),
-      hasActions: true 
+        ) : (
+          "No disponible"
+        ),
+      hasActions: true,
     },
-    { 
-      key: "DonacionesDisponibles", 
+    {
+      key: "DonacionesDisponibles",
       label: "Donaciones Disponibles",
-      type: "text" // Números alineados a la derecha
+      type: "text", // Números alineados a la derecha
     },
   ];
   const actions = [
     {
-      allowedRoles: ["admin","supervisor", ],
+      allowedRoles: ["admin", "supervisor"],
       render: (item) => (
         <td className="px-4 py-2 flex">
-
-        <button
-          onClick={() => abrirModalEdit(item)}
-          className="bg-yellow-700 ml-2 flex justify-center items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105">
-              <FiEdit  className="mr-1"/>
-          Modificar
-        </button>
-        <DeleteButton
-          endpoint="http://www.ecotablasapi.somee.com/api/EmpresaDonante/Borrar"
-          updateList={() => dispatch(fetchEmpresaDonante())}
-          id={item.Id_EmpresaDonante}
-        />
-      </td>
+          <button
+            onClick={() => abrirModalEdit(item)}
+            className="bg-yellow-700 ml-2 flex justify-center items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FiEdit className="mr-1" />
+            Modificar
+          </button>
+          <DeleteButton
+            endpoint="http://www.ecotablasapi.somee.com/api/EmpresaDonante/Borrar"
+            updateList={() => dispatch(fetchEmpresaDonante())}
+            id={item.Id_EmpresaDonante}
+          />
+        </td>
       ),
     },
   ];
@@ -225,12 +216,11 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
   }, [data]);
 
   const handleSort = (campo) => {
- 
     let direction = "asc";
     if (sortConfig.campo === campo && sortConfig.direction === "asc") {
       direction = "desc";
     }
-  
+
     const sortedData = [...dataE].sort((a, b) => {
       if (a[campo] < b[campo]) {
         return direction === "asc" ? -1 : 1;
@@ -240,21 +230,20 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
       }
       return 0;
     });
-  console.log(sortedData)
+    console.log(sortedData);
     setDataE(sortedData);
 
     setSortConfig({ campo, direction });
   };
   return (
     <SectionLayout title="Empresas Donantes">
-        <Toaster />
+      <Toaster />
       <AddButtonWa abrirModal={abrirModal} title="Añadir Empresa Donante" />
       <PdfGenerator
         columns={columns}
         data={data}
         title="Reporte de Empresas Donantes"
       />
-
 
       {modalAbierto && (
         <AddModalWithSelect
@@ -277,7 +266,11 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
             },
             { name: "Rubro", label: "Rubro", type: "text" },
             { name: "Web", label: "Web", type: "text" },
-            { name: "DonacionesDisponibles", label: "Donaciones Disponibles", type: "text" },
+            {
+              name: "DonacionesDisponibles",
+              label: "Donaciones Disponibles",
+              type: "text",
+            },
           ]}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
@@ -304,7 +297,11 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
             },
             { name: "Rubro", label: "Rubro", type: "text" },
             { name: "Web", label: "Web", type: "text" },
-            { name: "DonacionesDisponibles", label: "Donaciones Disponibles", type: "text" },
+            {
+              name: "DonacionesDisponibles",
+              label: "Donaciones Disponibles",
+              type: "text",
+            },
             { name: "CUIT", label: "CUIT", type: "text" },
           ]}
           formValues={formValues}
@@ -314,13 +311,13 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
         />
       )}
       <TableComponent
-      data={dataE}
-      titles={titlesT}
-      sortConfig={sortConfig}
-      onSort={handleSort}
-      actions={actions}
-      hasMaterial={true}
-    />
+        data={dataE}
+        titles={titlesT}
+        sortConfig={sortConfig}
+        onSort={handleSort}
+        actions={actions}
+        hasMaterial={true}
+      />
 
       {/* <tbody>
         {currentItems.map((item) => (
@@ -343,10 +340,6 @@ axios.post("http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar", form
           </tr>
         ))}
       </tbody> */}
-     
-    
-
-
     </SectionLayout>
   );
 };

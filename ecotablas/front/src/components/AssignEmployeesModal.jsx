@@ -3,7 +3,12 @@ import { getEmpleados, assignEmployeesToRoute } from "../api/RutasAPI";
 import { toast } from "sonner";
 import axios from "axios";
 
-const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) => {
+const AssignEmployeesModal = ({
+  isOpen,
+  onClose,
+  routeId,
+  onAssignEmployees,
+}) => {
   const [empleados, setEmpleados] = useState([]);
   const [selectedEmpleados, setSelectedEmpleados] = useState([]);
   const [empleadosR, setEmpleadosR] = useState([]);
@@ -16,7 +21,9 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
         setEmpleados(response.data); // Ajusta según la respuesta de tu API
       } catch (error) {
         console.error("Error al cargar los empleados:", error);
-        alert("Hubo un error al cargar los empleados. Por favor, inténtalo de nuevo.");
+        alert(
+          "Hubo un error al cargar los empleados. Por favor, inténtalo de nuevo.",
+        );
       }
     };
     fetchEmpleados();
@@ -32,7 +39,7 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
       // Si el empleado no está seleccionado, lo agregamos
       setSelectedEmpleados([...selectedEmpleados, idEmpleado]);
     }
-  
+
     // Actualizar el array empleadosR
     setEmpleadosR((prevEmpleadosR) => {
       // Si el empleado ya está en empleadosR, lo eliminamos
@@ -54,7 +61,10 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
 
     try {
       for (const empleadoRt of empleadosR)
-      await axios.post("http://www.ecotablasapi.somee.com/api/RutaxEmpleados/Insertar", empleadoRt);
+        await axios.post(
+          "http://www.ecotablasapi.somee.com/api/RutaxEmpleados/Insertar",
+          empleadoRt,
+        );
       console.log("Empleados seleccionados para guardar:", selectedEmpleados); // Muestra los empleados seleccionados
       console.log("Route ID para asignar empleados:", routeId); // Muestra el ID de la ruta
 
@@ -69,17 +79,20 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
     }
   };
 
-
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-lg p-6 w-11/12 max-w-lg">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Asignar Empleados</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          Asignar Empleados
+        </h2>
 
         {/* Lista de empleados */}
         <div className="mt-4">
-          <h3 className="text-lg font-semibold text-gray-800">Selecciona los empleados:</h3>
+          <h3 className="text-lg font-semibold text-gray-800">
+            Selecciona los empleados:
+          </h3>
           <ul className="mt-2">
             {empleados.map((empleado) => (
               <li key={empleado.IdEmpleado} className="flex items-center mt-2">
@@ -90,7 +103,9 @@ const AssignEmployeesModal = ({ isOpen, onClose, routeId, onAssignEmployees }) =
                   onChange={() => handleCheckboxChange(empleado.IdEmpleado)}
                   className="mr-2"
                 />
-                <span className="text-sm text-gray-600">{empleado.Nombre} {empleado.Apellido} ({empleado.DNI})</span>
+                <span className="text-sm text-gray-600">
+                  {empleado.Nombre} {empleado.Apellido} ({empleado.DNI})
+                </span>
               </li>
             ))}
           </ul>

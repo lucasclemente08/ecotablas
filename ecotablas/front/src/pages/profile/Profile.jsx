@@ -46,8 +46,19 @@ const Profile = () => {
     return () => unsubscribe();
   }, [auth, db]);
 
-  if (loading) return <SectionLayout className="text-center text-white " title="Cargando Perfil" ></SectionLayout>;
-  if (!userProfile) return <p className="text-center text-white">No se encontró el perfil del usuario.</p>;
+  if (loading)
+    return (
+      <SectionLayout
+        className="text-center text-white "
+        title="Cargando Perfil"
+      ></SectionLayout>
+    );
+  if (!userProfile)
+    return (
+      <p className="text-center text-white">
+        No se encontró el perfil del usuario.
+      </p>
+    );
 
   return (
     <SectionLayout title="Perfil">
@@ -65,7 +76,9 @@ const Profile = () => {
               <span className="text-white text-2xl">?</span>
             </div>
           )}
-          <h2 className="text-2xl text-teal-400 font-bold">{userProfile.nombre}</h2>
+          <h2 className="text-2xl text-teal-400 font-bold">
+            {userProfile.nombre}
+          </h2>
         </div>
 
         {/* Detalles del usuario */}
@@ -87,7 +100,9 @@ const Profile = () => {
             <p className="text-lg">{userProfile.fechaCreacion}</p>
           </div>
           <div className="bg-slate-800 p-4 rounded-md shadow-md">
-            <p className="text-sm text-gray-400 uppercase">Último inicio de sesión</p>
+            <p className="text-sm text-gray-400 uppercase">
+              Último inicio de sesión
+            </p>
             <p className="text-lg">{userProfile.ultimoInicioSesion}</p>
           </div>
         </div>

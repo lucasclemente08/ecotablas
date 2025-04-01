@@ -2,18 +2,16 @@ import React from "react";
 import MenuSection from "./MenuSection";
 import { ImTruck } from "react-icons/im";
 import { RiTeamFill, RiRecycleFill } from "react-icons/ri";
-import { FaTools, FaDollarSign,FaUserPlus } from "react-icons/fa";
+import { FaTools, FaDollarSign, FaUserPlus } from "react-icons/fa";
 import { useEffect } from "react";
 
 import { useRole } from "../context/RoleContext";
 const LinksBar = ({ isOpen }) => {
+  const role = useRole();
 
-  const role=useRole();
-  
-
-useEffect(() => {
-  console.log(role);
-},[])
+  useEffect(() => {
+    console.log(role);
+  }, []);
 
   const employeeMenus = [
     { title: "Empleados", link: "/empleados" },
@@ -46,7 +44,6 @@ useEffect(() => {
     { title: "Gastos de vehículos", link: "/gastos/vehiculos" },
     { title: "Gastos de maquinaria", link: "/gastos/maquinaria" },
   ];
-  
 
   const adminMenus = [
     { title: "Gestión de Usuarios", link: "/admin" },
@@ -55,13 +52,44 @@ useEffect(() => {
   ];
   return (
     <>
- {role.role === "admin" && <MenuSection title="Administración" menus={adminMenus} icon={<FaUserPlus />} isOpen={isOpen} />}
-      <MenuSection title="Empleados" menus={employeeMenus} icon={<RiTeamFill />} isOpen={isOpen} />
-      <MenuSection title="Recolección" menus={urbanMenus} icon={<ImTruck />} isOpen={isOpen} />
-      <MenuSection title="Materiales" menus={materialMenus} icon={<RiRecycleFill />} isOpen={isOpen} />
-      <MenuSection title="Maquinaria" menus={machinesMenus} icon={<FaTools />} isOpen={isOpen} />
-      <MenuSection title="Gastos" menus={ExpensesMenus} icon={<FaDollarSign />} isOpen={isOpen} />
-
+      {role.role === "admin" && (
+        <MenuSection
+          title="Administración"
+          menus={adminMenus}
+          icon={<FaUserPlus />}
+          isOpen={isOpen}
+        />
+      )}
+      <MenuSection
+        title="Empleados"
+        menus={employeeMenus}
+        icon={<RiTeamFill />}
+        isOpen={isOpen}
+      />
+      <MenuSection
+        title="Recolección"
+        menus={urbanMenus}
+        icon={<ImTruck />}
+        isOpen={isOpen}
+      />
+      <MenuSection
+        title="Materiales"
+        menus={materialMenus}
+        icon={<RiRecycleFill />}
+        isOpen={isOpen}
+      />
+      <MenuSection
+        title="Maquinaria"
+        menus={machinesMenus}
+        icon={<FaTools />}
+        isOpen={isOpen}
+      />
+      <MenuSection
+        title="Gastos"
+        menus={ExpensesMenus}
+        icon={<FaDollarSign />}
+        isOpen={isOpen}
+      />
     </>
   );
 };

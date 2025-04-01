@@ -10,7 +10,7 @@ const TotalIncomeMaterial = () => {
   const fetchMaterials = async () => {
     try {
       const response = await axios.get(
-        "http://www.ecotablasapi.somee.com/api/IngresoMat/ListarTodo"
+        "http://www.ecotablasapi.somee.com/api/IngresoMat/ListarTodo",
       );
       if (response && response.data) {
         setData(response.data);
@@ -35,7 +35,6 @@ const TotalIncomeMaterial = () => {
       return null;
     }
   };
-  
 
   // Cálculo de ingresos de hoy
   useEffect(() => {
