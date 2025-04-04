@@ -17,15 +17,14 @@ const Volumen = () => {
     <SectionLayout title="Volúmen">
       <DateFilter onFilter={handleFilter} />
       <div className="flex-1 flex flex-wrap gap-4">
-        <div className="flex-1 min-w-[200px] max-w-[300px]">
-          <VolumenChart dateRange={dateRange} />
-        </div>
-        <div className="flex-1 min-w-[200px] max-w-[300px]">
+
+      <div className="flex-1 min-w-[200px] max-w-[300px]">
           <VolumenIngresadoChart dateRange={dateRange} />
         </div>
         <div className="flex-1 min-w-[200px] max-w-[300px]">
-          <VolumenProcesadoChart dateRange={dateRange} />
+          <VolumenChart dateRange={dateRange} />
         </div>
+
         <div className="flex-1 min-w-[200px] max-w-[300px]">
           <VolumenTrituradoChart dateRange={dateRange} />
         </div>

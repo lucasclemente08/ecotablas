@@ -64,11 +64,23 @@ const GastoVehiculos = () => {
   const [filteredData, setFilteredData] = useState([]);
 
   const abrirModal = () => setModalAbierto(true);
-  const cerrarModal = () => setModalAbierto(false);
+  const cerrarModal = () => { 
+    setModalAbierto(false);
+
+    setFormValues({ TipoComprobante: "",
+    Comprobante: "comprobante",
+    TipoGasto: "",
+    IdVehiculo: "",
+    Proveedor: "",
+    Monto: "",
+    Fecha: "", 
+    Descripcion: "",
+    });
+  };
 
   const [formValues, setFormValues] = useState({
     TipoComprobante: "",
-    Comprobante: null,
+    Comprobante: "comprobante",
     TipoGasto: "",
     IdVehiculo: "",
     Proveedor: "",
@@ -346,8 +358,18 @@ const GastoVehiculos = () => {
       toast.error("Error al subir el comprobante");
     }
   };
-
-  const cerrarModalEdit = () => setModalEdit(false);
+  const cerrarModalEdit = () => { 
+    setModalEdit(false);
+    setFormValues({ TipoComprobante: "",
+      Comprobante: "comprobante",
+      TipoGasto: "",
+      IdVehiculo: "",
+      Proveedor: "",
+      Monto: "",
+      Fecha: "", 
+      Descripcion: "",
+      });
+    };
 
   const titles = [
     "Tipo de comprobante",
@@ -562,20 +584,20 @@ const GastoVehiculos = () => {
     {
       allowedRoles: ["admin", "supervisor"],
       render: (item) => (
-        <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
-          <button
-            onClick={() => abrirModalEdit(item)}
-            className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            <FiEdit />
-            Modificar
-          </button>
+        <div className="flex items-center justify-start gap-2 py-1">
+            <button
+                        onClick={() => abrirModalEdit(item)}
+                        className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        <FiEdit />
+                        Modificar
+                      </button>
           <DeleteButton
             endpoint="http://www.ecotablasapi.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
             id={item.IdGasto}
             updateList={fetchMaterials}
           />
-        </td>
+       </div>
       ),
     },
   ];

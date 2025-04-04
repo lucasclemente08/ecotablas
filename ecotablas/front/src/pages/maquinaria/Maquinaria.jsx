@@ -320,11 +320,10 @@ const Maquinaria = () => {
   ];
 
   const estadoStyles = {
-    1: "bg-green-100 text-green-800", // Operativa
-    2: "bg-red-100 text-red-800", // Rota
-    3: "bg-yellow-100 text-yellow-800", // En Reparación
+    1: "bg-green-100 text-green-800 w-full h-full py-2 px-4 rounded flex items-center justify-center", // Operativa
+    2: "bg-red-100 text-red-800 w-full h-full py-2 px-4 rounded flex items-center justify-center",  // Rota
+    3: "bg-yellow-100 text-yellow-800 w-full h-full py-2 px-4 rounded flex items-center justify-center" // En Reparación
   };
-
   const stateMaquinaria = async () => {
     try {
       const response = await axios.get(`${BASE_URL_State}/ListarTodo`);
@@ -435,11 +434,9 @@ const Maquinaria = () => {
       label: "Estado",
       key: "IdEstado",
       render: (value) => (
-        <td
-          className={`border-b py-2 px-4 full text-center ${estadoStyles[value]} `}
-        >
-          {getNombreEstado(value)}
-        </td>
+        <div className={`${estadoStyles[value]} w-full h-full flex items-center justify-center`}>
+        {getNombreEstado(value)}
+      </div>
       ),
     },
     {
@@ -454,51 +451,53 @@ const Maquinaria = () => {
     {
       allowedRoles: ["admin", "supervisor"],
       render: (maquinaria) => (
-        <td className="border-b flex flex-row justify-center gap-2">
-          {maquinaria.IdEstado === 3 && (
-            <button
-              className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
-              onClick={() => abrirModalDetallesReparacion(maquinaria)}
-            >
-              <FiEye />
-              Ver Reparaciones
-            </button>
-          )}
+        <div className="flex items-center justify-start gap-2 py-1">
 
-          <button
-            onClick={() => abrirModalEdit(maquinaria)}
-            className="bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
-          >
-            <FiEdit />
-            Modificar
-          </button>
+                      
+                      <button
+                        onClick={() => abrirModalEdit(maquinaria)}
+                        className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                      >
+                        <FiEdit />
+                        Modificar
+                      </button>
+                      {maquinaria.IdEstado === 3 && (
+                        <button
+          className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+          onClick={() => abrirModalDetallesReparacion(maquinaria)}
+        >
+          <FiEye />
+          Ver Reparaciones
+       </button>
+                      )}
+                      {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
+                        <button
+                          onClick={() => abrirModalReparacion(maquinaria.Id)}
+                          className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+                        >
+                          <FiPlus />
+                          Agregar Reparación
+                        </button>
+                      )}
+                      
 
-          {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
-            <button
-              onClick={() => abrirModalReparacion(maquinaria.Id)}
-              className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
-            >
-              <FiPlus />
-              Agregar Reparación
-            </button>
-          )}
+                      {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
+                        <button
+                          onClick={() => handleChangeState(maquinaria)}
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded transition duration-300 ease-in-out transform hover:scale-105 flex items-center gap-2"
+                        >
+                          <FiRefreshCw />
+                          Cambiar Estado
+                        </button>
+                      )}
+                      
+                      <DeleteButton
+                        id={maquinaria.Id}
+                        endpoint={`${BASE_URL}/Borrar`}
+                        updateList={fetchMaquinarias}
+                      />
+                     </div>
 
-          {(maquinaria.IdEstado === 1 || maquinaria.IdEstado === 2) && (
-            <button
-              onClick={() => handleChangeState(maquinaria)}
-              className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded flex items-center gap-2"
-            >
-              <FiRefreshCw />
-              Cambiar Estado
-            </button>
-          )}
-
-          <DeleteButton
-            id={maquinaria.Id}
-            endpoint={`${BASE_URL}/Borrar`}
-            updateList={fetchMaquinarias}
-          />
-        </td>
       ),
     },
   ];

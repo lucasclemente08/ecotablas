@@ -76,7 +76,16 @@ const RecoUrbanos = () => {
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
   const abrirModal = () => setModalAbierto(true);
-  const cerrarModal = () => setModalAbierto(false);
+  const cerrarModal = () => { 
+    setModalAbierto(false);
+    setNewUbicacion({
+      Nombre: "",
+      Lat: "",
+      Long: "",
+      TipoDonante: "",
+    });
+     };
+
   useEffect(() => {
     fetchLocations();
   }, []);
@@ -223,9 +232,15 @@ const RecoUrbanos = () => {
     }
   };
 
-  const cerrarModalEdit = () => {
-    setModalEdit(false);
-  };
+    const cerrarModalEdit = () => {
+      setModalEdit(false);
+      setNewUbicacion({
+        Nombre: "",
+        Lat: "",
+        Long: "",
+        TipoDonante: "",
+      });
+       };
 
   const fields = [
     {
@@ -317,21 +332,21 @@ const RecoUrbanos = () => {
     {
       allowedRoles: ["admin", "supervisor"],
       render: (location) => (
-        <td className="px-4 py-2 flex justify-center content-center items-center">
-          <button
-            onClick={() => handleEdit(location)}
-            className="bg-yellow-700 ml-2 flex justify-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            <MdOutlineEditLocationAlt className="m-1" /> Modificar
-          </button>
-          <DeleteButton
-            id={location.IdUbicacion}
-            endpoint={
-              "http://www.ecotablasapi.somee.com/api/UbicacionesMapa/Delete"
-            }
-            updateList={fetchLocations}
-          />
-        </td>
+<div className="flex items-center justify-start gap-2 py-1">
+                  <button
+                    onClick={() => handleEdit(location)}
+                    className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                  >
+                   <MdOutlineEditLocationAlt className="m-1" /> Modificar  
+                  </button>
+                  <DeleteButton
+                    id={location.IdUbicacion}
+                    endpoint={
+                      "http://www.ecotablasapi.somee.com/api/UbicacionesMapa/Delete"
+                    }
+                    updateList={fetchLocations}
+                  />
+               </div>
       ),
     },
   ];

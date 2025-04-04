@@ -3,6 +3,7 @@ import axios from "axios";
 import { FiEdit } from "react-icons/fi";
 import { Toaster, toast } from "sonner";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
+import { FaSearch, FaList, FaFilter } from 'react-icons/fa';
 import DeleteButton from "../../components/buttons/DeleteButton";
 import SectionLayout from "../../layout/SectionLayout";
 import AddButtonWa from "../../components/buttons/AddButtonWa";
@@ -308,7 +309,7 @@ const Empleados = () => {
         <td className="px-4 py-2 flex">
           <button
             onClick={() => abrirModalEdit(item)}
-            className="bg-yellow-700 ml-2 flex justify-center items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
+            className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
           >
             <FiEdit className="mr-1" />
             Modificar
@@ -370,20 +371,23 @@ const Empleados = () => {
         <div className="flex items-center mt-2">
           <button
             onClick={handleSearch}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
           >
+            <FaSearch className="w-5 h-5" />
             Buscar
           </button>
           <button
             onClick={handleMostrarTodos}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-2 rounded"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-2 rounded flex items-center gap-2"
           >
+            <FaList className="w-5 h-5" />
             Mostrar Todos
           </button>
           <button
             onClick={() => setMostrarFiltros(!mostrarFiltros)}
-            className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 ml-2 rounded"
+            className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 ml-2 rounded flex items-center gap-2"
           >
+               <FaFilter className="w-5 h-5" />
             {mostrarFiltros ? "Ocultar Filtros" : "Agregar Filtros"}
           </button>
         </div>

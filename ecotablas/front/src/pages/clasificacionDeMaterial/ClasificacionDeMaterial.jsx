@@ -34,6 +34,7 @@ const ClasificacionDeMaterial = () => {
   const [modalEdit, setModalEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
+  const [originalMaterials, setOriginalMaterials] = useState([]);
   const [materialId, setMaterialId] = useState(null);
   const [modalTriturado, setModalTriturado] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
@@ -41,7 +42,7 @@ const ClasificacionDeMaterial = () => {
   const [formValues, setFormValues] = useState({
     VolumenUtil: "",
     VolumenInutil: "",
-    IdIngresoMaterial: "",
+    IdIngresoMaterial: 1,
     FechaC: "",
     Estado: 1,
   });
@@ -67,7 +68,16 @@ const ClasificacionDeMaterial = () => {
   const [itemsPerPage] = useState(5);
 
   const abrirModal = () => setModalAbierto(true);
-  const cerrarModal = () => setModalAbierto(false);
+  const cerrarModal = () => { 
+    setModalAbierto(false);
+    setFormValues({VolumenUtil: "",
+    VolumenInutil: "",
+    IdIngresoMaterial: 1,
+    FechaC: "",
+    Estado: 1,
+  });
+   };
+ 
 
   const abrirModalEdit = (material) => {
     setMaterialId(material.IdMaterialClasificado);
@@ -83,7 +93,16 @@ const ClasificacionDeMaterial = () => {
     setModalEdit(true);
   };
 
-  const cerrarModalEdit = () => setModalEdit(false);
+  const cerrarModalEdit = () => { 
+    setModalEdit(false);
+
+    setFormValues({VolumenUtil: "",
+      VolumenInutil: "",
+      IdIngresoMaterial: 1,
+      FechaC: "",
+      Estado: 1,
+    });
+     };
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -111,8 +130,16 @@ const ClasificacionDeMaterial = () => {
     setModalTriturado(true);
   };
 
-  const cerrarModalTriturado = () => setModalTriturado(false);
-
+  const cerrarModalTriturado = () => { 
+    setModalTriturado(false);
+    setTrituradoValues({ 
+    VolumenT: "",
+    Fecha: "",
+    IdMaterialClasificado: "",
+    VolumenTInutil: "",
+    Estado: 1,
+  });
+ };
   const validateTrituradoForm = () => {
     let isValid = true;
     if (!trituradoValues.VolumenT) {
@@ -213,6 +240,8 @@ const ClasificacionDeMaterial = () => {
         "http://www.ecotablasapi.somee.com/api/MaterialClas/ListarTodo",
       );
       setFilteredMaterials(response.data);
+      setOriginalMaterials(response.data);
+      
     } catch (error) {
       console.error("Error fetching materials:", error);
     } finally {
@@ -282,13 +311,7 @@ const ClasificacionDeMaterial = () => {
       type: "date",
       placeholder: "Fecha *",
     },
-    // {
-    //   name: "IdIngresoMaterial",
-    //   label: "ID Material",
-    //   type: "text",
 
-    //   placeholder: "ID Material *",
-    // },
   ];
 
   const totalVolumen = filteredMaterials.reduce(
@@ -329,15 +352,11 @@ const ClasificacionDeMaterial = () => {
   };
 
   const titlesT = [
-    { key: "VolumenUtil", label: "Volumen Útil", type: "number" },
-    { key: "VolumenInutil", label: "Volumen Inútil", type: "number" },
-
-    {
-      key: "FechaC",
-      label: "Fecha de Creación",
-      type: "date",
-      hasActions: true,
-    },
+    { key: "VolumenUtil", label: "Volumen Útil (kgs)", type: "number" },
+    { key: "VolumenInutil", label: "Volumen Inútil (kgs)", type: "number" },
+   
+    { key: "FechaC", label: "Fecha de Creación", type: "date", hasActions:true },
+  
   ];
 
   const actions = [
@@ -359,21 +378,21 @@ const ClasificacionDeMaterial = () => {
     {
       allowedRoles: ["admin", "supervisor"],
       render: (material) => (
-        <td className={`border-b py-2 px-4 flex justify-center `}>
-          <button
-            className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-            onClick={() => abrirModalEdit(material)}
-          >
-            <FiEdit className="m-1" />
-            Modificar
-          </button>
+    <div className="flex items-center justify-start gap-2 py-1">
+        <button
+          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+          onClick={() => abrirModalEdit(material)}
+        >
+          <FiEdit className="m-1" />
+          Modificar
+        </button>
 
-          <DeleteButton
-            id={material.IdMaterialClasificado}
-            endpoint="http://www.ecotablasapi.somee.com/api/MaterialClas/Borrar"
-            updateList={fetchMaterials}
-          />
-        </td>
+        <DeleteButton
+          id={material.IdMaterialClasificado}
+          endpoint="http://www.ecotablasapi.somee.com/api/MaterialClas/Borrar"
+          updateList={fetchMaterials}
+    />
+ </div>
       ),
     },
   ];
@@ -381,13 +400,18 @@ const ClasificacionDeMaterial = () => {
   return (
     <>
       <SectionLayout title="Materiales Clasificados">
-        <Toaster />
+      <Toaster />
 
-        <div className="flex flex-wrap items-center gap-1 ">
-          <AddButtonWa
-            abrirModal={abrirModal}
-            title={"Añadir Materiales Clasificados"}
-          />
+ 
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+
+                  {/* Grupo de acciones izquierda (añadir, PDF y vista) */}
+                  <div className="flex flex-wrap items-center gap-2">
+        <AddButtonWa
+          abrirModal={abrirModal}
+          title={"Añadir Materiales Clasificados"}
+        />
+
 
           <PdfGenerator
             columns={columns}
@@ -395,29 +419,39 @@ const ClasificacionDeMaterial = () => {
             title="Reporte de Materiales Clasificados"
           />
 
-          <button
-            onClick={toggleView}
-            className="bg-blue-600 hover:bg-blue-700 flex justify-center items-center text-white font-bold py-2 mt-2 mb-5 px-4 rounded"
-          >
-            {showTable ? (
-              <>
-                Ver grafico <MdDateRange className="m-1" />{" "}
-              </>
-            ) : (
-              <>
-                Ver Tablas <BsClipboardDataFill className="m-1" />
-              </>
-            )}
-          </button>
+<button
+        onClick={toggleView}
+        className="bg-blue-600 hover:bg-blue-700 flex justify-center items-center text-white font-bold py-2 mt-2 mb-5 px-4 rounded"
+        >
+  {showTable ? <>Ver grafico <MdDateRange className="m-1" /> </> : <>Ver Tablas <BsClipboardDataFill className="m-1" /></>}
+      </button>
+      </div>
 
+
+          {/* Grupo derecha (solo filtro) */}
+          <div className="flex flex-wrap items-center gap-2">
           <FilterButton
-            data={filteredMaterials}
-            dateField="FechaC"
-            onFilter={setFilteredMaterials}
-            onReset={() => setFilteredMaterials(filteredMaterials)}
-            onPageReset={() => setCurrentPage(1)}
-          />
+  data={originalMaterials} // Pasa los datos originales aquí
+  dateField="FechaC"
+  onFilter={(filtered) => {
+    setFilteredMaterials(filtered);
+    setCurrentPage(1);
+  }}
+  onReset={() => {
+    setFilteredMaterials(originalMaterials); // Restablece a los datos originales
+    setCurrentPage(1);
+  }}
+  onPageReset={() => setCurrentPage(1)}
+/>
+          </div>
         </div>
+
+          {mensaje && (
+            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
+              {mensaje}
+            </div>
+          )}
+
 
         {modalAbierto && (
           <AddModalWithSelect
@@ -441,43 +475,36 @@ const ClasificacionDeMaterial = () => {
             cerrarModalEdit={cerrarModalEdit}
           />
         )}
-        {modalTriturado && (
-          <AddModalWithSelect
-            title="Enviar lote a trituración"
-            fields={[
-              {
-                name: "VolumenT",
-                label: "Volumen Util",
-                type: "number",
-                placeholder: "Volumen Util *",
-              },
-              {
-                name: "VolumenTInutil",
-                label: "Volumen Inutil",
-                type: "number",
-                placeholder: "Volumen Inutil *",
-              },
-            ]}
-            handleChange={handleChangeTriturado}
-            handleSubmit={handleSubmitTriturado}
-            cerrarModal={cerrarModalTriturado}
-            values={trituradoValues}
-          />
-        )}
-        {showTable ? (
-          <div className="overflow-x-auto">
-            <div class="flex  p-2  items-center   shadow-md bg-gray-800 text-white flex-1 space-x-4">
-              <h5>
-                <span class="text-gray-400">Total de materiales:</span>
-                <span class="dark:text-white"> {totalItems}</span>
-              </h5>
-              <h5>
-                <span class="text-gray-400">Total volumen: </span>
-                <span class="dark:text-white">
-                  {totalVolumen.toFixed(2)} kg
-                </span>
-              </h5>
-            </div>
+               {modalTriturado && (
+            <AddModalWithSelect
+              title="Enviar lote a trituración"
+              fields={[
+                { name: "VolumenT", label: "Volumen Util", type: "number", placeholder: "Volumen Util *" },
+                { name: "VolumenTInutil", label: "Volumen Inutil", type: "number", placeholder: "Volumen Inutil *" }
+              ]}
+              handleChange={handleChangeTriturado}
+              handleSubmit={handleSubmitTriturado}
+              cerrarModal={cerrarModalTriturado}
+              values={trituradoValues}
+            />
+          )}
+{showTable ? (
+         
+
+
+<div className="overflow-x-auto">
+  {/* Versión minimalista para fondo oscuro */}
+  <div className="mb-4 flex justify-center gap-6">
+    <div className="text-center">
+              <p class="text-sm text-gray-300">Total de materiales</p>
+              <p class="text-lg font-semibold text-white"> {totalItems}</p>
+              </div>
+              <div className="text-center">
+              <p class="text-sm text-gray-300">Volumen total</p>
+              <p class="text-lg font-semibold text-white">{totalVolumen.toFixed(2)} kg</p>
+              </div>
+              </div>
+
 
             <TableComponent
               data={data}

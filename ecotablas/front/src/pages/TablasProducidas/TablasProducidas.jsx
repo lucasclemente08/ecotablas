@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaSearch } from "react-icons/fa";
-
+import { addTablas, getAllTablas } from "../../api/TablasProducidaAPI";
 import {
   fetchTablasProducidas,
   addTablaProducida,
@@ -20,9 +20,11 @@ import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
+import FilterButton from "../../components/buttons/FilterButton";
 import NextButton from "../../components/buttons/NextButton";
-import { Toaster, toast } from "sonner";
-import { editTablas } from "../../api/TablasProducidaAPI";
+import DateFilter from "../../components/DateFilter";
+import { Toaster, toast } from 'sonner';
+import { editTablas, } from "../../api/TablasProducidaAPI";
 import { v4 as uuidv4 } from "uuid";
 
 const TablasProducidas = () => {
@@ -36,8 +38,10 @@ const TablasProducidas = () => {
   const [mensaje, setMensaje] = useState("");
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
-  const [currentItems, setCurrentItems] = useState([]);
+  const [showTable, setShowTable] = useState(true); 
+  const [currentItems, setCurrentItems] = useState([])
   const [tablaId, setTablaId] = useState(null);
+  const [originalMaterials, setOriginalMaterials] = useState([]);
   const [filteredMaterials, setFilteredMaterials] = useState([]);
 
   const [formValues, setFormValues] = useState({
@@ -46,7 +50,7 @@ const TablasProducidas = () => {
     Peso: "",
     CodigoIdentificacion: "",
     Estado: 1,
-    IdTolva: "",
+    IdTolva: 20,
   });
 
   const columns = [
@@ -63,7 +67,17 @@ const TablasProducidas = () => {
   }, [dispatch]);
 
   const abrirModal = () => setModalAbierto(true);
-  const cerrarModal = () => setModalAbierto(false);
+  const cerrarModal = () => { 
+    setModalAbierto(false);
+    setFormValues ({
+      FechaProduccion: "",
+      Dimensiones: "",
+      Peso: "",
+      CodigoIdentificacion: "",
+      Estado: 1,
+      IdTolva: "",
+    });
+     };
 
   const abrirModalEdit = (tabla) => {
     setTablaId(tabla.ID_Tabla);
@@ -78,8 +92,17 @@ const TablasProducidas = () => {
     });
     setModalEdit(true);
   };
-  const cerrarModalEdit = () => setModalEdit(false);
-
+  const cerrarModalEdit = () => { 
+    setModalEdit(false);
+    setFormValues ({
+      FechaProduccion: "",
+      Dimensiones: "",
+      Peso: "",
+      CodigoIdentificacion: "",
+      Estado: 1,
+      IdTolva: "",
+    });
+     };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newFormValues = {
@@ -87,12 +110,13 @@ const TablasProducidas = () => {
       CodigoIdentificacion: GenerateIdentificationCode(
         formValues.Dimensiones,
         formValues.Peso,
+        formValues.IdTolva
       ),
     };
 
-    await dispatch(addTablaProducida(newFormValues));
+    await addTablas(newFormValues);
     toast.success("Tabla añadida con éxito!");
-    await dispatch(fetchTablasProducidas());
+    await fetchMaterials();
     cerrarModal();
   };
 
@@ -115,15 +139,17 @@ const TablasProducidas = () => {
       [name]: value,
     }));
   };
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); 
+  
   // const totalPages = Math.ceil(data.length / itemsPerPage);
   // const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // const totalPeso = data.reduce(
-  //   (acc, tabla) => acc + parseFloat(tabla.Peso || 0),
-  //   0,
-  // );
-  // const totalItems = data.length;
+  const totalPeso = filteredMaterials.reduce(
+ (acc, tabla) => acc + parseFloat(tabla.Peso || 0),
+ 0,
+);
+const totalItems = filteredMaterials.length;
 
   const dimensionesOptions = [
     { value: "1,50mts x 10cm", label: "1,50mts x 10cm" },
@@ -173,6 +199,8 @@ const TablasProducidas = () => {
       }
       const data = await response.json();
       setFilteredMaterials(data);
+      setOriginalMaterials(data);
+      console.log(data);
     } catch (error) {
       toast.error("Error al cargar los materiales.");
       console.error("Error fetching data: ", error);
@@ -213,46 +241,41 @@ const TablasProducidas = () => {
   };
 
   const titlesT = [
-    {
-      label: "Fecha de Producción",
-      key: "FechaProduccion",
-
+    { label: "Fecha de Producción", key: "FechaProduccion", type:"date",
+      
+       
       render: (value) => (
-        <td className="px-4 py-2 text-left">
-          {value ? value.slice(0, 10) : "Fecha no disponible"}
-        </td>
-      ),
+        <td className="flex justify-center items-center">
+        {value ? value.slice(0, 10) : "Fecha no disponible"}
+      </td>
+        )
     },
-    { label: "Dimensiones", key: "Dimensiones", type: "text" },
-    { label: "Peso", key: "Peso", type: "number" },
-    {
-      label: "Código de Identificación",
-      key: "CodigoIdentificacion",
-      type: "text",
-      hasActions: true,
-    },
+    { label: "Dimensiones", key: "Dimensiones", type: "number" },
+    { label: "Peso (kgs)", key: "Peso", type: "number" },
+    { label: "Código de Identificación", key: "CodigoIdentificacion", type: "text",hasActions:true},
   ];
 
   const actions = [
     {
       allowedRoles: ["admin", "supervisor"],
       render: (item) => (
-        <td className="px-4 py-2 flex justify-center">
-          <button
-            onClick={() => abrirModalEdit(item)}
-            className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            <FiEdit className="mr-2" />
-            Modificar
-          </button>
-          <DeleteButton
-            id={item.ID_Tabla}
-            endpoint={
-              "http://www.ecotablasapi.somee.com/api/TablaProducidas/Borrar"
-            }
-            updateList={fetchMaterials}
-          />
-        </td>
+        <div className="flex items-center justify-start gap-2 py-1">
+             
+        <button
+          onClick={() => abrirModalEdit(item)}
+          className="bg-yellow-600 ml-2 hover:bg-yellow-700 flex justify-center items-center text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+        >
+          <FiEdit  className="mr-2"/>
+          Modificar
+        </button>
+        <DeleteButton
+          id={item.ID_Tabla}
+          endpoint={
+            "http://www.ecotablasapi.somee.com/api/TablaProducidas/Borrar"
+          }
+          updateList={fetchMaterials}
+        />
+      </div>
       ),
     },
   ];
@@ -261,36 +284,41 @@ const TablasProducidas = () => {
     <SectionLayout title="Tablas Producidas">
       <Toaster />
 
-      <div className="flex items-center">
-        <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />
-        <PdfGenerator
-          columns={columns}
-          data={data}
-          title="Reporte de Tablas Producidas"
-        />
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">     
 
-        <div className=" flex items-center justify-center">
-          <input
-            type="date"
-            onChange={(e) => setSelectedDate(e.target.value)} // Update the selected date state
-            className="mb-2 p-2 border border-gray-300 rounded"
-          />
-
-          <button
-            onClick={filterByDate} // Trigger the filter when clicked
-            className="p-2.5 flex items-center mb-2   ml-2 bg-blue-500 text-white rounded"
-          >
-            <FaSearch className="mr-2 " /> Buscar por fecha
-          </button>
-          {/* <button 
-        onClick={setCurrentItems(data)}  // Trigger the filter when clicked
-        className="p-3   ml-2 bg-slate-400 text-white rounded"
-      >
-        Limpiar busqueda
-      </button> */}
+                        {/* Grupo de acciones izquierda (añadir, PDF y vista) */}
+                        <div className="flex flex-wrap items-center gap-2">
+      <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />
+      <PdfGenerator
+        columns={columns}
+        data={data}
+        title="Reporte de Tablas Producidas"
+      />
+    </div>
+          {/* Grupo derecha (solo filtro) */}
+          <div className="flex flex-wrap items-center gap-2">
+          <FilterButton
+  data={originalMaterials} // Pasa los datos originales aquí
+  dateField="FechaProduccion"
+  onFilter={(filtered) => {
+    setFilteredMaterials(filtered);
+    setCurrentPage(1);
+  }}
+  onReset={() => {
+    setFilteredMaterials(originalMaterials); // Restablece a los datos originales
+    setCurrentPage(1);
+  }}
+  onPageReset={() => setCurrentPage(1)}
+/>
+          </div>
         </div>
-      </div>
 
+          {mensaje && (
+            <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
+              {mensaje}
+            </div>
+          )}
+  
       {modalAbierto && (
         <AddModalWithSelect
           title="Agregar Tabla Producida"
@@ -334,42 +362,44 @@ const TablasProducidas = () => {
         />
       )}
 
-      {loading ? (
-        <LoadingTable loading={loading} />
-      ) : (
-        <>
-          <TableComponent
-            data={dataT}
-            titles={titlesT}
-            sortConfig={sortConfig}
-            onSort={handleSort}
-            actions={actions}
-            hasMaterial={true}
-          />
+{showTable ? (
 
-          {/* <table className="table-auto w-full bg-white rounded-lg shadow-lg">
-            <TablaHead titles={titles} />
-            <tbody>
-              {currentItems.map((item) => (
-                <tr key={item.ID_Tabla}>
- 
-  <td className="px-4 py-2 text-left">{item.Dimensiones}</td>
-  <td className="px-4 py-2 text-right">{item.Peso}</td>
-  <td className="px-4 py-2 text-right">{item.CodigoIdentificacion}</td>
 
-                </tr>
-              ))}
-            </tbody>
-          </table> */}
-          {/*          
-          <div className="mt-4 text-white">
-            <p>Total Peso: {totalPeso} kg</p>
-            <p>Total de Items: {totalItems}</p>
-          </div> */}
-        </>
-      )}
-    </SectionLayout>
-  );
+<div className="overflow-x-auto">
+  {/* Versión minimalista para fondo oscuro */}
+  <div className="mb-4 flex justify-center gap-6">
+    <div className="text-center">
+              <p class="text-sm text-gray-300">Total de tablas</p>
+              <p class="text-lg font-semibold text-white"> {totalItems}</p>
+              </div>
+              <div className="text-center">
+              <p class="text-sm text-gray-300">Peso total</p>
+              <p class="text-lg font-semibold text-white">{totalPeso.toFixed(2)} kg</p>
+              </div>
+              </div>
+<TableComponent
+      data={dataT}
+      titles={titlesT}
+      sortConfig={sortConfig}
+      onSort={handleSort}
+      actions={actions}
+      hasMaterial={true}
+    />
+
+</div>  
+     
+):(
+<div className="flex-1 flex flex-col gap-4 p-4">
+
+</div>
+   
+)
+}
+
+ </SectionLayout>
+
+
+);
 };
 
 export default TablasProducidas;
