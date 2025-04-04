@@ -25,6 +25,7 @@ import AddButtonWa from "../../../components/buttons/AddButtonWa";
 import GastoMaquinariaChart from "../../../components/graficos/GastoMaquinariaChart";
 import GastoMaquinariaDatePicker from "../../../components/graficos/GastoMaquinariaDatePicker";
 import ButtonEdit from "../../../components/buttons/ButtonEditPr";
+import ButtonEditFiles from "../../../components/ButtonEditFiles";
 
 const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
 
@@ -140,30 +141,25 @@ const GastoMaquinaria = () => {
   }, [dataM]);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-
-    if (files && files[0]) {
-      // Si se seleccionó un archivo
+    const { name, type, value, files } = e.target;
+  
+    if (type === "file" && files && files[0]) {
       const selectedFile = files[0];
       console.log("Archivo seleccionado:", selectedFile.name);
-
-      // Guardar el archivo en un estado separado
-      setComprobante(selectedFile);
-
-      // Si necesitas manejar el archivo en formValues:
+  
+      // Guardás el archivo en el estado principal (formValues), no solo el nombre
       setFormValues((prevValues) => ({
         ...prevValues,
-        [name]: selectedFile.name, // Guarda solo el nombre del archivo
+        [name]: selectedFile,
       }));
     } else {
-      // Si es un campo de texto u otro tipo de input
       setFormValues((prevValues) => ({
         ...prevValues,
-        [name]: value,
+        [name]: type === "number" ? parseFloat(value) || 0 : value,
       }));
     }
   };
-
+  
   const optionsMaquinaria = maquinaria.map((machine) => ({
     value: machine.Id,
     label: `${machine.Modelo} (${machine.Tipo})`,
@@ -537,7 +533,7 @@ const GastoMaquinaria = () => {
           />
         )}
         {modalEdit && (
-          <ButtonEdit
+          <ButtonEditFiles
             title="Gasto de Maquinaria"
             fields={fields}
             formValues={formValues}
