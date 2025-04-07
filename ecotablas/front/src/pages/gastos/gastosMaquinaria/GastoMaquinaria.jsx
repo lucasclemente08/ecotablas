@@ -46,6 +46,7 @@ const GastoMaquinaria = () => {
   const [maquinaria, setMaquinaria] = useState([]);
   const [gastoId, setGastoid] = useState([]);
   const [pieData, setPieData] = useState({});
+  const [selectedFilePDF, setSelectedFilePdf] = useState(null);
   const [showPieChart, setShowPieChart] = useState(false);
   const [formValues, setFormValues] = useState({
     tipoGasto: "",
@@ -122,25 +123,48 @@ const GastoMaquinaria = () => {
       .catch((error) => console.error("Error fetching maquinaria:", error));
   };
 
-  const handleEditSubmit = async (e) => {
+  
+  const handleEditSubmit = async () => {
     e.preventDefault();
-
-    if (!gastoId) {
-      toast.error("Error: No se encontró el ID del gasto.");
-      return;
-    }
-
+    const gastoId = formValues.idGastoMaquinaria;
+    if (!gastoId) return;
+  
+    c
+    const nuevoArchivo = selectedFilePDF;
+  
+    let updatedValues = { ...formValues };
+  console.log("updatedValues", updatedValues);
     try {
-      await dispatch(updateGasto({ id: gastoId, ...formValues })).unwrap();
+      if (nuevoArchivo) {
+        // Elimina archivo anterior si existe
+        if (formValues.Comprobante) {
+          await deleteFromDropbox(formValues.Comprobante);
+        }
+  
+        // Sube el nuevo archivo
+        const nuevoPath = `/comprobantes/${gastoId}_${nuevoArchivo.name}`;
+        const dropboxUrl = await uploadToDropbox(nuevoArchivo, nuevoPath);
+  
+        // Actualiza los valores con la nueva ruta
+        updatedValues = {
+          ...formValues,
+          rutaComprobante: dropboxUrl,
+        };
+      }
+  
+      await dispatch(updateGasto(updatedValues));
+      cerrarModalEdit();
       toast.success("Gasto actualizado con éxito");
-      await dispatch(fetchGastos());
-
-      cerrarModalEdit(); // Cierra el modal después de guardar
     } catch (error) {
-      toast.error("Error al actualizar el gasto");
       console.error("Error al actualizar el gasto:", error);
+      toast.error("Error al actualizar el gasto");
+    } finally {
+      setSelectedFilePdf(null); // Limpia el archivo cargado
     }
   };
+  
+
+
 
   // Crear datos del gráfico circular
   useEffect(() => {
@@ -170,8 +194,8 @@ const GastoMaquinaria = () => {
   
     if (type === "file" && files && files[0]) {
       const selectedFile = files[0];
-      console.log("Archivo seleccionado:", selectedFile.name);
-  
+      setSelectedFilePdf(selectedFile);
+   
       // Guardás el archivo en el estado principal (formValues), no solo el nombre
       setFormValues((prevValues) => ({
         ...prevValues,
