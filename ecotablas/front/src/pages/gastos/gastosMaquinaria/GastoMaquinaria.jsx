@@ -3,6 +3,7 @@ import Pagination from "../../../components/Pagination";
 import { Toaster, toast } from "sonner";
 
 import TableComponent from "../../../components/TableComponent";
+import { deleteFromDropbox } from "../../../utils/dropbox/deleteDropbox";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -26,6 +27,7 @@ import GastoMaquinariaChart from "../../../components/graficos/GastoMaquinariaCh
 import GastoMaquinariaDatePicker from "../../../components/graficos/GastoMaquinariaDatePicker";
 import ButtonEdit from "../../../components/buttons/ButtonEditPr";
 import ButtonEditFiles from "../../../components/ButtonEditFiles";
+
 
 const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
 
@@ -77,8 +79,9 @@ const GastoMaquinaria = () => {
      };
   const abrirModalEdit = (gasto) => {
     const gastoSeguro = gasto || {};
-
+console.log(gastoSeguro);
     setGastoid(gastoSeguro.IdGastoMaquinaria || "");
+
     setFormValues({
       tipoGasto: gastoSeguro.TipoGasto || "",
       tipoComprobante: gastoSeguro.TipoComprobante || "",
@@ -124,35 +127,43 @@ const GastoMaquinaria = () => {
   };
 
   
-  const handleEditSubmit = async () => {
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
-    const gastoId = formValues.idGastoMaquinaria;
-    if (!gastoId) return;
-  
-    c
+
+
+ 
     const nuevoArchivo = selectedFilePDF;
   
-    let updatedValues = { ...formValues };
-  console.log("updatedValues", updatedValues);
+    
+    let updatedValues = {
+      ...formValues,
+
+    };
+    delete updatedValues.comprobante;
+
     try {
       if (nuevoArchivo) {
         // Elimina archivo anterior si existe
-        if (formValues.Comprobante) {
-          await deleteFromDropbox(formValues.Comprobante);
-        }
+        // if (formValues.Comprobante) {
+        //   await deleteFromDropbox(formValues.Comprobante);
+        // }
   
-        // Sube el nuevo archivo
-        const nuevoPath = `/comprobantes/${gastoId}_${nuevoArchivo.name}`;
-        const dropboxUrl = await uploadToDropbox(nuevoArchivo, nuevoPath);
   
-        // Actualiza los valores con la nueva ruta
-        updatedValues = {
-          ...formValues,
-          rutaComprobante: dropboxUrl,
-        };
-      }
   
+           const nuevoPath = `/comprobantes/${gastoId}_${nuevoArchivo.name}`;
+      const dropboxUrl = await uploadToDropbox(nuevoArchivo, nuevoPath);
+
+      // Actualiza los valores con la nueva ruta
+      updatedValues = {
+        ...formValues,
+        IdGastoMaquinaria: gastoId,
+        Comprobante: nuevoPath // o dropboxUrl
+      };
+      
+    }
+    console.log("Valores actualizados:", updatedValues);
       await dispatch(updateGasto(updatedValues));
+
       cerrarModalEdit();
       toast.success("Gasto actualizado con éxito");
     } catch (error) {
