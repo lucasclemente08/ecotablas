@@ -125,45 +125,35 @@ console.log(gastoSeguro);
       })
       .catch((error) => console.error("Error fetching maquinaria:", error));
   };
-
   
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-
-
- 
     const nuevoArchivo = selectedFilePDF;
-  
-    
+    console.log(gastoId);
     let updatedValues = {
       ...formValues,
-
     };
-    delete updatedValues.comprobante;
-
     try {
       if (nuevoArchivo) {
-        // Elimina archivo anterior si existe
-        // if (formValues.Comprobante) {
-        //   await deleteFromDropbox(formValues.Comprobante);
-        // }
-  
-  
-  
-           const nuevoPath = `/comprobantes/${gastoId}_${nuevoArchivo.name}`;
+      const nuevoPath = `/comprobantes/${gastoId}_${nuevoArchivo.name}`;
       const dropboxUrl = await uploadToDropbox(nuevoArchivo, nuevoPath);
 
+      delete updatedValues.comprobante;
       // Actualiza los valores con la nueva ruta
       updatedValues = {
         ...formValues,
         IdGastoMaquinaria: gastoId,
-        Comprobante: nuevoPath // o dropboxUrl
+        Comprobante: dropboxUrl
+         // o dropboxUrl
       };
       
     }
     console.log("Valores actualizados:", updatedValues);
+    delete updatedValues.comprobante;
       await dispatch(updateGasto(updatedValues));
-
+      await fetchGastos();
+      toast.success("Gasto actualizado con éxito");
+    // Recargar la tabla
       cerrarModalEdit();
       toast.success("Gasto actualizado con éxito");
     } catch (error) {
@@ -173,9 +163,6 @@ console.log(gastoSeguro);
       setSelectedFilePdf(null); // Limpia el archivo cargado
     }
   };
-  
-
-
 
   // Crear datos del gráfico circular
   useEffect(() => {
