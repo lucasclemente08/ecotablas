@@ -134,27 +134,29 @@ const GastoVehiculos = () => {
 };
 
 
+const handleChangeEdit = (e) => {
+  const { name, type, value, files } = e.target;
 
+  if (type === "file" && files && files[0]) {
+    const selectedFile = files[0];
+    setSelectedFilePdf(selectedFile);
  
-  const handleChangeEdit = (e) => {
-    const { name, type, value, files } = e.target;
-  
-    if (type === "file" && files && files[0]) {
-      const selectedFile = files[0];
-      console.log("Archivo seleccionado:", selectedFile.name);
-  
-      // Guardás el archivo en el estado principal (formValues), no solo el nombre
-      setFormValues((prevValues) => ({
-        ...prevValues,
-        [name]: selectedFile,
-      }));
-    } else {
-      setFormValues((prevValues) => ({
-        ...prevValues,
-        [name]: type === "number" ? parseFloat(value) || 0 : value,
-      }));
-    }
-  };
+    // Guardás el archivo en el estado principal (formValues), no solo el nombre
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: selectedFile,
+    }));
+  } else {
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: type === "number" ? parseFloat(value) || 0 : value,
+    }));
+  }
+};
+
+
+
+
   const abrirModalEdit = (gasto) => {
     const gastoSeguro = gasto || {};
 
@@ -188,9 +190,6 @@ const GastoVehiculos = () => {
     fetchTrucks();
     fetchMaterials();
   }, []);
-
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -367,15 +366,15 @@ const GastoVehiculos = () => {
         toast.error("Error: No se pudo generar el enlace para el comprobante.");
         return;
       }
-  
+
       const updatedFormValues = {
         ...formValues,
         Comprobante: dropboxUrl,
-        IdGasto: gastoId,
+    
       };
-  
+      delete updatedFormValues.comprobante;
       console.log("Valores actualizados:", updatedFormValues);
-      delete updatedValues.comprobante;
+
       await axios.put(
         `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
         updatedFormValues
@@ -391,10 +390,6 @@ const GastoVehiculos = () => {
       setSelectedFilePdf(null); // Limpia el archivo cargado
     }
   };
-  
-
-
-
 
   const cerrarModalEdit = () => { 
     setModalEdit(false);
@@ -746,7 +741,7 @@ const GastoVehiculos = () => {
           title="Editar Gasto de Vehículo"
           fields={fields}
           formValues={formValues}
-          handleChangeEdit={handleChangeEdit}
+          handleChange={handleChangeEdit}
           handleEditSubmit={handleEditSubmit} 
           cerrarModalEdit={cerrarModalEdit} 
         />
