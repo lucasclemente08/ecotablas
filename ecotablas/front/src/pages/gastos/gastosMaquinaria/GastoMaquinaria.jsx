@@ -79,7 +79,7 @@ const GastoMaquinaria = () => {
      };
   const abrirModalEdit = (gasto) => {
     const gastoSeguro = gasto || {};
-console.log(gastoSeguro);
+
     setGastoid(gastoSeguro.IdGastoMaquinaria || "");
 
     setFormValues({
@@ -129,6 +129,8 @@ console.log(gastoSeguro);
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     const nuevoArchivo = selectedFilePDF;
+toast.success("Subiendo comprobante a dropbox");
+
     console.log(gastoId);
     let updatedValues = {
       ...formValues,
@@ -151,8 +153,7 @@ console.log(gastoSeguro);
     console.log("Valores actualizados:", updatedValues);
     delete updatedValues.comprobante;
       await dispatch(updateGasto(updatedValues));
-      await fetchGastos();
-      toast.success("Gasto actualizado con éxito");
+   dispatch(fetchGastos());
     // Recargar la tabla
       cerrarModalEdit();
       toast.success("Gasto actualizado con éxito");
@@ -187,7 +188,33 @@ console.log(gastoSeguro);
     }
   }, [dataM]);
 
+
   const handleChange = (e) => {
+    const { name, value, files } = e.target;
+
+    if (files && files[0]) {
+        // Si se seleccionó un archivo
+        const selectedFile = files[0];
+        console.log("Archivo seleccionado:", selectedFile.name);
+
+        // Guardar el archivo en un estado separado
+        setComprobante(selectedFile);
+
+        // Si necesitas manejar el archivo en formValues:
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: selectedFile.name, // Guarda solo el nombre del archivo
+        }));
+    } else {
+        // Si es un campo de texto u otro tipo de input
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+    }
+};
+
+  const handleChangeEdit = (e) => {
     const { name, type, value, files } = e.target;
   
     if (type === "file" && files && files[0]) {
@@ -584,7 +611,7 @@ console.log(gastoSeguro);
             title="Gasto de Maquinaria"
             fields={fields}
             formValues={formValues}
-            handleChange={handleChange}
+            handleChange={handleChangeEdit}
             handleEditSubmit={handleEditSubmit}
             cerrarModalEdit={cerrarModalEdit}
           />

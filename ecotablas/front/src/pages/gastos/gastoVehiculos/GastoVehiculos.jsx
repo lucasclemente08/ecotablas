@@ -62,7 +62,7 @@ const GastoVehiculos = () => {
   const [gastoId, setGastoid] = useState([]);
   const [comprobante, setComprobante] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
-
+  const [selectedFilePDF, setSelectedFilePdf] = useState(null);
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => { 
     setModalAbierto(false);
@@ -107,8 +107,36 @@ const GastoVehiculos = () => {
       });
   };
 
- 
+
   const handleChange = (e) => {
+    const { name, value, files } = e.target;
+
+    if (files && files[0]) {
+        // Si se seleccionó un archivo
+        const selectedFile = files[0];
+        console.log("Archivo seleccionado:", selectedFile.name);
+
+        // Guardar el archivo en un estado separado
+        setComprobante(selectedFile);
+
+        // Si necesitas manejar el archivo en formValues:
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: selectedFile.name, // Guarda solo el nombre del archivo
+        }));
+    } else {
+        // Si es un campo de texto u otro tipo de input
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+    }
+};
+
+
+
+ 
+  const handleChangeEdit = (e) => {
     const { name, type, value, files } = e.target;
   
     if (type === "file" && files && files[0]) {
@@ -160,6 +188,9 @@ const GastoVehiculos = () => {
     fetchTrucks();
     fetchMaterials();
   }, []);
+
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -313,51 +344,58 @@ const GastoVehiculos = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!gastoId) {
       toast.error("Error: No se encontró el ID del gasto.");
       return;
     }
-
-
-    if (!comprobante) {
-      // Verifica si hay un archivo seleccionado
+  
+    const nuevoArchivo = selectedFilePDF;
+  
+    if (!nuevoArchivo) {
       toast.error("Error: No se ha seleccionado un archivo para cargar.");
       return;
     }
-
+  
+    toast.info("Subiendo comprobante a Dropbox...");
+  
     try {
-      const link = await uploadToDropbox(comprobante); // Usa el archivo almacenado en 'comprobante'
-
-      if (!link) {
+      const nuevoPath = `/comprobantesVehiculo/${gastoId}_${nuevoArchivo.name}`;
+      const dropboxUrl = await uploadToDropbox(nuevoArchivo, nuevoPath);
+  
+      if (!dropboxUrl) {
         toast.error("Error: No se pudo generar el enlace para el comprobante.");
         return;
       }
-
-      // Crea un objeto con los datos que deseas enviar a la API
+  
       const updatedFormValues = {
         ...formValues,
-        Comprobante: link, // Usa la URL devuelta por uploadToDropbox
+        Comprobante: dropboxUrl,
+        IdGasto: gastoId,
       };
-      axios
-        .put(
-          `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
-          updatedFormValues,
-        )
-        .then((response) => {
-          toast.success("Gasto actualizado con éxito");
-          fetchMaterials();
-          cerrarModalEdit();
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el gasto:", error);
-          toast.error("Error al actualizar el gasto");
-        });
+  
+      console.log("Valores actualizados:", updatedFormValues);
+      delete updatedValues.comprobante;
+      await axios.put(
+        `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
+        updatedFormValues
+      );
+  
+      toast.success("Gasto actualizado con éxito");
+      fetchMaterials(); // O fetchGastosVehiculos si corresponde
+      cerrarModalEdit();
     } catch (error) {
-      console.error("Error en la subida del comprobante:", error);
-      toast.error("Error al subir el comprobante");
+      console.error("Error al actualizar el gasto:", error);
+      toast.error("Error al actualizar el gasto");
+    } finally {
+      setSelectedFilePdf(null); // Limpia el archivo cargado
     }
   };
+  
+
+
+
+
   const cerrarModalEdit = () => { 
     setModalEdit(false);
     setFormValues({ TipoComprobante: "",
@@ -708,7 +746,7 @@ const GastoVehiculos = () => {
           title="Editar Gasto de Vehículo"
           fields={fields}
           formValues={formValues}
-          handleChange={handleChange}
+          handleChangeEdit={handleChangeEdit}
           handleEditSubmit={handleEditSubmit} 
           cerrarModalEdit={cerrarModalEdit} 
         />
