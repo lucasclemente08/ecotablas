@@ -199,7 +199,7 @@ const totalItems = filteredMaterials.length;
   const fetchMaterials = async () => {
     try {
       const response = await fetch(
-        "http://localhost:61274/api/TablaProducidas/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/TablaProducidas/ListarTodo",
       ); // Reemplaza "URL_DEL_ENDPOINT" con la URL de tu API
       if (!response.ok) {
         throw new Error("Error al obtener los datos.");
@@ -296,7 +296,7 @@ const totalItems = filteredMaterials.length;
         <DeleteButton
           id={item.ID_Tabla}
           endpoint={
-            "http://localhost:61274/api/TablaProducidas/Borrar"
+            "http://www.ecotablasapi.somee.com/api/TablaProducidas/Borrar"
           }
           updateList={fetchMaterials}
         />

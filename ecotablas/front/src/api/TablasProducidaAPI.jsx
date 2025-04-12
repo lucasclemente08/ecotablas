@@ -1,7 +1,7 @@
 import axios from "axios";
 import builderApiUrl from "../utils/BuilderApi";
 
-const BASE_URL = "http://localhost:61274/api/TablaProducidas";
+const BASE_URL = "http://www.ecotablasapi.somee.com/api/TablaProducidas";
 
 export const getAllTablas = () => axios.get(`${BASE_URL}/ListarTodo`);
 export const addTablas = (data) => axios.post(`${BASE_URL}/Insertar`, data);

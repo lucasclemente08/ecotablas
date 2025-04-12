@@ -6,7 +6,7 @@ export const fetchTablasProducidas = createAsyncThunk(
   'tablasProducidas/fetchTablasProducidas',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('http://localhost:61274/api/TablaProducidas/ListarTodo');
+      const response = await axios.get('http://www.ecotablasapi.somee.com/api/TablaProducidas/ListarTodo');
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
