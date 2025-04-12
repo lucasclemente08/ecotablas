@@ -1,60 +1,101 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import PdfGenerator from "../../components/buttons/PdfGenerator";
-
 import SectionLayout from "../../layout/SectionLayout";
-const Areas = () => {
-  const [modalAbierto, setModalAbierto] = useState(false);
+import TableComponent from "../../components/TableComponent"; // Asegúrate de importar el componente
 
+const Areas = () => {
   const [area, setArea] = useState([]);
-  const abrirModal = () => {
-    setModalAbierto(true);
-  };
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [sortConfig, setSortConfig] = useState(null);
 
   const fetchMaterials = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(
-        "http://www.ecotablasapi.somee.com/api/Roles/ListarTodo",
+        "http://www.ecotablasapi.somee.com/api/Roles/ListarTodo"
       );
       setArea(response.data);
     } catch (error) {
       console.error("Error fetching materials:", error);
+      setError("Error al cargar las áreas");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
   };
 
   useEffect(() => {
     fetchMaterials();
   }, []);
 
+  // Definir las columnas para la tabla
+  const tableColumns = useMemo(() => [
+    {
+      key: 'NombreRol',
+      label: 'Nombre del Rol',
+      type: 'text',
+      sortable: true
+    }
+  ], []);
+
+  // Columnas para el PDF
+  const pdfColumns = useMemo(() => [
+    {
+      title: 'Nombre del Rol',
+      dataKey: 'NombreRol'
+    }
+  ], []);
+
+  // Ordenar datos si es necesario
+  const sortedData = useMemo(() => {
+    if (!sortConfig) return area;
+    
+    return [...area].sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === 'ascending' ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === 'ascending' ? 1 : -1;
+      }
+      return 0;
+    });
+  }, [area, sortConfig]);
+
+  // Formatear datos para el PDF
+  const pdfData = useMemo(() => {
+    return area.map(item => ({
+      NombreRol: item.NombreRol || 'N/A'
+    }));
+  }, [area]);
+
   return (
-    <>
-      <SectionLayout>
-        <div className="mt-5">
-          {/* <AddButton abrirModal={abrirModal} title={" Añadir Area "} /> */}
+    <SectionLayout title="Áreas">
+        <PdfGenerator
+          columns={pdfColumns}
+          data={pdfData}
+          title="Listado de Roles"
+          fileName="roles_listado"
+        />
 
-          <PdfGenerator />
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg shadow-md">
-            <thead>
-              <tr>
-                <th className="border-b-2 py-3 px-4 text-left text-gray-600">
-                  Nombre
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {area.map((material) => (
-                <tr key={material.id} className="hover:bg-gray-100">
-                  <td className="py-3 px-4">{material.NombreRol}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </SectionLayout>
-    </>
+      <TableComponent
+        data={sortedData}
+        titles={tableColumns}
+        sortConfig={sortConfig}
+        onSort={handleSort}
+        isLoading={loading}
+        itemsPerPage={10}
+        hasMaterial={false}
+      />
+    </SectionLayout>
   );
 };
 

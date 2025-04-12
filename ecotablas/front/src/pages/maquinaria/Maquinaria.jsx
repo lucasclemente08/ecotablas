@@ -278,7 +278,7 @@ const Maquinaria = () => {
     { header: "Nombre", dataKey: "Nombre" },
     { header: "Tipo", dataKey: "Tipo" },
     { header: "Modelo", dataKey: "Modelo" },
-    { header: "Estado", dataKey: "IdEstado" },
+    { header: "Estado", dataKey: "Estado" },
     { header: "Fecha de adquisición", dataKey: "fecha_adquisicion" },
   ];
 
@@ -447,6 +447,12 @@ const Maquinaria = () => {
     },
   ];
 
+  const maquinariasWithEstadoName = maquinarias.map(m => ({
+    ...m,
+    Estado: getNombreEstado(m.IdEstado) // Agrega propiedad temporal
+  }));
+  
+
   const actions = [
     {
       allowedRoles: ["admin", "supervisor"],
@@ -512,7 +518,7 @@ const Maquinaria = () => {
             <AddButtonWa abrirModal={abrirModal} title={" Añadir Maquinaria"} />
             <PdfGenerator
               columns={columns}
-              data={maquinarias}
+              data={maquinariasWithEstadoName}
               title="Reporte de Maquinarias"
             />
 
@@ -542,7 +548,7 @@ const Maquinaria = () => {
           )}
           {modalEdit && (
             <ButtonEdit
-              title="Modificar Maquinaria"
+              title="Maquinaria"
               fields={fields}
               id={maquinariaId}
               formValues={formValues}

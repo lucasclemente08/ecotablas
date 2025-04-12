@@ -405,11 +405,9 @@ const Empleados = () => {
             { name: "Piso", label: "Piso", type: "text" },
             { name: "Dpto", label: "Dpto", type: "text" },
             { name: "CodPostal", label: "Código Postal", type: "text" },
-            { name: "IdLocalidad", label: "IdLocalidad", type: "text" },
             { name: "FechaIngreso", label: "Fecha de Ingreso", type: "date" },
             { name: "Telefono", label: "Teléfono", type: "text" },
             { name: "Mail", label: "Email", type: "email" },
-            { name: "IdArea", label: "IdArea", type: "text" },
           ]}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
@@ -420,7 +418,7 @@ const Empleados = () => {
 
       {modalEdit && (
         <ButtonEdit
-          title="Editar Empleado"
+          title="Empleado"
           fields={[
             { name: "DNI", label: "DNI", type: "text" },
             { name: "Nombre", label: "Nombre", type: "text" },
@@ -430,11 +428,9 @@ const Empleados = () => {
             { name: "Piso", label: "Piso", type: "text" },
             { name: "Dpto", label: "Dpto", type: "text" },
             { name: "CodPostal", label: "Código Postal", type: "text" },
-            { name: "IdLocalidad", label: "IdLocalidad", type: "text" },
             { name: "FechaIngreso", label: "Fecha de Ingreso", type: "date" },
             { name: "Telefono", label: "Teléfono", type: "text" },
             { name: "Mail", label: "Email", type: "email" },
-            { name: "IdArea", label: "IdArea", type: "text" },
           ]}
           formValues={formValues}
           handleChange={handleChange}

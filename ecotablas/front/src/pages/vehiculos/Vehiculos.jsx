@@ -345,7 +345,7 @@ const Vehiculos = () => {
     // "Fecha de Ultima Inspección",
     // "Combustible",
     "Patente",
-    "Numero de Identificación",
+    "Identificador",
     "Estado",
     "Acciones",
   ];
@@ -354,14 +354,13 @@ const Vehiculos = () => {
     { header: "Marca", dataKey: "Marca" },
     { header: "Modelo", dataKey: "Modelo" },
     { header: "Año", dataKey: "Año" },
-    { header: "Color", dataKey: "Color" },
-    { header: "Tipo", dataKey: "Tipo" },
     { header: "Combustible", dataKey: "Combustible" },
     { header: "Patente", dataKey: "NumeroPlaca" },
-    { header: "Numero de Identificación", dataKey: "NumeroIdentificador" },
-    { header: "Estado", dataKey: "IdEstado" },
+    { header: "Identificador", dataKey: "NumeroIdentificador" },
+    { header: "Estado", dataKey: "Estado" },
     { header: "Fecha de Última Inspección", dataKey: "FechaUltimaInspeccion" },
   ];
+
 
   const rows = vehiculos.map((vehiculo) => ({
     Marca: vehiculo.Nombre,
@@ -423,7 +422,7 @@ const Vehiculos = () => {
     },
     {
       name: "NumeroIdentificador",
-      label: "Numero de identificación",
+      label: "Identificador",
       type: "text",
       placeholder: "Numero identificador *",
     },
@@ -508,7 +507,7 @@ const Vehiculos = () => {
     { label: "Combustible", key: "Combustible", type: "text" },
     { label: "Patente", key: "NumeroPlaca", type: "text" },
     {
-      label: "Numero de Identificación",
+      label: "Identificador",
       key: "NumeroIdentificador",
       type: "text",
     },
@@ -529,6 +528,11 @@ const Vehiculos = () => {
     },
   ];
 
+  const vehiculosWithEstadoName = vehiculos.map(v => ({
+    ...v,
+    Estado: getNombreEstado(v.IdEstado) // Agrega propiedad temporal
+  }));
+  
   const actions = [
     {
       allowedRoles: ["admin", "supervisor"],
@@ -592,7 +596,7 @@ const Vehiculos = () => {
           <AddButtonWa abrirModal={abrirModal} title={" Añadir Vehiculo"} />
           <PdfGenerator
             columns={columns}
-            data={vehiculos}
+            data={vehiculosWithEstadoName}
             title="Reporte de Vehiculos"
           />
           {mensaje && (
