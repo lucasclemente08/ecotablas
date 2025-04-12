@@ -49,7 +49,7 @@ const TablasProducidas = () => {
     Dimensiones: "",
     Peso: "",
     CodigoIdentificacion: "",
-    Estado: 1,
+    Estado: "producida", // Valor por defecto: producida
     IdTolva: 20,
   });
 
@@ -58,6 +58,7 @@ const TablasProducidas = () => {
     { header: "Dimensiones", accessor: "Dimensiones" },
     { header: "Peso (kgs)", accessor: "Peso" },
     { header: "Código Identificación", accessor: "CodigoIdentificacion" },
+    { header: "Estado", accessor: "Estado" },
   ];
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
@@ -74,20 +75,20 @@ const TablasProducidas = () => {
       Dimensiones: "",
       Peso: "",
       CodigoIdentificacion: "",
-      Estado: 1,
-      IdTolva: "",
+      Estado: "producida",
+      IdTolva: 20,
     });
      };
 
-  const abrirModalEdit = (tabla) => {
-    setTablaId(tabla.ID_Tabla);
+     const abrirModalEdit = (tabla) => {
+      setTablaId(tabla.ID_Tabla);
 
     setFormValues({
       FechaProduccion: tabla.FechaProduccion,
       Dimensiones: tabla.Dimensiones,
       Peso: tabla.Peso,
       CodigoIdentificacion: tabla.CodigoIdentificacion,
-      Estado: 1,
+      Estado: tabla.Estado,
       IdTolva: tabla.IdTolva,
     });
     setModalEdit(true);
@@ -99,8 +100,8 @@ const TablasProducidas = () => {
       Dimensiones: "",
       Peso: "",
       CodigoIdentificacion: "",
-      Estado: 1,
-      IdTolva: "",
+      Estado: "producida",
+      IdTolva: 20,
     });
      };
   const handleSubmit = async (e) => {
@@ -110,7 +111,8 @@ const TablasProducidas = () => {
       CodigoIdentificacion: GenerateIdentificationCode(
         formValues.Dimensiones,
         formValues.Peso,
-        formValues.IdTolva
+        formValues.IdTolva,
+        formValues.Estado
       ),
     };
 
@@ -122,7 +124,7 @@ const TablasProducidas = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    await editTablas({ tablaId, formValues });
+    await editTablas( tablaId, formValues );
     toast.success("Registro editado con éxito!");
     setFilteredMaterials((prevMaterials) =>
       prevMaterials.map((data) =>
@@ -154,6 +156,11 @@ const totalItems = filteredMaterials.length;
   const dimensionesOptions = [
     { value: "1,50mts x 10cm", label: "1,50mts x 10cm" },
     { value: "1,60mts x 10cm", label: "1,60mts x 10cm" },
+  ];
+
+  const estadoOptions = [
+    { value: "producida", label: "Producida" },
+    { value: "defectuosa", label: "Defectuosa" },
   ];
 
   const GenerateIdentificationCode = (size, large) => {
@@ -192,7 +199,7 @@ const totalItems = filteredMaterials.length;
   const fetchMaterials = async () => {
     try {
       const response = await fetch(
-        "http://www.ecotablasapi.somee.com/api/TablaProducidas/ListarTodo",
+        "http://localhost:61274/api/TablaProducidas/ListarTodo",
       ); // Reemplaza "URL_DEL_ENDPOINT" con la URL de tu API
       if (!response.ok) {
         throw new Error("Error al obtener los datos.");
@@ -200,7 +207,7 @@ const totalItems = filteredMaterials.length;
       const data = await response.json();
       setFilteredMaterials(data);
       setOriginalMaterials(data);
-      console.log(data);
+
     } catch (error) {
       toast.error("Error al cargar los materiales.");
       console.error("Error fetching data: ", error);
@@ -253,6 +260,24 @@ const totalItems = filteredMaterials.length;
     { label: "Dimensiones", key: "Dimensiones", type: "number" },
     { label: "Peso (kgs)", key: "Peso", type: "number" },
     { label: "Código de Identificación", key: "CodigoIdentificacion", type: "text",hasActions:true},
+    { 
+      label: "Estado", 
+      key: "Estado", 
+      type: "text",
+      render: (value) => (
+        <td className="flex justify-center items-center">
+          <span 
+            className={`w-full h-full flex items-center justify-center ${
+              value === "producida" 
+                ? "bg-green-100 text-green-800 w-full h-full py-2 px-4 rounded flex items-center justify-center" 
+                : "bg-red-100 text-red-800 w-full h-full py-2 px-4 rounded flex items-center justify-center"
+            }`}
+          >
+            {value === "producida" ? "Producida" : "Defectuosa"}
+          </span>
+        </td>
+      )
+    },
   ];
 
   const actions = [
@@ -271,7 +296,7 @@ const totalItems = filteredMaterials.length;
         <DeleteButton
           id={item.ID_Tabla}
           endpoint={
-            "http://www.ecotablasapi.somee.com/api/TablaProducidas/Borrar"
+            "http://localhost:61274/api/TablaProducidas/Borrar"
           }
           updateList={fetchMaterials}
         />
@@ -335,7 +360,12 @@ const totalItems = filteredMaterials.length;
               options: dimensionesOptions,
             },
             { name: "Peso", label: "Peso (kgs)", type: "number" },
-            { name: "IdTolva", label: "IdTolva", type: "number" },
+            {
+              name: "Estado",
+              label: "Estado",
+              type: "select",
+              options: estadoOptions,
+            },
           ]}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
@@ -345,7 +375,7 @@ const totalItems = filteredMaterials.length;
       )}
       {modalEdit && (
         <ButtonEdit
-          title="Editar Tabla Producida"
+          title="Tabla Producida"
           fields={[
             {
               name: "Dimensiones",
@@ -354,6 +384,12 @@ const totalItems = filteredMaterials.length;
               options: dimensionesOptions,
             },
             { name: "Peso", label: "Peso (kgs)", type: "number" },
+            {
+              name: "Estado",
+              label: "Estado",
+              type: "select",
+              options: estadoOptions,
+            },
           ]}
           formValues={formValues}
           handleChange={handleChange}
@@ -369,14 +405,26 @@ const totalItems = filteredMaterials.length;
   {/* Versión minimalista para fondo oscuro */}
   <div className="mb-4 flex justify-center gap-6">
     <div className="text-center">
-              <p class="text-sm text-gray-300">Total de tablas</p>
-              <p class="text-lg font-semibold text-white"> {totalItems}</p>
-              </div>
-              <div className="text-center">
-              <p class="text-sm text-gray-300">Peso total</p>
-              <p class="text-lg font-semibold text-white">{totalPeso.toFixed(2)} kg</p>
-              </div>
-              </div>
+      <p className="text-sm text-gray-300">Total de tablas</p>
+      <p className="text-lg font-semibold text-white"> {totalItems}</p>
+    </div>
+    <div className="text-center">
+      <p className="text-sm text-gray-300">Tablas producidas</p>
+      <p className="text-lg font-semibold text-white">
+        {filteredMaterials.filter(t => t.Estado === "producida").length}
+      </p>
+    </div>
+    <div className="text-center">
+      <p className="text-sm text-gray-300">Tablas defectuosas</p>
+      <p className="text-lg font-semibold text-white">
+        {filteredMaterials.filter(t => t.Estado === "defectuosa").length}
+      </p>
+    </div>
+    <div className="text-center">
+      <p className="text-sm text-gray-300">Peso total</p>
+      <p className="text-lg font-semibold text-white">{totalPeso.toFixed(2)} kg</p>
+    </div>
+  </div>
 <TableComponent
       data={dataT}
       titles={titlesT}

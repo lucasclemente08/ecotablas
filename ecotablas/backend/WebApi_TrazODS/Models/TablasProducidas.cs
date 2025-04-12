@@ -19,7 +19,7 @@ namespace WebApi_TrazODS.Models
         public double Peso { get; set; }
         public string CodigoIdentificacion { get; set; }
 
-        public int Estado { get; set; }
+        public string Estado { get; set; }
         #endregion
 
         #region Métodos
@@ -82,7 +82,7 @@ namespace WebApi_TrazODS.Models
                     sqlCom.Parameters.AddWithValue("@Dimensiones", Dimensiones);
                     sqlCom.Parameters.AddWithValue("@Peso", Peso);
                     sqlCom.Parameters.AddWithValue("@CodigoIdentificacion", CodigoIdentificacion);
-                    sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
+                    sqlCom.Parameters.AddWithValue("@Estado", Estado);
 
                     sqlCom.ExecuteNonQuery();
                 }
@@ -107,7 +107,7 @@ namespace WebApi_TrazODS.Models
                     sqlCom.Parameters.AddWithValue("@Dimensiones", Dimensiones);
                     sqlCom.Parameters.AddWithValue("@Peso", Peso);
                     sqlCom.Parameters.AddWithValue("@CodigoIdentificacion", CodigoIdentificacion);
-                    sqlCom.Parameters.Add("@Estado", SqlDbType.Int).Value = Estado;
+                    sqlCom.Parameters.AddWithValue("@Estado", Estado);
 
                     sqlCom.ExecuteNonQuery();
                 }

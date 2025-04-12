@@ -33,6 +33,7 @@ const Tolva = () => {
   const [loading, setLoading] = useState(true);
   const [originalMaterials, setOriginalMaterials] = useState([]);
   const [modalEdit, setModalEdit] = useState(false);
+  const [showTable, setShowTable] = useState(true); 
   const [materialId, setMaterialId] = useState(null);
   const [mensaje, setMensaje] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
@@ -61,7 +62,7 @@ const Tolva = () => {
     Dimensiones: "",
     Peso: "",
     CodigoIdentificacion: "",
-    Estado: 1,
+    Estado: "producida",
   });
   const [dateRange, setDateRange] = useState({
     startDate: new Date(),
@@ -123,7 +124,7 @@ const Tolva = () => {
    };
   
   const fetchMaterials = async () => {
-    setLoading(true);
+ 
     try {
       const res = await getAllTolva();
       setFilteredMaterials(res.data);
@@ -132,7 +133,6 @@ const Tolva = () => {
       toast.error("Error al cargar los materiales.");
       console.error("Error fetching data: ", error);
     } finally {
-      setLoading(false);
     }
   };
 
@@ -160,7 +160,7 @@ const Tolva = () => {
     Dimensiones: "",
     Peso: "",
     CodigoIdentificacion: "",
-    Estado: 1,
+    Estado: "producida",
   });
  };
 
@@ -171,6 +171,10 @@ const Tolva = () => {
       isValid = false;
     } else if (!tablaValues.Peso) {
       toast.error("El peso es obligatorio.");
+      isValid = false;
+    }
+    else if (!tablaValues.Estado) {
+      toast.error("El estado es obligatorio.");
       isValid = false;
     }
     return isValid;
@@ -308,7 +312,10 @@ const Tolva = () => {
     { value: "Unico", label: "Tipo-Único" },
     { value: "Mezcla", label: "Tipo-Mezcla" },
   ];
-
+  const estadoOptions = [
+    { value: "producida", label: "Producida" },
+    { value: "defectuosa", label: "Defectuosa" },
+  ];
   const rows = filteredMaterials.map((material) => ({
     Fecha: material.HorarioInicio.slice(0, 10),
   }));
@@ -479,7 +486,7 @@ const Tolva = () => {
       )}
       {modalEdit && (
         <ButtonEdit
-          title="Editar Registro de Tolva"
+          title="Registro de Tolva"
           fields={[
             {
               name: "CantidadCargada",
@@ -524,6 +531,13 @@ const Tolva = () => {
               options: dimensionesOptions,
             },
             { name: "Peso", label: "Peso", type: "number" },
+
+            {
+              name: "Estado",
+              label: "Estado",
+              type: "select",
+              options: estadoOptions,
+            },
           ]}
           handleChange={handleChangeTabla}
           handleSubmit={handleSubmitTabla}
@@ -532,10 +546,7 @@ const Tolva = () => {
         />
       )}
 
-      {loading ? (
-        <LoadingTable loading={loading} />
-      ) : (
-        <>
+{showTable ? (
 
 <div className="overflow-x-auto">
   {/* Versión minimalista para fondo oscuro */}
@@ -549,7 +560,7 @@ const Tolva = () => {
               <p class="text-lg font-semibold text-white">{totalVolumen.toFixed(2)} kg</p>
               </div>
               </div>
-              </div>
+
 
 
  <TableComponent
@@ -560,9 +571,16 @@ const Tolva = () => {
       onSort={handleSort}
       actions={actions}
     />
+
+    </div>  
  
-        </>
-      )}
+  ):(
+<div className="flex-1 flex flex-col gap-4 p-4">
+
+</div>
+
+)
+}
 
       <NextProcess linkTo="/tablas" hoverText="Ir al siguiente proceso" />
     </SectionLayout>

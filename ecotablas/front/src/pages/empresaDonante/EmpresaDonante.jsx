@@ -40,14 +40,11 @@ const EmpresaDonante = () => {
   });
 
   const columns = [
-    { header: "Nombre", accessor: "nombre" },
-    { header: "Dirección", accessor: "direccion" },
-    { header: "Teléfono", accessor: "telefono" },
-    { header: "Email", accessor: "email" },
-    { header: "Tipo Plástico", accessor: "tipo_plastico" },
-    { header: "Rubro", accessor: "rubro" },
-    { header: "Web", accessor: "web" },
-    { header: "Cuit", accessor: "Cuit" },
+    { header: "Nombre", dataKey: "Nombre" },
+    { header: "Dirección", dataKey: "Direccion" },
+    { header: "Teléfono", dataKey: "Telefono" },
+    { header: "Email", dataKey: "Email" },
+
   ];
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
@@ -72,7 +69,7 @@ const EmpresaDonante = () => {
      });
       };
   const abrirModalEdit = (empresa) => {
-    setEmpresaId(empresa.Id_EmpresaDonante); // Asegurar que se guarde correctamente el ID
+    setEmpresaId(empresa.Id_empresaDonante); // Asegurar que se guarde correctamente el ID
     console.log(empresaId);
     setFormValues({
       Nombre: empresa.Nombre || "",
@@ -102,33 +99,32 @@ const EmpresaDonante = () => {
       CUIT: "",
        });
         };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formValues.Nombre || !formValues.Direccion || !formValues.Telefono) {
-      toast.error("Por favor completa todos los campos requeridos");
-      return;
-    }
-    axios
-      .post(
-        "http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar",
-        formValues,
-      )
-      .then((response) => {
-        // Verificar si la respuesta es exitosa
-        if (response && response.data) {
-          fetchEmpresaDonante();
-          toast.success("Inserción exitosa");
-        } else {
-          toast.error("Error: no se recibió un dato válido de la API.");
-        }
-      })
-      .catch((error) => {
-        toast.error(`Error en la solicitud: ${error.message}`);
-      })
-      .finally(() => {
-        cerrarModal();
-      });
-  };
+        const handleSubmit = async (e) => {
+          e.preventDefault();
+          if (!formValues.Nombre || !formValues.Direccion || !formValues.Telefono) {
+            toast.error("Por favor completa todos los campos requeridos");
+            return;
+          }
+        
+          try {
+            const response = await axios.post(
+              "http://www.ecotablasapi.somee.com/api/EmpresaDonante/Insertar",
+              formValues
+            );
+        
+            if (response.data) {
+              // Actualizar el estado global usando Redux
+              dispatch(fetchEmpresaDonante());
+              toast.success("Empresa agregada correctamente");
+              cerrarModal();
+            } else {
+              throw new Error("Respuesta vacía del servidor");
+            }
+          } catch (error) {
+            console.error("Error al agregar empresa:", error);
+            toast.error(`Error al agregar: ${error.message}`);
+          }
+        };
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
@@ -143,7 +139,7 @@ const EmpresaDonante = () => {
       )
       .then(() => {
         setModalEdit(false);
-        fetchEmpresaDonante();
+        dispatch(fetchEmpresaDonante())
 
         toast.success("Material actualizado!", { autoClose: 3000 });
       })
@@ -181,6 +177,7 @@ const EmpresaDonante = () => {
       label: "Email",
       type: "text", // Texto alineado a la izquierda
     },
+    
     {
       key: "TipoPlastico",
       label: "Tipo de Plástico",
@@ -226,7 +223,7 @@ const EmpresaDonante = () => {
         <DeleteButton
           endpoint="http://www.ecotablasapi.somee.com/api/EmpresaDonante/Borrar"
           updateList={() => dispatch(fetchEmpresaDonante())}
-          id={item.Id_EmpresaDonante}
+          id={item.Id_empresaDonante}
         />
     </div>
       ),
@@ -303,7 +300,7 @@ const EmpresaDonante = () => {
       )}
       {modalEdit && (
         <ButtonEdit
-          title="Editar Empresa Donante"
+          title="Empresa Donante"
           fields={[
             { name: "Nombre", label: "Nombre", type: "text" },
             { name: "Direccion", label: "Dirección", type: "text" },
