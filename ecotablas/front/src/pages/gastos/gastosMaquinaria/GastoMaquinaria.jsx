@@ -131,13 +131,12 @@ const GastoMaquinaria = () => {
     const nuevoArchivo = selectedFilePDF;
 toast.success("Subiendo comprobante a dropbox");
 
-    console.log(gastoId);
     let updatedValues = {
       ...formValues,
     };
     try {
       if (nuevoArchivo) {
-      const nuevoPath = `/comprobantes/${gastoId}_${nuevoArchivo.name}`;
+      const nuevoPath = `/comprobantes/${nuevoArchivo.name}`;
       const dropboxUrl = await uploadToDropbox(nuevoArchivo, nuevoPath);
 
       delete updatedValues.comprobante;

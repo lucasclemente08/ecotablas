@@ -134,18 +134,16 @@ const GastoVehiculos = () => {
 };
 
 
+
 const handleChangeEdit = (e) => {
   const { name, type, value, files } = e.target;
 
   if (type === "file" && files && files[0]) {
     const selectedFile = files[0];
+    console.log("Archivo seleccionado:", selectedFile.name);
+
+    // Guardar en estado separado, NO en formValues
     setSelectedFilePdf(selectedFile);
- 
-    // Guardás el archivo en el estado principal (formValues), no solo el nombre
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: selectedFile,
-    }));
   } else {
     setFormValues((prevValues) => ({
       ...prevValues,
@@ -154,13 +152,10 @@ const handleChangeEdit = (e) => {
   }
 };
 
-
-
-
   const abrirModalEdit = (gasto) => {
     const gastoSeguro = gasto || {};
 
-    setGastoid(gastoSeguro.IdVehiculo || "");
+    setGastoid(gastoSeguro.IdGasto || "");
     setFormValues({
       TipoComprobante: gastoSeguro.TipoComprobante || "",
       comprobante: gastoSeguro.Comprobante || "",
@@ -190,6 +185,9 @@ const handleChangeEdit = (e) => {
     fetchTrucks();
     fetchMaterials();
   }, []);
+
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -359,22 +357,22 @@ const handleChangeEdit = (e) => {
     toast.info("Subiendo comprobante a Dropbox...");
   
     try {
-      const nuevoPath = `/comprobantesVehiculo/${gastoId}_${nuevoArchivo.name}`;
+      const nuevoPath = `/comprobantes/${gastoId}_${nuevoArchivo.name}`;
       const dropboxUrl = await uploadToDropbox(nuevoArchivo, nuevoPath);
   
       if (!dropboxUrl) {
         toast.error("Error: No se pudo generar el enlace para el comprobante.");
         return;
       }
-
+  
       const updatedFormValues = {
         ...formValues,
         Comprobante: dropboxUrl,
-    
+        IdGasto: gastoId,
       };
-      delete updatedFormValues.comprobante;
+  
       console.log("Valores actualizados:", updatedFormValues);
-
+      delete updatedValues.comprobante;
       await axios.put(
         `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
         updatedFormValues
@@ -390,6 +388,10 @@ const handleChangeEdit = (e) => {
       setSelectedFilePdf(null); // Limpia el archivo cargado
     }
   };
+  
+
+
+
 
   const cerrarModalEdit = () => { 
     setModalEdit(false);
@@ -741,7 +743,7 @@ const handleChangeEdit = (e) => {
           title="Editar Gasto de Vehículo"
           fields={fields}
           formValues={formValues}
-          handleChange={handleChangeEdit}
+          handleChangeEdit={handleChangeEdit}
           handleEditSubmit={handleEditSubmit} 
           cerrarModalEdit={cerrarModalEdit} 
         />
