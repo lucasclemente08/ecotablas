@@ -61,7 +61,7 @@ const GastoVehiculos = () => {
   const [sortedData, setSortedData] = useState([]);
   const [gastoId, setGastoid] = useState([]);
   const [comprobante, setComprobante] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]); 
   const [selectedFilePDF, setSelectedFilePdf] = useState(null);
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => { 
@@ -140,10 +140,13 @@ const handleChangeEdit = (e) => {
 
   if (type === "file" && files && files[0]) {
     const selectedFile = files[0];
-    console.log("Archivo seleccionado:", selectedFile.name);
-
-    // Guardar en estado separado, NO en formValues
     setSelectedFilePdf(selectedFile);
+ 
+    // Guardás el archivo en el estado principal (formValues), no solo el nombre
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: selectedFile.name,
+    }));
   } else {
     setFormValues((prevValues) => ({
       ...prevValues,
@@ -151,6 +154,8 @@ const handleChangeEdit = (e) => {
     }));
   }
 };
+
+ 
 
   const abrirModalEdit = (gasto) => {
     const gastoSeguro = gasto || {};
@@ -349,6 +354,10 @@ const handleChangeEdit = (e) => {
   
     const nuevoArchivo = selectedFilePDF;
   
+    let updatedFormValues = {
+      ...formValues,
+    };
+
     if (!nuevoArchivo) {
       toast.error("Error: No se ha seleccionado un archivo para cargar.");
       return;
@@ -357,7 +366,7 @@ const handleChangeEdit = (e) => {
     toast.info("Subiendo comprobante a Dropbox...");
   
     try {
-      const nuevoPath = `/comprobantes/${gastoId}_${nuevoArchivo.name}`;
+      const nuevoPath = `/comprobantes/${nuevoArchivo.name}`;
       const dropboxUrl = await uploadToDropbox(nuevoArchivo, nuevoPath);
   
       if (!dropboxUrl) {
@@ -365,7 +374,7 @@ const handleChangeEdit = (e) => {
         return;
       }
   
-      const updatedFormValues = {
+       updatedFormValues = {
         ...formValues,
         Comprobante: dropboxUrl,
         IdGasto: gastoId,
@@ -743,7 +752,7 @@ const handleChangeEdit = (e) => {
           title="Editar Gasto de Vehículo"
           fields={fields}
           formValues={formValues}
-          handleChangeEdit={handleChangeEdit}
+          handleChange={handleChangeEdit}
           handleEditSubmit={handleEditSubmit} 
           cerrarModalEdit={cerrarModalEdit} 
         />
