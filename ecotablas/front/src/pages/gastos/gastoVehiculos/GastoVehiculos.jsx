@@ -373,6 +373,7 @@ const handleChangeEdit = (e) => {
         toast.error("Error: No se pudo generar el enlace para el comprobante.");
         return;
       }
+      console.log("Enlace de Dropbox:", dropboxUrl);
   
        updatedFormValues = {
         ...formValues,
@@ -381,7 +382,7 @@ const handleChangeEdit = (e) => {
       };
   
       console.log("Valores actualizados:", updatedFormValues);
-      delete updatedValues.comprobante;
+      delete updatedFormValues.comprobante;
       await axios.put(
         `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
         updatedFormValues
@@ -435,7 +436,7 @@ const handleChangeEdit = (e) => {
       render: (value) =>
         value ? (
           <a
-            href={`https://www.dropbox.com/scl/fi/${value}`}
+            href={`${value}`}
             className="text-blue-500 hover:underline"
             target="_blank"
             rel="noopener noreferrer"
@@ -574,11 +575,17 @@ const handleChangeEdit = (e) => {
       }
 
       const shareData = await shareResponse.json();
-      const baseUrl = "https://www.dropbox.com/scl/fi/";
+
+      
+
+      const baseUrl = " ";
+
+      // Reemplaza la baseUrl, pero conserva el resto de la URL
       const sharedLink = shareData.url.replace(baseUrl, "").split("?")[0];
 
-      const link = `${sharedLink}?dl=1`;
 
+      const link = `${sharedLink}?dl=1`;
+console.log("Enlace compartido:", link);
       return link;
     } catch (error) {
       console.error("Error en la solicitud a Dropbox:", error);
