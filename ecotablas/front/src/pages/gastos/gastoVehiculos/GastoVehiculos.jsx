@@ -380,9 +380,9 @@ const handleChangeEdit = (e) => {
         Comprobante: dropboxUrl,
         IdGasto: gastoId,
       };
-  
-      console.log("Valores actualizados:", updatedFormValues);
       delete updatedFormValues.comprobante;
+      console.log("Valores actualizados:", updatedFormValues);
+     
       await axios.put(
         `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
         updatedFormValues
@@ -436,7 +436,7 @@ const handleChangeEdit = (e) => {
       render: (value) =>
         value ? (
           <a
-            href={`${value}`}
+            href={`https://www.dropbox.com/scl/fi/${value}`}
             className="text-blue-500 hover:underline"
             target="_blank"
             rel="noopener noreferrer"
@@ -491,10 +491,9 @@ const handleChangeEdit = (e) => {
       const token = await getAccessToken();
       setAccessToken(token);
     };
-
-    // Llamada inmediata a la función asíncrona
     fetchToken();
   }, []);
+
   const uploadToDropbox = async (file) => {
     const accessToken = await getAccessToken();
     if (!accessToken) return;
@@ -552,6 +551,7 @@ const handleChangeEdit = (e) => {
         }
       }
 
+      // 3. Crear un enlace compartido si no existe
       const shareUrl =
         "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
       const shareResponse = await fetch(shareUrl, {
@@ -575,23 +575,22 @@ const handleChangeEdit = (e) => {
       }
 
       const shareData = await shareResponse.json();
-
+      const baseUrl = "https://www.dropbox.com/scl/fi/";
       
-
-      const baseUrl = " ";
-
-      // Reemplaza la baseUrl, pero conserva el resto de la URL
-      const sharedLink = shareData.url.replace(baseUrl, "").split("?")[0];
-
-
-      const link = `${sharedLink}?dl=1`;
-console.log("Enlace compartido:", link);
+      // Elimina la parte base de la URL
+      const sharedPath = shareData.url.replace(baseUrl, "").split("?")[0];
+      
+      // Reconstruye la URL con el formato que desees
+      const link = `${sharedPath}?dl=1`;
+      
       return link;
     } catch (error) {
       console.error("Error en la solicitud a Dropbox:", error);
       return null;
     }
   };
+
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
