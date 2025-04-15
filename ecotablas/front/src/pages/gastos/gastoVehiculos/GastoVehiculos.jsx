@@ -363,7 +363,7 @@ const handleChangeEdit = (e) => {
       return;
     }
   
-    toast.info("Subiendo comprobante a Dropbox...");
+    toast.success("Subiendo comprobante a Dropbox...");
   
     try {
       const nuevoPath = `/comprobantes/${nuevoArchivo.name}`;
@@ -373,27 +373,30 @@ const handleChangeEdit = (e) => {
         toast.error("Error: No se pudo generar el enlace para el comprobante.");
         return;
       }
-      console.log("Enlace de Dropbox:", dropboxUrl);
-  
+      
        updatedFormValues = {
         ...formValues,
         Comprobante: dropboxUrl,
         IdGasto: gastoId,
       };
       delete updatedFormValues.comprobante;
-      console.log("Valores actualizados:", updatedFormValues);
+    
      
       await axios.put(
         `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
         updatedFormValues
       );
   
-      toast.success("Gasto actualizado con éxito");
-      fetchMaterials(); // O fetchGastosVehiculos si corresponde
+  
+  
+    
+      fetchMaterials(); 
+      toast.success("El gasto fue actualizado correctamente 🎉"); 
       cerrarModalEdit();
     } catch (error) {
       console.error("Error al actualizar el gasto:", error);
-      toast.error("Error al actualizar el gasto");
+      toast.error("Ocurrió un error al guardar los cambios. Intentá nuevamente.");
+
     } finally {
       setSelectedFilePdf(null); // Limpia el archivo cargado
     }
