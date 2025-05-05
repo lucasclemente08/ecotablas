@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../../../components/Pagination";
 import { Toaster, toast } from "sonner";
-
 import TableComponent from "../../../components/TableComponent";
-import { deleteFromDropbox } from "../../../utils/dropbox/deleteDropbox";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,7 +13,6 @@ import {
 import SectionLayout from "../../../layout/SectionLayout";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
-import { RoleProvider } from "../../../context/RoleContext";
 import LoadingTable from "../../../components/LoadingTable";
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import { FaChartLine, FaChartPie } from "react-icons/fa";
@@ -23,9 +20,9 @@ import DataView from "../../../components/buttons/DataView";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
 import AddButtonWa from "../../../components/buttons/AddButtonWa";
-import GastoMaquinariaChart from "../../../components/graficos/GastoMaquinariaChart";
+
 import GastoMaquinariaDatePicker from "../../../components/graficos/GastoMaquinariaDatePicker";
-import ButtonEdit from "../../../components/buttons/ButtonEditPr";
+
 import ButtonEditFiles from "../../../components/ButtonEditFiles";
 
 
