@@ -109,30 +109,25 @@ const GastoVehiculos = () => {
 
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-
-    if (files && files[0]) {
-        // Si se seleccionó un archivo
-        const selectedFile = files[0];
-        console.log("Archivo seleccionado:", selectedFile.name);
-
-        // Guardar el archivo en un estado separado
-        setComprobante(selectedFile);
-
-        // Si necesitas manejar el archivo en formValues:
-        setFormValues((prevValues) => ({
-            ...prevValues,
-            [name]: selectedFile.name, // Guarda solo el nombre del archivo
-        }));
+    const { name, type, value, files } = e.target;
+  
+    if (type === "file" && files && files[0]) {
+      const selectedFile = files[0];
+      setSelectedFilePdf(selectedFile);
+   
+      // Guardás el archivo en el estado principal (formValues), no solo el nombre
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        [name]: selectedFile.name,
+      }));
     } else {
-        // Si es un campo de texto u otro tipo de input
-        setFormValues((prevValues) => ({
-            ...prevValues,
-            [name]: value,
-        }));
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        [name]: type === "number" ? parseFloat(value) || 0 : value,
+      }));
     }
-};
-
+  };
+  
 
 
 const handleChangeEdit = (e) => {

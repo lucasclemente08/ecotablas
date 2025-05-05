@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet-routing-machine";
+import {L} from "leaflet";
+
 import { Toaster, toast } from "sonner";
 import "leaflet/dist/leaflet.css";
 
@@ -11,27 +11,35 @@ const RoutingMachine = ({ points, showInstructions }) => {
   useEffect(() => {
     if (points.length < 2) return;
 
-    const routingControl = L.Routing.control({
-      waypoints: points.map((p) => L.latLng(p.Latitud, p.Longitud)),
-      lineOptions: { styles: [{ color: "green", weight: 5 }] },
-      createMarker: () => null,
-      routeWhileDragging: true,
-      router: L.Routing.osrmv1({ language: "es" }),
-    }).addTo(map);
+    // Importar dinámicamente leaflet-routing-machine
+    const loadRouting = async () => {
+      const LRM = await import("leaflet-routing-machine");
+      if (!map) return;
 
-    // Agregar lógica para manejar la visibilidad
-    setTimeout(() => {
-      const container = document.querySelector(".leaflet-routing-container");
-      if (container) {
-        container.style.display = showInstructions ? "block" : "none";
-      }
-    }, 500);
+      const routingControl = L.Routing.control({
+        waypoints: points.map((p) => L.latLng(p.Latitud, p.Longitud)),
+        lineOptions: { styles: [{ color: "green", weight: 5 }] },
+        createMarker: () => null,
+        routeWhileDragging: true,
+        router: L.Routing.osrmv1({ language: "es" }),
+      }).addTo(map);
 
-    return () => map.removeControl(routingControl);
+      setTimeout(() => {
+        const container = document.querySelector(".leaflet-routing-container");
+        if (container) {
+          container.style.display = showInstructions ? "block" : "none";
+        }
+      }, 500);
+
+      return () => map.removeControl(routingControl);
+    };
+
+    loadRouting();
   }, [points, map, showInstructions]);
 
   return null;
 };
+
 
 const MapComponent = ({ points = [], onMapClick }) => {
   const [showInstructions, setShowInstructions] = useState(true);
