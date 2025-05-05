@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Pagination from "../../../components/Pagination";
 import { Toaster, toast } from "sonner";
 import TableComponent from "../../../components/TableComponent";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchGastos,
-  deleteGasto,
-  addGasto,
   updateGasto,
 } from "../../../features/gastoMaquinariaSlice";
 import SectionLayout from "../../../layout/SectionLayout";
-import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import LoadingTable from "../../../components/LoadingTable";
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
@@ -20,9 +16,7 @@ import DataView from "../../../components/buttons/DataView";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
 import AddButtonWa from "../../../components/buttons/AddButtonWa";
-
 import GastoMaquinariaDatePicker from "../../../components/graficos/GastoMaquinariaDatePicker";
-
 import ButtonEditFiles from "../../../components/ButtonEditFiles";
 
 
