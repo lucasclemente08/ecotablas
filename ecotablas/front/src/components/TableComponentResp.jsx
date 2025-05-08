@@ -59,8 +59,8 @@ const TableComponent = ({
     {isLoading ? (
       <LoadingTable loading={isLoading} />
     ) : (
-      <div className="w-full overflow-x-auto">
-        <table className="min-w-[1000px] w-full bg-white border-0 text-sm">
+<div className="w-full overflow-x-auto">
+<table className="min-w-[1000px] w-full bg-white border-0 text-sm">
           <TablaHead
             titles={titles}
             onSort={onSort}
@@ -122,6 +122,7 @@ const TableComponent = ({
             )}
           </tbody>
         </table>
+
       </div>
     )}
   

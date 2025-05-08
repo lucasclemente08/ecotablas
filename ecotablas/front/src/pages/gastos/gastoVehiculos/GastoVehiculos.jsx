@@ -193,8 +193,9 @@ const handleChangeEdit = (e) => {
     e.preventDefault();
 
     if (formValues.Comprobante) {
-      const URL = await uploadToDropbox(formValues.Comprobante);
 
+      const URL = await uploadToDropbox(formValues.Comprobante);
+console.log("URL de Dropbox:", URL);
       if (URL) {
         const updatedFormValues = { ...formValues, Comprobante: URL };
         axios
@@ -493,6 +494,7 @@ const handleChangeEdit = (e) => {
   }, []);
 
   const uploadToDropbox = async (file) => {
+    console.log("Subiendo archivo a Dropbox:", file);
     const accessToken = await getAccessToken();
     if (!accessToken) return;
 
