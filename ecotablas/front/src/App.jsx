@@ -32,7 +32,7 @@ import Reparaciones from "./pages/reparaciones/Reparaciones";
 import Permisos from "./pages/permisos/Permisos";
 import PermisosCallback from "./components/PermisosCallback";
 import Estadisticas from "./pages/estadisticas/Estadisticas";
-import Admin from "./pages/admin/admin";
+import Admin from "./pages/admin/Admin";
 
 import { RoleProvider } from "./context/RoleContext";
 

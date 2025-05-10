@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Pagination from "../../../components/Pagination";
 import { Toaster, toast } from "sonner";
-
 import TableComponent from "../../../components/TableComponent";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchGastos,
-  deleteGasto,
-  addGasto,
   updateGasto,
 } from "../../../features/gastoMaquinariaSlice";
 import SectionLayout from "../../../layout/SectionLayout";
-import { Pie } from "react-chartjs-2";
 import axios from "axios";
-import { RoleProvider } from "../../../context/RoleContext";
 import LoadingTable from "../../../components/LoadingTable";
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import { FaChartLine, FaChartPie } from "react-icons/fa";
@@ -22,9 +16,9 @@ import DataView from "../../../components/buttons/DataView";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import AddModalWithSelect from "../../../components/AddModalWithSelect";
 import AddButtonWa from "../../../components/buttons/AddButtonWa";
-import GastoMaquinariaChart from "../../../components/graficos/GastoMaquinariaChart";
 import GastoMaquinariaDatePicker from "../../../components/graficos/GastoMaquinariaDatePicker";
-import ButtonEdit from "../../../components/buttons/ButtonEditPr";
+import ButtonEditFiles from "../../../components/ButtonEditFiles";
+
 
 const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
 
@@ -45,6 +39,7 @@ const GastoMaquinaria = () => {
   const [maquinaria, setMaquinaria] = useState([]);
   const [gastoId, setGastoid] = useState([]);
   const [pieData, setPieData] = useState({});
+  const [selectedFilePDF, setSelectedFilePdf] = useState(null);
   const [showPieChart, setShowPieChart] = useState(false);
   const [formValues, setFormValues] = useState({
     tipoGasto: "",
@@ -77,6 +72,7 @@ const GastoMaquinaria = () => {
     const gastoSeguro = gasto || {};
 
     setGastoid(gastoSeguro.IdGastoMaquinaria || "");
+
     setFormValues({
       tipoGasto: gastoSeguro.TipoGasto || "",
       tipoComprobante: gastoSeguro.TipoComprobante || "",
@@ -120,24 +116,42 @@ const GastoMaquinaria = () => {
       })
       .catch((error) => console.error("Error fetching maquinaria:", error));
   };
-
+  
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    const nuevoArchivo = selectedFilePDF;
+toast.success("Subiendo comprobante a dropbox");
 
-    if (!gastoId) {
-      toast.error("Error: No se encontró el ID del gasto.");
-      return;
-    }
-
+    let updatedValues = {
+      ...formValues,
+    };
     try {
-      await dispatch(updateGasto({ id: gastoId, ...formValues })).unwrap();
-      toast.success("Gasto actualizado con éxito");
-      await dispatch(fetchGastos());
+      if (nuevoArchivo) {
+      const nuevoPath = `/comprobantes/${nuevoArchivo.name}`;
+      const dropboxUrl = await uploadToDropbox(nuevoArchivo, nuevoPath);
 
-      cerrarModalEdit(); // Cierra el modal después de guardar
+      delete updatedValues.comprobante;
+      // Actualiza los valores con la nueva ruta
+      updatedValues = {
+        ...formValues,
+        IdGastoMaquinaria: gastoId,
+        Comprobante: dropboxUrl
+         // o dropboxUrl
+      };
+      
+    }
+    console.log("Valores actualizados:", updatedValues);
+    delete updatedValues.comprobante;
+      await dispatch(updateGasto(updatedValues));
+   dispatch(fetchGastos());
+    // Recargar la tabla
+      cerrarModalEdit();
+      toast.success("Gasto actualizado con éxito");
     } catch (error) {
-      toast.error("Error al actualizar el gasto");
       console.error("Error al actualizar el gasto:", error);
+      toast.error("Error al actualizar el gasto");
+    } finally {
+      setSelectedFilePdf(null); // Limpia el archivo cargado
     }
   };
 
@@ -164,31 +178,52 @@ const GastoMaquinaria = () => {
     }
   }, [dataM]);
 
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
     if (files && files[0]) {
-      // Si se seleccionó un archivo
+        // Si se seleccionó un archivo
+        const selectedFile = files[0];
+        console.log("Archivo seleccionado:", selectedFile.name);
+
+        // Guardar el archivo en un estado separado
+        setComprobante(selectedFile);
+
+        // Si necesitas manejar el archivo en formValues:
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: selectedFile.name, // Guarda solo el nombre del archivo
+        }));
+    } else {
+        // Si es un campo de texto u otro tipo de input
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+    }
+};
+
+  const handleChangeEdit = (e) => {
+    const { name, type, value, files } = e.target;
+  
+    if (type === "file" && files && files[0]) {
       const selectedFile = files[0];
-      console.log("Archivo seleccionado:", selectedFile.name);
-
-      // Guardar el archivo en un estado separado
-      setComprobante(selectedFile);
-
-      // Si necesitas manejar el archivo en formValues:
+      setSelectedFilePdf(selectedFile);
+   
+      // Guardás el archivo en el estado principal (formValues), no solo el nombre
       setFormValues((prevValues) => ({
         ...prevValues,
-        [name]: selectedFile.name, // Guarda solo el nombre del archivo
+        [name]: selectedFile,
       }));
     } else {
-      // Si es un campo de texto u otro tipo de input
       setFormValues((prevValues) => ({
         ...prevValues,
-        [name]: value,
+        [name]: type === "number" ? parseFloat(value) || 0 : value,
       }));
     }
   };
-
+  
   const optionsMaquinaria = maquinaria.map((machine) => ({
     value: machine.Id,
     label: `${machine.Modelo} (${machine.Tipo})`,
@@ -561,11 +596,11 @@ const GastoMaquinaria = () => {
           />
         )}
         {modalEdit && (
-          <ButtonEdit
+          <ButtonEditFiles
             title="Gasto de Maquinaria"
             fields={fields}
             formValues={formValues}
-            handleChange={handleChange}
+            handleChange={handleChangeEdit}
             handleEditSubmit={handleEditSubmit}
             cerrarModalEdit={cerrarModalEdit}
           />

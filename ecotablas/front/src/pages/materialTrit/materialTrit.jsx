@@ -390,7 +390,7 @@ const titlesT = [
     },
 
     {
-      allowedRoles: ["admin", "supervisor"],
+      
       allowedRoles: ["admin", "supervisor"],
       render: (material) => (
         <div className="flex items-center justify-start gap-2 py-1">

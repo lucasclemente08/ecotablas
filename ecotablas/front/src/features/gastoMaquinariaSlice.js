@@ -18,7 +18,7 @@ export const addGasto = createAsyncThunk('gastoMaquinaria/addGasto', async (nuev
 
 // Async thunk para actualizar un gasto de maquinaria
 export const updateGasto = createAsyncThunk('gastoMaquinaria/updateGasto', async (gasto) => {
-  const response = await axios.put(`${API_URL}/Update/${gasto.id}`, gasto);
+  const response = await axios.put(`${API_URL}/Update/${gasto.IdGastoMaquinaria}`, gasto);
   return response.data;
 });
 

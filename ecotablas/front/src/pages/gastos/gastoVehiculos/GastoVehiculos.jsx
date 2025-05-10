@@ -17,11 +17,9 @@ import {
   ArcElement,
 } from "chart.js";
 import { Toaster, toast } from "sonner";
-
 import SectionLayout from "../../../layout/SectionLayout";
 import TablaHead from "../../../components/Thead";
 import LoadingTable from "../../../components/LoadingTable";
-
 import PdfGenerator from "../../../components/buttons/PdfGenerator";
 import DeleteButton from "../../../components/buttons/DeleteButton";
 import DataView from "../../../components/buttons/DataView";
@@ -33,6 +31,7 @@ import AddButtonWa from "../../../components/buttons/AddButtonWa";
 import GastoVehiculosChart from "../../../components/graficos/GastoVehiculosChart";
 import GastoVehiculosDataPicker from "../../../components/graficos/GastoVehiculoDataPicker";
 import ButtonEdit from "../../../components/buttons/ButtonEditPr";
+import ButtonEditFiles from "../../../components/ButtonEditFiles";
 
 ChartJS.register(
   CategoryScale,
@@ -62,8 +61,8 @@ const GastoVehiculos = () => {
   const [sortedData, setSortedData] = useState([]);
   const [gastoId, setGastoid] = useState([]);
   const [comprobante, setComprobante] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
-
+  const [filteredData, setFilteredData] = useState([]); 
+  const [selectedFilePDF, setSelectedFilePdf] = useState(null);
   const abrirModal = () => setModalAbierto(true);
   const cerrarModal = () => { 
     setModalAbierto(false);
@@ -108,34 +107,55 @@ const GastoVehiculos = () => {
       });
   };
 
+
   const handleChange = (e) => {
-    e.preventDefault();
-    const { name, value, files } = e.target;
-
-    if (files && files[0]) {
-      // Si se seleccionó un archivo
+    const { name, type, value, files } = e.target;
+  
+    if (type === "file" && files && files[0]) {
       const selectedFile = files[0];
-
-      // Guardar el archivo en un estado separado
-      setComprobante(selectedFile);
-
+      setSelectedFilePdf(selectedFile);
+   
+      // Guardás el archivo en el estado principal (formValues), no solo el nombre
       setFormValues((prevValues) => ({
         ...prevValues,
-        [name]: selectedFile.name, // Guarda solo el nombre del archivo
+        [name]: selectedFile.name,
       }));
     } else {
-      // Si es un campo de texto u otro tipo de input
       setFormValues((prevValues) => ({
         ...prevValues,
-        [name]: value,
+        [name]: type === "number" ? parseFloat(value) || 0 : value,
       }));
     }
   };
+  
+
+
+const handleChangeEdit = (e) => {
+  const { name, type, value, files } = e.target;
+
+  if (type === "file" && files && files[0]) {
+    const selectedFile = files[0];
+    setSelectedFilePdf(selectedFile);
+ 
+    // Guardás el archivo en el estado principal (formValues), no solo el nombre
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: selectedFile.name,
+    }));
+  } else {
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: type === "number" ? parseFloat(value) || 0 : value,
+    }));
+  }
+};
+
+ 
 
   const abrirModalEdit = (gasto) => {
     const gastoSeguro = gasto || {};
 
-    setGastoid(gastoSeguro.IdVehiculo || "");
+    setGastoid(gastoSeguro.IdGasto || "");
     setFormValues({
       TipoComprobante: gastoSeguro.TipoComprobante || "",
       comprobante: gastoSeguro.Comprobante || "",
@@ -166,12 +186,16 @@ const GastoVehiculos = () => {
     fetchMaterials();
   }, []);
 
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (formValues.Comprobante) {
-      const URL = await uploadToDropbox(formValues.Comprobante);
 
+      const URL = await uploadToDropbox(formValues.Comprobante);
+console.log("URL de Dropbox:", URL);
       if (URL) {
         const updatedFormValues = { ...formValues, Comprobante: URL };
         axios
@@ -320,54 +344,66 @@ const GastoVehiculos = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!gastoId) {
       toast.error("Error: No se encontró el ID del gasto.");
       return;
     }
+  
+    const nuevoArchivo = selectedFilePDF;
+  
+    let updatedFormValues = {
+      ...formValues,
+    };
 
-    if (!comprobante) {
-      // Verifica si hay un archivo seleccionado
+    if (!nuevoArchivo) {
       toast.error("Error: No se ha seleccionado un archivo para cargar.");
       return;
     }
-
+  
+    toast.success("Subiendo comprobante a Dropbox...");
+  
     try {
-      const link = await uploadToDropbox(comprobante); // Usa el archivo almacenado en 'comprobante'
-
-      if (!link) {
+      const nuevoPath = `/comprobantes/${nuevoArchivo.name}`;
+      const dropboxUrl = await uploadToDropbox(nuevoArchivo, nuevoPath);
+  
+      if (!dropboxUrl) {
         toast.error("Error: No se pudo generar el enlace para el comprobante.");
         return;
       }
-
-      // Crea un objeto con los datos que deseas enviar a la API
-      const updatedFormValues = {
+      
+       updatedFormValues = {
         ...formValues,
-        Comprobante: link, // Usa la URL devuelta por uploadToDropbox
+        Comprobante: dropboxUrl,
+        IdGasto: gastoId,
       };
-
-      // No incluyas el archivo 'comprobante' directamente en updatedFormValues
-      // En su lugar, puedes enviarlo por separado si tu API lo requiere
-
-      axios
-        .put(
-          `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
-          updatedFormValues,
-        )
-        .then((response) => {
-          toast.success("Gasto actualizado con éxito");
-          fetchMaterials();
-          cerrarModalEdit();
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el gasto:", error);
-          toast.error("Error al actualizar el gasto");
-        });
+      delete updatedFormValues.comprobante;
+    
+     
+      await axios.put(
+        `http://www.ecotablasapi.somee.com/api/GastoVehiculos/ActualizarGastoVehiculo/${gastoId}`,
+        updatedFormValues
+      );
+  
+  
+  
+    
+      fetchMaterials(); 
+      toast.success("El gasto fue actualizado correctamente 🎉"); 
+      cerrarModalEdit();
     } catch (error) {
-      console.error("Error en la subida del comprobante:", error);
-      toast.error("Error al subir el comprobante");
+      console.error("Error al actualizar el gasto:", error);
+      toast.error("Ocurrió un error al guardar los cambios. Intentá nuevamente.");
+
+    } finally {
+      setSelectedFilePdf(null); // Limpia el archivo cargado
     }
   };
+  
+
+
+
+
   const cerrarModalEdit = () => { 
     setModalEdit(false);
     setFormValues({ TipoComprobante: "",
@@ -456,11 +492,11 @@ const GastoVehiculos = () => {
       const token = await getAccessToken();
       setAccessToken(token);
     };
-
-    // Llamada inmediata a la función asíncrona
     fetchToken();
   }, []);
+
   const uploadToDropbox = async (file) => {
+    console.log("Subiendo archivo a Dropbox:", file);
     const accessToken = await getAccessToken();
     if (!accessToken) return;
 
@@ -542,16 +578,21 @@ const GastoVehiculos = () => {
 
       const shareData = await shareResponse.json();
       const baseUrl = "https://www.dropbox.com/scl/fi/";
-      const sharedLink = shareData.url.replace(baseUrl, "").split("?")[0];
-
-      const link = `${sharedLink}?dl=1`;
-
+      
+      // Elimina la parte base de la URL
+      const sharedPath = shareData.url.replace(baseUrl, "").split("?")[0];
+      
+      // Reconstruye la URL con el formato que desees
+      const link = `${sharedPath}?dl=1`;
+      
       return link;
     } catch (error) {
       console.error("Error en la solicitud a Dropbox:", error);
       return null;
     }
   };
+
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
@@ -701,13 +742,6 @@ const GastoVehiculos = () => {
         >
           Ver Gráficos <FaChartPie className="ml-2" />
         </button>
-        {/* 
-        <button
-          className={`p-2 mt-2 mb-5 ml-2 font-bold rounded text-white ${!showPieChart ? 'bg-blue-600' : 'bg-gray-500'}`}
-          onClick={() => { setShowPieChart(false); setShowTable(false); }}
-        >
-          Ver Gráfico de Líneas <FaChartLine className="ml-2" />
-        </button> */}
       </div>
       {ModalAbierto && (
         <AddModalWithSelect
@@ -722,13 +756,13 @@ const GastoVehiculos = () => {
       )}
 
       {modalEdit && (
-        <ButtonEdit
+        <ButtonEditFiles
           title="Editar Gasto de Vehículo"
           fields={fields}
           formValues={formValues}
-          handleChange={handleChange}
-          handleEditSubmit={handleEditSubmit} // Cambia el manejador al de edición
-          cerrarModalEdit={cerrarModalEdit} // Cambia al cierre de modal de edición
+          handleChange={handleChangeEdit}
+          handleEditSubmit={handleEditSubmit} 
+          cerrarModalEdit={cerrarModalEdit} 
         />
       )}
 
@@ -745,103 +779,11 @@ const GastoVehiculos = () => {
             actions={actions}
           />
 
-          // // <tbody>
-          //   {sortedData.map((item, index) => (
-          //     <tr key={index} className="hover:bg-gray-100 text-sm md:text-base">
-
-          //       <td className="border-b py-3 px-4 text-left">
-          //         <span className="font-semibold lg:hidden">Tipo Comprobante: </span>
-          //         {item.TipoComprobante}
-          //       </td>
-
-          //       {/* Comprobante */}
-          //       <td className="border-b py-3 px-4 text-left">
-          //         <span className="font-semibold lg:hidden">Comprobante: </span>
-          //         {item.Comprobante ? (
-          //           <a
-          //             href={`${"https://www.dropbox.com/scl/fi/"}${item.Comprobante}`}
-          //             className="text-blue-500 flex items-center gap-1"
-          //             target="_blank"
-          //             rel="noopener noreferrer"
-          //           >
-          //             <HiMiniLink className="m-1" /> Comprobante
-          //           </a>
-          //         ) : (
-          //           "No disponible"
-          //         )}
-          //       </td>
-
-          //       {/* Tipo de Gasto */}
-          //       <td className="border-b py-3 px-4 text-left">
-          //         <span className="font-semibold lg:hidden">Tipo Gasto: </span>
-          //         {item.TipoGasto}
-          //       </td>
-
-          //       {/* Vehículo */}
-          //       <td className="border-b py-3 px-4 text-left">
-          //         <span className="font-semibold lg:hidden">Vehículo: </span>
-          //         {getVehicleById(item.IdVehiculo)}
-          //       </td>
-
-          //       <td className="border-b py-3 px-4 text-left">
-          //         <span className="font-semibold lg:hidden">Proveedor: </span>
-          //         {item.Proveedor}
-          //       </td>
-
-          //       <td className="border-b py-3 px-4 text-right">
-          //         <span className="font-semibold lg:hidden">Monto: </span>
-          //         ${item.Monto}
-          //       </td>
-
-          //       <td className="border-b py-3 px-4 text-right">
-          //         <span className="font-semibold lg:hidden">Fecha: </span>
-          //         {item.Fecha ? item.Fecha.slice(0, 10) : "Fecha no disponible"}
-          //       </td>
-
-          //       <td className="border-b py-3 px-4 text-left">
-          //         <span className="font-semibold lg:hidden">Descripción: </span>
-          //         {item.Descripcion}
-          //       </td>
-
-          //       <td className="border-t-2 p-2 flex flex-col md:flex-row items-center gap-2">
-
-          //         <button
-          //           onClick={() => {
-          //             setGastoEdit(item);
-          //             setFormValues(item);
-          //             setModalEdit(true);
-          //           }}
-          //           className="bg-yellow-700 flex items-center hover:bg-yellow-800 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out transform hover:scale-105"
-          //         >
-          //           <FiEdit className="m-1" />
-          //           Modificar
-          //         </button>
-
-          //         {/* Borrar */}
-          //         <DeleteButton
-          //           endpoint="http://www.gestiondeecotablas.somee.com/api/GastoVehiculos/EliminarGastoVehiculo"
-          //           id={item.IdGasto}
-          //           updateList={fetchMaterials}
-          //         />
-          //       </td>
-          //     </tr>
-          //   ))}
-          // </tbody>
-          // </table>
         )
       ) : showPieChart ? (
         <div className="flex flex-row mt-20 content-center justify-center items-center h-96 ">
-          {/* <div className="mr-2  flex-1 min-w-[200px] max-w-[400px] mt-10 p-4 bg-gray-800 shadow-md rounded-md">
-          <div className="h-[370px]">
-            
-          <Pie data={pieData} options={pieOptions} className="mt-4" />
-            </div>
-            <p className=" text-centermt-2 text-center text-gray-200 ">Total de gastos: ${total}</p>
-          </div> */}
           <div className="flex-1 min-w-[700px] max-w-[00px]  p-4  shadow-md rounded-md">
-            {/* <h2 className="text-lg font-medium text-white text-center mb-4">
-            Gastos de Vehículos
-          </h2> */}
+   
             <div className="h-[500px]  mb-4">
               <GastoVehiculosDataPicker />
             </div>

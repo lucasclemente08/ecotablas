@@ -18,7 +18,7 @@ import AddModalWithSelect from "../../components/AddModalWithSelect";
 import ButtonEdit from "../../components/buttons/ButtonEditPr";
 import NextButton from "../../components/buttons/NextButton";
 import axios from "axios";
-import TableComponent from "../../components/TableComponent";
+import TableComponent from "../../components/TableComponentResp";
 import { Toaster, toast } from "sonner";
 const EmpresaDonante = () => {
   const dispatch = useDispatch();

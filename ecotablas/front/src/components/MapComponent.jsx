@@ -19,7 +19,7 @@ const RoutingMachine = ({ points, showInstructions }) => {
       router: L.Routing.osrmv1({ language: "es" }),
     }).addTo(map);
 
-    // Agregar lógica para manejar la visibilidad
+    // Agregar lÃ³gica para manejar la visibilidad
     setTimeout(() => {
       const container = document.querySelector(".leaflet-routing-container");
       if (container) {

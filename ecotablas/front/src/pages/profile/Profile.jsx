@@ -68,7 +68,7 @@ const Profile = () => {
           {userProfile.fotoUrl ? (
             <img
               src={userProfile.fotoUrl}
-              alt="Foto de perfil"
+              alt=""
               className="w-24 h-24 rounded-full border-4 border-teal-500 shadow-lg mb-4"
             />
           ) : (
