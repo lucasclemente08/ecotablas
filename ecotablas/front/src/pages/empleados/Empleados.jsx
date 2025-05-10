@@ -254,13 +254,13 @@ const Empleados = () => {
   };
 
   const columns = [
-    { header: "Nombre", accessor: "Nombre" },
-    { header: "Apellido", accessor: "Apellido" },
-    { header: "DNI", accessor: "DNI" },
-    { header: "Código Postal", accessor: "CodPostal" },
-    { header: "Fecha de Ingreso", accessor: "FechaIngreso" },
-    { header: "Teléfono", accessor: "Telefono" },
-    { header: "Email", accessor: "Mail" },
+    { header: "Nombre", dataKey: "Nombre" },
+    { header: "Apellido", dataKey: "Apellido" },
+    { header: "DNI", dataKey: "DNI" },
+    { header: "Código Postal", dataKey: "CodPostal" },
+    { header: "Fecha de Ingreso", dataKey: "FechaIngreso" },
+    { header: "Teléfono", dataKey: "Telefono" },
+    { header: "Email", dataKey: "Mail" },
   ];
 
   const titlesT = [

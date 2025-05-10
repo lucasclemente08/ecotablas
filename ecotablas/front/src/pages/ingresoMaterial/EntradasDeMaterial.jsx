@@ -263,7 +263,7 @@ const EntradasDeMaterial = () => {
     "Acciones",
   ];
   const columns = [
-    { header: "Volumen Util (kgs)", dataKey: "VolumenUtil" },
+    { header: "Volumen Util (kgs)", dataKey: "VolumenM" },
     { header: "Volumen Inutil (kgs)", dataKey: "VolumenMInutil" },
     { header: "Tipo de plasticos", dataKey: "IdTipoPlastico" },
 
