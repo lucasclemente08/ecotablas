@@ -54,11 +54,11 @@ const TablasProducidas = () => {
   });
 
   const columns = [
-    { header: "Fecha Producción", accessor: "FechaProduccion" },
-    { header: "Dimensiones", accessor: "Dimensiones" },
-    { header: "Peso (kgs)", accessor: "Peso" },
-    { header: "Código Identificación", accessor: "CodigoIdentificacion" },
-    { header: "Estado", accessor: "Estado" },
+    { header: "Fecha Producción", dataKey: "FechaProduccion" },
+    { header: "Dimensiones", dataKey: "Dimensiones" },
+    { header: "Peso (kgs)", dataKey: "Peso" },
+    { header: "Código Identificación", dataKey: "CodigoIdentificacion" },
+    { header: "Estado", dataKey: "Estado" },
   ];
 
   const titles = [...columns.map((col) => col.header), "Acciones"];
@@ -316,7 +316,7 @@ const totalItems = filteredMaterials.length;
       <AddButtonWa abrirModal={abrirModal} title="Añadir tabla" />
       <PdfGenerator
         columns={columns}
-        data={data}
+        data={filteredMaterials}
         title="Reporte de Tablas Producidas"
       />
     </div>

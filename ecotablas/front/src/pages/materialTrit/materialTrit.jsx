@@ -365,7 +365,7 @@ const MaterialTrit = () => {
 const titlesT = [
   { label: "Volumen Útil (kgs)", key: "VolumenT", type: "number" },
   { label: "Volumen Inútil (kgs)", key: "VolumenTInutil", type: "number" },
-  { label: "Fecha de Ingreso", key: "Fecha", type: "date", hasActions: true },
+  { label: "Fecha", key: "Fecha", type: "date", hasActions: true },
 ];
 
   // Estilo para los encabezados (th)
@@ -473,7 +473,7 @@ const titlesT = [
 
 {modalTolva && (
             <AddModalWithSelect 
-              title="Pasar a Extrucción/tolva"
+              title="Pasar a Extrusión/tolva"
               fields={[
                 { name: "CantidadCargada", label: "Cantidad cargada (kg)", type: "number" },
                 { name: "TipoPlastico", label: "Tipo de plástico", type: "select", options: optionsTipoPlastico },

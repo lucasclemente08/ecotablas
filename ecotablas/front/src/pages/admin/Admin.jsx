@@ -15,6 +15,7 @@ import ButtonEdit from "../../components/buttons/ButtonEditPr"; // Tu componente
 import { FiEdit } from "react-icons/fi"; // Iconos de edición
 import "react-toastify/dist/ReactToastify.css";
 import { RoleProvider } from "../../context/RoleContext";
+import { MdDelete } from "react-icons/md";
 import { Toaster, toast } from "sonner";
 const Admin = () => {
   const [users, setUsers] = useState([]);
@@ -257,6 +258,7 @@ const Admin = () => {
           className="ml-2 bg-red-700 flex hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
           onClick={() => deleteUser(item.id)}
         >
+          <MdDelete className="m-1" />
           Eliminar
         </button>
       ),

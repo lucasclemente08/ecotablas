@@ -321,11 +321,11 @@ const Tolva = () => {
   }));
 
   const columns = [
-    { header: "Horario de inicio", accessor: "HorarioInicio" },
-    { header: "Cantidad cargada (kg)", accessor: "cantidadCargada" },
-    { header: "Tipo de plástico", accessor: "tipo_plastico" },
-    { header: "Proporción cargada", accessor: "proporcion" },
-    { header: "Especificaciones", accessor: "especificaciones" },
+    { header: "Horario de inicio", dataKey: "HorarioInicio" },
+    { header: "Cantidad cargada (kg)", dataKey: "CantidadCargada" },
+    { header: "Tipo de plástico", dataKey: "TipoPlastico" },
+    { header: "Proporción cargada", dataKey: "Proporcion" },
+    { header: "Especificaciones", dataKey: "Especificaciones" },
   ];
   const dimensionesOptions = [
     { value: "1,50mts x 10cm", label: "1,50mts x 10cm" },
@@ -433,7 +433,7 @@ const Tolva = () => {
       <div className="flex flex-wrap items-center gap-2">
         
       <AddButtonWa abrirModal={abrirModal} title="Añadir Registro" />
-      <PdfGenerator columns={columns} data={materials} title="Reporte de Tolva" />
+      <PdfGenerator columns={columns} data={data} title="Reporte de Tolva" />
       </div>
           {/* Grupo derecha (solo filtro) */}
           <div className="flex flex-wrap items-center gap-2">

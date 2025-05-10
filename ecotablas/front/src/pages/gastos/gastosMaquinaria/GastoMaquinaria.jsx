@@ -411,13 +411,12 @@ const GastoMaquinaria = () => {
     }
   };
   const columns = [
-    { header: "Tipo de Gasto", dataKey: "tipoGasto" },
-    { header: "Tipo de Comprobante", dataKey: "tipoComprobante" },
-    { header: "Comprobante", dataKey: "comprobante" },
-    { header: "Proveedor", dataKey: "proveedor" },
-    { header: "Monto ($)", dataKey: "monto" },
-    { header: "Fecha", dataKey: "fecha" },
-    { header: "Descripción", dataKey: "descripcion" },
+    { header: "Tipo de Gasto", dataKey: "TipoGasto" },
+    { header: "Tipo de Comprobante", dataKey: "TipoComprobante" },
+    { header: "Proveedor", dataKey: "Proveedor" },
+    { header: "Monto ($)", dataKey: "Monto" },
+    { header: "Fecha", dataKey: "Fecha" },
+    { header: "Descripción", dataKey: "Descripcion" },
   ];
 
   const titles = [

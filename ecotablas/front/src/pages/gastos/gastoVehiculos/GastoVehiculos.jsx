@@ -310,10 +310,12 @@ const GastoVehiculos = () => {
     },
   ];
   const columns = [
-    { field: "TipoComprobante", label: "Tipo de Comprobante" },
-    { field: "Monto", label: "Monto" },
-    { field: "Fecha", label: "Fecha" },
-    { field: "Proveedor", label: "Proveedor" },
+    { header: "Tipo de Gasto", dataKey: "TipoGasto" },
+    { header: "Tipo de Comprobante", dataKey: "TipoComprobante" },
+    { header: "Proveedor", dataKey: "Proveedor" },
+    { header: "Monto ($)", dataKey: "Monto" },
+    { header: "Fecha", dataKey: "Fecha" },
+    { header: "Descripción", dataKey: "Descripcion" },
   ];
 
   const handleEditSubmit = async (e) => {
@@ -686,7 +688,7 @@ const GastoVehiculos = () => {
           abrirModal={() => setModalAbierto(true)}
           title="Añadir gastos"
         />
-        <PdfGenerator columns={titles} data={dataV} title="Reporte de gastos" />
+        <PdfGenerator columns={columns} data={dataV} title="Reporte de gastos" />
         <DataView ShowTable={handleShowTable} />
 
         <button
