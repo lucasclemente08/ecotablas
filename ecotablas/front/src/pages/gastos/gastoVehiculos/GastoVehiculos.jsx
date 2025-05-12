@@ -190,7 +190,7 @@ const handleChangeEdit = (e) => {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  if (!selectedFilePDF) {
+  if (!comprobante) {
     toast.error("Error: No se ha seleccionado un archivo para cargar.");
     return;
   }
@@ -198,8 +198,8 @@ const handleSubmit = async (e) => {
   toast.success("Subiendo comprobante a Dropbox...");
 
   try {
-    const nuevoPath = `/comprobantes/${selectedFilePDF.name}`;
-    const dropboxUrl = await uploadToDropbox(selectedFilePDF, nuevoPath);
+    const nuevoPath = `/comprobantes/${comprobante.name}`;
+    const dropboxUrl = await uploadToDropbox(comprobante, nuevoPath);
 
     if (!dropboxUrl) {
       toast.error("Error: No se pudo generar el enlace para el comprobante.");
@@ -214,20 +214,21 @@ const handleSubmit = async (e) => {
     console.log("Valores del formulario (crear):", updatedFormValues);
 
     await axios.post(
-      "http://www.ecotablasapi.somee.com/api/GastoVehiculos/CrearGastoVehiculo",
+      "http://www.ecotablasapi.somee.com/api/GastoMaquinaria/Create",
       updatedFormValues
     );
 
     toast.success("Gasto agregado con éxito");
-    fetchMaterials();
+    dispatch(fetchGastos());
     cerrarModal();
   } catch (error) {
     console.error("Error al agregar el gasto:", error);
-    toast.error("Error al agregar el gasto");
+    toast.error("Error al agregar el gasto.");
   } finally {
-    setSelectedFilePdf(null); // Limpia el archivo cargado
+    setComprobante(null); // Limpia el archivo cargado
   }
 };
+
 
 
 
