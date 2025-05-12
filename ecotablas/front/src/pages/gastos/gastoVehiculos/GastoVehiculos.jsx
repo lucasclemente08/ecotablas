@@ -114,6 +114,7 @@ const GastoVehiculos = () => {
     if (type === "file" && files && files[0]) {
       const selectedFile = files[0];
       setSelectedFilePdf(selectedFile);
+      console.log("Archivo seleccionado:", selectedFile);
    
       // Guardás el archivo en el estado principal (formValues), no solo el nombre
       setFormValues((prevValues) => ({
@@ -186,37 +187,49 @@ const handleChangeEdit = (e) => {
     fetchMaterials();
   }, []);
 
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
+  if (!selectedFilePDF) {
+    toast.error("Error: No se ha seleccionado un archivo para cargar.");
+    return;
+  }
 
+  toast.success("Subiendo comprobante a Dropbox...");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  try {
+    const nuevoPath = `/comprobantes/${selectedFilePDF.name}`;
+    const dropboxUrl = await uploadToDropbox(selectedFilePDF, nuevoPath);
 
-    if (formValues.Comprobante) {
-
-      const URL = await uploadToDropbox(formValues.Comprobante);
-console.log("URL de Dropbox:", URL);
-      if (URL) {
-        const updatedFormValues = { ...formValues, Comprobante: URL };
-        axios
-          .post(
-            "http://www.ecotablasapi.somee.com/api/GastoVehiculos/CrearGastoVehiculo",
-            updatedFormValues,
-          )
-          .then((response) => {
-            toast.success("Gasto agregado con éxito");
-            fetchMaterials();
-            cerrarModal();
-          })
-          .catch((error) => {
-            console.error("Error al agregar el gasto:", error);
-            toast.error("Error al agregar el gasto");
-          });
-      } else {
-        toast.error("No se pudo subir el archivo a Dropbox");
-      }
+    if (!dropboxUrl) {
+      toast.error("Error: No se pudo generar el enlace para el comprobante.");
+      return;
     }
-  };
+
+    const updatedFormValues = {
+      ...formValues,
+      Comprobante: dropboxUrl,
+    };
+
+    console.log("Valores del formulario (crear):", updatedFormValues);
+
+    await axios.post(
+      "http://www.ecotablasapi.somee.com/api/GastoVehiculos/CrearGastoVehiculo",
+      updatedFormValues
+    );
+
+    toast.success("Gasto agregado con éxito");
+    fetchMaterials();
+    cerrarModal();
+  } catch (error) {
+    console.error("Error al agregar el gasto:", error);
+    toast.error("Error al agregar el gasto");
+  } finally {
+    setSelectedFilePdf(null); // Limpia el archivo cargado
+  }
+};
+
+
 
   useEffect(() => {
     const calculatePieData = () => {
