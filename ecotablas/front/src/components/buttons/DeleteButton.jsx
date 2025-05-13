@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { toast,Toaster } from "sonner";
 import { MdDelete } from "react-icons/md";
 
 const DeleteButton = ({ id, endpoint, updateList }) => {
@@ -17,6 +17,8 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
       const response = await axios.delete(`${endpoint}/${id}`);
 
       updateList();
+       toast.error(
+        "Elemento eliminado correctamente",)
       closeModal();
     } catch (error) {
       console.error(
@@ -30,6 +32,7 @@ const DeleteButton = ({ id, endpoint, updateList }) => {
 
   return (
     <>
+       <Toaster />
       <button
         onClick={openModal}
         className="ml-2 bg-red-700 flex hover:bg-red-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
