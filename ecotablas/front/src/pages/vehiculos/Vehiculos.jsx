@@ -5,7 +5,7 @@ import PdfGenerator from "../../components/buttons/PdfGenerator";
 import { Toaster, toast } from "sonner";
 import TablaHead from "../../components/Thead";
 import DeleteButton from "../../components/buttons/DeleteButton";
-import TableComponent from "../../components/TableComponent";
+import TableComponent from "../../components/TableComponentResp";
 import DataView from "../../components/buttons/DataView";
 import AddModal from "../../components/AddModal";
 import { FiEdit, FiPlus, FiRefreshCw, FiEye } from "react-icons/fi";
