@@ -49,12 +49,12 @@ const ReportesPage = () => {
 
   const handleSubmit = () => {
     axios
-      .post("http://localhost:61274/api/Reportes/CrearReporte", formValues)
+      .post
       .then(() => {
         cerrarModal();
-        fetchReportes();
+
       })
-      .catch((error) => console.error("Error al agregar el reporte:", error));
+      
   };
 
   const handleEditSubmit = () => {

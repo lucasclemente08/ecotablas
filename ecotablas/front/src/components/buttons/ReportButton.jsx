@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IoMdAlert } from "react-icons/io";
-import axios from "axios";
 import { createPortal } from "react-dom";
+import { Toaster, toast } from "sonner";
 
 const ReportButton = ({ isOpen }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -19,25 +19,6 @@ const ReportButton = ({ isOpen }) => {
     setReport({ ...report, [name]: value });
   };
 
-  const PostReportes = () => {
-    const reporteConFecha = {
-      ...report,
-      FechaReporte: new Date().toISOString(),
-    };
-
-    axios
-      .post("http://localhost:61274/api/Reportes/CrearReporte", reporteConFecha)
-      .then((response) => {
-        console.log("Reporte enviado:", response.data);
-        setMessage("¡Reporte enviado con éxito!");
-        setModalOpen(false);
-      })
-      .catch((error) => {
-        console.error("Error al enviar el reporte:", error);
-        setMessage("Error al enviar el reporte. Inténtalo de nuevo.");
-      });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (
@@ -49,11 +30,27 @@ const ReportButton = ({ isOpen }) => {
       setMessage("Por favor, completa todos los campos.");
       return;
     }
-    PostReportes();
+    
+
+    setMessage("¡Reporte enviado con éxito!");
+   toast.success("Se ha enviado el reporte.");
+    setTimeout(() => {
+      setModalOpen(false);
+      setMessage("");
+      // Resetear el formulario
+      setReport({
+        Titulo: "",
+        Descripcion: "",
+        Area: "",
+        FechaIncidente: "",
+        Estado: "Pendiente",
+      });
+    }, 1000);
   };
 
   return (
     <>
+    <Toaster />
       <button
         onClick={() => setModalOpen(true)}
         className="text-white text-center font-bold py-2 px-2 rounded-full"
@@ -71,7 +68,11 @@ const ReportButton = ({ isOpen }) => {
               <h2 className="text-xl font-bold text-black mb-4">
                 Generar un reporte
               </h2>
-              {message && <p className="mb-4 text-red-500">{message}</p>}
+              {message && (
+                <p className={`mb-4 ${message.includes("éxito") ? "text-green-500" : "text-red-500"}`}>
+                  {message}
+                </p>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label

@@ -511,6 +511,7 @@ const Maquinaria = () => {
   return (
     <>
       <SectionLayout>
+        <Toaster />
         <div className="p-4 w-full">
           <h2 className="text-2xl font-bold text-white mb-4">Maquinarias</h2>
 
